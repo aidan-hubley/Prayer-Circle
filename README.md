@@ -3,5 +3,5 @@
 ## Tech Stack
 - React Native (Front End)
 - Node JS
-- Tailwind (CSS)
+- Nativewind (CSS)
 - Firebase (Back End)
