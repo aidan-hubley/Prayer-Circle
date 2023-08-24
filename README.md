@@ -1,6 +1,7 @@
 # Prayer-Circle
 
 ## Tech Stack
-- React Native
-- Firebase
+- React Native (Front End)
 - Node JS
+- Tailwind (CSS)
+- Firebase (Back End)
