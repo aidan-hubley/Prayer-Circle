@@ -17,25 +17,6 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
-  eas_build:
-    executor: default
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
-      - run:
-          name: Login to Expo
-          command: npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
-      - run:
-          name: Trigger build
-          command: npx eas-cli build --platform android --non-interactive
-
-executors:
-  default:
-    docker:
-      - image: cimg/node:lts
-    working_directory: ~/Prayer-Circle
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -43,9 +24,3 @@ workflows:
   say-hello-workflow:
     jobs:
       - say-hello
-  build_app_workflow:
-    jobs:
-      - eas_build:
-          filters:
-            branches:
-              only: master
