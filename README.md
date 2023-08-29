@@ -5,3 +5,4 @@
 - Node JS
 - Nativewind (CSS)
 - Firebase (Back End)
+- Expo Go (Deployment)
