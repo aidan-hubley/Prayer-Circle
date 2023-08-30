@@ -24,7 +24,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+<<<<<<< HEAD
       "package": "prayercircle.com"
+=======
+      "package": "com.aidanhubley.PrayerCircle"
+>>>>>>> e99396458aad21e4ab7e04e4e42d6b5bf3fa77cd
     },
     "web": {
       "bundler": "metro",
@@ -42,9 +46,15 @@
         "origin": false
       },
       "eas": {
+<<<<<<< HEAD
         "projectId": "ba379de7-859d-424a-a1be-46c133aab81a"
       }
     },
     "owner": "prayer-circle"
+=======
+        "projectId": "d487ef6b-8014-44ea-b5af-d519af559f04"
+      }
+    }
+>>>>>>> e99396458aad21e4ab7e04e4e42d6b5bf3fa77cd
   }
 }

@@ -1,16 +1,39 @@
 {
   "cli": {
+<<<<<<< HEAD
     "version": ">= 5.0.2"
+=======
+    "version": ">= 3.9.3"
+>>>>>>> e99396458aad21e4ab7e04e4e42d6b5bf3fa77cd
   },
   "build": {
     "development": {
       "developmentClient": true,
+<<<<<<< HEAD
       "distribution": "internal"
     },
     "preview": {
       "distribution": "internal"
     },
     "production": {}
+=======
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
+    "production": {
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    }
+>>>>>>> e99396458aad21e4ab7e04e4e42d6b5bf3fa77cd
   },
   "submit": {
     "production": {}
