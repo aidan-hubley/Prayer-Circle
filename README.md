@@ -5,6 +5,7 @@
 - Node JS
 - Nativewind (CSS)
 - Firebase (Back End)
+- Expo Go (Deployment)
 
 ## Github Naming Conventions
 - Branch names are “[initials]/[story summary]” (snake case)
