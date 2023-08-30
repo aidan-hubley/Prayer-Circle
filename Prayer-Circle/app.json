@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Prayer-Circle",
-    "slug": "Prayer-Circle",
+    "slug": "prayer-circle",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,14 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "prayercircle.com"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.aidanhubley.PrayerCircle"
+      "package": "prayercircle.com"
     },
     "web": {
       "bundler": "metro",
@@ -41,8 +42,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "d487ef6b-8014-44ea-b5af-d519af559f04"
+        "projectId": "ba379de7-859d-424a-a1be-46c133aab81a"
       }
-    }
+    },
+    "owner": "prayer-circle"
   }
 }
