@@ -3,7 +3,8 @@
         "users": {
             "_uid_": {
                 "username": "Username",
-                "name": "Name",
+                "fname": "First Name",
+                "lname": "Last Name",
                 "email": "Email",
                 "phone": "Phone",
                 "created": 1234567890,
