@@ -2,8 +2,11 @@ import { StyleSheet } from "react-native";
 
 import EditScreenInfo from "../../components/EditScreenInfo";
 import { Text, View } from "../../components/Themed";
+import { readData } from "../../database/firebaseFuncitons";
 
-console.log(process.env.DB_URL);
+readData("prayer_circle").then((data) => {
+    console.log(data);
+});
 
 export default function TabOneScreen() {
     return (
