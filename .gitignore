@@ -1,1 +1,3 @@
 .circleci
+# local env files
+.env*.local
