@@ -73,6 +73,9 @@
                 },
                 "posts": {
                     "_pushId_": true
+                },
+                "admin": {
+                    "_uid_": true
                 }
             }
         }
