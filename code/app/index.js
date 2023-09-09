@@ -7,6 +7,6 @@ const StyledText = styled(Text);
 
 export default function Page() {
 	return (
-		<StyledView className="flex flex-col py-20 px-[15px] items-center justify-start bg-offblack w-screen h-full "></StyledView>
+		<StyledView className="flex flex-col py-20 px-[15px] items-center justify-start bg-offblack w-screen h-full"></StyledView>
 	);
 }
