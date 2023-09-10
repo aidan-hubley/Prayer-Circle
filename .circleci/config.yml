@@ -23,7 +23,10 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: npm install, npm ci
+          command: npm install
+      - run:
+          name: Install dependencies
+          command: npm ci
       - run:
           name: Login to Expo
           command: npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
