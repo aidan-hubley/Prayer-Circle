@@ -35,7 +35,7 @@ executors:
   default:
     docker:
       - image: cimg/node:lts
-    working_directory: ~/Prayer-Circle/Prayer-Circle/code
+    working_directory: ~/Prayer-Circle/code
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
