@@ -80,10 +80,7 @@ export default function Page() {
 				</Animated.Text>
 			</View>
 		</StyledView >
-	);.
-	0
-
-
+	);
 }
 
 export function logout() {
