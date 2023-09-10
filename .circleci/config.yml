@@ -22,7 +22,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Npm Install
           command: npm install
       - run:
           name: Install dependencies
