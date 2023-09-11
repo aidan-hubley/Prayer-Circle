@@ -19,11 +19,11 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.aidanhubley.prayercircle",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.prayercircle.prayercircle"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,9 +33,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "4cc262b6-c03c-482f-b14e-215a6900d28a"
+        "projectId": "ba379de7-859d-424a-a1be-46c133aab81a"
       }
     },
-    "owner": "aidanhubley"
+    "owner": "prayer-circle"
   }
 }
