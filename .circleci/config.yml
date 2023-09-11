@@ -21,7 +21,6 @@ jobs:
           name: Trigger build
           command: npx eas-cli build --platform android --non-interactive
 
-# Orchestrate jobs using workflows
 workflows:
   build_app_workflow:
     jobs:

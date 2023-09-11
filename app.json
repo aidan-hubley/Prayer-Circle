@@ -33,9 +33,6 @@
     "extra": {
       "eas": {
         "projectId": "4cc262b6-c03c-482f-b14e-215a6900d28a"
-      },
-      "router": {
-        "origin": false
       }
     },
     "owner": "aidanhubley"
