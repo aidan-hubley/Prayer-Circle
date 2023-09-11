@@ -19,8 +19,11 @@ jobs:
           command: npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
       - run:
           name: Trigger build
-          command: npx eas-cli build --platform android --non-interactive
-
+          command: npx eas-cli build --platform android
+          # command: npx eas-cli build --platform android --non-interactive
+      - run:
+          name: Publish to Google Play
+          command: y
 workflows:
   build_app_workflow:
     jobs:
