@@ -16,7 +16,7 @@ export default function Register() {
 			<StyledView className="flex flex-col pt-20 pb-5 px-[15px] items-center justify-start w-screen gap-y-6">
 				<StyledView className="w-full">
 					<StyledText className="text-offwhite text-center text-5xl font-bold">
-						Welcome to Prayer Circle!
+						Welcome to Prayer Circle!!!
 					</StyledText>
 				</StyledView>
 				<StyledView className="flex flex-col items-center justify-center w-full gap-y-5">
