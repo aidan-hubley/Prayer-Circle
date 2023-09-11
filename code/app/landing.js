@@ -67,7 +67,7 @@ export default function Page() {
 	return (
 		<StyledView className="flex-1 items-center pt-10 bg-black">
 			<StyledText className="text-3xl text-white text-center tracking-widest leading-10">
-				Welcome to{"\n"}Prayer Circle!
+				Welcome to {"\n"}Prayer Circle!
 			</StyledText>
 			<Image
 				source={require('../assets/Minimal_Light_Logo.png')}
