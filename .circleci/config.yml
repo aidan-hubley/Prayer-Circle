@@ -7,14 +7,6 @@ executors:
     working_directory: ~/Prayer-Circle
 
 jobs:
-  say-hello:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World! Test"
   eas_build:
     executor: default
     steps:
@@ -31,9 +23,6 @@ jobs:
 
 # Orchestrate jobs using workflows
 workflows:
-  say-hello-workflow:
-    jobs:
-      - say-hello
   build_app_workflow:
     jobs:
       - eas_build:

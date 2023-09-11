@@ -32,9 +32,12 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "ba379de7-859d-424a-a1be-46c133aab81a"
+        "projectId": "4cc262b6-c03c-482f-b14e-215a6900d28a"
+      },
+      "router": {
+        "origin": false
       }
     },
-    "owner": "prayer-circle"
+    "owner": "aidanhubley"
   }
 }
