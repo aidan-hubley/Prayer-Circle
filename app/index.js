@@ -4,6 +4,7 @@ import { styled } from "nativewind";
 import { Button } from "../components/Button";
 
 const StyledStatusBar = styled(StatusBar);
+const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -13,18 +14,18 @@ export default function Login() {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#5946B2" }}>
 			<StyledStatusBar className="bg-offblack" />
-			<StyledView className="flex flex-col pt-12 pb-5 px-[15px] items-center justify-start w-screen gap-y-3">
-				<StyledView className="w-full">
-					<StyledText className="pb-4 text-offwhite text-center text-5xl font-bold">
+			<StyledView className="flex flex-col pt-10 pb-5 px-[15px] items-center justify-start w-screen gap-y-1">
+				<StyledView className="w-full flex flex-col items-center justify-center">
+					<StyledText className="text-offwhite text-center text-5xl font-bold">
 						Welcome to Prayer Circle!
 					</StyledText>
+					<StyledImage
+						className="w-100"
+						source={require('../assets/PCLogo.png')}
+						resizeMode="contain"
+					/>
 				</StyledView>
-				<Image
-					source={require('../assets/PCLogo.png')}
-					style={{ height: 200 }}
-					resizeMode="contain"
-				/>
-				<StyledView className="flex flex-col pt-3 items-center justify-center w-full gap-y-5">
+				<StyledView className="flex flex-col items-center justify-center w-full gap-y-5">
 					<StyledInput
 						className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
 						placeholder={"Name"}
