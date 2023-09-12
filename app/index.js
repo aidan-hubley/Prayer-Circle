@@ -13,11 +13,11 @@ const StyledInput = styled(TextInput);
 export default function Login() {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#5946B2" }}>
-			<StyledStatusBar className="bg-offblack" />
+			<StyledStatusBar backgroundColor="#5946B2" />
 			<StyledView className="flex flex-col pt-10 pb-5 px-[15px] items-center justify-start w-screen gap-y-1">
 				<StyledView className="w-full flex flex-col items-center justify-center">
 					<StyledText className="text-offwhite text-center text-5xl font-bold">
-						Welcome to Prayer Circle!
+						Welcome to Prayer Circle!!
 					</StyledText>
 					<StyledImage
 						className="w-100"
