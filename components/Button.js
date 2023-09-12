@@ -5,26 +5,29 @@ import { styled } from "nativewind";
 const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
 
-export function Button({ title, press, width, textSize, textStyles }) {
-	press = press ? press : () => console.log("Button Pressed");
-	const [pressed, setPressed] = useState(false);
+export function Button({
+	title,
+	onPress,
+	width,
+	textSize,
+	textStyles,
+	backgroundColor,
+	textColor,
+	borderColor
+}) {
+	let bgColor = backgroundColor ? backgroundColor : "#F7F1E3";
+	let txtColor = textColor ? textColor : "#121212";
+	let borderClr = borderColor ? borderColor : "#F7F1E3";
+
 	return (
 		<StyledPressable
-			className={`flex bg-white h-[50px] items-center justify-center rounded-full ${
-				width ? width : "w-11/12"
-			}`}
+			className={`flex h-[50px] items-center justify-center rounded-full bg-[${bgColor}] border border-[${borderClr}]
+				${width ? width : "w-11/12"}
+			`}
 			onPress={() => press()}
-			onPressIn={() => {
-				console.log("Pressed In");
-				setPressed(true);
-			}}
-			onPressOut={() => {
-				console.log("Pressed Out");
-				setPressed(false);
-			}}
 		>
 			<StyledText
-				className={`text-black font-bold ${
+				className={`font-bold text-[${txtColor}] ${
 					textSize ? textSize : "text-[20px]"
 				} ${textStyles}`}
 			>
