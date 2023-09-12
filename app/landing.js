@@ -76,7 +76,7 @@ export default function Page() {
 			/>
 			<View style={{ marginTop: 130 }}>
 				<Animated.Text style={[styles.smalltext, textStyle]}>
-					Swipe up to get started
+					Swipe up to get started Test
 				</Animated.Text>
 			</View>
 		</StyledView >
