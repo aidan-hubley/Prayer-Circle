@@ -1,6 +1,9 @@
 import { database, auth } from "./config.js";
 import { ref, child, get, push, set } from "firebase/database";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword
+} from "firebase/auth";
 
 export async function readData(path) {
 	return await get(child(ref(database), path))
@@ -42,6 +45,19 @@ export async function registerUser(email, password, data) {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
+		})
+		.catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			console.log(errorCode, errorMessage);
+		});
+}
+export async function loginUser(email, password) {
+	await signInWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+			// Signed in
+			const user = userCredential.user;
+			console.log(user);
 		})
 		.catch((error) => {
 			const errorCode = error.code;
