@@ -7,7 +7,7 @@ const StyledPressable = styled(Pressable);
 
 export function Button({
 	title,
-	onPress,
+	press,
 	width,
 	textSize,
 	textStyles,
@@ -21,7 +21,7 @@ export function Button({
 
 	return (
 		<StyledPressable
-			className={`flex h-[50px] items-center justify-center rounded-full bg-[${bgColor}] border border-[${borderClr}]
+			className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
 				${width ? width : "w-11/12"}
 			`}
 			onPress={() => press()}
