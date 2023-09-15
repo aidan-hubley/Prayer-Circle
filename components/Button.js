@@ -7,7 +7,6 @@ const StyledPressable = styled(Pressable);
 
 export function Button({
 	title,
-	press,
 	width,
 	textSize,
 	textStyles,
@@ -24,7 +23,6 @@ export function Button({
 			className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
 				${width ? width : "w-11/12"}
 			`}
-			onPress={() => press()}
 		>
 			<StyledText
 				className={`font-bold text-[${txtColor}] ${
