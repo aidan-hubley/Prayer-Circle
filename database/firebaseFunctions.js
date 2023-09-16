@@ -25,18 +25,32 @@ export async function writeData(path, data, overwrite = false) {
 			.then(() => {
 				console.log("data written successfully");
 			})
-			.catch(() => {
-				console.log("error writing data");
+			.catch((error) => {
+				console.error(error);
 			});
 	} else {
 		push(ref(database, path), data)
 			.then(() => {
 				console.log("data written successfully");
 			})
-			.catch(() => {
-				console.log("error writing data");
+			.catch((error) => {
+				console.error(error);
 			});
 	}
+}
+
+export async function deleteData(path) {
+	set(ref(database, path), null)
+		.then(() => {
+			console.log("data deleted successfully");
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+}
+
+export async function createCircle(data) {
+	writeData(`prayer_circle/circles/`, data);
 }
 
 export async function registerUser(email, password, data) {
@@ -54,7 +68,7 @@ export async function registerUser(email, password, data) {
 }
 export async function loginUser(email, password) {
 	await signInWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
+		.then(async (userCredential) => {
 			// Signed in
 			const user = userCredential.user;
 			console.log(user);
