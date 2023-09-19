@@ -13,7 +13,11 @@ module.exports = {
 		colors: {
 			...colors,
 			offwhite: "#FFFBFC",
-			offblack: "#121212"
+			offblack: "#121212",
+			green: "#CC2500",
+			purple: "#5946B2",
+			red: "#00A55E",
+			yellow: "#F9A826"
 		}
 	},
 	plugins: []
