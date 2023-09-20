@@ -12,7 +12,8 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { styled } from "nativewind";
 import { Button } from "../components/Button";
-import { writeData, registerUser } from "../database/firebaseFunctions";
+import { Link } from "expo-router";
+import { registerUser } from "../database/firebaseFunctions";
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -156,9 +157,11 @@ export default function Login() {
 								/>
 								<StyledText className="text-offwhite text-center text-[18px] mt-5">
 									Already have an account?{" "}
-									<StyledText className="text-[#F9A826] font-bold">
-										Login
-									</StyledText>
+									<Link href="/login">
+										<StyledText className="text-[#F9A826] font-bold">
+											Login
+										</StyledText>
+									</Link>
 								</StyledText>
 							</StyledView>
 						</>

@@ -7,11 +7,11 @@ import {
 	StatusBar,
 	Keyboard,
 	ScrollView,
-	StyleSheet,
 	Image
 } from "react-native";
 import { styled } from "nativewind";
 import { Button } from "../components/Button";
+import { Link } from "expo-router";
 import { loginUser } from "../database/firebaseFunctions";
 
 const StyledImage = styled(Image);
@@ -89,12 +89,15 @@ export default function Login() {
 						/>
 						<StyledText className="text-offwhite text-center text-[18px] mt-5">
 							Don't have an account?{" "}
-							<StyledText className="text-[#F9A826] font-bold">
-								Register
-							</StyledText>
+							<Link href="/register">
+								<StyledText className="text-[#F9A826] font-bold">
+									Register
+								</StyledText>
+							</Link>
 						</StyledText>
 					</StyledView>
 				</ScrollView>
+				<StatusBar barStyle={"light-content"} />
 			</StyledSafeArea>
 		</>
 	);
