@@ -1,6 +1,9 @@
 import { database, auth } from "./config.js";
 import { ref, child, get, push, set } from "firebase/database";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword
+} from "firebase/auth";
 
 export async function readData(path) {
 	return await get(child(ref(database), path))
@@ -22,18 +25,32 @@ export async function writeData(path, data, overwrite = false) {
 			.then(() => {
 				console.log("data written successfully");
 			})
-			.catch(() => {
-				console.log("error writing data");
+			.catch((error) => {
+				console.error(error);
 			});
 	} else {
 		push(ref(database, path), data)
 			.then(() => {
 				console.log("data written successfully");
 			})
-			.catch(() => {
-				console.log("error writing data");
+			.catch((error) => {
+				console.error(error);
 			});
 	}
+}
+
+export async function deleteData(path) {
+	set(ref(database, path), null)
+		.then(() => {
+			console.log("data deleted successfully");
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+}
+
+export async function createCircle(data) {
+	writeData(`prayer_circle/circles/`, data);
 }
 
 export async function registerUser(email, password, data) {
@@ -42,6 +59,20 @@ export async function registerUser(email, password, data) {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
+		})
+		.catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			console.log(errorCode, errorMessage);
+		});
+}
+export async function loginUser(email, password) {
+	console.log("email: ", email, "password: ", password);
+	await signInWithEmailAndPassword(auth, email, password)
+		.then(async (userCredential) => {
+			// Signed in
+			const user = userCredential.user;
+			console.log(user);
 		})
 		.catch((error) => {
 			const errorCode = error.code;

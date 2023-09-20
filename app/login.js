@@ -84,9 +84,8 @@ export default function Login() {
 							title="Login"
 							href="/feed"
 							press={() => {
-								console.log("click");
-								/* Keyboard.dismiss();
-								userLogin(email, pass); */
+								Keyboard.dismiss();
+								userLogin(email, pass);
 							}}
 						/>
 						<StyledText className="text-offwhite text-center text-[18px] mt-5">
