@@ -58,6 +58,7 @@ export default function Login() {
 										placeholderTextColor={"#fff"}
 										inputMode="text"
 										maxLength={30}
+										autoCorrect={false}
 										ref={(input) => {
 											this.usernameInput = input;
 										}}
@@ -145,15 +146,14 @@ export default function Login() {
 									width="w-[85%]"
 									title="Register"
 									press={() => {
-										console.log("click");
-										/* Keyboard.dismiss();
+										Keyboard.dismiss();
 										createUserData(
 											username,
 											fname,
 											lname,
 											email,
 											pass
-										); */
+										);
 									}}
 								/>
 								<StyledText className="text-offwhite text-center text-[18px] mt-5">
