@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { styled } from "nativewind";
 import { Button } from "../components/Button";
-import { RoutingButton } from "../components/RoutingButton";
 import { Link } from "expo-router";
 import { loginUser } from "../database/firebaseFunctions";
 
