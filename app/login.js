@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { styled } from "nativewind";
 import { Button } from "../components/Button";
-import { RoutingButton } from "../components/RoutingButton";
 import { Link } from "expo-router";
 import { loginUser } from "../database/firebaseFunctions";
 
@@ -83,16 +82,12 @@ export default function Login() {
 						<Button
 							width="w-[85%]"
 							title="Login"
+							href="/feed"
 							press={() => {
 								console.log("click");
 								/* Keyboard.dismiss();
 								userLogin(email, pass); */
 							}}
-						/>
-						<RoutingButton
-							title="login"
-							width="w-[85%]"
-							href="/feed"
 						/>
 						<StyledText className="text-offwhite text-center text-[18px] mt-5">
 							Don't have an account?{" "}
