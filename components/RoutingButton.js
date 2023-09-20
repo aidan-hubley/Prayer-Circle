@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Text, Pressable } from "react-native";
+import { Text, TouchableHighlight } from "react-native";
 import { styled } from "nativewind";
+import { Link } from "expo-router";
 
 const StyledText = styled(Text);
-const StyledPressable = styled(Pressable);
+const StyledTouchableHighlight = styled(TouchableHighlight);
+const StyledLink = styled(Link);
 
-export function Button({
+export function RoutingButton({
 	title,
 	width,
 	textSize,
@@ -20,8 +22,13 @@ export function Button({
 	let borderClr = borderColor ? borderColor : "#F7F1E3";
 
 	return (
-		<Link href={href}>
-			<StyledPressable
+		<StyledLink href={href ? href : "/register"} asChild>
+			<StyledTouchableHighlight
+				activeOpacity={0.6}
+				underlayColor="#DDDDDD"
+				onPress={() => {
+					console.log("click");
+				}}
 				className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
 				${width ? width : "w-11/12"}
 			`}
@@ -33,7 +40,7 @@ export function Button({
 				>
 					{title}
 				</StyledText>
-			</StyledPressable>
-		</Link>
+			</StyledTouchableHighlight>
+		</StyledLink>
 	);
 }

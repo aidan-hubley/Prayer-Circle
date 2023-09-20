@@ -145,14 +145,15 @@ export default function Login() {
 									width="w-[85%]"
 									title="Register"
 									press={() => {
-										Keyboard.dismiss();
+										console.log("click");
+										/* Keyboard.dismiss();
 										createUserData(
 											username,
 											fname,
 											lname,
 											email,
 											pass
-										);
+										); */
 									}}
 								/>
 								<StyledText className="text-offwhite text-center text-[18px] mt-5">

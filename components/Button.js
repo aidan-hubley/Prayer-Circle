@@ -12,7 +12,8 @@ export function Button({
 	textStyles,
 	backgroundColor,
 	textColor,
-	borderColor
+	borderColor,
+	press
 }) {
 	let bgColor = backgroundColor ? backgroundColor : "#F7F1E3";
 	let txtColor = textColor ? textColor : "#121212";
@@ -23,6 +24,7 @@ export function Button({
 			className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
 				${width ? width : "w-11/12"}
 			`}
+			onPress={() => press()}
 		>
 			<StyledText
 				className={`font-bold text-[${txtColor}] ${
