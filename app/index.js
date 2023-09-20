@@ -35,10 +35,7 @@ export default function Login() {
 				style={{ flex: 1 /*  backgroundColor: "#5946B2"  */ }}
 			>
 				<KeyboardAwareScrollView>
-					<TouchableWithoutFeedback
-						onPress={Keyboard.dismiss}
-						keyboardDismissMode="on-drag"
-					>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 						<>
 							<StyledView className="flex flex-col pt-10 pb-5 px-[15px] items-center justify-start w-screen ">
 								<StyledView className="w-full flex flex-col items-center justify-center mb-2">
