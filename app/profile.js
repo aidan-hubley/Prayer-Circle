@@ -46,7 +46,7 @@ export default function Page() {
                                 <Button
                                     text="Feed"
                                     backgroundColor="#121212"
-                                    borderColor="#F9A826"
+                                    borderColor="#FFFBFC"
                                     textColor="#FFFBFC"
                                     textSize="text-[20px]"
                                     width="w-11/12"
@@ -59,7 +59,7 @@ export default function Page() {
                                 <Button
                                     text="Profile"
                                     backgroundColor="#121212"
-                                    borderColor="#FFFBFC"
+                                    borderColor="#F9A826"
                                     textColor="#FFFBFC"
                                     textSize="text-[20px]"
                                     width="w-11/12"
@@ -70,10 +70,26 @@ export default function Page() {
                             </StyledView>
                         </StyledView>
                         <StyledView className="flex flex-row justify-center w-screen">
-                            <Circle 
-                                backgroundColor="transparent"
-                                borderColor="#FFFBFC"
-                            />
+                            <StyledView className="w-1/5">
+                            </StyledView>
+                            <StyledView className="w-3/5 items-center">
+                                <Circle 
+                                    backgroundColor="transparent"
+                                    borderColor="#FFFBFC"
+                                />
+                            </StyledView>
+                            <StyledView className="w-1/5">
+                                <StyledView className="py-[70%]">
+                                    <Button
+                                        backgroundColor="#121212"
+                                        borderColor="#FFFBFC"                                                                       
+                                        width="w-[70px]"
+                                        height="h-[70px]"
+                                        href="/settings"
+                                        press={() => {}}
+                                    />
+                                </StyledView>
+                            </StyledView>
                         </StyledView>
                     </StyledView>
                 </ScrollView>

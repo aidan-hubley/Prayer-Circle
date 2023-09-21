@@ -29,7 +29,20 @@ export default function Page() {
 				<ScrollView keyboardDismissMode="on-drag p-0 m-0">
                     <StyledView className="flex flex-col w-screen h-screen">
                         <StyledView className="flex flex-row h-[75.5%] pt-10 m-3">
-                            <StyledView className="w-1/3">
+                            <StyledView className="w-2/5">
+                                <Button
+                                    text="Settings"
+                                    backgroundColor="#121212"
+                                    borderColor="#F9A826"
+                                    textColor="#FFFBFC"
+                                    textSize="text-[20px]"
+                                    width="w-11/12"
+                                    height="h-[50px]"
+                                    href="/settings"
+                                    press={() => {}}
+                                />
+                            </StyledView>
+                            <StyledView className="w-1/5">
                                 <Button
                                     text="Journal"
                                     backgroundColor="#121212"
@@ -42,11 +55,11 @@ export default function Page() {
                                     press={() => {}}
                                 />
                             </StyledView>
-                            <StyledView className="w-1/3">
+                            <StyledView className="w-1/5">
                                 <Button
                                     text="Feed"
                                     backgroundColor="#121212"
-                                    borderColor="#F9A826"
+                                    borderColor="#FFFBFC"
                                     textColor="#FFFBFC"
                                     textSize="text-[20px]"
                                     width="w-11/12"
@@ -55,7 +68,7 @@ export default function Page() {
                                     press={() => {}}
                                 />
                             </StyledView>
-                            <StyledView className="w-1/3">
+                            <StyledView className="w-1/5">
                                 <Button
                                     text="Profile"
                                     backgroundColor="#121212"
@@ -70,10 +83,6 @@ export default function Page() {
                             </StyledView>
                         </StyledView>
                         <StyledView className="flex flex-row justify-center w-screen">
-                            <Circle 
-                                backgroundColor="transparent"
-                                borderColor="#FFFBFC"
-                            />
                         </StyledView>
                     </StyledView>
                 </ScrollView>
