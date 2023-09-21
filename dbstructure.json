@@ -43,7 +43,8 @@
                 "metadata": {
                     "location": "123.456, 123.456",
                     "start_time": "",
-                    "end_time": ""
+                    "end_time": "",
+                    "flagged_cnt": 0
                 }
             }
         },
