@@ -38,12 +38,12 @@ export default function Login() {
 				<KeyboardAwareScrollView>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 						<>
-							<StyledView className="flex flex-col pt-10 pb-5 px-[15px] items-center justify-start w-screen ">
-								<StyledView className="w-full flex flex-col items-center justify-center mb-2">
-									<StyledText className="text-offwhite text-center text-5xl font-bold">
-										Welcome to Prayer Circle!!
-									</StyledText>
-									<StyledView className="w-[40%] aspect-square my-2">
+							<StyledView className="flex flex-col pb-5 px-[15px] w-screen">
+								<StyledView className="w-full flex flex-col items-center mb-2">
+									{/* <StyledText className="text-offwhite text-center text-5xl font-bold">
+										Welcome to Prayer Circle!
+									</StyledText> */}
+									<StyledView className="w-[89%] aspect-square mt-[15%] mb-[10%]">
 										<StyledImage
 											className="w-full h-full"
 											source={require("../assets/Logo_Dark.png")}
