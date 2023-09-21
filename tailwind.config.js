@@ -14,9 +14,9 @@ module.exports = {
 			...colors,
 			offwhite: "#FFFBFC",
 			offblack: "#121212",
-			green: "#CC2500",
+			green: "#00A55E",
 			purple: "#5946B2",
-			red: "#00A55E",
+			red: "#CC2500",
 			yellow: "#F9A826"
 		}
 	},

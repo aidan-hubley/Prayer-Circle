@@ -29,7 +29,7 @@ export default function Login() {
 		<>
 			<StyledSafeArea
 				className="bg-offblack"
-				style={{ flex: 1 /*  backgroundColor: "#5946B2"  */ }}
+				style={{ flex: 1, backgroundColor: "#5946B2" }}
 			>
 				<KeyboardAwareScrollView>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -86,6 +86,9 @@ export default function Login() {
 							<Button
 								width="w-[85%]"
 								title="Login"
+								textColor="#F7F1E3"
+								backgroundColor="#121212"
+								borderColor="#F9A826"
 								href="/feed"
 								press={() => {
 									console.log("click");
@@ -96,7 +99,7 @@ export default function Login() {
 							<StyledText className="text-offwhite text-center text-[18px] mt-4 mb-3">
 								Don't have an account?{" "}
 								<Link href="/register">
-									<StyledText className="text-[#F9A826] font-bold">
+									<StyledText className="text-yellow font-bold">
 										Register
 									</StyledText>
 								</Link>

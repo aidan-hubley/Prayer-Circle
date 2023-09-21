@@ -33,7 +33,7 @@ export default function Login() {
 		<>
 			<StyledSafeArea
 				className="bg-offblack"
-				style={{ flex: 1 /*  backgroundColor: "#5946B2"  */ }}
+				style={{ flex: 1, backgroundColor: "#5946B2" }}
 			>
 				<KeyboardAwareScrollView>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -145,6 +145,9 @@ export default function Login() {
 								<Button
 									width="w-[85%]"
 									title="Register"
+									textColor="#F7F1E3"
+									backgroundColor="#121212"
+									borderColor="#F9A826"
 									press={() => {
 										Keyboard.dismiss();
 										createUserData(
@@ -159,7 +162,7 @@ export default function Login() {
 								<StyledText className="text-offwhite text-center text-[18px] mt-5">
 									Already have an account?{" "}
 									<Link href="/login">
-										<StyledText className="text-[#F9A826] font-bold">
+										<StyledText className="text-yellow font-bold">
 											Login
 										</StyledText>
 									</Link>

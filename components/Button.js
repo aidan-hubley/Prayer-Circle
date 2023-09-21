@@ -11,6 +11,7 @@ const StyledLink = styled(Link);
 export function Button({
 	title,
 	width,
+	height,
 	textSize,
 	textStyles,
 	backgroundColor,
@@ -19,24 +20,32 @@ export function Button({
 	press,
 	href
 }) {
-	let bgColor = backgroundColor ? backgroundColor : "#F7F1E3";
-	let txtColor = textColor ? textColor : "#121212";
-	let borderClr = borderColor ? borderColor : "#F7F1E3";
+	const bgColor = backgroundColor ? backgroundColor : "#121212";
+	const txtColor = textColor ? textColor : "#FFFBFC";
+	const borderClr = borderColor ? borderColor : "#F9A826";
 
 	if (!href) {
 		return (
 			<StyledTouchableHighlight
 				activeOpacity={0.6}
-				underlayColor="#DDDDDD"
-				className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
-				${width ? width : "w-11/12"}
-			`}
+				// underlayColor="#DDDDDD"
+				className={`flex items-center justify-center rounded-full 
+					${height ? height : "h-[50px]"} 
+					${width ? width : "w-11/12"}
+				`}
+				style={{ 
+						backgroundColor: bgColor,
+						borderWidth: 1,
+						borderColor: borderClr
+					}}
 				onPress={() => press()}
 			>
 				<StyledText
-					className={`font-bold text-[${txtColor}] ${
-						textSize ? textSize : "text-[20px]"
-					} ${textStyles}`}
+					className={`font-bold 
+						${textSize ? textSize : "text-[20px]"}
+						${textStyles}
+					`}
+					style={{ color: txtColor }}
 				>
 					{title}
 				</StyledText>
@@ -47,16 +56,24 @@ export function Button({
 			<StyledLink href={href ? href : null} asChild>
 				<StyledTouchableHighlight
 					activeOpacity={0.6}
-					underlayColor="#DDDDDD"
+					// underlayColor="#DDDDDD"
 					onPress={() => press()}
-					className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
-				${width ? width : "w-11/12"}
-			`}
+					className={`flex items-center justify-center rounded-full 
+						${height ? height : "h-[50px]"} 
+						${width ? width : "w-11/12"}
+					`}
+					style={{ 
+						backgroundColor: bgColor,
+						borderWidth: 1,
+						borderColor: borderClr
+					}}
 				>
 					<StyledText
-						className={`font-bold text-[${txtColor}] ${
-							textSize ? textSize : "text-[20px]"
-						} ${textStyles}`}
+						className={`font-bold 
+							${textSize ? textSize : "text-[20px]"}
+							${textStyles}
+						`}
+						style={{ color: txtColor }}
 					>
 						{title}
 					</StyledText>
