@@ -70,7 +70,7 @@ export default function Page() {
 				Welcome to {"\n"}Prayer Circle!
 			</StyledText>
 			<Image
-				source={require('../assets/Minimal_Light_Logo.png')}
+				source={require('../assets/Logo_Dark.png')}
 				style={{ height: 350, marginTop: 100 }}
 				resizeMode="contain"
 			/>

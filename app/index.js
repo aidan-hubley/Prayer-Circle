@@ -39,7 +39,7 @@ export default function Login() {
 							<StyledView className="w-[40%] aspect-square my-2">
 								<StyledImage
 									className="w-full h-full"
-									source={require("../assets/PCLogo.png")}
+									source={require("../assets/Logo_Dark.png")}
 									resizeMode="contain"
 								/>
 							</StyledView>
