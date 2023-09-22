@@ -49,6 +49,7 @@ export default function Login() {
 							<StyledInput
 								className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
 								placeholder={"Email"}
+								autoCapitalize="none"
 								placeholderTextColor={"#fff"}
 								inputMode="email"
 								autoComplete="email"

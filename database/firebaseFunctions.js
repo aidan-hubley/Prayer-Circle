@@ -1,13 +1,10 @@
-import { database, auth } from "./config.js";
+import { database, auth, router } from "./config.js";
 import { ref, child, get, push, set } from "firebase/database";
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword
 } from "firebase/auth";
-import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-let router = useRouter();
 
 export async function readData(path) {
 	return await get(child(ref(database), path))
