@@ -1,9 +1,10 @@
-import { database, auth } from "./config.js";
+import { database, auth, router } from "./config.js";
 import { ref, child, get, push, set } from "firebase/database";
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword
 } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function readData(path) {
 	return await get(child(ref(database), path))
@@ -67,17 +68,18 @@ export async function registerUser(email, password, data) {
 		});
 }
 export async function loginUser(email, password) {
-	console.log("email: ", email, "password: ", password);
 	await signInWithEmailAndPassword(auth, email, password)
 		.then(async (userCredential) => {
 			// Signed in
 			const user = userCredential.user;
-			console.log(user);
+			await AsyncStorage.setItem("user", user.uid);
+			router.push("/feed");
 		})
 		.catch((error) => {
 			const errorCode = error.code;
 			const errorMessage = error.message;
 			console.log(errorCode, errorMessage);
+			alert("Incorrect email or password");
 		});
 }
 

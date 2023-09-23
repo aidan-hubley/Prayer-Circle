@@ -13,6 +13,7 @@ import { styled } from "nativewind";
 import { Button } from "../components/Button";
 import { Link } from "expo-router";
 import { loginUser } from "../database/firebaseFunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -48,6 +49,7 @@ export default function Login() {
 							<StyledInput
 								className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
 								placeholder={"Email"}
+								autoCapitalize="none"
 								placeholderTextColor={"#fff"}
 								inputMode="email"
 								autoComplete="email"
@@ -59,8 +61,8 @@ export default function Login() {
 									this.passInput.focus();
 								}}
 								blurOnSubmit={false}
-								onEndEditing={(text) => {
-									setEmail(text.nativeEvent.text);
+								onChangeText={(text) => {
+									setEmail(text);
 								}}
 							/>
 							<StyledInput
@@ -72,8 +74,8 @@ export default function Login() {
 								ref={(input) => {
 									this.passInput = input;
 								}}
-								onEndEditing={(text) => {
-									setPass(text.nativeEvent.text);
+								onChangeText={(text) => {
+									setPass(text);
 								}}
 							/>
 						</StyledView>
@@ -82,10 +84,11 @@ export default function Login() {
 						<Button
 							width="w-[85%]"
 							title="Login"
-							href="/feed"
 							press={() => {
 								Keyboard.dismiss();
 								userLogin(email, pass);
+								setEmail("");
+								setPass("");
 							}}
 						/>
 						<StyledText className="text-offwhite text-center text-[18px] mt-5">
@@ -109,9 +112,8 @@ function userLogin(email, password) {
 	this.emailInput.clear();
 	this.passInput.clear();
 
-	if (email == "" || password == "") {
-		console.log("hey");
-		return;
-	}
+	if (email.length == 0 || password.length == 0)
+		return alert("Please fill out all fields");
+
 	loginUser(email, password);
 }

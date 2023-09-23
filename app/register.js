@@ -112,6 +112,7 @@ export default function Login() {
 										className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
 										placeholder={"Email"}
 										placeholderTextColor={"#fff"}
+										autoCapitalize="none"
 										inputMode="email"
 										autoComplete="email"
 										maxLength={30}
