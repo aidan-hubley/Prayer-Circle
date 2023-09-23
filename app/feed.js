@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, Text, View, StatusBar } from "react-native";
 import { styled } from "nativewind";
-import { Button } from "../components/Button";
+import { Button } from "../components/Buttons";
 import { signOut } from "firebase/auth";
 import { auth, router } from "../database/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";

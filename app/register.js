@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { styled } from "nativewind";
-import { Button } from "../components/Button";
+import { Button } from "../components/Buttons";
 import { Link } from "expo-router";
 import { registerUser } from "../database/firebaseFunctions";
 
