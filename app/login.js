@@ -10,7 +10,11 @@ import {
 	Image
 } from "react-native";
 import { styled } from "nativewind";
-import { Button, ExpandableButton } from "../components/Buttons";
+import {
+	AnimatedButton,
+	Button,
+	ExpandableButton
+} from "../components/Buttons";
 import { Link } from "expo-router";
 import { loginUser } from "../database/firebaseFunctions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -91,7 +95,12 @@ export default function Login() {
 								setPass("");
 							}}
 						/>
-						<ExpandableButton title="Profile"></ExpandableButton>
+						<Button width="w-[85%]" title="Login" href="/feed" />
+						<ExpandableButton
+							title="Profile"
+							expanded={true}
+						></ExpandableButton>
+						<AnimatedButton></AnimatedButton>
 						<StyledText className="text-offwhite text-center text-[18px] mt-5">
 							Don't have an account?{" "}
 							<Link href="/register">
