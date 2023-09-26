@@ -6,9 +6,10 @@ import {
 	TextInput,
 	StatusBar,
 	Keyboard,
-	ScrollView,
+	TouchableWithoutFeedback,
 	Image
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { styled } from "nativewind";
 import { Button } from "../components/Buttons";
 import { Link } from "expo-router";
@@ -29,78 +30,83 @@ export default function Login() {
 		<>
 			<StyledSafeArea
 				className="bg-offblack"
-				style={{ flex: 1 /*  backgroundColor: "#5946B2"  */ }}
+				style={{ flex: 1, backgroundColor: "#5946B2" }}
 			>
-				<ScrollView keyboardDismissMode="on-drag">
-					<StyledView className="flex flex-col pt-10 pb-5 px-[15px] items-center justify-start w-screen ">
-						<StyledView className="w-full flex flex-col items-center justify-center mb-2">
-							<StyledText className="text-offwhite text-center text-5xl font-bold">
-								Login to Prayer Circle!
-							</StyledText>
-							<StyledView className="w-[40%] aspect-square my-2">
-								<StyledImage
-									className="w-full h-full"
-									source={require("../assets/PCLogo.png")}
-									resizeMode="contain"
-								/>
+				<KeyboardAwareScrollView>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+						<>
+							<StyledView className="flex flex-col pb-5 px-[15px] w-screen">
+								<StyledView className="w-full flex flex-col items-center mb-2 pt-[19%]">
+									<StyledView className="w-[89%] aspect-square mb-[15%] mt-[10%]">
+										<StyledImage
+											className="w-full h-full"
+											source={require("../assets/Logo_Dark.png")}
+											resizeMode="contain"
+										/>
+									</StyledView>
+								</StyledView>
 							</StyledView>
-						</StyledView>
-						<StyledView className="flex flex-col items-center justify-center w-full gap-y-4">
-							<StyledInput
-								className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-								placeholder={"Email"}
-								autoCapitalize="none"
-								placeholderTextColor={"#fff"}
-								inputMode="email"
-								autoComplete="email"
-								maxLength={30}
-								ref={(input) => {
-									this.emailInput = input;
-								}}
-								onSubmitEditing={() => {
-									this.passInput.focus();
-								}}
-								blurOnSubmit={false}
-								onChangeText={(text) => {
-									setEmail(text);
-								}}
-							/>
-							<StyledInput
-								className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-								placeholder={"Password"}
-								placeholderTextColor={"#fff"}
-								secureTextEntry={true}
-								maxLength={25}
-								ref={(input) => {
-									this.passInput = input;
-								}}
-								onChangeText={(text) => {
-									setPass(text);
-								}}
-							/>
-						</StyledView>
-					</StyledView>
-					<StyledView className="flex flex-col items-center">
-						<Button
-							width="w-[85%]"
-							title="Login"
-							press={() => {
-								Keyboard.dismiss();
-								userLogin(email, pass);
-								setEmail("");
-								setPass("");
-							}}
-						/>
-						<StyledText className="text-offwhite text-center text-[18px] mt-5">
-							Don't have an account?{" "}
-							<Link href="/register">
-								<StyledText className="text-[#F9A826] font-bold">
-									Register
+							<StyledView className="flex flex-col items-center h-screen">
+								<StyledView className="flex flex-col items-center justify-center w-full gap-y-4">
+									<StyledInput
+										className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
+										placeholder={"Email"}
+										autoCapitalize="none"
+										placeholderTextColor={"#fff"}
+										inputMode="email"
+										autoComplete="email"
+										maxLength={30}
+										ref={(input) => {
+											this.emailInput = input;
+										}}
+										onSubmitEditing={() => {
+											this.passInput.focus();
+										}}
+										blurOnSubmit={false}
+										onChangeText={(text) => {
+											setEmail(text);
+										}}
+									/>
+									<StyledInput
+										className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
+										placeholder={"Password"}
+										placeholderTextColor={"#fff"}
+										secureTextEntry={true}
+										maxLength={25}
+										ref={(input) => {
+											this.passInput = input;
+										}}
+										onChangeText={(text) => {
+											setPass(text);
+										}}
+									/>
+								</StyledView>
+								<Button
+									width="w-[85%]"
+									title="Login"
+									textColor="#F7F1E3"
+									backgroundColor="#121212"
+									borderColor="#F9A826"
+									href="/feed"
+									press={() => {
+										Keyboard.dismiss();
+										userLogin(email, pass);
+										setEmail("");
+										setPass("");
+									}}
+								/>
+								<StyledText className="text-offwhite text-center text-[18px] mt-4 mb-3">
+									Don't have an account?{" "}
+									<Link href="/register">
+										<StyledText className="text-yellow font-bold">
+											Register
+										</StyledText>
+									</Link>
 								</StyledText>
-							</Link>
-						</StyledText>
-					</StyledView>
-				</ScrollView>
+							</StyledView>
+						</>
+					</TouchableWithoutFeedback>
+				</KeyboardAwareScrollView>
 				<StatusBar barStyle={"light-content"} />
 			</StyledSafeArea>
 		</>
