@@ -21,7 +21,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 
-export default function Login() {
+export default function Register() {
 	const [fname, setFName] = useState("");
 	const [lname, setLName] = useState("");
 	const [username, setUsername] = useState("");

@@ -9,12 +9,9 @@ import {
     } from "react-native";
 import { StyleSheet } from 'react-native';
 import { Easing } from 'react-native';
+import { Button } from "../components/Button";
 import { Circle } from "../components/Circle";
 import { styled } from "nativewind";
-import { Button } from "../components/Button";
-import { signOut } from "firebase/auth";
-import { auth, router } from "../database/config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -22,6 +19,7 @@ const StyledText = styled(Text);
 const StyledSafeArea = styled(SafeAreaView);
 
 export default function Page() {
+
 	return (
 		<>
 			<StyledSafeArea
@@ -31,20 +29,6 @@ export default function Page() {
 				<ScrollView keyboardDismissMode="on-drag p-0 m-0">
                     <StyledView className="flex flex-col w-screen h-screen">
                         <StyledView className="flex flex-row h-[75.5%] pt-10 m-3">
-                          {/* <Button
-                            title="Sign Out"
-                            press={() => {
-                              signOut(auth)
-                                .then(() => {
-                                  console.log("Signed Out");
-                                  AsyncStorage.setItem("user", "");
-                                  router.push("/login");
-                                })
-                                .catch((error) => {
-                                  console.error(error);
-                                });
-                            }}
-                          /> */}
                             <StyledView className="w-1/3">
                                 <Button
                                     text="Journal"
@@ -62,7 +46,7 @@ export default function Page() {
                                 <Button
                                     text="Feed"
                                     backgroundColor="#121212"
-                                    borderColor="#F9A826"
+                                    borderColor="#FFFBFC"
                                     textColor="#FFFBFC"
                                     textSize="text-[20px]"
                                     width="w-11/12"
@@ -75,7 +59,7 @@ export default function Page() {
                                 <Button
                                     text="Profile"
                                     backgroundColor="#121212"
-                                    borderColor="#FFFBFC"
+                                    borderColor="#F9A826"
                                     textColor="#FFFBFC"
                                     textSize="text-[20px]"
                                     width="w-11/12"
@@ -86,10 +70,26 @@ export default function Page() {
                             </StyledView>
                         </StyledView>
                         <StyledView className="flex flex-row justify-center w-screen">
-                            <Circle 
-                                backgroundColor="transparent"
-                                borderColor="#FFFBFC"
-                            />
+                            <StyledView className="w-1/5">
+                            </StyledView>
+                            <StyledView className="w-3/5 items-center">
+                                <Circle 
+                                    backgroundColor="transparent"
+                                    borderColor="#FFFBFC"
+                                />
+                            </StyledView>
+                            <StyledView className="w-1/5">
+                                <StyledView className="py-[70%]">
+                                    <Button
+                                        backgroundColor="#121212"
+                                        borderColor="#FFFBFC"                                                                       
+                                        width="w-[70px]"
+                                        height="h-[70px]"
+                                        href="/settings"
+                                        press={() => {}}
+                                    />
+                                </StyledView>
+                            </StyledView>
                         </StyledView>
                     </StyledView>
                 </ScrollView>
