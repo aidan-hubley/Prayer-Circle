@@ -34,10 +34,24 @@ export default function Page() {
 				/>
 			</StyledView>
 			<ExpandableButton
-				extraStyles="absolute top-20 left-5"
+				btnStyles="absolute top-20 right-5"
+				height={"h-[75px]"}
+				iconSize={50}
+				icon="journal-outline"
 				expanded={false}
-				expandedWidth={"50%"}
-				title="profile"
+				expandedWidth={"90%"}
+				collapsedWidth={"20%"}
+				title="Journal"
+			/>
+			<ExpandableButton
+				btnStyles="absolute top-20 left-5"
+				height={"h-[75px]"}
+				iconSize={50}
+				icon="person-circle-outline"
+				expanded={false}
+				expandedWidth={"90%"}
+				collapsedWidth={"20%"}
+				title="Profile"
 			/>
 		</StyledSafeArea>
 	);

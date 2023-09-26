@@ -14,31 +14,32 @@ const AnimatedHighlight = styled(
 export function Button({
 	title,
 	width,
+	height,
 	textSize,
 	textStyles,
-	backgroundColor,
+	btnStyles,
+	bgColor,
 	textColor,
 	borderColor,
 	press,
 	href
 }) {
-	let bgColor = backgroundColor ? backgroundColor : "#F7F1E3";
-	let txtColor = textColor ? textColor : "#121212";
-	let borderClr = borderColor ? borderColor : "#F7F1E3";
 	return (
 		<StyledTouchableHighlight
 			activeOpacity={0.6}
-			underlayColor="#DDDDDD"
-			className={`flex h-[50px] items-center justify-center rounded-full bg-offwhite border border-[${borderClr}]
-				${width ? width : "w-11/12"}
-			`}
+			underlayColor={`${bgColor || "#DDDDDD"}`}
+			className={`flex items-center justify-center rounded-full ${
+				bgColor || "bg-offwhite"
+			} ${width ? width : "w-11/12"} ${height || "h-[50px]"} ${
+				borderColor ? `border ${borderColor}` : "border-none"
+			} ${btnStyles || ""} `}
 			onPress={() => {
 				if (press) press();
 				if (href) router.push(href);
 			}}
 		>
 			<StyledText
-				className={`font-bold text-[${txtColor}] ${
+				className={`font-bold ${textColor || "text-offblack"} ${
 					textSize ? textSize : "text-[20px]"
 				} ${textStyles}`}
 			>
@@ -50,28 +51,29 @@ export function Button({
 
 export function ExpandableButton({
 	title,
+	icon,
 	width,
+	height,
 	textSize,
+	iconSize,
 	textStyles,
-	backgroundColor,
+	btnStyles,
+	bgColor,
 	textColor,
+	iconColor,
 	borderColor,
 	press,
 	href,
 	expanded,
-	expandedWidth,
-	extraStyles
+	collapsedWidth,
+	expandedWidth
 }) {
-	let bgColor = backgroundColor ? backgroundColor : "#F7F1E3";
-	let txtColor = textColor ? textColor : "#121212";
-	let borderClr = borderColor ? borderColor : "#F7F1E3";
-
-	const [pressed, setPressed] = useState(expanded ? expanded : false);
+	const [pressed, setPressed] = useState(expanded || false);
 	const [wi, setWi] = useState(new Animated.Value(expanded ? 1 : 0));
 
 	const wiInter = wi.interpolate({
 		inputRange: [0, 1],
-		outputRange: ["13%", expandedWidth ? expandedWidth : "100%"]
+		outputRange: [collapsedWidth || "13%", expandedWidth || "100%"]
 	});
 
 	const btnWidth = {
@@ -89,13 +91,17 @@ export function ExpandableButton({
 			useNativeDriver: false
 		}).start();
 	}
-
+	console.log(typeof iconSize);
 	return (
 		<AnimatedHighlight
 			style={btnWidth}
 			activeOpacity={0.6}
-			underlayColor={backgroundColor ? backgroundColor : "#fff"}
-			className={`bg-offwhite h-[50px] justify-center items-center rounded-full ${extraStyles}`}
+			underlayColor={bgColor || "#fff"}
+			className={`flex items-center justify-center rounded-full ${
+				bgColor || "bg-offwhite"
+			} ${width ? width : "w-11/12"} ${height || "h-[50px]"} ${
+				borderColor ? `border ${borderColor}` : "border-none"
+			} ${btnStyles || ""} ${pressed ? "z-10" : "z-0"}`}
 			onPressOut={toggleButton}
 			onPress={() => {
 				if (press) press();
@@ -105,18 +111,16 @@ export function ExpandableButton({
 			<>
 				<StyledText
 					/* style={{ opacity: wi }} */
-					className={`${
-						!pressed ? "hidden" : "flex"
-					} font-bold text-black ${
-						textSize ? textSize : "text-[20px]"
-					} ${textStyles}`}
+					className={`${!pressed ? "hidden" : "flex"} font-bold  ${
+						textColor || "text-offblack"
+					} ${textSize ? textSize : "text-[20px]"} ${textStyles}`}
 				>
 					{title}
 				</StyledText>
 				<StyledIcon
-					name="md-checkmark-circle"
-					size={32}
-					color="green"
+					name={`${icon || "md-checkmark-circle"}`}
+					size={iconSize || 30}
+					color={`${iconColor || "#121212"}`}
 					className={`${pressed ? "hidden" : "flex"}`}
 				/>
 			</>
