@@ -44,7 +44,7 @@
                     "location": "123.456, 123.456",
                     "start_time": "",
                     "end_time": "",
-                    "flagged_cnt": 0
+                    "flag_count": 0
                 }
             }
         },
