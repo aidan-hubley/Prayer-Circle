@@ -7,6 +7,7 @@ import {
 	getAuth
 } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -29,3 +30,5 @@ export const database = getDatabase(app);
 export const auth = initializeAuth(app, {
 	persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
+
+export let router = useRouter();
