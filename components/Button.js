@@ -43,7 +43,7 @@ export function Button({
 				<StyledText
 					className={`font-bold 
 						${textSize ? textSize : "text-[20px]"}
-						${textStyles}
+						${textStyles} text-[${txtColor}]
 					`}
 					style={{ color: txtColor }}
 				>
