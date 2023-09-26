@@ -67,6 +67,7 @@ export async function registerUser(email, password, data) {
 			console.log(errorCode, errorMessage);
 		});
 }
+
 export async function loginUser(email, password) {
 	await signInWithEmailAndPassword(auth, email, password)
 		.then(async (userCredential) => {

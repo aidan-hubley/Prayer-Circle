@@ -87,7 +87,6 @@ export default function Login() {
 									textColor="#F7F1E3"
 									backgroundColor="#121212"
 									borderColor="#F9A826"
-									href="/feed"
 									press={() => {
 										Keyboard.dismiss();
 										userLogin(email, pass);
