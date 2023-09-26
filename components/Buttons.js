@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { Text, TouchableHighlight, Animated } from "react-native";
 import { styled } from "nativewind";
-import { router } from "../database/config";
+import { router } from "../backend/config";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const StyledText = styled(Text);

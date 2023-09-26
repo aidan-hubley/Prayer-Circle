@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View, StatusBar } from "react-native";
 import { styled } from "nativewind";
 import { Button, ExpandableButton } from "../components/Buttons";
 import { signOut } from "firebase/auth";
-import { auth, router } from "../database/config";
+import { auth, router } from "../backend/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledSafeArea = styled(SafeAreaView);

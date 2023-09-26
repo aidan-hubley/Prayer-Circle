@@ -13,7 +13,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { styled } from "nativewind";
 import { Button } from "../components/Buttons";
 import { Link } from "expo-router";
-import { registerUser } from "../database/firebaseFunctions";
+import { checkUsername, registerUser } from "../backend/firebaseFunctions";
+import { passwordValidation } from "../backend/functions";
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -35,7 +36,7 @@ export default function Login() {
 				className="bg-offblack"
 				style={{ flex: 1, backgroundColor: "#5946B2" }}
 			>
-				<KeyboardAwareScrollView>
+				<KeyboardAwareScrollView onScrollEndDrag={Keyboard.dismiss}>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 						<>
 							<StyledView className="flex flex-col pb-5 px-[15px] w-screen">
@@ -175,7 +176,32 @@ export default function Login() {
 	);
 }
 
-function createUserData(username, fname, lname, email, password) {
+async function createUserData(username, fname, lname, email, password) {
+	if (username.length < 1) return alert("Invalid Username"); // check username length
+
+	let taken = await checkUsername(username); // check if username is taken
+	if (taken) return alert("Username already taken");
+
+	if (fname.length < 1 || lname.length < 1) return alert("Invalid Name"); // check name length
+
+	let approvedEmailProviders = [
+		"gmail.com",
+		"yahoo.com",
+		"outlook.com",
+		"icloud.com",
+		"aol.com"
+	];
+	let emailCheck = email.split("@");
+	if (emailCheck.length !== 2)
+		return alert("Invalid Email"); // check email format
+	else if (!approvedEmailProviders.includes(emailCheck[1]))
+		return alert("Invalid Email"); // check email provider
+
+	if (!passwordValidation(password)) {
+		return alert(
+			"Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character"
+		);
+	}
 	//clear all fields
 	this.usernameInput.clear();
 	this.fNameInput.clear();
@@ -191,5 +217,5 @@ function createUserData(username, fname, lname, email, password) {
 		phone: "0000000000",
 		created: new Date().getTime()
 	};
-	registerUser(email, password, userData);
+	//registerUser(email, password, userData);
 }
