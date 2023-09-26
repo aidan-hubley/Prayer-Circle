@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, Text, View, StatusBar } from "react-native";
 import { styled } from "nativewind";
-import { Button } from "../components/Buttons";
+import { Button, ExpandableButton } from "../components/Buttons";
 import { signOut } from "firebase/auth";
 import { auth, router } from "../database/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,9 +11,10 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function Page() {
+	console.log("Feed Page");
 	return (
 		<StyledSafeArea className="bg-offblack border" style={{ flex: 1 }}>
-			<StyledView className="flex-1 items-center pt-10">
+			<StyledView className="flex-1 items-center mt-20 pt-10">
 				<StyledText className="text-3xl text-white text-center tracking-widest leading-10">
 					Feed!
 				</StyledText>
@@ -32,6 +33,12 @@ export default function Page() {
 					}}
 				/>
 			</StyledView>
+			<ExpandableButton
+				extraStyles="absolute top-20 left-5"
+				expanded={false}
+				expandedWidth={"50%"}
+				title="profile"
+			/>
 		</StyledSafeArea>
 	);
 }

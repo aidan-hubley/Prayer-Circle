@@ -16,12 +16,12 @@ export default function Layout() {
 			>
 				<Stack.Screen name="login" />
 			</Stack>
-			<StyledView className="absolute top-14 left-4">
+			{/* <StyledView className="absolute top-14 left-4">
 				<ExpandableButton title="Journal" expanded={true} />
 			</StyledView>
 			<StyledView className="absolute top-14 right-4">
 				<ExpandableButton title="Profile" expanded={true} />
-			</StyledView>
+			</StyledView> */}
 		</>
 	);
 }

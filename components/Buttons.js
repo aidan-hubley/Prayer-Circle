@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-	Text,
-	TouchableHighlight,
-	Animated,
-	Easing,
-	StyleSheet
-} from "react-native";
+import { Text, TouchableHighlight, Animated } from "react-native";
 import { styled } from "nativewind";
 import { router } from "../database/config";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -65,32 +59,55 @@ export function ExpandableButton({
 	press,
 	href,
 	expanded,
+	expandedWidth,
 	extraStyles
 }) {
-	const [pressed, setPressed] = useState(expanded ? expanded : false);
-
 	let bgColor = backgroundColor ? backgroundColor : "#F7F1E3";
 	let txtColor = textColor ? textColor : "#121212";
 	let borderClr = borderColor ? borderColor : "#F7F1E3";
 
+	const [pressed, setPressed] = useState(expanded ? expanded : false);
+	const [wi, setWi] = useState(new Animated.Value(expanded ? 1 : 0));
+
+	const wiInter = wi.interpolate({
+		inputRange: [0, 1],
+		outputRange: ["13%", expandedWidth ? expandedWidth : "100%"]
+	});
+
+	const btnWidth = {
+		width: wiInter
+	};
+	const btnText = {
+		opacity: wi
+	};
+
+	function toggleButton() {
+		setPressed(!pressed);
+		Animated.spring(wi, {
+			toValue: pressed ? 0 : 1,
+			duration: 400,
+			useNativeDriver: false
+		}).start();
+	}
+
 	return (
-		<StyledTouchableHighlight
+		<AnimatedHighlight
+			style={btnWidth}
 			activeOpacity={0.6}
-			underlayColor="#DDDDDD"
-			className={`flex ${
-				!pressed ? "h-[50px] w-[50px]" : "h-[50px] w-[150px]"
-			} items-center justify-center rounded-full bg-offwhite border border-[${borderClr}] transition-all ${extraStyles}
-				`}
+			underlayColor={backgroundColor ? backgroundColor : "#fff"}
+			className={`bg-offwhite h-[50px] justify-center items-center rounded-full ${extraStyles}`}
+			onPressOut={toggleButton}
 			onPress={() => {
-				setPressed(!pressed);
 				if (press) press();
+				if (href) router.push(href);
 			}}
 		>
 			<>
 				<StyledText
+					/* style={{ opacity: wi }} */
 					className={`${
 						!pressed ? "hidden" : "flex"
-					} font-bold text-[${txtColor}] ${
+					} font-bold text-black ${
 						textSize ? textSize : "text-[20px]"
 					} ${textStyles}`}
 				>
@@ -99,37 +116,10 @@ export function ExpandableButton({
 				<StyledIcon
 					name="md-checkmark-circle"
 					size={32}
-					/* color="green" */
+					color="green"
 					className={`${pressed ? "hidden" : "flex"}`}
 				/>
 			</>
-		</StyledTouchableHighlight>
-	);
-}
-
-export function AnimatedButton({
-	title,
-	width,
-	textSize,
-	textStyles,
-	backgroundColor,
-	textColor,
-	borderColor,
-	press,
-	href,
-	expanded
-}) {
-	const [pressed, setPressed] = useState(expanded ? expanded : false);
-	const [wi, setWi] = useState(new Animated.Value(0));
-
-	return (
-		<AnimatedHighlight
-			activeOpacity={0.6}
-			underlayColor={backgroundColor ? backgroundColor : "#F7F1E3"}
-			className="bg-[#F7F1E3] px-8 h-[50px] justify-center items-center rounded-full border border-[#F7F1E3]"
-			onPress={() => {}}
-		>
-			<StyledText className="text-lg font-bold">Hi</StyledText>
 		</AnimatedHighlight>
 	);
 }
