@@ -14,6 +14,7 @@ import { styled } from "nativewind";
 import { Button } from "../components/Button";
 import { Link } from "expo-router";
 import { loginUser } from "../database/firebaseFunctions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -46,51 +47,37 @@ export default function Login() {
 								</StyledView>
 							</StyledView>
 						</StyledView>
-						<StyledView className="flex flex-col items-center h-screen">
-							<StyledView className="flex flex-col items-center justify-center w-full gap-y-4 pb-4">
-								<StyledInput
-									className="bg-offblack text-[18px] w-[85%] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-									placeholder={"Email"}
-									placeholderTextColor={"#fff"}
-									inputMode="email"
-									autoComplete="email"
-									maxLength={30}
-									ref={(input) => {
-										this.emailInput = input;
-									}}
-									onSubmitEditing={() => {
-										this.passInput.focus();
-									}}
-									blurOnSubmit={false}
-									onEndEditing={(text) => {
-										setEmail(text.nativeEvent.text);
-									}}
-								/>
-								<StyledInput
-									className="bg-offblack text-[18px] w-[85%] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-									placeholder={"Password"}
-									placeholderTextColor={"#fff"}
-									secureTextEntry={true}
-									maxLength={25}
-									ref={(input) => {
-										this.passInput = input;
-									}}
-									onEndEditing={(text) => {
-										setPass(text.nativeEvent.text);
-									}}
-								/>
-							</StyledView>
-							<Button
-								width="w-[85%]"
-								title="Login"
-								textColor="#F7F1E3"
-								backgroundColor="#121212"
-								borderColor="#F9A826"
-								href="/feed"
-								press={() => {
-									console.log("click");
-									/* Keyboard.dismiss();
-									userLogin(email, pass); */
+						<StyledView className="flex flex-col items-center justify-center w-full gap-y-4">
+							<StyledInput
+								className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
+								placeholder={"Email"}
+								autoCapitalize="none"
+								placeholderTextColor={"#fff"}
+								inputMode="email"
+								autoComplete="email"
+								maxLength={30}
+								ref={(input) => {
+									this.emailInput = input;
+								}}
+								onSubmitEditing={() => {
+									this.passInput.focus();
+								}}
+								blurOnSubmit={false}
+								onChangeText={(text) => {
+									setEmail(text);
+								}}
+							/>
+							<StyledInput
+								className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
+								placeholder={"Password"}
+								placeholderTextColor={"#fff"}
+								secureTextEntry={true}
+								maxLength={25}
+								ref={(input) => {
+									this.passInput = input;
+								}}
+								onChangeText={(text) => {
+									setPass(text);
 								}}
 							/>
 							<StyledText className="text-offwhite text-center text-[18px] mt-4 mb-3">
@@ -102,10 +89,28 @@ export default function Login() {
 								</Link>
 							</StyledText>
 						</StyledView>
-				
-						</>
-					</TouchableWithoutFeedback>
-				</KeyboardAwareScrollView>
+					</StyledView>
+					<StyledView className="flex flex-col items-center">
+						<Button
+							width="w-[85%]"
+							title="Login"
+							press={() => {
+								Keyboard.dismiss();
+								userLogin(email, pass);
+								setEmail("");
+								setPass("");
+							}}
+						/>
+						<StyledText className="text-offwhite text-center text-[18px] mt-5">
+							Don't have an account?{" "}
+							<Link href="/register">
+								<StyledText className="text-[#F9A826] font-bold">
+									Register
+								</StyledText>
+							</Link>
+						</StyledText>
+					</StyledView>
+				</ScrollView>
 				<StatusBar barStyle={"light-content"} />
 			</StyledSafeArea>
 		</>
@@ -117,9 +122,8 @@ function userLogin(email, password) {
 	this.emailInput.clear();
 	this.passInput.clear();
 
-	if (email == "" || password == "") {
-		console.log("hey");
-		return;
-	}
+	if (email.length == 0 || password.length == 0)
+		return alert("Please fill out all fields");
+
 	loginUser(email, password);
 }
