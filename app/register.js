@@ -195,7 +195,7 @@ async function createUserData(username, fname, lname, email, password) {
 	if (emailCheck.length !== 2)
 		return alert("Invalid Email"); // check email format
 	else if (!approvedEmailProviders.includes(emailCheck[1]))
-		return alert("Invalid Email"); // check email provider
+		return alert("Email provider not supported"); // check email provider
 
 	if (!passwordValidation(password)) {
 		return alert(
@@ -217,5 +217,5 @@ async function createUserData(username, fname, lname, email, password) {
 		phone: "0000000000",
 		created: new Date().getTime()
 	};
-	//registerUser(email, password, userData);
+	registerUser(email, password, userData);
 }

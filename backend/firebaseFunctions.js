@@ -60,6 +60,8 @@ export async function registerUser(email, password, data) {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
+			writeData(`usernames/${data.username}`, true, true);
+			loginUser(email, password);
 		})
 		.catch((error) => {
 			const errorCode = error.code;
