@@ -28,7 +28,6 @@ export function Button({
 		return (
 			<StyledTouchableHighlight
 				activeOpacity={0.6}
-				// underlayColor="#DDDDDD"
 				className={`flex items-center justify-center rounded-full border
 					${height ? height : "h-[50px]"} 
 					${width ? width : "w-11/12"} 
@@ -36,7 +35,7 @@ export function Button({
 					border-[${borderColor}]
 				`}
 				style={{ 
-						backgroundColor: bgColor, // this is still being used
+						backgroundColor: bgColor,
 						borderWidth: 1,
 						borderColor: borderClr
 					}}
@@ -58,7 +57,6 @@ export function Button({
 			<StyledLink href={href ? href : null} asChild>
 				<StyledTouchableHighlight
 					activeOpacity={0.6}
-					// underlayColor="#DDDDDD"
 					onPress={() => press()}
 					className={`flex items-center justify-center rounded-full border
 						${height ? height : "h-[50px]"} 
@@ -67,7 +65,7 @@ export function Button({
 						border-[${borderColor}]
 					`}
 					style={{ 
-						backgroundColor: bgColor, // this is still being used
+						backgroundColor: bgColor,
 						borderWidth: 1,
 						borderColor: borderClr
 					}}
