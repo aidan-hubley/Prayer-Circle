@@ -11,7 +11,6 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function Page() {
-	console.log("Feed Page");
 	return (
 		<StyledSafeArea className="bg-offblack border" style={{ flex: 1 }}>
 			<StyledView className="flex-1 items-center mt-20 pt-10">
@@ -33,26 +32,6 @@ export default function Page() {
 					}}
 				/>
 			</StyledView>
-			<ExpandableButton
-				btnStyles="absolute top-20 right-5"
-				height={"h-[75px]"}
-				iconSize={50}
-				icon="journal-outline"
-				expanded={false}
-				expandedWidth={"90%"}
-				collapsedWidth={"20%"}
-				title="Journal"
-			/>
-			<ExpandableButton
-				btnStyles="absolute top-20 left-5"
-				height={"h-[75px]"}
-				iconSize={50}
-				icon="person-circle-outline"
-				expanded={false}
-				expandedWidth={"90%"}
-				collapsedWidth={"20%"}
-				title="Profile"
-			/>
 		</StyledSafeArea>
 	);
 }
