@@ -31,7 +31,7 @@ export function Button({
 				// underlayColor="#DDDDDD"
 				className={`flex items-center justify-center rounded-full 
 					${height ? height : "h-[50px]"} 
-					${width ? width : "w-11/12"}
+					${width ? width : "w-11/12"} border bg-[${backgroundColor}] border-[${borderColor}]
 				`}
 				style={{ 
 						backgroundColor: bgColor,
