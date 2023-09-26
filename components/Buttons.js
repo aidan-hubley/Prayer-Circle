@@ -30,7 +30,7 @@ function Button({
 			underlayColor={`${bgColor || "#DDDDDD"}`}
 			className={`flex items-center justify-center rounded-full ${
 				bgColor || "bg-offwhite"
-			} ${width ? width : "w-11/12"} ${height || "h-[50px]"} ${
+			} ${width || "w-11/12"} ${height || "h-[50px]"} ${
 				borderColor ? `border ${borderColor}` : "border-none"
 			} ${btnStyles || ""} `}
 			onPress={() => {
@@ -110,7 +110,7 @@ const ExpandableButton = forwardRef(
 				underlayColor={bgColor || "#DDD"}
 				className={`flex items-center justify-center rounded-full ${
 					bgColor || "bg-offwhite"
-				} ${width ? width : "w-11/12"} ${height || "h-[50px]"} ${
+				} ${width || "w-11/12"} ${height || "h-[50px]"} ${
 					borderColor ? `border ${borderColor}` : "border-none"
 				} ${btnStyles || ""} ${pressed ? "z-10" : "z-0"}`}
 				onPressOut={toggleButton}
