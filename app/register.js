@@ -40,9 +40,6 @@ export default function Login() {
 						<>
 							<StyledView className="flex flex-col pb-5 px-[15px] w-screen">
 								<StyledView className="w-full flex flex-col items-center mb-2">
-									{/* <StyledText className="text-offwhite text-center text-5xl font-bold">
-										Welcome to Prayer Circle!
-									</StyledText> */}
 									<StyledView className="w-[89%] aspect-square mt-[15%] mb-[10%]">
 										<StyledImage
 											className="w-full h-full"

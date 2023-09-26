@@ -29,12 +29,14 @@ export function Button({
 			<StyledTouchableHighlight
 				activeOpacity={0.6}
 				// underlayColor="#DDDDDD"
-				className={`flex items-center justify-center rounded-full 
+				className={`flex items-center justify-center rounded-full border
 					${height ? height : "h-[50px]"} 
-					${width ? width : "w-11/12"} border bg-[${backgroundColor}] border-[${borderColor}]
+					${width ? width : "w-11/12"} 
+					bg-[${backgroundColor}] 
+					border-[${borderColor}]
 				`}
 				style={{ 
-						backgroundColor: bgColor,
+						backgroundColor: bgColor, // this is still being used
 						borderWidth: 1,
 						borderColor: borderClr
 					}}
@@ -58,12 +60,14 @@ export function Button({
 					activeOpacity={0.6}
 					// underlayColor="#DDDDDD"
 					onPress={() => press()}
-					className={`flex items-center justify-center rounded-full 
+					className={`flex items-center justify-center rounded-full border
 						${height ? height : "h-[50px]"} 
 						${width ? width : "w-11/12"}
+						bg-[${backgroundColor}] 
+						border-[${borderColor}]
 					`}
 					style={{ 
-						backgroundColor: bgColor,
+						backgroundColor: bgColor, // this is still being used
 						borderWidth: 1,
 						borderColor: borderClr
 					}}
