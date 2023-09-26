@@ -5,7 +5,7 @@
     "slug": "prayer-circle",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Minimal_Dark_Logo.png",
+    "icon": "./assets/Logo_Dark.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",

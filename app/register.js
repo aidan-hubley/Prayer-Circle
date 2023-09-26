@@ -33,20 +33,17 @@ export default function Login() {
 		<>
 			<StyledSafeArea
 				className="bg-offblack"
-				style={{ flex: 1 /*  backgroundColor: "#5946B2"  */ }}
+				style={{ flex: 1, backgroundColor: "#5946B2" }}
 			>
 				<KeyboardAwareScrollView>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 						<>
-							<StyledView className="flex flex-col pt-10 pb-5 px-[15px] items-center justify-start w-screen ">
-								<StyledView className="w-full flex flex-col items-center justify-center mb-2">
-									<StyledText className="text-offwhite text-center text-5xl font-bold">
-										Welcome to Prayer Circle!!
-									</StyledText>
-									<StyledView className="w-[40%] aspect-square my-2">
+							<StyledView className="flex flex-col pb-5 px-[15px] w-screen">
+								<StyledView className="w-full flex flex-col items-center mb-2">
+									<StyledView className="w-[89%] aspect-square mt-[15%] mb-[10%]">
 										<StyledImage
 											className="w-full h-full"
-											source={require("../assets/PCLogo.png")}
+											source={require("../assets/Logo_Dark.png")}
 											resizeMode="contain"
 										/>
 									</StyledView>
@@ -146,6 +143,9 @@ export default function Login() {
 								<Button
 									width="w-[85%]"
 									title="Register"
+									textColor="#F7F1E3"
+									backgroundColor="#121212"
+									borderColor="#F9A826"
 									press={() => {
 										Keyboard.dismiss();
 										createUserData(
@@ -160,7 +160,7 @@ export default function Login() {
 								<StyledText className="text-offwhite text-center text-[18px] mt-5">
 									Already have an account?{" "}
 									<Link href="/login">
-										<StyledText className="text-[#F9A826] font-bold">
+										<StyledText className="text-yellow font-bold">
 											Login
 										</StyledText>
 									</Link>
