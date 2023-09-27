@@ -2,6 +2,7 @@ import { database, auth, router } from "./config.js";
 import { ref, child, get, push, set } from "firebase/database";
 import {
 	createUserWithEmailAndPassword,
+	onAuthStateChanged,
 	signInWithEmailAndPassword
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -102,4 +103,14 @@ export async function checkUsername(username) {
 
 export function generateId() {
 	return push(ref(database)).key;
+}
+
+export function userLoggedIn() {
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			console.log("user logged in");
+		} else {
+			console.log("user logged out");
+		}
+	});
 }

@@ -44,7 +44,14 @@ export default function Page() {
 				/>
 			</StyledView>
 			<StyledView className="flex flex-row justify-center w-screen">
-				<Circle backgroundColor="transparent" borderColor="#FFFBFC" />
+				<Circle
+					backgroundColor="transparent"
+					size="w-[100px] h-[100px]"
+					borderColor="#FFFBFC"
+					press={() => {
+						console.log("pressed");
+					}}
+				/>
 			</StyledView>
 		</StyledSafeArea>
 	);
