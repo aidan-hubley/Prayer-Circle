@@ -23,23 +23,6 @@ export default function Layout() {
 				btnStyles="absolute top-20 left-5"
 				height={"h-[75px]"}
 				iconSize={50}
-				icon="person-circle-outline"
-				expanded={false}
-				expandedWidth={"65%"}
-				collapsedWidth={"20%"}
-				title="Profile"
-				href="/profile"
-				expandedHref="/feed"
-				ref={profileRef}
-				press={() => {
-					if (journalRef.current.pressed)
-						journalRef.current.toggleButton();
-				}}
-			/>
-			<ExpandableButton
-				btnStyles="absolute top-20 right-5"
-				height={"h-[75px]"}
-				iconSize={50}
 				icon="journal-outline"
 				expanded={false}
 				expandedWidth={"65%"}
@@ -51,6 +34,23 @@ export default function Layout() {
 				press={() => {
 					if (profileRef.current.pressed)
 						profileRef.current.toggleButton();
+				}}
+			/>
+			<ExpandableButton
+				btnStyles="absolute top-20 right-5"
+				height={"h-[75px]"}
+				iconSize={50}
+				icon="person-circle-outline"
+				expanded={false}
+				expandedWidth={"65%"}
+				collapsedWidth={"20%"}
+				title="Profile"
+				href="/profile"
+				expandedHref="/feed"
+				ref={profileRef}
+				press={() => {
+					if (journalRef.current.pressed)
+						journalRef.current.toggleButton();
 				}}
 			/>
 		</>
