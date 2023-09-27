@@ -1,19 +1,30 @@
-import React from "react";
-import { SafeAreaView, Text, View, StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import {
+	SafeAreaView,
+	Text,
+	View,
+	Image,
+	StatusBar,
+	ScrollView
+} from "react-native";
+import { StyleSheet } from "react-native";
+import { Easing } from "react-native";
+import { Circle } from "../components/Circle";
 import { styled } from "nativewind";
 import { Button, ExpandableButton } from "../components/Buttons";
 import { signOut } from "firebase/auth";
 import { auth, router } from "../database/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const StyledSafeArea = styled(SafeAreaView);
+const StyledImage = styled(Image);
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledSafeArea = styled(SafeAreaView);
 
 export default function Page() {
 	return (
 		<StyledSafeArea className="bg-offblack border" style={{ flex: 1 }}>
-			<StyledView className="flex-1 items-center mt-20 pt-10">
+			<StyledView className="flex-1 items-center pt-10">
 				<StyledText className="text-3xl text-white text-center tracking-widest leading-10">
 					Feed!
 				</StyledText>
@@ -31,6 +42,9 @@ export default function Page() {
 							});
 					}}
 				/>
+			</StyledView>
+			<StyledView className="flex flex-row justify-center w-screen">
+				<Circle backgroundColor="transparent" borderColor="#FFFBFC" />
 			</StyledView>
 		</StyledSafeArea>
 	);

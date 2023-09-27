@@ -14,6 +14,7 @@ export default function Page() {
 					Journal
 				</StyledText>
 			</StyledView>
+			<StatusBar style="light-content" />
 		</StyledSafeArea>
 	);
 }
