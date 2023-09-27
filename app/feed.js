@@ -23,78 +23,29 @@ const StyledSafeArea = styled(SafeAreaView);
 
 export default function Page() {
 	return (
-		<>
-			<StyledSafeArea
-				className="bg-offblack"
-				style={{ flex: 1, backgroundColor: "#121212" }}
-			>
-				<ScrollView keyboardDismissMode="on-drag p-0 m-0">
-					<StyledView className="flex flex-col w-screen h-screen">
-						<StyledView className="flex flex-row h-[75.5%] pt-10 m-3">
-							{/* <Button
-                            title="Sign Out"
-                            press={() => {
-                              signOut(auth)
-                                .then(() => {
-                                  console.log("Signed Out");
-                                  AsyncStorage.setItem("user", "");
-                                  router.push("/login");
-                                })
-                                .catch((error) => {
-                                  console.error(error);
-                                });
-                            }}
-                          /> */}
-							<StyledView className="w-1/3">
-								<Button
-									text="Journal"
-									backgroundColor="#121212"
-									borderColor="#FFFBFC"
-									textColor="#FFFBFC"
-									textSize="text-[20px]"
-									width="w-11/12"
-									height="h-[50px]"
-									href="/journal"
-									press={() => {}}
-								/>
-							</StyledView>
-							<StyledView className="w-1/3">
-								<Button
-									text="Feed"
-									backgroundColor="#121212"
-									borderColor="#F9A826"
-									textColor="#FFFBFC"
-									textSize="text-[20px]"
-									width="w-11/12"
-									height="h-[50px]"
-									href="/feed"
-									press={() => {}}
-								/>
-							</StyledView>
-							<StyledView className="w-1/3">
-								<Button
-									text="Profile"
-									backgroundColor="#121212"
-									borderColor="#FFFBFC"
-									textColor="#FFFBFC"
-									textSize="text-[20px]"
-									width="w-11/12"
-									height="h-[50px]"
-									href="/profile"
-									press={() => {}}
-								/>
-							</StyledView>
-						</StyledView>
-						<StyledView className="flex flex-row justify-center w-screen">
-							<Circle
-								backgroundColor="transparent"
-								borderColor="#FFFBFC"
-							/>
-						</StyledView>
-					</StyledView>
-				</ScrollView>
-				<StatusBar barStyle={"light-content"} />
-			</StyledSafeArea>
-		</>
+		<StyledSafeArea className="bg-offblack border" style={{ flex: 1 }}>
+			<StyledView className="flex-1 items-center pt-10">
+				<StyledText className="text-3xl text-white text-center tracking-widest leading-10">
+					Feed!
+				</StyledText>
+				<Button
+					title="Sign Out"
+					press={() => {
+						signOut(auth)
+							.then(() => {
+								console.log("Signed Out");
+								AsyncStorage.setItem("user", "");
+								router.push("/login");
+							})
+							.catch((error) => {
+								console.error(error);
+							});
+					}}
+				/>
+			</StyledView>
+			<StyledView className="flex flex-row justify-center w-screen">
+				<Circle backgroundColor="transparent" borderColor="#FFFBFC" />
+			</StyledView>
+		</StyledSafeArea>
 	);
 }
