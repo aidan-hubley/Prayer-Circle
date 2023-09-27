@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, Text, View, StatusBar } from "react-native";
 import { styled } from "nativewind";
-import { Button } from "../components/Button";
+import { Button } from "../components/Buttons";
 import { signOut } from "firebase/auth";
 import { auth, router } from "../database/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,6 +13,7 @@ const StyledText = styled(Text);
 export default function Page() {
 	AsyncStorage.getItem("user").then((user) => {
 		if (!user || user.length == 0) router.push("/login");
+		else router.push("/feed");
 	});
 
 	return (
