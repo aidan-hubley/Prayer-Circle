@@ -2,6 +2,7 @@ import { database, auth, router } from "./config.js";
 import { ref, child, get, push, set } from "firebase/database";
 import {
 	createUserWithEmailAndPassword,
+	onAuthStateChanged,
 	signInWithEmailAndPassword
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -60,6 +61,8 @@ export async function registerUser(email, password, data) {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
+			writeData(`usernames/${data.username}`, true, true);
+			loginUser(email, password);
 		})
 		.catch((error) => {
 			const errorCode = error.code;
@@ -84,6 +87,30 @@ export async function loginUser(email, password) {
 		});
 }
 
+export async function checkUsername(username) {
+	let usernames = await readData(`usernames`);
+	let taken = false;
+
+	usernames = Object.keys(usernames);
+	usernames.forEach((uName) => {
+		if (!taken && uName.toLowerCase() == username.toLowerCase()) {
+			console.log("username taken", username);
+			taken = true;
+		}
+	});
+	return taken;
+}
+
 export function generateId() {
 	return push(ref(database)).key;
+}
+
+export function userLoggedIn() {
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			console.log("user logged in");
+		} else {
+			console.log("user logged out");
+		}
+	});
 }

@@ -13,7 +13,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { styled } from "nativewind";
 import { Button } from "../components/Buttons";
 import { Link } from "expo-router";
-import { loginUser } from "../database/firebaseFunctions";
+import { loginUser } from "../backend/firebaseFunctions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledImage = styled(Image);

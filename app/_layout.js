@@ -1,6 +1,6 @@
 import { Stack } from "expo-router/stack";
 import React, { useRef } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { styled } from "nativewind";
 import { ExpandableButton } from "../components/Buttons";
 

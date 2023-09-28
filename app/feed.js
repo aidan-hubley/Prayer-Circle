@@ -13,7 +13,7 @@ import { Circle } from "../components/Circle";
 import { styled } from "nativewind";
 import { Button, ExpandableButton } from "../components/Buttons";
 import { signOut } from "firebase/auth";
-import { auth, router } from "../database/config";
+import { auth, router } from "../backend/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StyledImage = styled(Image);
@@ -44,7 +44,14 @@ export default function Page() {
 				/>
 			</StyledView>
 			<StyledView className="flex flex-row justify-center w-screen">
-				<Circle backgroundColor="transparent" borderColor="#FFFBFC" />
+				<Circle
+					backgroundColor="transparent"
+					size="w-[100px] h-[100px]"
+					borderColor="#FFFBFC"
+					press={() => {
+						console.log("pressed");
+					}}
+				/>
 			</StyledView>
 		</StyledSafeArea>
 	);
