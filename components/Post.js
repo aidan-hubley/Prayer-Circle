@@ -118,7 +118,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledView>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] rounded-[20px] h-auto px-[10px] py-[10px] mb-4'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto px-[10px] py-[10px] my-[10px]'>
 				<StyledView className='flex flex-row justify-between'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[87%]'>
