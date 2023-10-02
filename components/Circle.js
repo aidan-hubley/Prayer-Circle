@@ -42,7 +42,7 @@ export function Circle({ size, press }) {
 		setPressed(!pressed);
 		Animated.timing(menuOpacity, {
 			toValue: val ? 1 : 0,
-			duration: 300,
+			duration: 200,
 			useNativeDriver: true
 		}).start();
 		console.log(menuOpacity);
@@ -57,6 +57,7 @@ export function Circle({ size, press }) {
 	});
 	const longPress = Gesture.LongPress().onStart(() => {
 		toggleOptions(true);
+		resize(1);
 	});
 
 	const composed = Gesture.Simultaneous(tap, longPress); //Here
@@ -80,6 +81,10 @@ export function Circle({ size, press }) {
 					title='Draw a Circle'
 					height='h-[65px]'
 					width='w-11/12'
+					press={() => {
+						toggleOptions(false);
+					}}
+					href='/createCircle'
 				/>
 				<Button
 					title='Sketch a Post'
