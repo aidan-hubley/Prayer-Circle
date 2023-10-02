@@ -22,7 +22,7 @@ export default function Layout() {
 					<Stack.Screen name='login' />
 				</Stack>
 
-				<ExpandableButton
+				{/* <ExpandableButton
 					btnStyles='absolute top-20 left-5'
 					height={'h-[75px]'}
 					iconSize={50}
@@ -55,7 +55,7 @@ export default function Layout() {
 						if (journalRef.current.pressed)
 							journalRef.current.toggleButton();
 					}}
-				/>
+				/> */}
 			</>
 		</ActionSheetProvider>
 	);
