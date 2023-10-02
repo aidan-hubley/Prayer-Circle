@@ -18,7 +18,7 @@ function PostTypeSelector() {
 
 	const selectedInter = selected.interpolate({
 		inputRange: [0, 1, 2],
-		outputRange: ['12.5%', '45.5%', '79%']
+		outputRange: ['12.5%', '46%', '79.5%']
 	});
 
 	const handlePress = (index) => {
@@ -34,7 +34,7 @@ function PostTypeSelector() {
 	};
 
 	return (
-		<StyledView className='flex flex-row items-center justify-around h-[50px] w-[80%] border border-offwhite rounded-full px-[15px]'>
+		<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
 			<StyledAnimatedView
 				style={highlightPosition}
 				className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[55px] h-[36px]'
