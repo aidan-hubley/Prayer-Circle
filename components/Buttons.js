@@ -93,7 +93,6 @@ const ExpandableButton = forwardRef(
 		const btnWidth = {
 			width: wiInter
 		};
-		console.log(btnWidth);
 
 		const btnText = {
 			opacity: wi

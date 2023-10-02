@@ -24,12 +24,12 @@ export default function Layout() {
 
 				<ExpandableButton
 					btnStyles='absolute top-20 left-5'
-					height={'h-[75px]'}
-					iconSize={50}
+					height={'h-[50px]'}
+					iconSize={35}
 					icon='journal-outline'
 					expanded={false}
-					expandedWidth={'65%'}
-					collapsedWidth={75}
+					expandedWidth={'70%'}
+					collapsedWidth={50}
 					title='Journal'
 					href='/journal'
 					expandedHref='/feed'
@@ -41,12 +41,12 @@ export default function Layout() {
 				/>
 				<ExpandableButton
 					btnStyles='absolute top-20 right-5'
-					height={'h-[75px]'}
-					iconSize={50}
+					height={'h-[50px]'}
+					iconSize={40}
 					icon='person-circle-outline'
 					expanded={false}
-					expandedWidth={'65%'}
-					collapsedWidth={75}
+					expandedWidth={'70%'}
+					collapsedWidth={50}
 					title='Profile'
 					href='/profile'
 					expandedHref='/feed'
