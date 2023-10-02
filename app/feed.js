@@ -9,11 +9,9 @@ import {
 } from 'react-native';
 import { Circle } from '../components/Circle';
 import { styled } from 'nativewind';
-import { Button } from '../components/Buttons';
-import { signOut } from 'firebase/auth';
-import { auth, router } from '../backend/config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Post } from '../components/Post';
+import { usePathname } from 'expo-router/src/hooks';
+import { toggleMainNav } from './_layout';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -24,8 +22,8 @@ const StyledScrollView = styled(ScrollView);
 export default function Page() {
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
-			<StyledView className='flex-1 items-center'>
-				<StyledScrollView className='w-screen'>
+			<StyledView className='flex-1 items-center' w-screen>
+				<StyledScrollView className='w-full px-[13px]'>
 					<StyledView className='w-full h-[125px]' />
 					<Post
 						user='Alex Muresan'
