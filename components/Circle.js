@@ -1,36 +1,52 @@
-import React, { useState } from "react";
-import { Pressable, TouchableHighlight } from "react-native";
-import { styled } from "nativewind";
-import { Link } from "expo-router";
+import React, { useRef } from 'react';
+import { Pressable, TouchableHighlight, Animated } from 'react-native';
+import { styled } from 'nativewind';
+import { Link } from 'expo-router';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import { router } from '../backend/config';
 
-const StyledPressable = styled(Pressable);
-const StyledTouchableHighlight = styled(TouchableHighlight);
+const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledLink = styled(Link);
 
-export function Circle({
-	size,
-	backgroundColor,
-	borderColor,
-	borderWidth,
-	press,
-	href
-}) {
-	// const diameterPX = diameter ? diameter : '100 px';
-	const bgColor = backgroundColor ? backgroundColor : "#121212";
-	const borderClr = borderColor ? borderColor : "#F9A826";
-	const borderWid = borderWidth ? borderWidth : 5;
+export function Circle({ size, press }) {
+	const scale = useRef(new Animated.Value(1)).current;
+	const scaleInterpolation = scale.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0.7, 1]
+	});
+	const scaleStyle = { scale: scaleInterpolation };
+
+	function resize(target) {
+		Animated.spring(scale, {
+			toValue: target,
+			useNativeDriver: true
+		}).start();
+	}
+
+	const tap = Gesture.Tap().onEnd(() => {
+		router.push('/filter');
+	});
+	const longPress = Gesture.LongPress().onStart(() => {
+		router.push('/create');
+	});
+
+	const composed = Gesture.Simultaneous(tap, longPress); //Here
 
 	return (
-		<StyledPressable
-			className={`flex items-center justify-center rounded-full 
-                ${size || "h-44 w-44"} 
+		<GestureDetector gesture={composed}>
+			<AnimatedPressable
+				style={{ transform: [{ scale: scaleInterpolation }] }}
+				className={`flex items-center justify-center rounded-full border-[6px] border-offwhite
+                ${size || 'h-44 w-44'} 
             `}
-			style={{
-				backgroundColor: bgColor,
-				borderWidth: borderWid,
-				borderColor: borderClr
-			}}
-			onPress={() => press()}
-		></StyledPressable>
+				onPressIn={() => {
+					resize(0.7);
+				}}
+				onPressOut={() => {
+					resize(1);
+				}}
+				onPress={() => press()}
+			></AnimatedPressable>
+		</GestureDetector>
 	);
 }
