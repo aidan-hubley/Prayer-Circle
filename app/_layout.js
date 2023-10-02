@@ -29,7 +29,7 @@ export default function Layout() {
 					icon='journal-outline'
 					expanded={false}
 					expandedWidth={'65%'}
-					collapsedWidth={'20%'}
+					collapsedWidth={75}
 					title='Journal'
 					href='/journal'
 					expandedHref='/feed'
@@ -46,7 +46,7 @@ export default function Layout() {
 					icon='person-circle-outline'
 					expanded={false}
 					expandedWidth={'65%'}
-					collapsedWidth={'20%'}
+					collapsedWidth={75}
 					title='Profile'
 					href='/profile'
 					expandedHref='/feed'
