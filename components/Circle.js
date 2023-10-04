@@ -1,20 +1,35 @@
-import React, { useRef } from 'react';
-import { Pressable, TouchableHighlight, Animated } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Pressable, View, Animated } from 'react-native';
 import { styled } from 'nativewind';
-import { Link } from 'expo-router';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { router } from '../backend/config';
+import { Button } from './Buttons';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
-const StyledLink = styled(Link);
+const AnimatedView = styled(Animated.createAnimatedComponent(View));
 
 export function Circle({ size, press }) {
 	const scale = useRef(new Animated.Value(1)).current;
+	const [pressed, setPressed] = useState(false);
+	const menuOpacity = useRef(new Animated.Value(0)).current;
+
 	const scaleInterpolation = scale.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0.7, 1]
 	});
+
+	const opacityInterpolation1 = menuOpacity.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0, 1]
+	});
+	const opacityInterpolation2 = menuOpacity.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0, 0.7]
+	});
+
 	const scaleStyle = { scale: scaleInterpolation };
+	const pressedStyle = { opacity: opacityInterpolation1 };
+	const pressedStyle2 = { opacity: opacityInterpolation2 };
 
 	function resize(target) {
 		Animated.spring(scale, {
@@ -23,30 +38,81 @@ export function Circle({ size, press }) {
 		}).start();
 	}
 
+	function toggleOptions(val) {
+		setPressed(!pressed);
+		Animated.timing(menuOpacity, {
+			toValue: val ? 1 : 0,
+			duration: 200,
+			useNativeDriver: true
+		}).start();
+		console.log(menuOpacity);
+	}
+
 	const tap = Gesture.Tap().onEnd(() => {
-		router.push('/filter');
+		if (!pressed) {
+			router.push('/filter');
+		} else {
+			toggleOptions(false);
+		}
 	});
 	const longPress = Gesture.LongPress().onStart(() => {
-		router.push('/createPost');
+		toggleOptions(true);
+		resize(1);
 	});
 
 	const composed = Gesture.Simultaneous(tap, longPress); //Here
 
 	return (
-		<GestureDetector gesture={composed}>
+		<>
 			<AnimatedPressable
-				style={{ transform: [{ scale: scaleInterpolation }] }}
-				className={`flex items-center justify-center rounded-full border-[6px] border-offwhite
+				style={pressedStyle2}
+				pointerEvents={pressed ? 'auto' : 'none'}
+				className={`absolute bottom-[-40px] left-0 h-screen w-screen bg-[#121212] pointer-events-none`}
+				onPress={() => {
+					toggleOptions();
+				}}
+			/>
+			<AnimatedView
+				style={pressedStyle}
+				pointerEvents={pressed ? 'auto' : 'none'}
+				className='flex flex-col items-center bottom-[110px] absolute w-screen'
+			>
+				<Button
+					title='Draw a Circle'
+					height='h-[65px]'
+					width='w-11/12'
+					press={() => {
+						toggleOptions(false);
+					}}
+					href='/createCircle'
+				/>
+				<Button
+					title='Sketch a Post'
+					height='h-[65px]'
+					btnStyles={'mt-4'}
+					width='w-11/12'
+					press={() => {
+						toggleOptions(false);
+					}}
+					href='/createPost'
+				/>
+			</AnimatedView>
+
+			<GestureDetector gesture={composed}>
+				<AnimatedPressable
+					style={{ transform: [{ scale: scaleInterpolation }] }}
+					className={`flex items-center justify-center rounded-full border-[6px] border-offwhite
                 ${size || 'h-44 w-44'} 
             `}
-				onPressIn={() => {
-					resize(0.7);
-				}}
-				onPressOut={() => {
-					resize(1);
-				}}
-				onPress={() => press()}
-			></AnimatedPressable>
-		</GestureDetector>
+					onPressIn={() => {
+						resize(0.7);
+					}}
+					onPressOut={() => {
+						resize(1);
+					}}
+					onPress={() => press()}
+				></AnimatedPressable>
+			</GestureDetector>
+		</>
 	);
 }
