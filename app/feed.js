@@ -112,12 +112,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 			</StyledView>
 
 			<StyledView className='absolute bottom-10 flex flex-row justify-center w-screen'>
-				<Circle
-					size='w-[90px] h-[90px]'
-					press={() => {
-						console.log('pressed');
-					}}
-				/>
+				<Circle size='w-[90px] h-[90px]' />
 			</StyledView>
 		</StyledSafeArea>
 	);
