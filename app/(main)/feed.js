@@ -7,9 +7,9 @@ import {
 	ScrollView,
 	StatusBar
 } from 'react-native';
-import { Circle } from '../components/Circle';
+import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
-import { Post } from '../components/Post';
+import { Post } from '../../components/Post';
 import { usePathname } from 'expo-router/src/hooks';
 import { toggleMainNav } from './_layout';
 
@@ -24,7 +24,7 @@ export default function Page() {
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
-					<StyledView className='w-full h-[125px]' />
+					<StyledView className='w-full h-[95px]' />
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'

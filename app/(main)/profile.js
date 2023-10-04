@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -12,9 +12,9 @@ export default function Page() {
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center mt-20 pt-10'>
 				<StyledText className='text-3xl text-white text-center tracking-widest leading-10'>
-					Filter
+					Profile
 				</StyledText>
-				<Button title='Feed' href='/feed' />
+				<Button title='Logout' href='/login' />
 			</StyledView>
 		</StyledSafeArea>
 	);
