@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
+import { PostTypeSelector } from '../components/PostTypeSelector';
 import { Button } from '../components/Buttons';
 import { signOut } from 'firebase/auth';
 import { auth, router } from '../backend/config';

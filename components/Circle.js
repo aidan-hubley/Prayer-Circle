@@ -27,7 +27,7 @@ export function Circle({ size, press }) {
 		router.push('/filter');
 	});
 	const longPress = Gesture.LongPress().onStart(() => {
-		router.push('/create');
+		router.push('/createPost');
 	});
 
 	const composed = Gesture.Simultaneous(tap, longPress); //Here
