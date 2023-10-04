@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
 	SafeAreaView,
 	Text,
@@ -8,13 +8,13 @@ import {
 	Image,
 	TouchableWithoutFeedback,
 	StatusBar
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { styled } from "nativewind";
-import { Button } from "../components/Buttons";
-import { Link } from "expo-router";
-import { checkUsername, registerUser } from "../backend/firebaseFunctions";
-import { passwordValidation } from "../backend/functions";
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { styled } from 'nativewind';
+import { Button } from '../components/Buttons';
+import { Link } from 'expo-router';
+import { checkUsername, registerUser } from '../backend/firebaseFunctions';
+import { passwordValidation } from '../backend/functions';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -23,38 +23,34 @@ const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 
 export default function Register() {
-	const [fname, setFName] = useState("");
-	const [lname, setLName] = useState("");
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	/* const [phone, setPhone] = useState(""); */
-	const [pass, setPass] = useState("");
+	const [fname, setFName] = useState('');
+	const [lname, setLName] = useState('');
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [pass, setPass] = useState('');
 
 	return (
 		<>
-			<StyledSafeArea
-				className="bg-offblack"
-				style={{ flex: 1, backgroundColor: "#5946B2" }}
-			>
+			<StyledSafeArea className='bg-offblack flex-1'>
 				<KeyboardAwareScrollView onScrollEndDrag={Keyboard.dismiss}>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 						<>
-							<StyledView className="flex flex-col pb-5 px-[15px] w-screen">
-								<StyledView className="w-full flex flex-col items-center mb-2">
-									<StyledView className="w-[89%] aspect-square mt-[15%] mb-[10%]">
+							<StyledView className='flex flex-col pb-5 px-[15px] w-screen'>
+								<StyledView className='w-full flex flex-col items-center mb-2'>
+									<StyledView className='w-[89%] aspect-square mt-[15%] mb-[10%]'>
 										<StyledImage
-											className="w-full h-full"
-											source={require("../assets/Logo_Dark.png")}
-											resizeMode="contain"
+											className='w-full h-full'
+											source={require('../assets/Logo_Dark.png')}
+											resizeMode='contain'
 										/>
 									</StyledView>
 								</StyledView>
-								<StyledView className="flex flex-col items-center justify-center w-full gap-y-4">
+								<StyledView className='flex flex-col items-center justify-center w-full gap-y-4'>
 									<StyledInput
-										className=" bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-										placeholder={"Username"}
-										placeholderTextColor={"#fff"}
-										inputMode="text"
+										className=' bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+										placeholder={'Username'}
+										placeholderTextColor={'#fff'}
+										inputMode='text'
 										maxLength={30}
 										autoCorrect={false}
 										ref={(input) => {
@@ -68,12 +64,12 @@ export default function Register() {
 											setUsername(text.nativeEvent.text);
 										}}
 									/>
-									<StyledView className="flex flex-row w-11/12">
+									<StyledView className='flex flex-row w-11/12'>
 										<StyledInput
-											className="bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-											placeholder={"First Name"}
-											placeholderTextColor={"#fff"}
-											inputMode="text"
+											className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+											placeholder={'First Name'}
+											placeholderTextColor={'#fff'}
+											inputMode='text'
 											maxLength={30}
 											ref={(input) => {
 												this.fNameInput = input;
@@ -81,17 +77,17 @@ export default function Register() {
 											onSubmitEditing={() => {
 												this.lNameInput.focus();
 											}}
-											autoComplete="given-name"
+											autoComplete='given-name'
 											blurOnSubmit={false}
 											onEndEditing={(text) => {
 												setFName(text.nativeEvent.text);
 											}}
 										/>
 										<StyledInput
-											className="bg-offblack text-[18px] ml-1 w-auto flex-1 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-											placeholder={"Last Name"}
-											placeholderTextColor={"#fff"}
-											inputMode="text"
+											className='bg-offblack text-[18px] ml-1 w-auto flex-1 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+											placeholder={'Last Name'}
+											placeholderTextColor={'#fff'}
+											inputMode='text'
 											maxLength={30}
 											ref={(input) => {
 												this.lNameInput = input;
@@ -99,7 +95,7 @@ export default function Register() {
 											onSubmitEditing={() => {
 												this.emailInput.focus();
 											}}
-											autoComplete="family-name"
+											autoComplete='family-name'
 											blurOnSubmit={false}
 											onEndEditing={(text) => {
 												setLName(text.nativeEvent.text);
@@ -107,12 +103,12 @@ export default function Register() {
 										/>
 									</StyledView>
 									<StyledInput
-										className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-										placeholder={"Email"}
-										placeholderTextColor={"#fff"}
-										autoCapitalize="none"
-										inputMode="email"
-										autoComplete="email"
+										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+										placeholder={'Email'}
+										placeholderTextColor={'#fff'}
+										autoCapitalize='none'
+										inputMode='email'
+										autoComplete='email'
 										maxLength={30}
 										ref={(input) => {
 											this.emailInput = input;
@@ -126,9 +122,9 @@ export default function Register() {
 										}}
 									/>
 									<StyledInput
-										className="bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]"
-										placeholder={"Password"}
-										placeholderTextColor={"#fff"}
+										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+										placeholder={'Password'}
+										placeholderTextColor={'#fff'}
 										secureTextEntry={true}
 										maxLength={25}
 										ref={(input) => {
@@ -140,13 +136,13 @@ export default function Register() {
 									/>
 								</StyledView>
 							</StyledView>
-							<StyledView className="flex flex-col items-center">
+							<StyledView className='flex flex-col items-center'>
 								<Button
-									width="w-[85%]"
-									title="Register"
-									textColor="#F7F1E3"
-									backgroundColor="#121212"
-									borderColor="#F9A826"
+									width='w-[85%]'
+									title='Register'
+									textColor='#F7F1E3'
+									backgroundColor='#121212'
+									borderColor='#F9A826'
 									press={() => {
 										Keyboard.dismiss();
 										createUserData(
@@ -158,10 +154,10 @@ export default function Register() {
 										);
 									}}
 								/>
-								<StyledText className="text-offwhite text-center text-[18px] mt-5">
-									Already have an account?{" "}
-									<Link href="/login">
-										<StyledText className="text-yellow font-bold">
+								<StyledText className='text-offwhite text-center text-[18px] mt-5'>
+									Already have an account?{' '}
+									<Link href='/login'>
+										<StyledText className='text-yellow font-bold'>
 											Login
 										</StyledText>
 									</Link>
@@ -170,36 +166,36 @@ export default function Register() {
 						</>
 					</TouchableWithoutFeedback>
 				</KeyboardAwareScrollView>
-				<StatusBar barStyle={"light-content"} />
+				<StatusBar barStyle={'light-content'} />
 			</StyledSafeArea>
 		</>
 	);
 }
 
 async function createUserData(username, fname, lname, email, password) {
-	if (username.length < 1) return alert("Invalid Username"); // check username length
+	if (username.length < 1) return alert('Invalid Username'); // check username length
 
 	let taken = await checkUsername(username); // check if username is taken
-	if (taken) return alert("Username already taken");
+	if (taken) return alert('Username already taken');
 
-	if (fname.length < 1 || lname.length < 1) return alert("Invalid Name"); // check name length
+	if (fname.length < 1 || lname.length < 1) return alert('Invalid Name'); // check name length
 
 	let approvedEmailProviders = [
-		"gmail.com",
-		"yahoo.com",
-		"outlook.com",
-		"icloud.com",
-		"aol.com"
+		'gmail.com',
+		'yahoo.com',
+		'outlook.com',
+		'icloud.com',
+		'aol.com'
 	];
-	let emailCheck = email.split("@");
+	let emailCheck = email.split('@');
 	if (emailCheck.length !== 2)
-		return alert("Invalid Email"); // check email format
+		return alert('Invalid Email'); // check email format
 	else if (!approvedEmailProviders.includes(emailCheck[1]))
-		return alert("Email provider not supported"); // check email provider
+		return alert('Email provider not supported'); // check email provider
 
 	if (!passwordValidation(password)) {
 		return alert(
-			"Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character"
+			'Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
 		);
 	}
 	//clear all fields
@@ -214,7 +210,6 @@ async function createUserData(username, fname, lname, email, password) {
 		fname: fname,
 		lname: lname,
 		email: email,
-		phone: "0000000000",
 		created: new Date().getTime()
 	};
 	registerUser(email, password, userData);
