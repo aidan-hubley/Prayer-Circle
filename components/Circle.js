@@ -45,7 +45,6 @@ export function Circle({ size, press }) {
 			duration: 200,
 			useNativeDriver: true
 		}).start();
-		console.log(menuOpacity);
 	}
 
 	const tap = Gesture.Tap().onEnd(() => {
@@ -110,7 +109,9 @@ export function Circle({ size, press }) {
 					onPressOut={() => {
 						resize(1);
 					}}
-					onPress={() => press()}
+					onPress={() => {
+						if (press) press();
+					}}
 				></AnimatedPressable>
 			</GestureDetector>
 		</>

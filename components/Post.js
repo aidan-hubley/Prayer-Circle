@@ -32,8 +32,8 @@ export const Post = (post) => {
 
 	const toolbarVal = useRef(new Animated.Value(0)).current;
 	const toolbarHeightInter = toolbarVal.interpolate({
-		inputRange: [0, 1],
-		outputRange: [2, 50]
+		inputRange: [0, 0.5, 0.75, 1],
+		outputRange: [2, 10, 20, 51]
 	});
 	const toolbarOpactiyInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
@@ -117,11 +117,11 @@ export const Post = (post) => {
 	}
 
 	return (
-		<StyledView>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto px-[10px] py-[10px] my-[10px]'>
-				<StyledView className='flex flex-row justify-between'>
+		<StyledView className='w-full max-w-[500px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto  py-[10px] my-[10px]'>
+				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
-						<StyledView className=' w-[87%]'>
+						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
 								<StyledImage
 									className='rounded-lg'
@@ -158,64 +158,61 @@ export const Post = (post) => {
 							<Ionicons name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
-							className='flex items-center justify-center w-full aspect-square rounded-full border-[3px] border-offwhite'
+							className='flex items-center justify-center w-[39px] aspect-square rounded-full border-[3px] border-offwhite'
 							onPress={() => {
 								toggleToolbar();
 							}}
-						>
-							<AnimatedIcon
-								style={{
-									transform: [toolbarButtonScale]
-								}}
-								name={'globe'}
-								size={33}
-								color='white'
-							/>
-						</StyledPressable>
+						></StyledPressable>
 					</StyledView>
 				</StyledView>
 				<StyledAnimatedView
 					style={toolbarStyle}
-					className='w-full overflow-hidden rounded-full bg-offblack border border-[#EBEBEB33] px-[15px]'
+					className='px-[5px] w-full overflow-hidden'
 				>
-					<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
-						<StyledOpacity
-							className='flex items-center justify-center w-[30px] h-[30px]'
-							activeOpacity={0.4}
-							onPress={onPress}
-						>
-							<Ionicons
-								name={'ellipsis-horizontal'}
-								size={29}
-								color='white'
-							/>
-						</StyledOpacity>
-						<StyledOpacity
-							className='flex items-center justify-center w-[30px] h-[30px]'
-							activeOpacity={0.4}
-						>
-							<Ionicons
-								name={'heart-circle-outline'}
-								size={29}
-								color='white'
-							/>
-						</StyledOpacity>
-						<StyledOpacity
-							className='flex items-center justify-center w-[30px] h-[30px]'
-							activeOpacity={0.4}
-						>
-							<Ionicons
-								name={'chatbubble-outline'}
-								size={29}
-								color='white'
-							/>
-						</StyledOpacity>
-						<StyledOpacity
-							className='flex items-center justify-center w-[30px] h-[30px] rounded-full border-2 border-offwhite'
-							activeOpacity={0.4}
-						>
-							<Ionicons name={'globe'} size={25} color='white' />
-						</StyledOpacity>
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-[#EBEBEB33]'>
+						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px]'
+								activeOpacity={0.4}
+								onPress={onPress}
+							>
+								<Ionicons
+									name={'ellipsis-horizontal'}
+									size={29}
+									color='white'
+								/>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px]'
+								activeOpacity={0.4}
+							>
+								<Ionicons
+									name={'heart-circle-outline'}
+									size={29}
+									color='white'
+								/>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px]'
+								activeOpacity={0.4}
+							>
+								<Ionicons
+									name={'chatbubble-outline'}
+									size={29}
+									color='white'
+								/>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px] rounded-full border-2 border-offwhite'
+								activeOpacity={0.4}
+							>
+								<Ionicons
+									name={'globe'}
+									size={25}
+									color='white'
+								/>
+							</StyledOpacity>
+						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
 			</StyledView>

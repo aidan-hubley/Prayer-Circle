@@ -13,50 +13,11 @@ export default function Layout() {
 
 	return (
 		<ActionSheetProvider>
-			<>
-				<Stack
-					screenOptions={{
-						headerShown: false
-					}}
-				>
-					<Stack.Screen name='login' />
-				</Stack>
-
-				{/* <ExpandableButton
-					btnStyles='absolute top-20 left-5'
-					height={'h-[50px]'}
-					iconSize={35}
-					icon='journal-outline'
-					expanded={false}
-					expandedWidth={'70%'}
-					collapsedWidth={50}
-					title='Journal'
-					href='/journal'
-					expandedHref='/feed'
-					ref={journalRef}
-					press={() => {
-						if (profileRef.current.pressed)
-							profileRef.current.toggleButton();
-					}}
-				/>
-				<ExpandableButton
-					btnStyles='absolute top-20 right-5'
-					height={'h-[50px]'}
-					iconSize={40}
-					icon='person-circle-outline'
-					expanded={false}
-					expandedWidth={'70%'}
-					collapsedWidth={50}
-					title='Profile'
-					href='/profile'
-					expandedHref='/feed'
-					ref={profileRef}
-					press={() => {
-						if (journalRef.current.pressed)
-							journalRef.current.toggleButton();
-					}}
-				/> */}
-			</>
+			<Stack
+				screenOptions={{
+					headerShown: false
+				}}
+			/>
 		</ActionSheetProvider>
 	);
 }
