@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const StyledText = styled(Text);
 const StyledTouchableHighlight = styled(TouchableHighlight);
 const StyledIcon = styled(Ionicons);
+const StyledView = styled(View);
 const AnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
 );
@@ -19,6 +20,9 @@ function Button({
 	textStyles,
 	btnStyles,
 	bgColor,
+	icon,
+	iconSize,
+	iconColor,
 	textColor,
 	borderColor,
 	press,
@@ -38,13 +42,21 @@ function Button({
 				if (href) router.push(href);
 			}}
 		>
-			<StyledText
-				className={`font-bold ${textColor || 'text-offblack'} ${
-					textSize ? textSize : 'text-[20px]'
-				} ${textStyles}`}
-			>
-				{title}
-			</StyledText>
+			<>
+				<StyledText
+					className={`font-bold ${textColor || 'text-offblack'} ${
+						textSize ? textSize : 'text-[20px]'
+					} ${textStyles} ${icon ? 'hidden' : ''}`}
+				>
+					{title}
+				</StyledText>
+				<StyledIcon
+					className={`${icon ? '' : 'hidden'}`}
+					name={`${icon || 'md-checkmark-circle'}`}
+					size={iconSize || 30}
+					color={`${iconColor || '#121212'}`}
+				/>
+			</>
 		</StyledTouchableHighlight>
 	);
 }
