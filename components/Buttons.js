@@ -7,7 +7,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const StyledText = styled(Text);
 const StyledTouchableHighlight = styled(TouchableHighlight);
 const StyledIcon = styled(Ionicons);
-const StyledView = styled(View);
 const AnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
 );
