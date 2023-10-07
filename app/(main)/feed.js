@@ -34,7 +34,7 @@ export default function Page() {
 						title='Circle Name'
 						href='/circleSettings'
 					/>
-					<StyledView className='w-full flex justify-center items-center'>
+					<StyledView className='w-full flex justify-center items-center pt-[50px]'>
 						<StyledView className='w-full h-[95px]' />
 						<Post
 							user='Alex Muresan'
