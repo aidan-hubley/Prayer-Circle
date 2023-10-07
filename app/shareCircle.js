@@ -11,9 +11,9 @@ const StyledText = styled(Text);
 const shareCircle = async () => {
   try {
     await Share.share({
-      title: 'Hey, join my prayer circle!! Here is the link: https://prayercircle.app/circle/654911684217646',
-      message: 'Hey, join my prayer circle!! Here is the link: https://prayercircle.app/circle/654911684217646',
-      url: 'Hey, join my prayer circle!! Here is the link: https://prayercircle.app/circle/654911684217646'
+      title: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
+      message: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
+      url: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle'
     });
   } catch (error) {
     console.error('Error sharing:', error);
