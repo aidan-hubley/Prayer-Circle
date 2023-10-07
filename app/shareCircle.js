@@ -50,7 +50,7 @@ export default function Page() {
 					height={'h-[60px]'}
 					width={'w-[60px]'}
 					iconSize={40}
-					icon='share-outline'	
+					icon='share'	
 					press={() => shareCircle()}		
 				/>
 
@@ -59,7 +59,7 @@ export default function Page() {
                     height={'h-[60px]'}
                     width={'w-[60px]'}
                     iconSize={40}
-					icon='cog-outline'					
+					icon='cog'					
                     href='circleSettings'
                 />
 			</StyledView>
