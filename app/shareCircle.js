@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, Text, View, Share } from 'react-native';
 import { styled } from 'nativewind';
 import { Button } from '../components/Buttons';
 import QRCode from "react-qr-code";
@@ -8,6 +8,17 @@ const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 
+const shareCircle = async () => {
+  try {
+    await Share.share({
+      title: 'Hey, join my prayer circle!! Here is the link: https://prayercircle.app/circle/654911684217646',
+      message: 'Hey, join my prayer circle!! Here is the link: https://prayercircle.app/circle/654911684217646',
+      url: 'Hey, join my prayer circle!! Here is the link: https://prayercircle.app/circle/654911684217646'
+    });
+  } catch (error) {
+    console.error('Error sharing:', error);
+  }
+}
 
 export default function Page() {
 	return (
@@ -23,26 +34,28 @@ export default function Page() {
 							<QRCode
 								size={240}
 								value={"Hey, this is a test, it works! -"}
+								 onPress={() =>shareCircle()}
 							/>
 						</StyledView>
 					</StyledView>
 					<StyledView className="bg-purple mt-20 p-[10px] rounded-xl">
-						<StyledText className='p-[5px] bg-offwhite rounded-xl text-center font-bold text-3xl text-offblack'>
+						<StyledText className='p-[5px] bg-offwhite rounded-xl text-center font-bold text-3xl text-offblack' onPress={() =>shareCircle()}>
 							654911684217646
 						</StyledText>
 					</StyledView>
 				</StyledView>	
 				
-
 				<Button
-                    btnStyles='sticky absolute right-5 bottom-10'
+					btnStyles='absolute right-5 bottom-10'
 					height={'h-[60px]'}
-                    width={'w-[60px]'}
-                    iconSize={40}
-					icon='share-outline'					
-                />
+					width={'w-[60px]'}
+					iconSize={40}
+					icon='share-outline'	
+					press={() => shareCircle()}		
+				/>
+
                 <Button
-                    btnStyles='sticky absolute left-5 bottom-10'
+                    btnStyles='absolute left-5 bottom-10'
                     height={'h-[60px]'}
                     width={'w-[60px]'}
                     iconSize={40}
