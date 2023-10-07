@@ -22,8 +22,8 @@ function Member({
 }) {
 	return (
 		<StyledView className={`w-100 h-[50px] flex flex-row`}>
-			<StyledView className={`rounded-lg pt-1 pr-1`}>
-				<StyledImage className='rounded-lg'
+			<StyledView className={`rounded-lg pt-1 pr-2`}>
+				<StyledImage className='rounded-xl'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
 				/>
