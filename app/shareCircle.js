@@ -24,7 +24,7 @@ export default function Page() {
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center'>
-				<StyledText className='absolute top-20 text-3xl text-offwhite bg-grey text-center h-[60px] px-[35px] py-[12px] rounded-full'>
+				<StyledText className='absolute top-10 text-3xl text-offwhite bg-grey text-center h-[60px] px-[35px] py-[12px] rounded-full'>
 					Circle Name
 				</StyledText>
 
