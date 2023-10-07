@@ -10,6 +10,7 @@ import {
 import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { Post } from '../../components/Post';
+import { Button } from '../../components/Buttons';
 import { usePathname } from 'expo-router/src/hooks';
 import { toggleMainNav } from './_layout';
 
@@ -24,6 +25,15 @@ export default function Page() {
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
+					{/* if in filtered feed */}
+					{/* Should use this: "left-[1/2] transform -translate-x-1/2" to be centered */}
+					<Button
+						btnStyles='sticky absolute top-20 left-[25.5%] w-[200px] w-min-[175px] w-max-[225px]'
+						height={'h-[60px]'}
+						iconSize={40}					
+						title='Circle Name'
+						href='/circleSettings'
+					/>
 					<StyledView className='w-full flex justify-center items-center'>
 						<StyledView className='w-full h-[95px]' />
 						<Post
