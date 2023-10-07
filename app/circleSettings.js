@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, View, TouchableOpacity, Animated } from 'react-native';
+import { SafeAreaView, Text, View, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import Modal from "react-native-modal";
 import { styled } from 'nativewind';
 import { Button } from '../components/Buttons';
+import { Member } from '../components/Member.js';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
+const StyledScrollView = styled(ScrollView);
 
 export default function Page() {
 
@@ -16,6 +18,8 @@ export default function Page() {
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 	const togglePosition = React.useRef(new Animated.Value(1)).current;
+
+	const Trevor = "https://media.licdn.com/dms/image/C4E03AQEjKbD7qFuQJQ/profile-displayphoto-shrink_200_200/0/1574282480254?e=1701907200&v=beta&t=1BizKLULm5emiKX3xlsRq7twzFTqynOsfTlbRwqNuXI";
 
 	React.useEffect(() => {
 		Animated.timing(togglePosition, {
@@ -87,7 +91,7 @@ export default function Page() {
 						</StyledText>
 						<TouchableOpacity onPress={toggleSwitch}>
 							<StyledView
-								className='left-10 pt-9 w-[80px] h-[30px] rounded-full'
+								className='left-[50px] pt-9 w-[80px] h-[30px] rounded-full'
 								style={{
 									backgroundColor: isEnabled ? "#00A55E" : '#F9A826',
 								}}
@@ -101,11 +105,24 @@ export default function Page() {
 							</StyledView>
 						</TouchableOpacity>
 					</StyledView>
-					<StyledView className="bg-grey h-[60px] py-[12px] rounded-xl pl-5 flex flex-row">
+					<StyledView className="bg-grey h-[425px] py-[12px] rounded-xl pl-5">
 						<StyledText className='font-bold text-3xl text-offwhite'>
 							Members
 						</StyledText>
-
+						<StyledScrollView className="">
+							<Member img={Trevor} name="Josh Philips" username="JoshuaP.149134" role="own"></Member>
+							<Member img={Trevor} name="Alex Muresan" username="muresanCoder.20" role="mod"></Member>
+							<Member img={Trevor} name="Nason Allen" username="AllenNasin0987654" role="mod"></Member>
+							<Member img={Trevor} name="Aidan Hubley" username="HubleyPraying" role="ban"></Member>
+							<Member img={Trevor} name="Trevor Bunch" username="BunchTrevoraccount" role="mem"></Member>
+							<Member img={Trevor} name="Another Account" username="ExampleAccount1" role="sus"></Member>
+							<Member img={Trevor} name="Another Account" username="ExampleAccount2" role="mem"></Member>
+							<Member img={Trevor} name="Another Account" username="ExampleAccount3" role="mem"></Member>
+							<Member img={Trevor} name="Another Account" username="ExampleAccount4" role="mem"></Member>
+							<Member img={Trevor} name="Another Account" username="ExampleAccount5" role="mem"></Member>
+							<Member img={Trevor} name="Another Account" username="ExampleAccount6" role="mem"></Member>
+							<Member img={Trevor} name="Last Account" username="ExampleAccount7" role="ban"></Member>
+						</StyledScrollView>
 					</StyledView>
 				</StyledView>
 
