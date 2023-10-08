@@ -1,11 +1,11 @@
 import { Stack } from 'expo-router/stack';
 import React, { useRef } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { styled } from 'nativewind';
 import { ExpandableButton } from '../../components/Buttons';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
-const StyledView = styled(View);
+const StyledSafeArea = styled(SafeAreaView);
 
 export default function Layout() {
 	const profileRef = useRef();
@@ -21,7 +21,7 @@ export default function Layout() {
 				/>
 
 				<ExpandableButton
-					btnStyles='absolute top-20 left-5'
+					btnStyles='absolute top-[7%] left-5'
 					height={'h-[60px]'}
 					iconSize={40}
 					icon='journal-outline'
@@ -38,7 +38,7 @@ export default function Layout() {
 					}}
 				/>
 				<ExpandableButton
-					btnStyles='absolute top-20 right-5'
+					btnStyles='absolute top-[7%] right-5'
 					height={'h-[60px]'}
 					iconSize={45}
 					icon='person-circle-outline'
