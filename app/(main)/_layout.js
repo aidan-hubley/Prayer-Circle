@@ -21,7 +21,7 @@ export default function Layout() {
 				/>
 
 				<ExpandableButton
-					btnStyles='absolute top-20 left-5'
+					btnStyles='absolute top-[60px] left-5'
 					height={'h-[60px]'}
 					iconSize={40}
 					icon='journal-outline'
@@ -38,7 +38,7 @@ export default function Layout() {
 					}}
 				/>
 				<ExpandableButton
-					btnStyles='absolute top-20 right-5'
+					btnStyles='absolute top-[60px] right-5'
 					height={'h-[60px]'}
 					iconSize={45}
 					icon='person-circle-outline'
