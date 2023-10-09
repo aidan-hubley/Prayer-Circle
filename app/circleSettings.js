@@ -32,7 +32,7 @@ export default function Page() {
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center'>
-				<Button
+				<Button // Leave Circle
 					btnStyles='sticky absolute left-5 top-10 bg-grey rotate-180'
 					height={'h-[60px]'}
 					width={'w-[60px]'}
@@ -41,7 +41,7 @@ export default function Page() {
 					iconColor='#F9A826'
         			onPress={() => setModalVisible(true)}
 				/>
-				<Button
+				<Button // Delete Circle
 					btnStyles='sticky absolute right-5 top-10 bg-grey'
 					height={'h-[60px]'}
 					width={'w-[60px]'}
@@ -74,14 +74,14 @@ export default function Page() {
 				<StyledView className='top-[130px] w-[85%] gap-y-8 flex'>
 					<StyledView className="bg-grey h-[60px] py-[9px] px-[50px] rounded-xl items-center flex flex-row">
 						<Button
-							btnStyles='inline bg-grey border-2 border-purple mr-3'
+							btnStyles='bg-grey border-2 border-purple mr-3'
 							height={'h-[45px]'}
 							width={'w-[45px]'}
 							iconSize={30}
 							icon='musical-notes'
 							iconColor='white'
 						/>
-						<StyledText className='inline font-bold text-3xl text-offwhite'>
+						<StyledText className='font-bold text-3xl text-offwhite'>
 							Circle Name
 						</StyledText>
 					</StyledView>
@@ -126,16 +126,16 @@ export default function Page() {
 					</StyledView>
 				</StyledView>
 
-				<Button
-					btnStyles='sticky absolute right-5 bottom-10'
+				<Button // to Share Page
+					btnStyles='absolute right-5 bottom-5'
 					height={'h-[60px]'}
 					width={'w-[60px]'}
 					iconSize={40}
 					icon='qr-code'
 					href='shareCircle'
 				/>
-				<Button
-					btnStyles='sticky absolute left-5 bottom-10'
+				<Button // Back to Feed Page
+					btnStyles='absolute left-5 bottom-5'
 					height={'h-[60px]'}
 					width={'w-[60px]'}
 					iconSize={40}
