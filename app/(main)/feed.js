@@ -26,16 +26,17 @@ export default function Page() {
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
 					{/* if in filtered feed */}
-					<StyledView className='justify-center items-center pt-[20px]'>
-						<Button
-							btnStyles='absolute top-10 w-[200px] w-min-[175px] w-max-[225px]'
-							height={'h-[60px]'}
-							iconSize={40}					
-							title='Circle Name'
-							href='/circleSettings'
-						/>
-					</StyledView>
-					<StyledView className='w-full flex justify-center items-center pt-[20px]'>
+						<StyledView className='items-center top-10'>
+							<Button
+								btnStyles='w-[200px] w-min-[175px] w-max-[225px]'
+								height={'h-[60px]'}
+								iconSize={40}					
+								title='Circle Name'
+								href='/circleSettings'
+							/>
+						</StyledView>
+					{/* end if */}
+					<StyledView className='w-full flex justify-center items-center'>
 						<StyledView className='w-full h-[95px]' />
 						<Post
 							user='Alex Muresan'

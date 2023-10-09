@@ -76,12 +76,13 @@ export default function Page() {
 				<StyledView className='top-[130px] w-[85%] gap-y-8 flex'>
 					<StyledView className="bg-grey h-[60px] py-[9px] px-[50px] rounded-xl justify-center items-center">
 						<Button
-							btnStyles='absolute left-0 bg-grey border-2 border-purple mr-3'
+							btnStyles='absolute left-5 bg-grey border-2 border-purple mr-3'
 							height={'h-[45px]'}
 							width={'w-[45px]'}
 							iconSize={30}
 							icon='musical-notes'
 							iconColor='white'
+							href='/feed'
 						/>
 						<StyledText className='font-bold text-3xl text-offwhite'>
 							Circle Name
