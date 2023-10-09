@@ -26,14 +26,15 @@ export default function Page() {
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
 					{/* if in filtered feed */}
-					{/* Should use this: "left-[1/2] transform -translate-x-1/2" to be centered */}
-					<Button
-						btnStyles='sticky absolute top-10 left-[25.5%] w-[200px] w-min-[175px] w-max-[225px]'
-						height={'h-[60px]'}
-						iconSize={40}					
-						title='Circle Name'
-						href='/circleSettings'
-					/>
+					<StyledView className='justify-center items-center pt-[20px]'>
+						<Button
+							btnStyles='absolute top-10 w-[200px] w-min-[175px] w-max-[225px]'
+							height={'h-[60px]'}
+							iconSize={40}					
+							title='Circle Name'
+							href='/circleSettings'
+						/>
+					</StyledView>
 					<StyledView className='w-full flex justify-center items-center pt-[20px]'>
 						<StyledView className='w-full h-[95px]' />
 						<Post

@@ -32,26 +32,28 @@ export default function Page() {
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center'>
-				<Button // Leave Circle
-					btnStyles='sticky absolute left-5 top-10 bg-grey rotate-180'
-					height={'h-[60px]'}
-					width={'w-[60px]'}
-					iconSize={40}
-					icon='log-out'
-					iconColor='#F9A826'
-        			onPress={() => setModalVisible(true)}
-				/>
-				<Button // Delete Circle
-					btnStyles='sticky absolute right-5 top-10 bg-grey'
-					height={'h-[60px]'}
-					width={'w-[60px]'}
-					iconSize={40}
-					icon='trash'
-					iconColor='#CC2500'
-				/>
-				<StyledText className='absolute top-10 text-3xl text-offwhite bg-grey text-center h-[60px] px-[35px] py-[12px] rounded-full'>
-					Settings
-				</StyledText>
+				{/* <StyledView className='absolute top-0 w-full h-[60px] bg-grey justify-center items-center'/> */}
+					<Button // Leave Circle
+						btnStyles='absolute left-5 top-10 bg-grey rotate-180'
+						height={'h-[60px]'}
+						width={'w-[60px]'}
+						iconSize={40}
+						icon='log-out'
+						iconColor='#F9A826'
+						onPress={() => setModalVisible(true)}
+					/>
+					<StyledText className='absolute top-10 text-3xl text-offwhite bg-grey h-[60px] px-[35px] py-[12px] rounded-full'>
+						Settings
+					</StyledText>
+					<Button // Delete Circle
+						btnStyles='absolute right-5 top-10 bg-grey'
+						height={'h-[60px]'}
+						width={'w-[60px]'}
+						iconSize={40}
+						icon='trash'
+						iconColor='#CC2500'
+					/>
+				{/* </StyledView> */}
 
 				{/* DOES NOT WORK! */}
 
@@ -72,9 +74,9 @@ export default function Page() {
 				</Modal>
 
 				<StyledView className='top-[130px] w-[85%] gap-y-8 flex'>
-					<StyledView className="bg-grey h-[60px] py-[9px] px-[50px] rounded-xl items-center flex flex-row">
+					<StyledView className="bg-grey h-[60px] py-[9px] px-[50px] rounded-xl justify-center items-center">
 						<Button
-							btnStyles='bg-grey border-2 border-purple mr-3'
+							btnStyles='absolute left-0 bg-grey border-2 border-purple mr-3'
 							height={'h-[45px]'}
 							width={'w-[45px]'}
 							iconSize={30}
