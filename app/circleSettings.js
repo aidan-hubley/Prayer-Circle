@@ -30,11 +30,12 @@ export default function Page() {
 	}, [isEnabled]);
 
 	return (
-		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
-			<StyledView className='flex-1 items-center'>
+		<StyledSafeArea className='bg-purple border' style={{ flex: 1 }}>
+			
+			<StyledView className='flex-1 items-center bg-black'>
 				{/* <StyledView className='absolute top-0 w-full h-[60px] bg-grey justify-center items-center'/> */}
 					<Button // Leave Circle
-						btnStyles='absolute left-5 top-10 bg-grey rotate-180'
+						btnStyles='absolute left-5 top-[15px] bg-grey rotate-180'
 						height={'h-[60px]'}
 						width={'w-[60px]'}
 						iconSize={40}
@@ -42,9 +43,11 @@ export default function Page() {
 						iconColor='#F9A826'
 						onPress={() => setModalVisible(true)}
 					/>
-					<StyledText className='absolute top-10 text-3xl text-offwhite bg-grey h-[60px] px-[35px] py-[12px] rounded-full'>
-						Settings
-					</StyledText>
+					<StyledView className='absolute top-10 bg-grey h-[60px] px-[35px] py-[12px] rounded-full'>
+						<StyledText className='text-3xl text-offwhite'>
+							Settings
+						</StyledText>
+					</StyledView>
 					<Button // Delete Circle
 						btnStyles='absolute right-5 top-10 bg-grey'
 						height={'h-[60px]'}

@@ -28,6 +28,7 @@ export default function Page() {
 					Circle Name
 				</StyledText>
 
+				<StyledView className='absolute top-[200px]'>
 					<StyledView className="bg-purple p-[10px] rounded-xl">
 						<StyledView className='p-[25px] bg-offwhite rounded-xl'>
 							<QRCode
@@ -42,7 +43,7 @@ export default function Page() {
 							654911684217646
 						</StyledText>
 					</StyledView>	
-				
+				</StyledView>
 				
 			</StyledView>
 				<Button // Share Circle
