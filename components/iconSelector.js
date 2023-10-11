@@ -22,17 +22,21 @@ const StyledIcon = styled(Ionicons);
 const StyledScrollView = styled(ScrollView);
 const StyledAnimView = styled(Animated.View);
 const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
+const StyledOpacity = styled(TouchableOpacity);
 
-const IconSelector = forwardRef(({}, ref) => {
+const IconSelector = forwardRef(({ close }, ref) => {
 	const icons = [
+		'globe',
 		'settings',
-		'globe',
-		'globe',
+		'settings',
 		'airplane',
 		'alarm',
 		'alert-circle',
 		'american-football',
-		'globe'
+		'settings',
+		'alarm',
+		'alert-circle',
+		'alert-circle'
 	];
 	const [icon, setIcon] = useState('');
 	const [opened, setOpened] = useState(false);
@@ -61,56 +65,36 @@ const IconSelector = forwardRef(({}, ref) => {
 		icon
 	}));
 
-	function IconsRow(icons) {
-		return (
-			<StyledView className='flex flex-row justify-around my-2'>
-				<TouchableOpacity
-					onPress={() => {
-						setIcon(icons[0]);
-					}}
-				>
-					<StyledIcon name={icons[0]} color={'#EBEBEB'} size={40} />
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						setIcon(icons[1]);
-					}}
-				>
-					<StyledIcon name={icons[1]} color={'#EBEBEB'} size={40} />
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						setIcon(icons[2]);
-					}}
-				>
-					<StyledIcon name={icons[2]} color={'#EBEBEB'} size={40} />
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						setIcon(icons[3]);
-					}}
-				>
-					<StyledIcon name={icons[3]} color={'#EBEBEB'} size={40} />
-				</TouchableOpacity>
-			</StyledView>
-		);
-	}
-
 	function iconGallery(icons) {
-		let generateIcons = [];
-		for (let i = 0; i < icons.length / 4; i++) {
-			let index = i * 4;
-			generateIcons.push(
-				IconsRow([
-					icons[index],
-					icons[index + 1],
-					icons[index + 2],
-					icons[index + 3]
-				])
-			);
+		let items = [];
+		let numRows = Math.ceil(icons.length / 4) * 4;
+		for (let i = 0; i < numRows; i++) {
+			if (icons[i]) {
+				items.push(
+					<StyledOpacity
+						key={i}
+						onPress={() => {
+							setIcon(icons[i]);
+							toggleSelector(false);
+							close();
+						}}
+						className='w-[60px] h-[60px] items-center justify-center mb-1'
+					>
+						<StyledIcon
+							key={i}
+							name={icons[i]}
+							size={40}
+							color={'#ffffff'}
+						/>
+					</StyledOpacity>
+				);
+			} else {
+				items.push(
+					<StyledView className='w-[60px] h-[60px] mb-1'></StyledView>
+				);
+			}
 		}
-
-		return generateIcons;
+		return items;
 	}
 
 	return (
@@ -118,19 +102,22 @@ const IconSelector = forwardRef(({}, ref) => {
 			<StyledPressable
 				style={{ opacity: bgOpacityInterpolation }}
 				pointerEvents={opened ? 'auto' : 'none'}
-				onPress={() => toggleSelector(false)}
+				onPress={() => {
+					toggleSelector(false);
+					close();
+				}}
 				className='absolute top-0 left-0 bg-offblack w-screen h-screen'
 			/>
 			<StyledAnimView
 				style={{ opacity: opacityInterpolation }}
 				pointerEvents={opened ? 'auto' : 'none'}
-				className='absolute -translate-x-[150px] left-1/2 top-[60%] -translate-y-[250px] w-[80%] p-[15px] max-w-[300px] h-[50%] max-h-[500px] bg-offblack border border-[#3d3d3d] rounded-[20px]'
+				className='absolute -translate-x-[150px] left-1/2 top-[60%] -translate-y-[250px] w-[80%] p-[15px] max-w-[300px] h-[50%] max-h-[500px] bg-offblack border border-[#3D3D3D] rounded-[20px]'
 			>
 				<StyledText className='text-offwhite font-bold text-3xl text-center mb-3'>
 					Select an Icon
 				</StyledText>
 				<StyledScrollView>
-					<StyledView className='flex flex-col'>
+					<StyledView className='flex justify-around flex-row flex-wrap'>
 						{iconGallery(icons)}
 					</StyledView>
 				</StyledScrollView>

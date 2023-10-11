@@ -6,6 +6,7 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Image,
+	Pressable,
 	StatusBar
 } from 'react-native';
 import { styled } from 'nativewind';
@@ -13,6 +14,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Button } from '../../components/Buttons';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { IconSelector } from '../../components/iconSelector';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -20,11 +22,13 @@ const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledImage = styled(Image);
+const StyledIcon = styled(Ionicons);
+const StyledPressable = styled(Pressable);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
-	const [circleIcon, setCircleIcon] = useState('');
+	const [circleIcon, setCircleIcon] = useState('globe');
 
 	const iconSelectorRef = useRef();
 
@@ -45,7 +49,6 @@ export default function Page() {
 						break;
 
 					case 1:
-						console.log(iconSelectorRef.current);
 						iconSelectorRef.current.toggleSelector(true);
 						break;
 
@@ -55,6 +58,12 @@ export default function Page() {
 			}
 		);
 	};
+
+	function updateIcon() {
+		setTimeout(() => {
+			setCircleIcon(iconSelectorRef.current.icon);
+		}, 100);
+	}
 
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
@@ -68,16 +77,21 @@ export default function Page() {
 						</StyledView>
 						<StyledView className='flex flex-col w-screen items-center px-[20px]'>
 							<StyledOpacity
-								className='w-[120px] h-[120px] border-[5px] border-purple rounded-full mb-5'
+								className='w-[120px] h-[120px] border-[5px] items-center justify-center border-purple rounded-full mb-5'
 								onPress={() => {
 									onPress();
 								}}
 							>
-								<StyledImage
+								{/* <StyledImage
 									className='w-full h-full rounded-full'
 									source={{
 										uri: 'https://picsum.photos/435'
 									}}
+								/> */}
+								<StyledIcon
+									name={circleIcon}
+									size={80}
+									color={'#ffffff'}
 								/>
 							</StyledOpacity>
 
@@ -130,7 +144,10 @@ export default function Page() {
 						width='w-[125px]'
 					/>
 				</StyledView>
-				<IconSelector ref={iconSelectorRef} />
+				<IconSelector
+					close={() => updateIcon()}
+					ref={iconSelectorRef}
+				/>
 			</>
 		</StyledSafeArea>
 	);
