@@ -6,7 +6,6 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Image,
-	Pressable,
 	StatusBar
 } from 'react-native';
 import { styled } from 'nativewind';
@@ -23,12 +22,11 @@ const StyledInput = styled(TextInput);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledImage = styled(Image);
 const StyledIcon = styled(Ionicons);
-const StyledPressable = styled(Pressable);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
-	const [circleIcon, setCircleIcon] = useState('globe');
+	const [circleIcon, setCircleIcon] = useState('');
 
 	const iconSelectorRef = useRef();
 
