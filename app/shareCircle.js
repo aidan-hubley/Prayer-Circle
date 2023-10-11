@@ -28,7 +28,6 @@ export default function Page() {
 					Circle Name
 				</StyledText>
 
-				<StyledView className='absolute top-[200px]'>
 					<StyledView className="bg-purple p-[10px] rounded-xl">
 						<StyledView className='p-[25px] bg-offwhite rounded-xl'>
 							<QRCode
@@ -42,11 +41,12 @@ export default function Page() {
 						<StyledText className='p-[5px] bg-offwhite rounded-xl text-center font-bold text-3xl text-offblack' onPress={() =>shareCircle()}>
 							654911684217646
 						</StyledText>
-					</StyledView>
-				</StyledView>	
+					</StyledView>	
 				
-				<Button
-					btnStyles='absolute right-5 bottom-10'
+				
+			</StyledView>
+				<Button // Share Circle
+					btnStyles='absolute right-5 bottom-5'
 					height={'h-[60px]'}
 					width={'w-[60px]'}
 					iconSize={40}
@@ -54,15 +54,14 @@ export default function Page() {
 					press={() => shareCircle()}		
 				/>
 
-                <Button
-                    btnStyles='absolute left-5 bottom-10'
+                <Button // to Settings Page 	
+                    btnStyles='absolute left-5 bottom-5'
                     height={'h-[60px]'}
                     width={'w-[60px]'}
                     iconSize={40}
 					icon='cog'					
                     href='circleSettings'
                 />
-			</StyledView>
 		</StyledSafeArea>
 	);
 }

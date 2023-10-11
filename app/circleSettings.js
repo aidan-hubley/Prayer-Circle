@@ -129,7 +129,9 @@ export default function Page() {
 					</StyledView>
 				</StyledView>
 
-				<Button // to Share Page
+				
+			</StyledView>
+			<Button // to Share Page
 					btnStyles='absolute right-5 bottom-5'
 					height={'h-[60px]'}
 					width={'w-[60px]'}
@@ -145,7 +147,6 @@ export default function Page() {
 					icon='arrow-back'
 					href='/feed'
 				/>
-			</StyledView>
 		</StyledSafeArea>
 	);
 }
