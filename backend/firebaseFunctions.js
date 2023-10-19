@@ -1,11 +1,11 @@
-import { database, auth, router } from "./config.js";
-import { ref, child, get, push, set } from "firebase/database";
+import { database, auth, router } from './config.js';
+import { ref, child, get, push, set } from 'firebase/database';
 import {
 	createUserWithEmailAndPassword,
 	onAuthStateChanged,
 	signInWithEmailAndPassword
-} from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function readData(path) {
 	return await get(child(ref(database), path))
@@ -13,7 +13,7 @@ export async function readData(path) {
 			if (snapshot.exists()) {
 				return snapshot.val();
 			} else {
-				console.log("No data available");
+				console.log('No data available');
 			}
 		})
 		.catch((error) => {
@@ -25,7 +25,7 @@ export async function writeData(path, data, overwrite = false) {
 	if (overwrite) {
 		set(ref(database, path), data)
 			.then(() => {
-				console.log("data written successfully");
+				console.log('data written successfully');
 			})
 			.catch((error) => {
 				console.error(error);
@@ -33,7 +33,7 @@ export async function writeData(path, data, overwrite = false) {
 	} else {
 		push(ref(database, path), data)
 			.then(() => {
-				console.log("data written successfully");
+				console.log('data written successfully');
 			})
 			.catch((error) => {
 				console.error(error);
@@ -44,7 +44,7 @@ export async function writeData(path, data, overwrite = false) {
 export async function deleteData(path) {
 	set(ref(database, path), null)
 		.then(() => {
-			console.log("data deleted successfully");
+			console.log('data deleted successfully');
 		})
 		.catch((error) => {
 			console.error(error);
@@ -76,14 +76,14 @@ export async function loginUser(email, password) {
 		.then(async (userCredential) => {
 			// Signed in
 			const user = userCredential.user;
-			await AsyncStorage.setItem("user", user.uid);
-			router.push("/feed");
+			await AsyncStorage.setItem('user', user.uid);
+			router.push('/feed');
 		})
 		.catch((error) => {
 			const errorCode = error.code;
 			const errorMessage = error.message;
 			console.log(errorCode, errorMessage);
-			alert("Incorrect email or password");
+			alert('Incorrect email or password');
 		});
 }
 
@@ -94,7 +94,7 @@ export async function checkUsername(username) {
 	usernames = Object.keys(usernames);
 	usernames.forEach((uName) => {
 		if (!taken && uName.toLowerCase() == username.toLowerCase()) {
-			console.log("username taken", username);
+			console.log('username taken', username);
 			taken = true;
 		}
 	});
@@ -108,9 +108,9 @@ export function generateId() {
 export function userLoggedIn() {
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
-			console.log("user logged in");
+			console.log('user logged in');
 		} else {
-			console.log("user logged out");
+			console.log('user logged out');
 		}
 	});
 }

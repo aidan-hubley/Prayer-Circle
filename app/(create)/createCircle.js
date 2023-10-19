@@ -5,8 +5,7 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Image,
-	StatusBar
+	Image
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -14,6 +13,7 @@ import { Button } from '../../components/Buttons';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { IconSelector } from '../../components/iconSelector';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { createCircle } from '../../backend/firebaseFunctions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -25,7 +25,7 @@ const StyledIcon = styled(Ionicons);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
-	const [body, setBody] = useState('');
+	const [description, setDescription] = useState('');
 	const [circleIcon, setCircleIcon] = useState('');
 
 	const iconSelectorRef = useRef();
@@ -97,23 +97,26 @@ export default function Page() {
 								<StyledInput
 									className='bg-offblack text-[18px] flex-1 h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[5px] mr-1'
 									placeholder={'Circle Name'}
-									placeholderTextColor={'#fff'}
+									placeholderTextColor={'#ffffff66'}
 									inputMode='text'
-									/* autoFocus */
+									autoFocus
 									maxLength={22}
 									ref={(input) => {
 										this.circleTitle = input;
 									}}
 								/>
+								{/* TODO: Make into a fuctioning color picker */}
 								<StyledView className='w-[50px] h-[42px] ml-1 rounded-lg bg-purple border border-offwhite'></StyledView>
 							</StyledView>
 							<StyledInput
-								className='bg-offblack text-[18px] w-full min-h-[100px] h-[200px] max-h-[50%] text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-3'
-								placeholder={'Write a Post'}
-								multiline
-								placeholderTextColor={'#fff'}
+								className='bg-offblack text-[18px] w-full h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-3'
+								placeholder={'Write a bit about this Circle...'}
+								placeholderTextColor={'#ffffff66'}
 								inputMode='text'
 								maxLength={500}
+								onChangeText={(text) => {
+									setDescription(text);
+								}}
 								ref={(input) => {
 									this.circleDescription = input;
 								}}
@@ -137,9 +140,22 @@ export default function Page() {
 					/>
 					<Button
 						title='Draw'
-						href='/imageUpload'
 						height='h-[60px]'
 						width='w-[125px]'
+						href='/feed'
+						press={async () => {
+							let data = {
+								title: title,
+								body: description,
+								icon: circleIcon,
+								created: Date.now(),
+								type: 'individual'
+							};
+							createCircle(data);
+							this.circleTitle.clear();
+							this.circleDescription.clear();
+							alert('Circle Successfully Created');
+						}}
 					/>
 				</StyledView>
 				<IconSelector

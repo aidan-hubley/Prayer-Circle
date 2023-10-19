@@ -72,7 +72,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			if (icons[i]) {
 				items.push(
 					<StyledOpacity
-						key={i}
+						key={`icon${i}`}
 						onPress={() => {
 							setIcon(icons[i]);
 							toggleSelector(false);
@@ -90,7 +90,10 @@ const IconSelector = forwardRef(({ close }, ref) => {
 				);
 			} else {
 				items.push(
-					<StyledView className='w-[60px] h-[60px] mb-1'></StyledView>
+					<StyledView
+						key={`icon${i}`}
+						className='w-[60px] h-[60px] mb-1'
+					></StyledView>
 				);
 			}
 		}
