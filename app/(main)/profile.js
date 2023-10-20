@@ -22,10 +22,12 @@ export default function Page() {
 		<StyledView className='bg-offblack'>
 			<StyledScrollView className='px-[15px] pt-[145px] '>
 				<StyledView className='flex items-center w-full'>
-					<StyledImage
-						className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'
-						source={{ uri: 'https://picsum.photos/1223' }}
-					/>
+					<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
+						<StyledImage
+							className='w-full h-full rounded-[20px]'
+							source={{ uri: 'https://picsum.photos/1223' }}
+						/>
+					</StyledView>
 					<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 						Lucas Blakely
 					</StyledText>
