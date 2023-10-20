@@ -66,7 +66,7 @@ export function Circle({ size, press }) {
 			<AnimatedPressable
 				style={pressedStyle2}
 				pointerEvents={pressed ? 'auto' : 'none'}
-				className={`absolute bottom-[-40px] left-0 h-screen w-screen bg-[#121212] pointer-events-none`}
+				className={`absolute bottom-[-40px] left-0 h-screen w-screen bg-[#121212]`}
 				onPress={() => {
 					toggleOptions();
 				}}
@@ -96,12 +96,11 @@ export function Circle({ size, press }) {
 					href='/createPost'
 				/>
 			</AnimatedView>
-
 			<GestureDetector gesture={composed}>
 				<AnimatedPressable
 					style={{ transform: [{ scale: scaleInterpolation }] }}
-					className={`flex items-center justify-center rounded-full border-[6px] border-offwhite
-                ${size || 'h-44 w-44'} 
+					className={`rounded-full border-[6px] border-offwhite
+                ${size || 'h-[80px] w-[80px]'} 
             `}
 					onPressIn={() => {
 						resize(0.7);

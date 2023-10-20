@@ -1,31 +1,29 @@
 import React from 'react';
-import {
-	SafeAreaView,
-	Text,
-	View,
-	StatusBar,
-	Image,
-	ScrollView
-} from 'react-native';
+import { Text, View, Image, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledScrollView = styled(ScrollView);
 const StyledImage = styled(Image);
+const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	let insets = useSafeAreaInsets();
 	return (
 		<StyledView className='bg-offblack'>
 			<StyledScrollView className='px-[15px] pt-[145px] '>
 				<StyledView className='flex items-center w-full'>
-					<StyledImage
-						className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'
-						source={{ uri: 'https://picsum.photos/1223' }}
-					/>
+					<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
+						<StyledImage
+							className='w-full h-full rounded-[20px]'
+							source={{ uri: 'https://picsum.photos/1223' }}
+						/>
+					</StyledView>
 					<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 						Lucas Blakely
 					</StyledText>
@@ -62,7 +60,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
 					/>
 				</StyledView>
-				<StyledView className='h-[180px]'></StyledView>
+				<StyledView className='h-[230px]'></StyledView>
 			</StyledScrollView>
 			<Button
 				btnStyles='absolute bottom-[26px] right-5'
@@ -79,6 +77,14 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 				icon='mail-unread'
 				iconSize={36}
 				href='/settings'
+			/>
+			<StyledGradient
+				pointerEvents='none'
+				start={{ x: 0, y: 0.1 }}
+				end={{ x: 0, y: 1 }}
+				style={{ height: insets.top + 60 }}
+				className='absolute w-screen'
+				colors={['#121212', 'transparent']}
 			/>
 		</StyledView>
 	);
