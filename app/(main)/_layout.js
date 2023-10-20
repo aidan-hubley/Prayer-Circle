@@ -30,7 +30,6 @@ export default function Layout() {
 				</StyledView>
 				<StyledView className=' w-screen flex flex-row justify-between items-center px-[20px] pt-[5px]'>
 					<ExpandableButton
-						pointerEvents='auto'
 						btnStyles={`${ExtraSafeArea ? '' : 'top-[5px]'}`}
 						height={'h-[50px]'}
 						iconSize={35}
