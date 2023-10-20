@@ -1,16 +1,12 @@
 import { Stack } from 'expo-router/stack';
 import React, { useRef } from 'react';
 import { View } from 'react-native';
-import {
-	SafeAreaView,
-	useSafeAreaInsets
-} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { ExpandableButton } from '../../components/Buttons';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import * as Device from 'expo-device';
 
-const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 
 export default function Layout() {

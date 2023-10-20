@@ -1,84 +1,84 @@
 {
-    "prayer_circle": {
-        "users": {
-            "_uid_": {
-                "username": "Username",
-                "fname": "First Name",
-                "lname": "Last Name",
-                "email": "Email",
-                "phone": "Phone",
-                "created": 1234567890,
-                "circles": {
-                    "_pushId_": {
-                        "permissions": {
-                            "admin": true,
-                            "write": true,
-                            "read": true
-                        }
-                    }
-                },
-                "reactions": {
-                    "_pushId_": true
-                },
-                "comments": {
-                    "_pushId_": true
-                }
-            }
-        },
-        "posts": {
-            "_pushId_": {
-                "user": "_uid_",
-                "text": "Post text",
-                "type": "Post type",
-                "timestamp": 1234567890,
-                "comments": {
-                    "_pushId_": true
-                },
-                "reactions": {
-                    "_pushId_": true
-                },
-                "circles": {
-                    "_pushId_": true
-                },
-                "metadata": {
-                    "location": "123.456, 123.456",
-                    "start_time": "",
-                    "end_time": "",
-                    "flag_count": 0
-                }
-            }
-        },
-        "reactions": {
-            "_pushId_": {
-                "user": "_uid_",
-                "post": "_pushId_",
-                "reaction": "Reaction type"
-            }
-        },
-        "comments": {
-            "_pushId_": {
-                "user": "_uid_",
-                "text": "Comment text",
-                "timestamp": 1234567890
-            }
-        },
-        "circles": {
-            "_pushId_": {
-                "name": "Circle name",
-                "created": 1234567890,
-                "icon": "icon.i",
-                "description": "Circle description",
-                "type": "individual/organization",
-                "members": {
-                    "_uid_": true
-                },
-                "posts": {
-                    "_pushId_": true
-                },
-                "admin": {
-                    "_uid_": true
-                }
-            }
-        }
-    }
+	"prayer_circle": {
+		"users": {
+			"_uid_": {
+				"username": "Username",
+				"fname": "First Name",
+				"lname": "Last Name",
+				"email": "Email",
+				"phone": "Phone",
+				"created": 1234567890,
+				"circles": {
+					"_pushId_": {
+						"permissions": {
+							"admin": true,
+							"write": true,
+							"read": true
+						}
+					}
+				},
+				"reactions": {
+					"_pushId_": true
+				},
+				"comments": {
+					"_pushId_": true
+				}
+			}
+		},
+		"posts": {
+			"_pushId_": {
+				"user": "_uid_",
+				"text": "Post text",
+				"type": "Post type",
+				"timestamp": 1234567890,
+				"comments": {
+					"_pushId_": true
+				},
+				"reactions": {
+					"_pushId_": true
+				},
+				"circles": {
+					"_pushId_": true
+				},
+				"metadata": {
+					"location": "123.456, 123.456",
+					"start_time": "",
+					"end_time": "",
+					"flag_count": 0
+				}
+			}
+		},
+		"reactions": {
+			"_pushId_": {
+				"user": "_uid_",
+				"post": "_pushId_",
+				"reaction": "Reaction type"
+			}
+		},
+		"comments": {
+			"_pushId_": {
+				"user": "_uid_",
+				"text": "Comment text",
+				"timestamp": 1234567890
+			}
+		},
+		"circles": {
+			"_pushId_": {
+				"name": "Circle name",
+				"created": 1234567890,
+				"icon": "icon.i",
+				"description": "Circle description",
+				"type": "individual/organization",
+				"members": {
+					"_uid_": true
+				},
+				"posts": {
+					"_pushId_": true
+				},
+				"admin": {
+					"_uid_": true
+				}
+			}
+		}
+	}
 }
