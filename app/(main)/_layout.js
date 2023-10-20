@@ -20,17 +20,17 @@ export default function Layout() {
 
 	return (
 		<ActionSheetProvider>
-			<StyledSafeArea className='flex-1'>
-				<StyledView className='absolute top-0 w-screen h-screen'>
-					<Stack
-						screenOptions={{
-							headerShown: false
-						}}
-					/>
-				</StyledView>
-				<StyledView className=' w-screen flex flex-row justify-between items-center px-[20px] pt-[5px]'>
+			<>
+				<Stack
+					screenOptions={{
+						headerShown: false
+					}}
+				/>
+				<StyledView
+					style={{ top: insets.top + 5 }}
+					className={`w-screen absolute flex flex-row justify-between items-center px-[20px] pt-[5px]`}
+				>
 					<ExpandableButton
-						btnStyles={`${insets.top > 30 ? '' : 'top-[5px]'}`}
 						height={'h-[50px]'}
 						iconSize={35}
 						icon='journal-outline'
@@ -47,7 +47,6 @@ export default function Layout() {
 						}}
 					/>
 					<ExpandableButton
-						btnStyles={`${insets.top > 30 ? '' : 'top-[5px]'}`}
 						height={'h-[50px]'}
 						iconSize={40}
 						icon='person-circle-outline'
@@ -64,7 +63,7 @@ export default function Layout() {
 						}}
 					/>
 				</StyledView>
-			</StyledSafeArea>
+			</>
 		</ActionSheetProvider>
 	);
 }
