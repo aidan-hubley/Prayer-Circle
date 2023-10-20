@@ -1,6 +1,10 @@
 import { Stack } from 'expo-router/stack';
 import React, { useRef } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
+import {
+	SafeAreaView,
+	useSafeAreaInsets
+} from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { ExpandableButton } from '../../components/Buttons';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
@@ -12,11 +16,7 @@ const StyledView = styled(View);
 export default function Layout() {
 	const profileRef = useRef();
 	const journalRef = useRef();
-
-	let ExtraSafeArea =
-		Device.brand === 'Apple' &&
-		(Device.modelName.split(' ')[1] == 'X' ||
-			Device.modelName.split(' ')[1] >= 11);
+	let insets = useSafeAreaInsets();
 
 	return (
 		<ActionSheetProvider>
@@ -30,7 +30,7 @@ export default function Layout() {
 				</StyledView>
 				<StyledView className=' w-screen flex flex-row justify-between items-center px-[20px] pt-[5px]'>
 					<ExpandableButton
-						btnStyles={`${ExtraSafeArea ? '' : 'top-[5px]'}`}
+						btnStyles={`${insets.top > 30 ? '' : 'top-[5px]'}`}
 						height={'h-[50px]'}
 						iconSize={35}
 						icon='journal-outline'
@@ -47,7 +47,7 @@ export default function Layout() {
 						}}
 					/>
 					<ExpandableButton
-						btnStyles={`${ExtraSafeArea ? '' : 'top-[5px]'}`}
+						btnStyles={`${insets.top > 30 ? '' : 'top-[5px]'}`}
 						height={'h-[50px]'}
 						iconSize={40}
 						icon='person-circle-outline'
