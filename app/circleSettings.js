@@ -11,6 +11,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledScrollView = styled(ScrollView);
+const StyledModal = styled(Modal);
 
 export default function Page() {
 	let insets = useSafeAreaInsets();
@@ -60,32 +61,7 @@ export default function Page() {
 					iconColor='#CC2500'
 				/>
 
-				<Modal isVisible={isModalVisible}>
-					<StyledSafeArea className='bg-offblack border-[5px] border-offwhite rounded-xl' style={{ flex: 1 }}>
-						<StyledView className='flex-1 items-center'>
-							<StyledText className='top-[6%] text-3xl text-offwhite'>
-								Leave this circle?
-							</StyledText>
 
-							<Button
-								btnStyles='top-[10%] bg-grey border-2 border-purple'
-								height={'h-[90px]'}
-								width={'w-[90px]'}
-								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
-								href='/feed'
-							/>
-
-							<StyledText className='top-[15%] text-3xl text-offwhite'>
-								Circle Name
-							</StyledText>
-
-							<Button title="Leave" btnStyles={"top-[40%]"} width="w-[60%]" press={toggleModal} />
-							<Button title="Cancel" btnStyles={"top-[45%]"} width="w-[60%]" press={toggleModal} />
-						</StyledView>
-					</StyledSafeArea>
-				</Modal>
 
 				<StyledView className='top-[110px] w-[85%] gap-y-8 flex'>
 					<StyledView className="bg-grey h-[60px] py-[9px] px-[50px] rounded-xl justify-center items-center">
@@ -153,14 +129,49 @@ export default function Page() {
 					icon='qr-code'
 					href='shareCircle'
 				/>
-				<Button // Back to Feed Page
-					btnStyles='absolute left-5 bottom-5'
-					height={'h-[60px]'}
-					width={'w-[60px]'}
-					iconSize={40}
-					icon='arrow-back'
-					href='/feed'
-				/>
+			<Button // Back to Feed Page
+				btnStyles='absolute left-5 bottom-5'
+				height={'h-[60px]'}
+				width={'w-[60px]'}
+				iconSize={40}
+				icon='arrow-back'
+				href='/feed'
+			/>
+
+			<StyledModal className="w-[80%] self-center" isVisible={isModalVisible}>
+				<StyledSafeArea className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[60%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledText className='top-[6%] text-3xl text-offwhite'>
+							Leave this circle?
+						</StyledText>
+
+						<Button
+							btnStyles='top-[15%] bg-grey border-2 border-purple'
+							height={'h-[90px]'}
+							width={'w-[90px]'}
+							iconSize={60}
+							icon='musical-notes'
+							iconColor='white'
+							href='/feed'
+						/>
+
+						<StyledText className='top-[20%] text-3xl text-offwhite'>
+							Circle Name
+						</StyledText>
+						{/* Database call to remove from Circle  */}
+						<Button 
+							title="Leave" 
+							btnStyles={"top-[31%] border-2 border-yellow"}
+							bgColor={"bg-offblack"} 
+							textStyles={"text-yellow"} 
+							width="w-[70%]"
+							press={toggleModal}
+						/>
+						<Button title="Cancel" btnStyles={"top-[37%]"} width="w-[70%]" press={toggleModal} />
+					</StyledView>
+				</StyledSafeArea>
+			</StyledModal>		
+
 		</StyledSafeArea>
 	);
 }
