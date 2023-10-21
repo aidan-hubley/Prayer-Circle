@@ -17,8 +17,11 @@ export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	
-	const [isModalVisible, setModalVisible] = useState(false);
-	const toggleModal = () => { setModalVisible(!isModalVisible); };
+	const [isModalVisible1, setModalVisible1] = useState(false);
+	const toggleModal1 = () => { setModalVisible1(!isModalVisible1); };
+
+	const [isModalVisible2, setModalVisible2] = useState(false);
+	const toggleModal2 = () => { setModalVisible2(!isModalVisible2); };
 
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -45,7 +48,7 @@ export default function Page() {
 					iconSize={40}
 					icon='log-out'
 					iconColor='#F9A826'
-					press={toggleModal}
+					press={toggleModal1}
 				/>
 				<StyledView className='absolute bg-grey h-[60px] px-[35px] py-[12px] rounded-full'>
 					<StyledText className='text-3xl text-offwhite'>
@@ -59,9 +62,8 @@ export default function Page() {
 					iconSize={40}
 					icon='trash'
 					iconColor='#CC2500'
+					press={toggleModal2}
 				/>
-
-
 
 				<StyledView className='top-[110px] w-[85%] gap-y-8 flex'>
 					<StyledView className="bg-grey h-[60px] py-[9px] px-[50px] rounded-xl justify-center items-center">
@@ -138,15 +140,15 @@ export default function Page() {
 				href='/feed'
 			/>
 
-			<StyledModal className="w-[80%] self-center" isVisible={isModalVisible}>
-				<StyledSafeArea className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[60%]'>
+			<StyledModal className="w-[80%] self-center" isVisible={isModalVisible1}>
+				<StyledSafeArea className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
 					<StyledView className='flex-1 items-center h-[60%]'>
 						<StyledText className='top-[6%] text-3xl text-offwhite'>
 							Leave this circle?
 						</StyledText>
 
 						<Button
-							btnStyles='top-[15%] bg-grey border-2 border-purple'
+							btnStyles='top-[15%] bg-grey border-4 border-purple'
 							height={'h-[90px]'}
 							width={'w-[90px]'}
 							iconSize={60}
@@ -165,9 +167,43 @@ export default function Page() {
 							bgColor={"bg-offblack"} 
 							textStyles={"text-yellow"} 
 							width="w-[70%]"
-							press={toggleModal}
+							press={toggleModal1}
 						/>
-						<Button title="Cancel" btnStyles={"top-[37%]"} width="w-[70%]" press={toggleModal} />
+						<Button title="Cancel" btnStyles={"top-[37%]"} width="w-[70%]" press={toggleModal1} />
+					</StyledView>
+				</StyledSafeArea>
+			</StyledModal>		
+
+			<StyledModal className="w-[80%] self-center" isVisible={isModalVisible2}>
+				<StyledSafeArea className='bg-offblack border-[5px] border-red rounded-2xl h-[60%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledText className='top-[6%] text-3xl text-offwhite'>
+							Delete this circle?
+						</StyledText>
+
+						<Button
+							btnStyles='top-[15%] bg-grey border-4 border-purple'
+							height={'h-[90px]'}
+							width={'w-[90px]'}
+							iconSize={60}
+							icon='musical-notes'
+							iconColor='white'
+							href='/feed'
+						/>
+
+						<StyledText className='top-[20%] text-3xl text-offwhite'>
+							Circle Name
+						</StyledText>
+						{/* Database call to remove from Circle  */}
+						<Button 
+							title="Leave" 
+							btnStyles={"top-[31%] border-2 border-red"}
+							bgColor={"bg-offblack"} 
+							textStyles={"text-red"} 
+							width="w-[70%]"
+							press={toggleModal2}
+						/>
+						<Button title="Cancel" btnStyles={"top-[37%]"} width="w-[70%]" press={toggleModal2} />
 					</StyledView>
 				</StyledSafeArea>
 			</StyledModal>		
