@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Text, View, TextInput, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
-import { PostTypeSelector } from '../components/PostTypeSelector';
+import { PostTypeSelector } from '../../components/PostTypeSelector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -55,13 +55,17 @@ export default function Page() {
 				<Button
 					title='Erase'
 					width='w-[125px]'
+					height='h-[60px]'
 					href='/feed'
+					bgColor={'bg-offblack'}
+					borderColor={'border-offwhite border-2'}
+					textColor={'text-offwhite'}
 					press={() => {
 						this.postTitle.clear();
 						this.postDescription.clear();
 					}}
 				/>
-				<Button title='Draw' width='w-[125px]' />
+				<Button title='Draw' height='h-[60px]' width='w-[125px]' />
 			</StyledView>
 		</StyledSafeArea>
 	);

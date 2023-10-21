@@ -1,12 +1,6 @@
-import React, { useEffect } from 'react';
-import {
-	SafeAreaView,
-	Text,
-	View,
-	Image,
-	ScrollView,
-	StatusBar
-} from 'react-native';
+import React from 'react';
+import { View, ScrollView, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,18 +8,19 @@ import { Post } from '../../components/Post';
 import { Button } from '../../components/Buttons';
 import { usePathname } from 'expo-router/src/hooks';
 import { toggleMainNav } from './_layout';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Device from 'expo-device';
 
-const StyledImage = styled(Image);
 const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledSafeArea = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
+const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
-	return (
-		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
+
+  return (
+		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
 					{/* if in filtered feed */}
@@ -39,7 +34,10 @@ export default function Page() {
 						</StyledView>
 					{/* end if */}
 					<StyledView className='w-full flex justify-center items-center'>
-						<StyledView className='w-full h-[95px]' />
+						<StyledView
+							style={{ height: insets.top + 60 }}
+							className={`w-full`}
+						/>
 						<Post
 							user='Alex Muresan'
 							img='https://i.imgur.com/0y8Ftya.png'
@@ -122,14 +120,24 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 							icon='heart-outline'
 							end={true}
 						/>
-						<StyledView className='w-full h-[125px]' />
+						<StyledView className='w-full h-[110px]' />
 					</StyledView>
 				</StyledScrollView>
 			</StyledView>
 
-			<StyledView className='absolute bottom-10 flex flex-row justify-center w-screen'>
-				<Circle size='w-[90px] h-[90px]' />
+			<StyledView className='absolute bottom-[3%] flex flex-row justify-center w-screen'>
+				<Circle size='w-[80px] h-[80px]' />
 			</StyledView>
-		</StyledSafeArea>
+
+			<StyledGradient
+				pointerEvents='none'
+				start={{ x: 0, y: 0.3 }}
+				end={{ x: 0, y: 1 }}
+				style={{ height: insets.top + 50 }}
+				className='absolute w-screen'
+				colors={['#121212ee', 'transparent']}
+			/>
+			<StatusBar barStyle={'light-content'} />
+		</StyledView>
 	);
 }
