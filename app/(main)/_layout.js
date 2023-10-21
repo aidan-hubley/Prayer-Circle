@@ -12,8 +12,10 @@ const StyledView = styled(View);
 export default function Layout() {
 	const profileRef = useRef();
 	const journalRef = useRef();
+
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
+	
 	return (
 		<ActionSheetProvider>
 			<>
@@ -42,16 +44,6 @@ export default function Layout() {
 								profileRef.current.toggleButton();
 						}}
 					/>
-					{/* if in filtered feed */}
-						<StyledView className='items-center'>
-							<Button
-								btnStyles='w-[200px] w-min-[175px] w-max-[225px]'
-								height={'h-[50px]'}					
-								title='Circle Name'
-								href='/circleSettings'
-							/>
-						</StyledView>
-					{/* end if */}
 					<ExpandableButton
 						height={'h-[50px]'}
 						iconSize={40}

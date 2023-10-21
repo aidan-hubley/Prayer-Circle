@@ -21,6 +21,14 @@ export default function Page() {
   return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1 items-center' w-screen>
+				<StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px] z-10`}>
+					<Button
+						btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
+						height={'h-[50px]'}					
+						title='Circle Name'
+						href='/circleSettings'
+					/>
+				</StyledView>
 				<StyledScrollView className='w-full px-[13px]'>
 					<StyledView className='w-full flex justify-center items-center'>
 						<StyledView
