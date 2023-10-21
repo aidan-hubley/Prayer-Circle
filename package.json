@@ -33,7 +33,8 @@
     "react-native-svg-uri": "^1.2.3",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
-    "expo-device": "~5.4.0"
+    "expo-device": "~5.4.0",
+    "expo-splash-screen": "~0.20.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
