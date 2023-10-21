@@ -2,6 +2,8 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
+import { Button } from '../../components/Buttons';
+import { router } from '../../backend/config';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -16,6 +18,33 @@ export default function Page() {
 					<StyledText className='text-3xl text-white text-center tracking-widest leading-10'>
 						Journal
 					</StyledText>
+					<Button
+						title='Prayer Requests'
+						press={() => {
+							router.push({
+								pathname: `/detailedJournal`,
+								params: { title: 'Prayer Requests' }
+							});
+						}}
+					></Button>
+					<Button
+						title='Events'
+						press={() => {
+							router.push({
+								pathname: `/detailedJournal`,
+								params: { title: 'Events' }
+							});
+						}}
+					></Button>
+					<Button
+						title='Praise'
+						press={() => {
+							router.push({
+								pathname: `/detailedJournal`,
+								params: { title: 'Praises' }
+							});
+						}}
+					></Button>
 				</StyledView>
 				<StatusBar style='light-content' />
 			</StyledSafeArea>
