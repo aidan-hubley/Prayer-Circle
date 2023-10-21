@@ -32,8 +32,7 @@ export default function Page() {
 						<StyledView className='items-center top-10' style={{ top: topButtonInset }}>
 							<Button
 								btnStyles='w-[200px] w-min-[175px] w-max-[225px]'
-								height={'h-[60px]'}
-								iconSize={40}					
+								height={'h-[50px]'}					
 								title='Circle Name'
 								href='/circleSettings'
 							/>

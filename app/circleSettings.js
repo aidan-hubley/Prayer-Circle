@@ -15,7 +15,9 @@ const StyledScrollView = styled(ScrollView);
 export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
-	const [modalVisible, setModalVisible] = useState(false);
+	
+	const [isModalVisible, setModalVisible] = useState(false);
+	const toggleModal = () => { setModalVisible(!isModalVisible); };
 
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -32,7 +34,7 @@ export default function Page() {
 	}, [isEnabled]);
 
 	return (
-		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
+		<StyledSafeArea className='bg-offblack' style={{ flex: 1 }}>
 			
 			<StyledView className='flex-1 items-center' style={{ top: topButtonInset }}>
 				<Button // Leave Circle
@@ -42,9 +44,7 @@ export default function Page() {
 					iconSize={40}
 					icon='log-out'
 					iconColor='#F9A826'
-					onPress={() => setModalVisible(true)}
-					// onPress={() => { console.log("Hello World!") }}
-
+					press={toggleModal}
 				/>
 				<StyledView className='absolute bg-grey h-[60px] px-[35px] py-[12px] rounded-full'>
 					<StyledText className='text-3xl text-offwhite'>
@@ -60,22 +60,31 @@ export default function Page() {
 					iconColor='#CC2500'
 				/>
 
-				{/* DOES NOT WORK! */}
+				<Modal isVisible={isModalVisible}>
+					<StyledSafeArea className='bg-offblack border-[5px] border-offwhite rounded-xl' style={{ flex: 1 }}>
+						<StyledView className='flex-1 items-center'>
+							<StyledText className='top-[6%] text-3xl text-offwhite'>
+								Leave this circle?
+							</StyledText>
 
-				<Modal
-					animationType="slide"
-					transparent={false}
-					visible={modalVisible}
-					onRequestClose={() => {
-					Alert.alert('Modal has been closed.');
-					setModalVisible(!modalVisible);
-					}}>
-					<StyledView>
-						<StyledView>
-							<StyledText>Hello World!</StyledText>
-							<StyledText onPress={() => setModalVisible(!modalVisible)}>Hide Modal</StyledText>
+							<Button
+								btnStyles='top-[10%] bg-grey border-2 border-purple'
+								height={'h-[90px]'}
+								width={'w-[90px]'}
+								iconSize={60}
+								icon='musical-notes'
+								iconColor='white'
+								href='/feed'
+							/>
+
+							<StyledText className='top-[15%] text-3xl text-offwhite'>
+								Circle Name
+							</StyledText>
+
+							<Button title="Leave" btnStyles={"top-[40%]"} width="w-[60%]" press={toggleModal} />
+							<Button title="Cancel" btnStyles={"top-[45%]"} width="w-[60%]" press={toggleModal} />
 						</StyledView>
-					</StyledView>
+					</StyledSafeArea>
 				</Modal>
 
 				<StyledView className='top-[110px] w-[85%] gap-y-8 flex'>
