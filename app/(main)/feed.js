@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { Button } from '../../components/Buttons';
 import { usePathname } from 'expo-router/src/hooks';
@@ -21,12 +22,14 @@ const StyledSafeArea = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 
 export default function Page() {
+	let insets = useSafeAreaInsets();
+	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
 					{/* if in filtered feed */}
-						<StyledView className='items-center top-10'>
+						<StyledView className='items-center top-10' style={{ top: topButtonInset }}>
 							<Button
 								btnStyles='w-[200px] w-min-[175px] w-max-[225px]'
 								height={'h-[60px]'}

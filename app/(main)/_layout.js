@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { ExpandableButton } from '../../components/Buttons';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import * as Device from 'expo-device';
 
 const StyledView = styled(View);
 

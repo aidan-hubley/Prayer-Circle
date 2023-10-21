@@ -28,22 +28,20 @@ export default function Page() {
 					Circle Name
 				</StyledText>
 
-				<StyledView className='absolute top-[200px]'>
-					<StyledView className="bg-purple p-[10px] rounded-xl">
-						<StyledView className='p-[25px] bg-offwhite rounded-xl'>
-							<QRCode
-								size={240}
-								value={"Hey, this is a test, it works! -"}
-								 onPress={() =>shareCircle()}
-							/>
-						</StyledView>
+				<StyledView className="absolute top-[20%] border-[10px] bg-offwhite border-purple p-[10px] rounded-xl">
+					<StyledView className='p-[15px] rounded-xl'>
+						<QRCode
+							size={240}
+							value={"Hey, this is a test, it works! - Aidan"} // This is where the circle ID will go
+							onPress={() =>shareCircle()}
+						/>
 					</StyledView>
-					<StyledView className="bg-purple mt-20 p-[10px] rounded-xl">
-						<StyledText className='p-[5px] bg-offwhite rounded-xl text-center font-bold text-3xl text-offblack' onPress={() =>shareCircle()}>
-							654911684217646
-						</StyledText>
-					</StyledView>	
 				</StyledView>
+				<StyledView className="absolute bottom-[25%] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl">
+					<StyledText className='px-[5px] font-bold text-3xl text-offblack' onPress={() =>shareCircle()}>
+						1234567890
+					</StyledText>
+				</StyledView>	
 				
 			</StyledView>
 				<Button // Share Circle
