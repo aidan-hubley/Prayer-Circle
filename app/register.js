@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
 	SafeAreaView,
 	Text,
@@ -17,7 +17,7 @@ import { Link } from 'expo-router';
 import { checkUsername, registerUser } from '../backend/firebaseFunctions';
 import { passwordValidation } from '../backend/functions';
 import Modal from "react-native-modal";
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraType, takePictureAsync } from 'expo-camera';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -34,6 +34,8 @@ export default function Register() {
 	const [isModalVisible, setModalVisible] = useState(false);
 	const toggleModal = () => { setModalVisible(!isModalVisible); };
 
+	const cameraRef = useRef(null);
+
 	function toggleCameraType() {
 		setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
 	}
@@ -41,9 +43,23 @@ export default function Register() {
 	const [flashMode, setFlashMode] = useState('off');
 
 	function toggleFlashMode() {
-	setFlashMode((currentFlashMode) =>
-		currentFlashMode === 'off' ? 'torch' : 'off'
-	);
+		setFlashMode((currentFlashMode) =>
+			currentFlashMode === 'off' ? 'torch' : 'off'
+		);
+	}
+
+	const [capturedImage, setCapturedImage] = useState(null);
+
+	async function takePicture() {
+		if (cameraRef.current) {
+			try {
+			const photo = await cameraRef.current.takePictureAsync();
+			setCapturedImage(photo.uri);
+			toggleModal();
+			} catch (error) {
+				console.error('Error taking picture:', error);
+			}
+		}
 	}
 
 	const [fname, setFName] = useState('');
@@ -62,15 +78,21 @@ export default function Register() {
 								<StyledView className='w-full flex flex-col items-center mb-2'>
 									<StyledView className='w-[89%] aspect-square mt-[15%] mb-[13%]'>
 										<TouchableOpacity onPress={toggleModal}>
-											<StyledImage
-												className='w-full h-full'
-												source={require('../assets/Squared_Logo_Dark.png')}
+											<StyledImage 
+												className='w-full h-full rounded-3xl'
+    											source={capturedImage ? { uri: capturedImage } : require('../assets/Squared_Logo_Dark.png')}
 												resizeMode='contain'
 											/>
 										</TouchableOpacity>
-										<StyledText className='text-offwhite text-center text-[18px] mt-5'>
-											Tap Logo to Upload a Profile Picture
-										</StyledText>
+										{capturedImage ? 
+											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
+												Tap picture to take a new Profile Picture
+											</StyledText>
+											:
+											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
+												Tap Logo to Upload a Profile Picture
+											</StyledText>
+										}
 									</StyledView>
 								</StyledView>
 								<StyledView className='flex flex-col items-center justify-center w-full gap-y-4'>
@@ -202,7 +224,15 @@ export default function Register() {
 								Take a Selfie!
 							</StyledText>
 							<StyledView className="top-[8%] w-[300px] h-[300px]" onPress={toggleCameraType}>
-								<StyledCamera className="w-full h-full" type={type} ratio='1:1' flashMode={flashMode}>		
+								<StyledCamera 
+									ref={cameraRef} 
+									mirrorImage={true}
+									fixOrientation={true}
+									// Still mirroring
+									className="w-full h-full" 
+									type={type} 
+									ratio='1:1' 
+									flashMode={flashMode}>		
 									{/* Having squared profile pictures means we should do a 1:1 ratio here
 										I don't know how to do that without using w-#px h-#px  */}
 								</StyledCamera>
@@ -237,7 +267,7 @@ export default function Register() {
 									btnStyles={"border-4 border-offwhite bg-offblack"}
 									width="w-[100px]" 
 									height="h-[100px]" 
-									press={toggleModal} 
+									press={takePicture} 
 								/>
 								<Button 
 									icon="images-outline" 
