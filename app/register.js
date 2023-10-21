@@ -18,6 +18,7 @@ import { checkUsername, registerUser } from '../backend/firebaseFunctions';
 import { passwordValidation } from '../backend/functions';
 import Modal from "react-native-modal";
 import { Camera, CameraType, takePictureAsync } from 'expo-camera';
+import ImagePickerOS from '../components/ImgPicker';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -269,12 +270,15 @@ export default function Register() {
 									height="h-[100px]" 
 									press={takePicture} 
 								/>
-								<Button 
-									icon="images-outline" 
-									btnStyles={"right-10"} 
-									width="w-[50px]" 
-									height="h-[50px]" 
-									press={toggleModal}
+								<Button
+									icon="images-outline"
+									btnStyles="right-10"
+									width="w-[50px]"
+									height="h-[50px]"
+									// press={() => {
+									// 	GalleryImgPicker({ setImage: setCapturedImage });
+									// }}
+									press={(ImagePickerOS)}
 								/>
 							</StyledView>
 						</StyledView>

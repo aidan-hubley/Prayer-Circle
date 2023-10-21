@@ -30,7 +30,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-camera"
+      "expo-camera",
+      "expo-image-picker"
     ],
     "extra": {
       "eas": {
