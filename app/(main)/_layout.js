@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
-import { ExpandableButton } from '../../components/Buttons';
+import { ExpandableButton, Button } from '../../components/Buttons';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import * as Device from 'expo-device';
 
@@ -42,6 +42,16 @@ export default function Layout() {
 								profileRef.current.toggleButton();
 						}}
 					/>
+					{/* if in filtered feed */}
+						<StyledView className='items-center'>
+							<Button
+								btnStyles='w-[200px] w-min-[175px] w-max-[225px]'
+								height={'h-[50px]'}					
+								title='Circle Name'
+								href='/circleSettings'
+							/>
+						</StyledView>
+					{/* end if */}
 					<ExpandableButton
 						height={'h-[50px]'}
 						iconSize={40}

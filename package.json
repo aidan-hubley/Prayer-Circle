@@ -35,7 +35,7 @@
     "react-native-svg-uri": "^1.2.3",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
-    "react-qr-code": "^2.0.12"
+    "react-qr-code": "^2.0.12",
     "expo-device": "~5.4.0"
   },
   "devDependencies": {
