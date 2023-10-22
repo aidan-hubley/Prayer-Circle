@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StatusBar } from 'react-native';
+import { View, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
 import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import { usePathname } from 'expo-router/src/hooks';
 import { toggleMainNav } from './_layout';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Device from 'expo-device';
+import { router } from '../../backend/config';
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -19,15 +20,16 @@ export default function Page() {
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 
   return (
-		<StyledView className='flex-1 bg-offblack'>
-			<StyledView className='flex-1 items-center' w-screen>
-				<StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px] z-10`}>
-					<Button
-						btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
-						height={'h-[50px]'}					
-						title='Circle Name'
-						href='/circleSettings'
-					/>
+		<StyledView className='flex-1 bg-offblack z-0'>
+			<StyledView className='flex-1 items-center z-[1]' w-screen>
+				<StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px] z-[2]`}>
+						<Button
+							btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center z-[100]'
+							height={'h-[50px]'}
+							title='Circle Name'
+							href='/circleSettings'
+							press={() => router.push("/circleSettings")}
+						/>
 				</StyledView>
 				<StyledScrollView className='w-full px-[13px]'>
 					<StyledView className='w-full flex justify-center items-center'>
