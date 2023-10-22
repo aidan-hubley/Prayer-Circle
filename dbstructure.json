@@ -13,7 +13,8 @@
 						"permissions": {
 							"admin": true,
 							"write": true,
-							"read": true
+							"read": true,
+							"owner": true
 						}
 					}
 				},
@@ -77,7 +78,8 @@
 				},
 				"admin": {
 					"_uid_": true
-				}
+				},
+				"owner": "_uid_"
 			}
 		}
 	}

@@ -146,10 +146,13 @@ export default function Page() {
 						press={async () => {
 							let data = {
 								title: title,
-								body: description,
+								description: description,
 								icon: circleIcon,
 								created: Date.now(),
-								type: 'individual'
+								type: 'individual',
+								members: {},
+								admin: {},
+								owner: false
 							};
 							createCircle(data);
 							this.circleTitle.clear();
