@@ -70,6 +70,7 @@
 				"icon": "icon.i",
 				"description": "Circle description",
 				"type": "individual/organization",
+				"color": "#000000",
 				"members": {
 					"_uid_": true
 				},

@@ -101,6 +101,12 @@ export default function Page() {
 									inputMode='text'
 									autoFocus
 									maxLength={22}
+									onChangeText={(text) => {
+										setTitle(text);
+									}}
+									onBlur={() => {
+										this.circleDescription.focus();
+									}}
 									ref={(input) => {
 										this.circleTitle = input;
 									}}
@@ -144,12 +150,20 @@ export default function Page() {
 						width='w-[125px]'
 						href='/feed'
 						press={async () => {
+							if (title.length == 0) {
+								alert('Please enter a title');
+								return;
+							} else {
+								console.log(this.circleDescription);
+							}
+
 							let data = {
 								title: title,
 								description: description,
 								icon: circleIcon,
 								created: Date.now(),
 								type: 'individual',
+								color: '#5946B2',
 								members: {},
 								admin: {},
 								owner: false
