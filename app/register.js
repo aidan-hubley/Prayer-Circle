@@ -18,7 +18,7 @@ import { checkUsername, registerUser } from '../backend/firebaseFunctions';
 import { passwordValidation } from '../backend/functions';
 import Modal from "react-native-modal";
 import { Camera, CameraType, takePictureAsync } from 'expo-camera';
-import ImagePickerOS from '../components/ImgPicker';
+import * as ImagePicker from 'expo-image-picker';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -49,19 +49,31 @@ export default function Register() {
 		);
 	}
 
-	const [capturedImage, setCapturedImage] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
 
 	async function takePicture() {
 		if (cameraRef.current) {
-			try {
 			const photo = await cameraRef.current.takePictureAsync();
-			setCapturedImage(photo.uri);
+			setProfileImage(photo.uri);
 			toggleModal();
-			} catch (error) {
-				console.error('Error taking picture:', error);
-			}
 		}
 	}
+
+	const openImagePicker = async () => {
+	let result = await ImagePicker.launchImageLibraryAsync({
+		mediaTypes: ImagePicker.MediaTypeOptions.Images,
+		allowsEditing: true,
+		aspect: [1, 1],
+		quality: 1,
+		});
+
+		if (result.canceled === false && result.assets.length > 0) {
+			const selectedAsset = result.assets[0];
+			setProfileImage(selectedAsset.uri);
+			toggleModal();
+		}
+	};
+
 
 	const [fname, setFName] = useState('');
 	const [lname, setLName] = useState('');
@@ -79,13 +91,15 @@ export default function Register() {
 								<StyledView className='w-full flex flex-col items-center mb-2'>
 									<StyledView className='w-[89%] aspect-square mt-[15%] mb-[13%]'>
 										<TouchableOpacity onPress={toggleModal}>
-											<StyledImage 
+											<StyledImage
 												className='w-full h-full rounded-3xl'
-    											source={capturedImage ? { uri: capturedImage } : require('../assets/Squared_Logo_Dark.png')}
+												source={
+													profileImage ? { uri: profileImage } :
+													require('../assets/Squared_Logo_Dark.png')}
 												resizeMode='contain'
 											/>
 										</TouchableOpacity>
-										{capturedImage ? 
+										{profileImage ? 
 											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
 												Tap picture to take a new Profile Picture
 											</StyledText>
@@ -275,10 +289,7 @@ export default function Register() {
 									btnStyles="right-10"
 									width="w-[50px]"
 									height="h-[50px]"
-									// press={() => {
-									// 	GalleryImgPicker({ setImage: setCapturedImage });
-									// }}
-									press={(ImagePickerOS)}
+									press={(openImagePicker)}
 								/>
 							</StyledView>
 						</StyledView>
