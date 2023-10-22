@@ -60,7 +60,7 @@ export const Post = (post) => {
 	});
 
 	const spiralStyle = {
-		transform: [{ rotate: spiralSpinInter }],
+		// transform: [{ rotate: spiralSpinInter }],
 	};
 	
 	const toolbarButtonScale = {
