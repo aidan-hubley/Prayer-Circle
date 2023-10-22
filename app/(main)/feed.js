@@ -20,17 +20,8 @@ export default function Page() {
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 
   return (
-		<StyledView className='flex-1 bg-offblack z-0'>
-			<StyledView className='flex-1 items-center z-[1]' w-screen>
-				<StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px] z-[2]`}>
-						<Button
-							btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center z-[100]'
-							height={'h-[50px]'}
-							title='Circle Name'
-							href='/circleSettings'
-							press={() => router.push("/circleSettings")}
-						/>
-				</StyledView>
+		<StyledView className='flex-1 bg-offblack'>
+			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
 					<StyledView className='w-full flex justify-center items-center'>
 						<StyledView
@@ -136,6 +127,14 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
+			<StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px]`}>
+				<Button
+					btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
+					height={'h-[50px]'}
+					title='Circle Name'
+					href='/circleSettings'
+				/>
+			</StyledView>
 			<StatusBar barStyle={'light-content'} />
 		</StyledView>
 	);
