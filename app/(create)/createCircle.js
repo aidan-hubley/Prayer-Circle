@@ -77,7 +77,10 @@ export default function Page() {
 							<StyledOpacity
 								className='w-[120px] h-[120px] border-[5px] items-center justify-center border-purple rounded-full mb-5'
 								onPress={() => {
-									onPress();
+									/* onPress(); */
+									iconSelectorRef.current.toggleSelector(
+										true
+									);
 								}}
 							>
 								{/* <StyledImage
