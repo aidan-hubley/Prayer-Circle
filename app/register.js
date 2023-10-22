@@ -49,15 +49,26 @@ export default function Register() {
 		);
 	}
 
-  const [profileImage, setProfileImage] = useState(null);
+ 	const [profileImage, setProfileImage] = useState(null);
 
 	async function takePicture() {
+		const { status } = await Camera.requestCameraPermissionsAsync();
+		if (status !== 'granted') {
+			alert('Permission to access the camera was denied.');
+			return;
+		}
+
 		if (cameraRef.current) {
-			const photo = await cameraRef.current.takePictureAsync();
-			setProfileImage(photo.uri);
-			toggleModal();
+			try {
+				const photo = await cameraRef.current.takePictureAsync();
+				setProfileImage(photo.uri);
+				toggleModal();
+			} catch (error) {
+				console.error('Error taking picture:', error);
+			}
 		}
 	}
+
 
 	const openImagePicker = async () => {
 	let result = await ImagePicker.launchImageLibraryAsync({
