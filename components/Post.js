@@ -52,15 +52,34 @@ export const Post = (post) => {
 		opacity: toolbarOpactiyInter,
 		marginTop: toolbarMarginInter
 	};
+
+	const spiralVal = useRef(new Animated.Value(0)).current;
+	const spiralSpinInter = spiralVal.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['0deg', '360deg'],
+	});
+
+	const spiralStyle = {
+		transform: [{ rotate: spiralSpinInter }],
+	};
+	
 	const toolbarButtonScale = {
 		scale: toolbarButtonOpactiyInter
 	};
 	function toggleToolbar() {
 		setToolbar(!toolbarShown);
-		Animated.spring(toolbarVal, {
+		Animated.spring(
+		toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
 			duration: 200,
-			useNativeDriver: false
+			useNativeDriver: false		
+		}).start();
+
+		Animated.spring(
+		spiralVal, {
+			toValue: toolbarShown ? 0 : 1,
+			duration: 200,
+			useNativeDriver: false		
 		}).start();
 	}
 
@@ -158,11 +177,18 @@ export const Post = (post) => {
 							<Ionicons name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square rounded-full border-[3px] border-offwhite'
+							className='flex items-center justify-center w-[39px] aspect-square'
 							onPress={() => {
 								toggleToolbar();
 							}}
-						></StyledPressable>
+						>
+							<StyledImage
+								className='w-[39px] h-[39px]'
+								style={spiralStyle}
+								source={require('../assets/spiral.png')}
+							/>
+
+						</StyledPressable>
 					</StyledView>
 				</StyledView>
 				<StyledAnimatedView

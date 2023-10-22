@@ -31,7 +31,7 @@ export default function Page() {
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 							icon='heart-outline'
 						/>
-						<Post
+						{/* <Post
 							user='Alex Muresan'
 							img='https://i.imgur.com/0y8Ftya.png'
 							title='Pray for my dog he is very sick'
@@ -103,7 +103,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 							icon='heart-outline'
 							end={true}
-						/>
+						/> */}
 						<StyledView className='w-full h-[110px]' />
 					</StyledView>
 				</StyledScrollView>
