@@ -27,7 +27,7 @@ export default function Layout() {
 				/>
 				<StyledView
 					style={{ top: topButtonInset }}
-					className='absolute left-[20px]'
+					className={`w-screen absolute flex flex-row justify-between items-center px-[20px]`}
 				>
 					<ExpandableButton
 						height={'h-[50px]'}

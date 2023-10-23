@@ -40,10 +40,10 @@
     "react-native-svg": "13.9.0",
     "react-native-svg-uri": "^1.2.3",
     "react-native-vector-icons": "^10.0.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
     "react-native-web": "~0.19.6",
     "react-qr-code": "^2.0.12",
-    "expo-device": "~5.4.0"
+    "expo-device": "~5.4.0",
     "expo-image-picker": "~14.3.2"
   },
   "devDependencies": {
