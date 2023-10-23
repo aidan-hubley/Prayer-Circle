@@ -12,7 +12,7 @@ const StyledScrollView = styled(ScrollView);
 const StyledImage = styled(Image);
 const StyledGradient = styled(LinearGradient);
 
-export default function Page() {
+export default function ProfilePage() {
 	let insets = useSafeAreaInsets();
 	return (
 		<StyledView className='bg-offblack'>

@@ -1,64 +1,100 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+	useState,
+	useRef,
+	forwardRef,
+	useImperativeHandle
+} from 'react';
 import { Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
 import { router } from '../backend/config';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const StyledText = styled(Text);
-const StyledTouchableHighlight = styled(TouchableHighlight);
+const StyledTouchableHighlight = Animated.createAnimatedComponent(
+	styled(TouchableHighlight)
+);
 const StyledIcon = styled(Ionicons);
 const AnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
 );
 
-function Button({
-	title,
-	width,
-	height,
-	textSize,
-	textStyles,
-	btnStyles,
-	bgColor,
-	icon,
-	iconSize,
-	iconColor,
-	textColor,
-	borderColor,
-	press,
-	href
-}) {
-	return (
-		<StyledTouchableHighlight
-			activeOpacity={0.6}
-			underlayColor={`${bgColor || '#DDDDDD'}`}
-			className={`flex items-center justify-center rounded-full ${
-				bgColor || 'bg-offwhite'
-			} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
-				borderColor ? `border ${borderColor}` : 'border-none'
-			} ${btnStyles || ''} `}
-			onPress={() => {
-				if (press) press();
-				if (href) router.push(href);
-			}}
-		>
-			<>
-				<StyledText
-					className={`font-bold ${textColor || 'text-offblack'} ${
-						textSize ? textSize : 'text-[20px]'
-					} ${textStyles} ${icon ? 'hidden' : ''}`}
-				>
-					{title}
-				</StyledText>
-				<StyledIcon
-					className={`${icon ? '' : 'hidden'}`}
-					name={`${icon || 'md-checkmark-circle'}`}
-					size={iconSize || 30}
-					color={`${iconColor || '#121212'}`}
-				/>
-			</>
-		</StyledTouchableHighlight>
-	);
-}
+const Button = forwardRef(
+	(
+		{
+			title,
+			width,
+			height,
+			textSize,
+			textStyles,
+			btnStyles,
+			bgColor,
+			icon,
+			iconSize,
+			iconColor,
+			textColor,
+			borderColor,
+			press,
+			href
+		},
+		ref
+	) => {
+		const opacity = useRef(new Animated.Value(1)).current;
+
+		const opacityInter = opacity.interpolate({
+			inputRange: [0, 1],
+			outputRange: [0.6, 1]
+		});
+
+		function toggleShown(toggle) {
+			Animated.timing(opacity, {
+				toValue: toggle ? 1 : 0,
+				duration: 300,
+				useNativeDriver: true
+			}).start();
+		}
+
+		const opacityStyle = {
+			opacity: opacityInter,
+			transform: [{ scale: opacityInter }]
+		};
+
+		useImperativeHandle(ref, () => ({
+			toggleShown
+		}));
+		return (
+			<StyledTouchableHighlight
+				style={opacityStyle}
+				activeOpacity={0.6}
+				underlayColor={`${bgColor || '#DDDDDD'}`}
+				className={`flex items-center justify-center rounded-full ${
+					bgColor || 'bg-offwhite'
+				} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
+					borderColor ? `border ${borderColor}` : 'border-none'
+				} ${btnStyles || ''} `}
+				onPress={() => {
+					if (press) press();
+					if (href) router.push(href);
+				}}
+			>
+				<>
+					<StyledText
+						className={`font-bold ${textColor || 'text-offblack'} ${
+							textSize ? textSize : 'text-[20px]'
+						} ${textStyles} ${icon ? 'hidden' : ''}`}
+					>
+						{title}
+					</StyledText>
+					<StyledIcon
+						className={`${icon ? '' : 'hidden'}`}
+						name={`${icon || 'md-checkmark-circle'}`}
+						size={iconSize || 30}
+						color={`${iconColor || '#121212'}`}
+					/>
+				</>
+			</StyledTouchableHighlight>
+		);
+	}
+);
 
 const ExpandableButton = forwardRef(
 	(
@@ -109,13 +145,29 @@ const ExpandableButton = forwardRef(
 			opacity: wi
 		};
 
-		function toggleButton() {
-			setPressed(!pressed);
-			Animated.spring(wi, {
-				toValue: pressed ? 0 : 1,
-				duration: 400,
-				useNativeDriver: false
-			}).start();
+		function toggleButton(direction) {
+			if (direction == 'expand') {
+				setPressed(true);
+				Animated.spring(wi, {
+					toValue: 1,
+					duration: 400,
+					useNativeDriver: false
+				}).start();
+			} else if (direction == 'collapse') {
+				setPressed(false);
+				Animated.spring(wi, {
+					toValue: 0,
+					duration: 400,
+					useNativeDriver: false
+				}).start();
+			} else {
+				setPressed(!pressed);
+				Animated.spring(wi, {
+					toValue: pressed ? 0 : 1,
+					duration: 400,
+					useNativeDriver: false
+				}).start();
+			}
 		}
 
 		useImperativeHandle(ref, () => ({

@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { Button } from '../../components/Buttons';
 import { usePathname } from 'expo-router/src/hooks';
-import { toggleMainNav } from './_layout';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Device from 'expo-device';
 import { router } from '../../backend/config';
@@ -15,11 +14,11 @@ const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
 const StyledGradient = styled(LinearGradient);
 
-export default function Page() {
+export default function FeedPage() {
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 
-  return (
+	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
