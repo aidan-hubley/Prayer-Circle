@@ -42,15 +42,14 @@ export default function Layout() {
 						ref={journalRef}
 						press={() => {
 							console.log('hide 1');
-							if (profileRef.current.pressed) {
-								profileRef.current.toggleButton();
-							}
-							if (!journalRef.current.pressed && !profileRef.current.pressed) { // This doesn't work
-								setShowButton(true);
-								console.log('show button');
-							} else {
+							if (journalRef.current.pressed == false && profileRef.current.pressed == false) { // This doesn't work
 								setShowButton(false);
-								console.log('hide button');
+							} else {
+								setShowButton(true);
+							}
+							if (profileRef.current.pressed) {
+								setShowButton(false);
+								profileRef.current.toggleButton();
 							}
 						}}
 					/>
@@ -74,14 +73,15 @@ export default function Layout() {
 						expandedHref='/feed'
 						ref={profileRef}
 						press={() => {
+							if (journalRef.current.pressed == false && profileRef.current.pressed == false) {
+								setShowButton(false);
+							} else {
+								setShowButton(true);
+							}
 							if (journalRef.current.pressed) {
+								setShowButton(false);
 								journalRef.current.toggleButton();
 							} 
-							if (!journalRef.current.pressed && !profileRef.current.pressed) {
-								setShowButton(true);
-							} else {
-								setShowButton(false);
-							}
 						}}
 					/>
 				</StyledView>
