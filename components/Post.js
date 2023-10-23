@@ -19,7 +19,7 @@ const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
-const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
+const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 
 export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
@@ -33,15 +33,11 @@ export const Post = (post) => {
 	const toolbarVal = useRef(new Animated.Value(0)).current;
 	const toolbarHeightInter = toolbarVal.interpolate({
 		inputRange: [0, 0.5, 0.75, 1],
-		outputRange: [2, 10, 20, 51]
+		outputRange: [2, 10, 40, 51]
 	});
 	const toolbarOpactiyInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0, 1]
-	});
-	const toolbarButtonOpactiyInter = toolbarVal.interpolate({
-		inputRange: [0, 0.7, 1],
-		outputRange: [1, 0.0, 0]
 	});
 	const toolbarMarginInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
@@ -52,34 +48,21 @@ export const Post = (post) => {
 		opacity: toolbarOpactiyInter,
 		marginTop: toolbarMarginInter
 	};
-
-	const spiralVal = useRef(new Animated.Value(0)).current;
-	const spiralSpinInter = spiralVal.interpolate({
+	const spinInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
-		outputRange: ['0deg', '360deg'],
+		outputRange: ['0deg', '180deg']
 	});
 
 	const spiralStyle = {
-		// transform: [{ rotate: spiralSpinInter }],
+		transform: [{ rotate: spinInter }]
 	};
-	
-	const toolbarButtonScale = {
-		scale: toolbarButtonOpactiyInter
-	};
+
 	function toggleToolbar() {
 		setToolbar(!toolbarShown);
-		Animated.spring(
-		toolbarVal, {
+		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
-			duration: 200,
-			useNativeDriver: false		
-		}).start();
-
-		Animated.spring(
-		spiralVal, {
-			toValue: toolbarShown ? 0 : 1,
-			duration: 200,
-			useNativeDriver: false		
+			duration: 100,
+			useNativeDriver: false
 		}).start();
 	}
 
@@ -182,12 +165,11 @@ export const Post = (post) => {
 								toggleToolbar();
 							}}
 						>
-							<StyledImage
+							<AnimatedImage
 								className='w-[39px] h-[39px]'
 								style={spiralStyle}
 								source={require('../assets/spiral.png')}
 							/>
-
 						</StyledPressable>
 					</StyledView>
 				</StyledView>
@@ -242,7 +224,6 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledAnimatedView>
 			</StyledView>
-			{/* {bottomBar()} */}
 		</StyledView>
 	);
 };
