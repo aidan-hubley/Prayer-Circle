@@ -52,7 +52,25 @@ export async function deleteData(path) {
 }
 
 export async function createCircle(data) {
-	writeData(`prayer_circle/circles/`, data);
+	let me = await AsyncStorage.getItem('user');
+	let circleId = generateId();
+	data.members[`${me}`] = true;
+	data.admin[`${me}`] = true;
+	data.owner = me;
+
+	let circlePermissions = {
+		admin: true,
+		read: true,
+		write: true,
+		owner: true
+	};
+
+	writeData(`prayer_circle/circles/${circleId}`, data, true);
+	writeData(
+		`prayer_circle/users/${me}/circles/${circleId}/permissions`,
+		circlePermissions,
+		true
+	);
 }
 
 export async function registerUser(email, password, data) {
