@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router/stack';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
@@ -12,6 +12,7 @@ const StyledView = styled(View);
 export default function Layout() {
 	const profileRef = useRef();
 	const journalRef = useRef();
+	const [showButton, setShowButton] = useState(true);
 
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
@@ -40,18 +41,27 @@ export default function Layout() {
 						expandedHref='/feed'
 						ref={journalRef}
 						press={() => {
-							if (profileRef.current.pressed)
+							console.log('hide 1');
+							if (profileRef.current.pressed) {
 								profileRef.current.toggleButton();
+							}
+							if (!journalRef.current.pressed && !profileRef.current.pressed) { // This doesn't work
+								setShowButton(true);
+								console.log('show button');
+							} else {
+								setShowButton(false);
+								console.log('hide button');
+							}
 						}}
 					/>
-					{/* <StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px]`}> */}
-						<Button
+					{showButton && (
+						<Button // This button
 							btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
 							height={'h-[50px]'}
 							title='Circle Name'
 							href='/circleSettings'
 						/>
-					{/* </StyledView> */}
+					)}
 					<ExpandableButton
 						height={'h-[50px]'}
 						iconSize={40}
@@ -64,8 +74,14 @@ export default function Layout() {
 						expandedHref='/feed'
 						ref={profileRef}
 						press={() => {
-							if (journalRef.current.pressed)
+							if (journalRef.current.pressed) {
 								journalRef.current.toggleButton();
+							} 
+							if (!journalRef.current.pressed && !profileRef.current.pressed) {
+								setShowButton(true);
+							} else {
+								setShowButton(false);
+							}
 						}}
 					/>
 				</StyledView>
