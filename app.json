@@ -29,9 +29,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router",
-      "expo-camera",
-      "expo-image-picker"
+      "expo-router"
     ],
     "extra": {
       "eas": {
