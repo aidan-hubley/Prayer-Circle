@@ -10,6 +10,10 @@ import {
 import { Button } from "../components/Buttons";
 import { styled } from "nativewind";
 
+import {auth } from '../backend/config'
+import { signOut } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledSafeArea = styled(SafeAreaView);
@@ -77,7 +81,24 @@ export default function Page() {
 								/>
 							</StyledView>
 						</StyledView>
-						<StyledView className="flex flex-row justify-center w-screen"></StyledView>
+						<StyledView className="flex flex-row justify-center w-screen">
+							<Button
+								text="Logout"
+								backgroundColor="#121212"
+								borderColor="#F9A826"
+								textColor="#FFFBFC"
+								textSize="text-[20px]"
+								width="w-1/2"
+								height="h-[50px]"
+								href="/"
+								press={() => {
+									signOut(auth).then(() => {
+									AsyncStorage.setItem('user', '');
+									router.push('/login');
+									});
+								}}
+							/>
+						</StyledView>
 					</StyledView>
 				</ScrollView>
 				<StatusBar barStyle={"light-content"} />

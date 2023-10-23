@@ -16,7 +16,7 @@ export default function Layout() {
 
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
-	
+
 	return (
 		<ActionSheetProvider>
 			<>
@@ -27,7 +27,7 @@ export default function Layout() {
 				/>
 				<StyledView
 					style={{ top: topButtonInset }}
-					className={`w-screen absolute flex flex-row justify-between items-center px-[20px]`}
+					className='absolute left-[20px]'
 				>
 					<ExpandableButton
 						height={'h-[50px]'}
