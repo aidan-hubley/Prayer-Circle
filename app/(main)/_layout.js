@@ -14,6 +14,7 @@ export default function Layout() {
 	const journalRef = useRef();
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
+
 	return (
 		<ActionSheetProvider>
 			<>
@@ -24,7 +25,7 @@ export default function Layout() {
 				/>
 				<StyledView
 					style={{ top: topButtonInset }}
-					className={`w-screen absolute flex flex-row justify-between items-center px-[20px]`}
+					className='absolute left-[20px]'
 				>
 					<ExpandableButton
 						height={'h-[50px]'}
@@ -42,6 +43,11 @@ export default function Layout() {
 								profileRef.current.toggleButton();
 						}}
 					/>
+				</StyledView>
+				<StyledView
+					style={{ top: topButtonInset }}
+					className='absolute right-[20px]'
+				>
 					<ExpandableButton
 						height={'h-[50px]'}
 						iconSize={40}
