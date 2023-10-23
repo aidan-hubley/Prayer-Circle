@@ -193,7 +193,7 @@ export default function Page() {
 						</StyledText>
 						{/* Database call to remove from Circle  */}
 						<Button 
-							title="Leave" 
+							title="Delete" 
 							btnStyles={"top-[31%] border-2 border-red"}
 							bgColor={"bg-offblack"} 
 							textStyles={"text-red"} 
