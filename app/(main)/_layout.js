@@ -44,6 +44,14 @@ export default function Layout() {
 								profileRef.current.toggleButton();
 						}}
 					/>
+					{/* <StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px]`}> */}
+						<Button
+							btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
+							height={'h-[50px]'}
+							title='Circle Name'
+							href='/circleSettings'
+						/>
+					{/* </StyledView> */}
 					<ExpandableButton
 						height={'h-[50px]'}
 						iconSize={40}
