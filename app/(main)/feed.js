@@ -19,7 +19,7 @@ export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 
-  return (
+	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1 items-center' w-screen>
 				<StyledScrollView className='w-full px-[13px]'>
@@ -127,14 +127,17 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
-			{/* <StyledView	style={{ top: topButtonInset }} className={`w-screen absolute items-center px-[20px]`}>
+			<StyledView
+				style={{ top: topButtonInset }}
+				className={`w-screen absolute items-center px-[20px]`}
+			>
 				<Button
 					btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
 					height={'h-[50px]'}
 					title='Circle Name'
 					href='/circleSettings'
 				/>
-			</StyledView> */}
+			</StyledView>
 			<StatusBar barStyle={'light-content'} />
 		</StyledView>
 	);
