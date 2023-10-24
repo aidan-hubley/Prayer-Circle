@@ -4,11 +4,13 @@ import { styled } from 'nativewind';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { router } from '../backend/config';
 import { Button } from './Buttons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 
 export function Circle({ size, press }) {
+	let insets = useSafeAreaInsets();
 	const scale = useRef(new Animated.Value(1)).current;
 	const [pressed, setPressed] = useState(false);
 	const menuOpacity = useRef(new Animated.Value(0)).current;
@@ -28,7 +30,10 @@ export function Circle({ size, press }) {
 	});
 
 	const scaleStyle = { scale: scaleInterpolation };
-	const pressedStyle = { opacity: opacityInterpolation1 };
+	const pressedStyle = {
+		opacity: opacityInterpolation1,
+		bottom: insets.bottom < 15 ? insets.bottom + 90 : insets.bottom + 60
+	};
 	const pressedStyle2 = { opacity: opacityInterpolation2 };
 
 	function resize(target) {
@@ -74,7 +79,7 @@ export function Circle({ size, press }) {
 			<AnimatedView
 				style={pressedStyle}
 				pointerEvents={pressed ? 'auto' : 'none'}
-				className='flex flex-col items-center bottom-[110px] absolute w-screen'
+				className='flex flex-col items-center absolute w-screen'
 			>
 				<Button
 					title='Draw a Circle'
@@ -88,7 +93,7 @@ export function Circle({ size, press }) {
 				<Button
 					title='Sketch a Post'
 					height='h-[65px]'
-					btnStyles={'mt-4'}
+					btnStyles={'mt-3'}
 					width='w-11/12'
 					press={() => {
 						toggleOptions(false);
@@ -100,7 +105,7 @@ export function Circle({ size, press }) {
 				<AnimatedPressable
 					style={{ transform: [{ scale: scaleInterpolation }] }}
 					className={`rounded-full border-[6px] border-offwhite
-                ${size || 'h-[80px] w-[80px]'} 
+                h-[80px] w-[80px]
             `}
 					onPressIn={() => {
 						resize(0.7);
