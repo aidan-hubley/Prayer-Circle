@@ -19,7 +19,7 @@ const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
-const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
+const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 
 export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
@@ -33,15 +33,11 @@ export const Post = (post) => {
 	const toolbarVal = useRef(new Animated.Value(0)).current;
 	const toolbarHeightInter = toolbarVal.interpolate({
 		inputRange: [0, 0.5, 0.75, 1],
-		outputRange: [2, 10, 20, 51]
+		outputRange: [2, 10, 40, 51]
 	});
 	const toolbarOpactiyInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0, 1]
-	});
-	const toolbarButtonOpactiyInter = toolbarVal.interpolate({
-		inputRange: [0, 0.7, 1],
-		outputRange: [1, 0.0, 0]
 	});
 	const toolbarMarginInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
@@ -52,14 +48,20 @@ export const Post = (post) => {
 		opacity: toolbarOpactiyInter,
 		marginTop: toolbarMarginInter
 	};
-	const toolbarButtonScale = {
-		scale: toolbarButtonOpactiyInter
+	const spinInter = toolbarVal.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['0deg', '180deg']
+	});
+
+	const spiralStyle = {
+		transform: [{ rotate: spinInter }]
 	};
+
 	function toggleToolbar() {
 		setToolbar(!toolbarShown);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
-			duration: 200,
+			duration: 100,
 			useNativeDriver: false
 		}).start();
 	}
@@ -82,6 +84,7 @@ export const Post = (post) => {
 						break;
 
 					case destructiveButtonIndex:
+						// Delete
 						break;
 
 					case cancelButtonIndex:
@@ -157,11 +160,17 @@ export const Post = (post) => {
 							<Ionicons name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square rounded-full border-[3px] border-offwhite'
+							className='flex items-center justify-center w-[39px] aspect-square'
 							onPress={() => {
 								toggleToolbar();
 							}}
-						></StyledPressable>
+						>
+							<AnimatedImage
+								className='w-[39px] h-[39px]'
+								style={spiralStyle}
+								source={require('../assets/spiral.png')}
+							/>
+						</StyledPressable>
 					</StyledView>
 				</StyledView>
 				<StyledAnimatedView
@@ -215,7 +224,6 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledAnimatedView>
 			</StyledView>
-			{/* {bottomBar()} */}
 		</StyledView>
 	);
 };
