@@ -23,14 +23,20 @@
 				},
 				"comments": {
 					"_pushId_": true
+				},
+				"posts": {
+					"_pushId_": true
 				}
 			}
 		},
 		"posts": {
 			"_pushId_": {
 				"user": "_uid_",
+				"name": "Post Owner Name",
+				"title": "Post title",
 				"text": "Post text",
 				"type": "Post type",
+				"img": "Profile image",
 				"timestamp": 1234567890,
 				"comments": {
 					"_pushId_": true
