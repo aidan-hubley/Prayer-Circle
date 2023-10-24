@@ -138,7 +138,7 @@ export default function Page() {
 						title='Erase'
 						width='w-[125px]'
 						height='h-[60px]'
-						href='/feed'
+						href='/mainViewLayout'
 						bgColor={'bg-offblack'}
 						borderColor={'border-offwhite border-2'}
 						textColor={'text-offwhite'}
@@ -151,13 +151,11 @@ export default function Page() {
 						title='Draw'
 						height='h-[60px]'
 						width='w-[125px]'
-						href='/feed'
+						href='/mainViewLayout'
 						press={async () => {
 							if (title.length == 0) {
 								alert('Please enter a title');
 								return;
-							} else {
-								console.log(this.circleDescription);
 							}
 
 							let data = {

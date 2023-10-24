@@ -12,6 +12,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
+import { writeData } from '../backend/firebaseFunctions';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -84,7 +85,27 @@ export const Post = (post) => {
 						break;
 
 					case destructiveButtonIndex:
-						// Delete
+						console.log(post.id);
+						writeData(
+							`prayer_circle/circles/-NhXfdEbrH1yxRqiajYm/posts/${post.id}`,
+							null,
+							true
+						);
+						writeData(
+							`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${post.id}`,
+							null,
+							true
+						);
+						writeData(
+							`prayer_circle/posts/${post.id}`,
+							null,
+							true
+						).then(() => {
+							setTimeout(() => {
+								post.refresh();
+							}, 200);
+						});
+
 						break;
 
 					case cancelButtonIndex:
@@ -160,7 +181,7 @@ export const Post = (post) => {
 							<Ionicons name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square'
+							className='flex items-center justify-center w-[39px] aspect-square mt-2'
 							onPress={() => {
 								toggleToolbar();
 							}}

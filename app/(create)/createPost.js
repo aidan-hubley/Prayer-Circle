@@ -7,6 +7,7 @@ import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from '../../backend/config';
+import { readData } from '../../backend/firebaseFunctions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -98,13 +99,17 @@ export default function Page() {
 						else if (typeSelectedVal == 2) typeSelected = 'event';
 
 						let uid = await AsyncStorage.getItem('user');
+						let name = await readData(`prayer_circle/users/${uid}`);
+						console.log(name);
+						name = name.fname + ' ' + name.lname;
+						console.log(name);
 
 						let newPost = {
 							user: uid,
 							profile_img: `https://picsum.photos/${Math.round(
 								Math.random() * 1000
 							)}`,
-							name: 'Alex Muresan',
+							name: name,
 							title: title,
 							text: body,
 							type: typeSelected,
