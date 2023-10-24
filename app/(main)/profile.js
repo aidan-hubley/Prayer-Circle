@@ -5,6 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { signOut } from 'firebase/auth';
+import { router, auth } from '../../backend/config';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -58,6 +61,17 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
+					/>
+				</StyledView>
+				<StyledView className='w-full flex mt-3 items-center'>
+					<Button
+						title='Sign Out'
+						width='w-[50%]'
+						press={() => {
+							signOut(auth);
+							AsyncStorage.removeItem('user');
+							router.replace('/login');
+						}}
 					/>
 				</StyledView>
 				<StyledView className='h-[230px]'></StyledView>

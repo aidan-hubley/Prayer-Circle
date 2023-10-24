@@ -95,7 +95,7 @@ export async function loginUser(email, password) {
 			// Signed in
 			const user = userCredential.user;
 			await AsyncStorage.setItem('user', user.uid);
-			router.push('/feed');
+			router.replace('/mainViewLayout');
 		})
 		.catch((error) => {
 			const errorCode = error.code;
