@@ -50,9 +50,10 @@ export default function FeedPage() {
 
 	return (
 		<StyledView className='flex-1 bg-offblack'>
-			<StyledView className='flex-1 px-[15px]'>
+			<StyledView className='flex-1'>
 				<StyledFlatList
 					data={dataArray}
+					style={{ paddingHorizontal: 15 }}
 					estimatedItemSize={100}
 					showsHorizontalScrollIndicator={false}
 					refreshControl={
