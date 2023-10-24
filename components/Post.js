@@ -82,7 +82,6 @@ export const Post = (post) => {
 						break;
 
 					case destructiveButtonIndex:
-						// Delete
 						break;
 
 					case cancelButtonIndex:
@@ -118,7 +117,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto  py-[10px] my-[10px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto py-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
