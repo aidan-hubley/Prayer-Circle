@@ -1,4 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, {
+	useState,
+	useRef,
+	forwardRef,
+	useImperativeHandle
+} from 'react';
 import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
 import {
@@ -13,7 +18,7 @@ const StyledMaterialCommunityIcon = styled(MaterialCommunityIcons);
 const StyledMaterialIcon = styled(MaterialIcons);
 const StyledAnimatedView = styled(Animated.View);
 
-function PostTypeSelector() {
+const PostTypeSelector = forwardRef(({}, ref) => {
 	const [selected, setSelected] = useState(new Animated.Value(0));
 
 	const selectedInter = selected.interpolate({
@@ -32,6 +37,10 @@ function PostTypeSelector() {
 	const highlightPosition = {
 		left: selectedInter
 	};
+
+	useImperativeHandle(ref, () => ({
+		selected
+	}));
 
 	return (
 		<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
@@ -67,6 +76,6 @@ function PostTypeSelector() {
 			</StyledOpacity>
 		</StyledView>
 	);
-}
+});
 
 export { PostTypeSelector };
