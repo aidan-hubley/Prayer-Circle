@@ -49,6 +49,7 @@ export default function FeedPage() {
 	let insets = useSafeAreaInsets();
 
 	return (
+	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1'>
 				<StyledFlatList

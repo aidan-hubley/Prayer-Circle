@@ -48,8 +48,11 @@ export default function Page() {
 	}, [isEnabled]);
 
 	return (
-		<StyledView className='bg-offblack flex-1'>
-			<StyledView className='items-center top-10'>
+		<StyledView
+			className='bg-offblack flex-1'
+			style={{ paddingTop: topInset }}
+		>
+			<StyledView className='items-center'>
 				<Button // Leave Circle
 					btnStyles='absolute left-5 bg-grey rotate-180'
 					height={'h-[50px]'}
