@@ -415,7 +415,15 @@ const OwnedPost = (post) => {
 				>
 					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-[#EBEBEB33]'>
 						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
-							<StyledOpacity
+							{/* Interactions needed:
+								- Delete post
+								- Options
+									- Turn off comments
+									- Turn off interactions
+								- Edit post
+								- Comments component
+								- Venn Diagram (Circles posted to) */}
+							{/* <StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 								onPress={onPress}
@@ -455,7 +463,7 @@ const OwnedPost = (post) => {
 									size={25}
 									color='white'
 								/>
-							</StyledOpacity>
+							</StyledOpacity> */}
 						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
