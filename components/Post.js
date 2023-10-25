@@ -391,8 +391,8 @@ const OwnedPost = (post) => {
 					</GestureDetector>
 					<StyledView className='flex flex-col w-[12%] items-center content-center justify-between'>
 						<Ionicons name={icon} size={35} color='white' />
-						<StyledText className='text-offwhite text-center'>
-							14 {/* Count of interations */}
+						<StyledText className='text-offwhite text-center text-[12px]'>
+							{post.interactions} {/* Count of interations */}
 						</StyledText>
 						
 						<StyledPressable

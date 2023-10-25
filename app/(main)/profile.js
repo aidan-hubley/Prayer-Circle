@@ -43,6 +43,7 @@ export default function ProfilePage() {
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
+						interactions={12}
 					/>
 					<OwnedPost
 						user='Alex Muresan'
@@ -52,6 +53,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
+						interactions={3}
 					/>
 					<OwnedPost
 						user='Alex Muresan'
@@ -61,6 +63,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
+						interactions={10}
 					/>
 				</StyledView>
 				<StyledView className='w-full flex mt-3 items-center'>
