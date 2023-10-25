@@ -372,27 +372,15 @@ const OwnedPost = (post) => {
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
-							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
-									className='rounded-lg'
-									style={{ width: 44, height: 44 }}
-									source={{
-										uri: post.img
-									}}
-								/>
-								<StyledView className='ml-2'>
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{post.title.length > 21
-											? post.title.substring(0, 21) +
-											  '...'
-											: post.title}
-									</StyledText>
-									<StyledText className='text-white'>
-										{post.user} • {tS}
-									</StyledText>
-								</StyledView>
+							<StyledView className='mb-2 ml-2'>
+								<StyledText className='text-offwhite font-bold text-[20px]'>
+									{post.title.length > 27
+										? post.title.substring(0, 27) +
+											'...'
+										: post.title}  • {tS}
+								</StyledText>
 							</StyledView>
-							<StyledView className='flex flex-row items-center w-[95%]'>
+							<StyledView className='flex flex-row items-center w-[95%] ml-2'>
 								<StyledText className='text-white'>
 									{post.content}
 								</StyledText>
@@ -400,18 +388,10 @@ const OwnedPost = (post) => {
 						</StyledView>
 					</GestureDetector>
 					<StyledView className='flex flex-col w-[12%] items-center content-center justify-between'>
-						<StyledPressable
-							onPress={() => {
-								toggleIcon();
-							}}
-						>
-							<Ionicons name={icon} size={35} color='white' />
-						<StyledText // Count of interations
-							className='text-offwhite text-center'
-						>
-							14
+						<Ionicons name={icon} size={35} color='white' />
+						<StyledText className='text-offwhite text-center'>
+							14 {/* Count of interations */}
 						</StyledText>
-						</StyledPressable>
 						
 						<StyledPressable
 							className='flex items-center justify-center w-[39px] aspect-square mt-2'

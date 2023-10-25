@@ -23,7 +23,7 @@ export default function ProfilePage() {
 				<StyledView className='flex items-center w-full'>
 					<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
 						<StyledImage
-							className='w-full h-full rounded-[20px]'
+							className='w-full h-full rounded-[18px]'
 							source={{ uri: 'https://picsum.photos/1223' }}
 						/>
 					</StyledView>
