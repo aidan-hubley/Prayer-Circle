@@ -3,7 +3,7 @@ import { Text, View, Image, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
-import { Post } from '../../components/Post';
+import { OwnedPost } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
@@ -35,7 +35,7 @@ export default function ProfilePage() {
 					</StyledText>
 				</StyledView>
 				<StyledView className='mt-3'>
-					<Post
+					<OwnedPost
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='Pray for my dog he is very sick'
@@ -44,7 +44,7 @@ export default function ProfilePage() {
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
 					/>
-					<Post
+					<OwnedPost
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='Pray for my dog he is very sick'
@@ -53,7 +53,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						icon='heart-outline'
 					/>
-					<Post
+					<OwnedPost
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='Pray for my dog he is very sick'
