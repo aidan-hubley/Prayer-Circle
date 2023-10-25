@@ -40,8 +40,7 @@ export default function ProfilePage() {
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='WWWW WWW WW W wwww www ww w WWWW WWW WW W wwww www ww w'
 						timestamp={1695846631107}
-						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla bla bla bla bla bla'
 						icon='heart-outline'
 						interactions={12}
 					/>
@@ -50,8 +49,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='test test title test test title 1 2 3 4 test test title test test test test test test'
 						timestamp={1695846631107}
-						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+						content='Description text lamda latin nonesense bla bla bla text lamda latin'
 						icon='heart-outline'
 						interactions={3}
 					/>
@@ -60,8 +58,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='IIII III II I iiii iii ii i IIII III II I iiii iii ii i'
 						timestamp={1695846631107}
-						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '
 						icon='heart-outline'
 						interactions={10}
 					/>
