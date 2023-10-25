@@ -38,7 +38,7 @@ export default function ProfilePage() {
 					<OwnedPost
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
-						title='Pray for my dog he is very sick'
+						title='WWWW WWW WW W wwww www ww w WWWW WWW WW W wwww www ww w'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
@@ -47,7 +47,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 					<OwnedPost
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
-						title='Pray for my dog he is very sick'
+						title='test test title test test title 1 2 3 4 test test title test test test test test test'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
@@ -56,7 +56,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 					<OwnedPost
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
-						title='Pray for my dog he is very sick'
+						title='IIII III II I iiii iii ii i IIII III II I iiii iii ii i'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'

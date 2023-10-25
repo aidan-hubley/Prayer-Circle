@@ -371,14 +371,16 @@ const OwnedPost = (post) => {
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto py-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
-						<StyledView className=' w-[88%]'>
-							<StyledView className='mb-2 ml-2'>
-								<StyledText className='text-offwhite font-bold text-[20px]'>
-									{post.title.length > 27
-										? post.title.substring(0, 27) +
+						<StyledView className='w-[88%]'>
+							<StyledView className='mb-2 ml-2 flex flex-row h-5'>
+								<StyledText className='text-offwhite font-bold w-[90%] text-[18px]'>
+									{/* {post.title.length > 32
+										? post.title.substring(0, 32) +
 											'...'
-										: post.title}  • {tS}
+										: post.title}  */}
+									{post.title}
 								</StyledText>
+								<StyledText className='text-offwhite text-[12px] h-10 pt-1.5'> {tS} </StyledText>
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%] ml-2'>
 								<StyledText className='text-white'>
