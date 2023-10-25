@@ -1,122 +1,124 @@
-import React from 'react';
-import { View, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+	View,
+	ScrollView,
+	StatusBar,
+	RefreshControl,
+	Dimensions,
+	Text,
+	FlatList
+} from 'react-native';
 import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { Button } from '../../components/Buttons';
-import { usePathname } from 'expo-router/src/hooks';
-import { toggleMainNav } from './_layout';
 import { LinearGradient } from 'expo-linear-gradient';
-import * as Device from 'expo-device';
-import { router } from '../../backend/config';
+import {
+	writeData,
+	generateId,
+	readData
+} from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
+const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
+const StyledFlatList = styled(FlatList);
 
-export default function Page() {
+export default function FeedPage() {
+	const [dataArray, setDataArray] = useState([]);
+	const [refreshing, setRefreshing] = useState(false);
+
+	function pullData() {
+		setRefreshing(true);
+		readData(`prayer_circle/posts`).then((data) => {
+			let dataArray = data ? Object.entries(data) : [];
+			dataArray.sort((a, b) => {
+				return b[1].timestamp - a[1].timestamp;
+			});
+			setDataArray(dataArray);
+			setRefreshing(false);
+		});
+	}
+
+	useEffect(() => {
+		pullData();
+	}, []);
+
 	let insets = useSafeAreaInsets();
-	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 
 	return (
+	return (
 		<StyledView className='flex-1 bg-offblack'>
-			<StyledView className='flex-1 items-center' w-screen>
-				<StyledScrollView className='w-full px-[13px]'>
-					<StyledView className='w-full flex justify-center items-center'>
-						<StyledView
-							style={{ height: insets.top + 60 }}
-							className={`w-full`}
+			<StyledView className='flex-1'>
+				<StyledFlatList
+					data={dataArray}
+					style={{ paddingHorizontal: 15 }}
+					estimatedItemSize={100}
+					showsHorizontalScrollIndicator={false}
+					refreshControl={
+						<RefreshControl
+							onRefresh={pullData}
+							refreshing={refreshing}
+							tintColor='#ebebeb'
 						/>
+					}
+					ListHeaderComponent={
+						dataArray && dataArray.length > 0 ? (
+							<StyledView
+								className='w-full flex items-center mb-[10px]'
+								style={{
+									height: insets.top + 60
+								}}
+							/>
+						) : (
+							<></>
+						)
+					}
+					ListFooterComponent={
+						dataArray && dataArray.length > 0 ? (
+							<StyledView
+								className='w-full flex items-center mb-[10px]'
+								style={{
+									height: insets.top + 60
+								}}
+							/>
+						) : (
+							<></>
+						)
+					}
+					ListEmptyComponent={
+						<StyledView className='w-full h-full flex items-center justify-center'>
+							<StyledText className='text-white text-[24px]'>
+								No Posts Yet!
+							</StyledText>
+						</StyledView>
+					}
+					renderItem={({ item }) => (
 						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+							user={item[1].name}
+							img={item[1].profile_img}
+							title={item[1].title}
+							timestamp={`${item[1].timestamp}`}
+							content={item[1].text}
 							icon='heart-outline'
+							id={item[0]}
+							refresh={() => pullData()}
 						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-						/>
-						<Post
-							user='Alex Muresan'
-							img='https://i.imgur.com/0y8Ftya.png'
-							title='Pray for my dog he is very sick'
-							timestamp={1695846631107}
-							content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-							icon='heart-outline'
-							end={true}
-						/>
-						<StyledView className='w-full h-[110px]' />
-					</StyledView>
-				</StyledScrollView>
+					)}
+					keyExtractor={(item) => item[0]}
+				/>
 			</StyledView>
 
-			<StyledView className='absolute bottom-[3%] flex flex-row justify-center w-screen'>
-				<Circle size='w-[80px] h-[80px]' />
+			<StyledView
+				style={{
+					bottom:
+						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
+				}}
+				className='absolute flex flex-row justify-center w-screen'
+			>
+				<Circle />
 			</StyledView>
 
 			<StyledGradient
@@ -127,17 +129,6 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
-			<StyledView
-				style={{ top: topButtonInset }}
-				className={`w-screen absolute items-center px-[20px]`}
-			>
-				<Button
-					btnStyles='w-[200px] w-min-[175px] w-max-[225px] self-center'
-					height={'h-[50px]'}
-					title='Circle Name'
-					href='/circleSettings'
-				/>
-			</StyledView>
 			<StatusBar barStyle={'light-content'} />
 		</StyledView>
 	);

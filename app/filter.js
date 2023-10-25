@@ -14,7 +14,7 @@ export default function Page() {
 				<StyledText className='text-3xl text-white text-center tracking-widest leading-10'>
 					Filter
 				</StyledText>
-				<Button title='Feed' href='/feed' />
+				<Button title='Feed' href='/mainViewLayout' />
 			</StyledView>
 		</StyledSafeArea>
 	);

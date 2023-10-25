@@ -145,7 +145,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 				iconSize={40}
 				icon='journal-outline'
 				expanded={false}
-				href='/journal'
+				href='/mainViewLayout'
 			/>
 			<StatusBar barStyle={'light-content'} />
 		</StyledView>

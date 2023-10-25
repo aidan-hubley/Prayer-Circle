@@ -2,35 +2,45 @@
 	"prayer_circle": {
 		"users": {
 			"_uid_": {
-				"username": "Username",
-				"fname": "First Name",
-				"lname": "Last Name",
-				"email": "Email",
-				"phone": "Phone",
-				"created": 1234567890,
-				"circles": {
-					"_pushId_": {
-						"permissions": {
-							"admin": true,
-							"write": true,
-							"read": true,
-							"owner": true
+				"public": {
+					"username": "Username",
+					"fname": "First Name",
+					"lname": "Last Name"
+				},
+				"private": {
+					"email": "Email",
+					"phone": "Phone",
+					"created": 1234567890,
+					"circles": {
+						"_pushId_": {
+							"permissions": {
+								"admin": true,
+								"write": true,
+								"read": true,
+								"owner": true
+							}
 						}
+					},
+					"reactions": {
+						"_pushId_": true
+					},
+					"comments": {
+						"_pushId_": true
+					},
+					"posts": {
+						"_pushId_": true
 					}
-				},
-				"reactions": {
-					"_pushId_": true
-				},
-				"comments": {
-					"_pushId_": true
 				}
 			}
 		},
 		"posts": {
 			"_pushId_": {
 				"user": "_uid_",
+				"name": "Post Owner Name",
+				"title": "Post title",
 				"text": "Post text",
 				"type": "Post type",
+				"img": "Profile image",
 				"timestamp": 1234567890,
 				"comments": {
 					"_pushId_": true

@@ -10,7 +10,12 @@ export default function Layout() {
 				screenOptions={{
 					headerShown: false
 				}}
-			></Stack>
+			>
+				<Stack.Screen
+					name='circleSettings'
+					options={{ presentation: 'modal' }}
+				></Stack.Screen>
+			</Stack>
 		</ActionSheetProvider>
 	);
 }

@@ -20,7 +20,7 @@ const StyledModal = styled(Modal);
 
 export default function Page() {
 	let insets = useSafeAreaInsets();
-	let topInset = insets.top > 30 ? insets.top : insets.top + 10;
+	let topInset = insets.top > 30 ? insets.top : insets.top + 100;
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
 	const toggleModal1 = () => {
@@ -86,7 +86,7 @@ export default function Page() {
 							iconSize={30}
 							icon='musical-notes'
 							iconColor='white'
-							href='/feed'
+							href='/mainViewLayout'
 						/>
 						<StyledText className='font-bold text-3xl text-offwhite'>
 							Circle Name
@@ -209,7 +209,7 @@ export default function Page() {
 				width={'w-[50px]'}
 				iconSize={30}
 				icon='arrow-back'
-				href='/feed'
+				href='/mainViewLayout'
 			/>
 
 			<StyledModal
@@ -229,7 +229,7 @@ export default function Page() {
 							iconSize={60}
 							icon='musical-notes'
 							iconColor='white'
-							href='/feed'
+							href='/mainViewLayout'
 						/>
 
 						<StyledText className='top-[20%] text-3xl text-offwhite'>
@@ -271,7 +271,7 @@ export default function Page() {
 							iconSize={60}
 							icon='musical-notes'
 							iconColor='white'
-							href='/feed'
+							href='/mainViewLayout'
 						/>
 
 						<StyledText className='top-[20%] text-3xl text-offwhite'>

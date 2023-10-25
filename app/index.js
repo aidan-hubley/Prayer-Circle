@@ -17,6 +17,6 @@ export default function Page() {
 
 	AsyncStorage.getItem('user').then((user) => {
 		if (!user || user.length == 0) router.push('/login');
-		else router.push('/feed');
+		else router.push('/mainViewLayout');
 	});
 }

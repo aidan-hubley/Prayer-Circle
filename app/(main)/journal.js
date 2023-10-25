@@ -17,7 +17,7 @@ const StyledText = styled(Text);
 const StyledScrollView = styled(ScrollView);
 const StyledOpacity = styled(TouchableOpacity);
 
-export default function Page() {
+export default function JournalPage() {
 	let insets = useSafeAreaInsets();
 	return (
 		<>
