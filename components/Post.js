@@ -15,6 +15,7 @@ import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
 
 const StyledImage = styled(Image);
+const StyledIcon = styled(Ionicons);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
@@ -119,7 +120,7 @@ const Post = (post) => {
 		if (!post.end) {
 			return (
 				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px] border border-outline'></StyledView>
+					<StyledView className='w-[75%] h-[1px]'></StyledView>
 				</StyledView>
 			);
 		}
@@ -141,7 +142,7 @@ const Post = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-grey rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-grey rounded-[20px] py-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
@@ -178,7 +179,7 @@ const Post = (post) => {
 								toggleIcon();
 							}}
 						>
-							<Ionicons name={icon} size={35} color='white' />
+							<StyledIcon name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
 							className='flex items-center justify-center w-[39px] aspect-square mt-2'
@@ -196,50 +197,54 @@ const Post = (post) => {
 				</StyledView>
 				<StyledAnimatedView
 					style={toolbarStyle}
-					className='px-[5px] w-full overflow-hidden'
+					className='px-[10px] w-full overflow-hidden'
 				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
-						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack'>
+						<StyledView className='flex flex-row justify-around items-center w-full h-[50px]'>
 							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
-								onPress={onPress}
 							>
-								<Ionicons
-									name={'ellipsis-horizontal'}
+								<StyledIcon
+									name={'flag-outline'}
 									size={29}
-									color='white'
+									color='#CC2500'
 								/>
 							</StyledOpacity>
 							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 							>
-								<Ionicons
-									name={'heart-circle-outline'}
+								<StyledIcon
+									name={'eye-off-outline'}
 									size={29}
-									color='white'
+									color='#F9A826'
 								/>
 							</StyledOpacity>
 							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 							>
-								<Ionicons
+								<StyledIcon
+									name={'bookmark-outline'}
+									size={29}
+									color='#00A55E'
+								/>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px]'
+								activeOpacity={0.4}
+							>
+								<StyledIcon
 									name={'chatbubble-outline'}
 									size={29}
-									color='white'
+									color='#5946B2'
 								/>
 							</StyledOpacity>
 							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px] rounded-full border-2 border-offwhite'
+								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
 							>
-								<Ionicons
-									name={'globe'}
-									size={25}
-									color='white'
-								/>
 							</StyledOpacity>
 						</StyledView>
 					</StyledView>
@@ -346,7 +351,7 @@ const OwnedPost = (post) => {
 		if (!post.end) {
 			return (
 				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px] border border-outline'></StyledView>
+					<StyledView className='w-[75%] h-[1px]'></StyledView>
 				</StyledView>
 			);
 		}
@@ -368,12 +373,12 @@ const OwnedPost = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-grey rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-grey rounded-[20px] py-[10px] my-[5px]'>
 				<StyledView className='w-full min-h-[100px] flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className='w-[88%]'>
 							<StyledView className='mb-2 ml-2 flex flex-row h-5'>
-								<StyledText className='text-offwhite font-bold w-[90%] text-[18px]'>
+								<StyledText className='text-offwhite font-bold text-[18px]'>
 									{/* {post.title.length > 32
 										? post.title.substring(0, 32) +
 											'...'
@@ -390,7 +395,7 @@ const OwnedPost = (post) => {
 						</StyledView>
 					</GestureDetector>
 					<StyledView className='flex flex-col w-[12%] items-center content-center justify-between'>
-						<Ionicons name={icon} size={35} color='white' />
+						<StyledIcon name={icon} size={35} color='white' />
 						<StyledText className='text-offwhite text-center text-[12px] absolute top-[34px]'>
 							{post.interactions}
 						</StyledText>
@@ -414,59 +419,56 @@ const OwnedPost = (post) => {
 				</StyledView>
 				<StyledAnimatedView
 					style={toolbarStyle}
-					className='px-[5px] w-full overflow-hidden'
+					className='px-[10px] w-full overflow-hidden'
 				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
-						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
-							{/* Interactions needed:
-								- Delete post
-								- Options
-									- Turn off comments
-									- Turn off interactions
-								- Edit post
-								- Comments component
-								- Venn Diagram (Circles posted to) */}
-							{/* <StyledOpacity
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack'>
+						<StyledView className='flex flex-row justify-around items-center w-full h-[50px]'>
+							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 								onPress={onPress}
 							>
-								<Ionicons
-									name={'ellipsis-horizontal'}
+								<StyledIcon
+									name={'trash-outline'}
 									size={29}
-									color='white'
+									color='#CC2500'
 								/>
 							</StyledOpacity>
 							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 							>
-								<Ionicons
-									name={'heart-circle-outline'}
+								<StyledIcon
+									name={'cog-outline'}
 									size={29}
-									color='white'
+									color='#F9A826'
 								/>
 							</StyledOpacity>
 							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 							>
-								<Ionicons
+								<StyledIcon
+									name={'create-outline'}
+									size={29}
+									color='#00A55E'
+								/>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px]'
+								activeOpacity={0.4}
+							>
+								<StyledIcon
 									name={'chatbubble-outline'}
 									size={29}
-									color='white'
+									color='#5946B2'
 								/>
 							</StyledOpacity>
 							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px] rounded-full border-2 border-offwhite'
+								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
 							>
-								<Ionicons
-									name={'globe'}
-									size={25}
-									color='white'
-								/>
-							</StyledOpacity> */}
+							</StyledOpacity>
 						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
