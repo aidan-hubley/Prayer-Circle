@@ -369,7 +369,7 @@ const OwnedPost = (post) => {
 	return (
 		<StyledView className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto py-[10px] my-[5px]'>
-				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
+				<StyledView className='w-full min-h-[100px] flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className='w-[88%]'>
 							<StyledView className='mb-2 ml-2 flex flex-row h-5'>
@@ -380,7 +380,7 @@ const OwnedPost = (post) => {
 										: post.title}  */}
 									{post.title}
 								</StyledText>
-								<StyledText className='text-offwhite text-[12px] h-10 pt-1.5'> {tS} </StyledText>
+								{/* <StyledText className='text-offwhite text-[12px] h-10 pt-1.5'> {tS} </StyledText> */}
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%] ml-2'>
 								<StyledText className='text-white'>
@@ -406,6 +406,9 @@ const OwnedPost = (post) => {
 								style={spiralStyle}
 								source={require('../assets/spiral.png')}
 							/>
+							<StyledText className='text-offwhite text-center text-[12px] absolute top-[11px]'>
+								{tS} 
+							</StyledText>
 						</StyledPressable>
 					</StyledView>
 				</StyledView>
