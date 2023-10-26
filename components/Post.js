@@ -141,7 +141,7 @@ const Post = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-grey border border-outline rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-grey rounded-[20px] h-auto py-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
@@ -368,7 +368,7 @@ const OwnedPost = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-grey border border-outline rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-grey rounded-[20px] h-auto py-[10px] my-[5px]'>
 				<StyledView className='w-full min-h-[100px] flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className='w-[88%]'>
