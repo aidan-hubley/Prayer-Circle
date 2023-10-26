@@ -55,6 +55,13 @@ export default function Layout() {
 				</StyledView>
 
 				<StyledView
+					style={{bottom: insets.bottom < 10 ? insets.bottom + 15 : insets.bottom}}
+					className='absolute flex flex-row justify-center w-screen'
+				>
+					<Circle />
+				</StyledView>
+
+				<StyledView
 					style={{ top: topButtonInset, width: circeNameWidth }}
 					className='absolute mx-[85px]'
 				>
@@ -121,15 +128,6 @@ export default function Layout() {
 						}}
 					/>
 				</StyledView>
-				<StyledView
-				style={{
-					bottom:
-						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
-				}}
-				className='absolute flex flex-row justify-center w-screen'
-			>
-				<Circle />
-			</StyledView>
 			</>
 		</ActionSheetProvider>
 	);
