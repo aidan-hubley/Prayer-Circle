@@ -133,7 +133,7 @@ export default function Page() {
 							true
 						);
 						await writeData(
-							`prayer_circle/circles/-NhXfdEbrH1yxRqiajYm/posts/${newPostId}`,
+							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${newPostId}`,
 							true,
 							true
 						);

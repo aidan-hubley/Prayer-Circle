@@ -17,7 +17,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {
 	writeData,
 	generateId,
-	readData
+	readData,
+	getPosts
 } from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
@@ -29,9 +30,11 @@ const StyledFlatList = styled(FlatList);
 export default function FeedPage() {
 	const [dataArray, setDataArray] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
+	const [postList, setPostList] = useState([]);
 
 	function pullData() {
 		setRefreshing(true);
+		setPostList(getPosts());
 		readData(`prayer_circle/posts`).then((data) => {
 			let dataArray = data ? Object.entries(data) : [];
 			dataArray.sort((a, b) => {
@@ -53,6 +56,10 @@ export default function FeedPage() {
 			<StyledView className='flex-1'>
 				<StyledFlatList
 					data={dataArray}
+					onEndReachedThreshold={0.3}
+					onEndReached={() => {
+						console.log('end reached');
+					}}
 					style={{ paddingHorizontal: 15 }}
 					estimatedItemSize={100}
 					showsHorizontalScrollIndicator={false}

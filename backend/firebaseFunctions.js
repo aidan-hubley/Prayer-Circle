@@ -7,13 +7,15 @@ import {
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+async function getUIDFromStorage() {
+	return await AsyncStorage.getItem('user');
+}
+
 export async function readData(path) {
 	return await get(child(ref(database), path))
 		.then((snapshot) => {
 			if (snapshot.exists()) {
 				return snapshot.val();
-			} else {
-				console.log('No data available');
 			}
 		})
 		.catch((error) => {
@@ -52,11 +54,11 @@ export async function deleteData(path) {
 }
 
 export async function createCircle(data) {
-	let me = await AsyncStorage.getItem('user');
+	const UID = await getUIDFromStorage();
 	let circleId = generateId();
-	data.members[`${me}`] = true;
-	data.admin[`${me}`] = true;
-	data.owner = me;
+	data.members[`${UID}`] = true;
+	data.admin[`${UID}`] = true;
+	data.owner = UID;
 
 	let circlePermissions = {
 		admin: true,
@@ -67,7 +69,7 @@ export async function createCircle(data) {
 
 	writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
-		`prayer_circle/users/${me}/circles/${circleId}/permissions`,
+		`prayer_circle/users/${UID}/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
 	);
@@ -123,12 +125,36 @@ export function generateId() {
 	return push(ref(database)).key;
 }
 
-export function userLoggedIn() {
+export function userLoggedIn(onLogIn, onLogOut) {
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
-			console.log('user logged in');
+			if (onLogIn) onLogIn();
 		} else {
-			console.log('user logged out');
+			if (onLogOut) onLogOut();
 		}
 	});
+}
+
+export async function getPosts(circleId) {
+	const UID = await getUIDFromStorage();
+	let circles = [];
+	let posts = [];
+
+	if (!circleId || circleId == 'unfiltered') {
+		circles = Object.keys(
+			await readData(`prayer_circle/users/${UID}/circles`)
+		);
+	} else {
+		circles.push(circleId);
+	}
+
+	for (circle of circles) {
+		await readData(`prayer_circle/circles/${circle}/posts`).then(
+			(circlePosts) => {
+				circlePosts = circlePosts ? Object.keys(circlePosts) : [];
+				posts.push.apply(posts, circlePosts);
+			}
+		);
+	}
+	return posts;
 }
