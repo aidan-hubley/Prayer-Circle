@@ -162,7 +162,7 @@ const Post = (post) => {
 											: post.title}
 									</StyledText>
 									<StyledText className='text-white'>
-										{post.user} • {tS}
+										{post.user} • {tS} {post.edited ? '• (edited)' : null}
 									</StyledText>
 								</StyledView>
 							</StyledView>
@@ -377,16 +377,18 @@ const OwnedPost = (post) => {
 				<StyledView className='w-full min-h-[100px] flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className='w-[88%]'>
-							<StyledView className='mb-2 ml-2 flex flex-row h-5'>
-								<StyledText className='text-offwhite font-bold text-[18px]'>
+							<StyledView className='mb-1 ml-2 flex h-5'>
+								<StyledText className='text-offwhite font-bold text-[18px] w-[90%]'>
 									{/* {post.title.length > 32
 										? post.title.substring(0, 32) +
 											'...'
 										: post.title}  */}
 									{post.title}
 								</StyledText>
-								{/* <StyledText className='text-offwhite text-[12px] h-10 pt-1.5'> {tS} </StyledText> */}
 							</StyledView>
+							{post.edited 
+								? <StyledText className='ml-1 mb-1 text-offwhite text-[12px]'> (edited) </StyledText>
+								: null}
 							<StyledView className='flex flex-row items-center w-[95%] ml-2'>
 								<StyledText className='text-white'>
 									{post.content}

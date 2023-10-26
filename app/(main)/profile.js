@@ -43,6 +43,7 @@ export default function ProfilePage() {
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla bla bla bla bla bla'
 						icon='heart-outline'
 						interactions={12}
+						edited={false}
 					/>
 					<OwnedPost
 						user='Alex Muresan'
@@ -52,6 +53,7 @@ export default function ProfilePage() {
 						content='Description text lamda latin nonesense bla bla bla text lamda latin'
 						icon='heart-outline'
 						interactions={3}
+						edited={true}
 					/>
 					<OwnedPost
 						user='Alex Muresan'
@@ -61,6 +63,7 @@ export default function ProfilePage() {
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '
 						icon='heart-outline'
 						interactions={10}
+						edited={true}
 					/>
 				</StyledView>
 				<StyledView className='w-full flex mt-3 items-center'>
