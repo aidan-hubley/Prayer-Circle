@@ -119,7 +119,7 @@ const Post = (post) => {
 		if (!post.end) {
 			return (
 				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px] border border-[#EBEBEB22]'></StyledView>
+					<StyledView className='w-[75%] h-[1px] border border-outline'></StyledView>
 				</StyledView>
 			);
 		}
@@ -141,7 +141,7 @@ const Post = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-grey border border-outline rounded-[20px] h-auto py-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
@@ -198,7 +198,7 @@ const Post = (post) => {
 					style={toolbarStyle}
 					className='px-[5px] w-full overflow-hidden'
 				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-[#EBEBEB33]'>
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
 						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
 							<StyledOpacity
 								className='flex items-center justify-center w-[30px] h-[30px]'
@@ -346,7 +346,7 @@ const OwnedPost = (post) => {
 		if (!post.end) {
 			return (
 				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px] border border-[#EBEBEB22]'></StyledView>
+					<StyledView className='w-[75%] h-[1px] border border-outline'></StyledView>
 				</StyledView>
 			);
 		}
@@ -368,7 +368,7 @@ const OwnedPost = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-grey border border-outline rounded-[20px] h-auto py-[10px] my-[5px]'>
 				<StyledView className='w-full min-h-[100px] flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className='w-[88%]'>
@@ -416,7 +416,7 @@ const OwnedPost = (post) => {
 					style={toolbarStyle}
 					className='px-[5px] w-full overflow-hidden'
 				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-[#EBEBEB33]'>
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
 						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
 							{/* Interactions needed:
 								- Delete post
