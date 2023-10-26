@@ -3,6 +3,7 @@ import { View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { ExpandableButton } from '../../components/Buttons';
+import { Circle } from '../../components/Circle';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import FeedPage from './feed.js';
 import ProfilePage from './profile.js';
@@ -120,6 +121,15 @@ export default function Layout() {
 						}}
 					/>
 				</StyledView>
+				<StyledView
+				style={{
+					bottom:
+						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
+				}}
+				className='absolute flex flex-row justify-center w-screen'
+			>
+				<Circle />
+			</StyledView>
 			</>
 		</ActionSheetProvider>
 	);
