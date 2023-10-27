@@ -27,16 +27,16 @@ const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
 const StyledFlatList = styled(FlatList);
 
-export default function FeedPage() {
+export default function FeedPage(props) {
 	const [posts, setPosts] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 	const [postList, setPostList] = useState([]);
 	const [renderIndex, setRenderIndex] = useState(0);
 	const [initialLoad, setInitialLoad] = useState('loading');
 
-	const setUpFeed = async () => {
+	const setUpFeed = async (filter) => {
 		setRenderIndex(0);
-		let gp = await getPosts();
+		let gp = await getPosts(filter);
 		gp = gp.reverse();
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
@@ -64,7 +64,6 @@ export default function FeedPage() {
 	}, []);
 
 	let insets = useSafeAreaInsets();
-
 	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1'>
@@ -85,7 +84,7 @@ export default function FeedPage() {
 							progressViewOffset={insets.top + 60}
 							onRefresh={() => {
 								setRefreshing(true);
-								setUpFeed();
+								setUpFeed(props.filter);
 							}}
 							refreshing={refreshing}
 							tintColor='#ebebeb'
@@ -146,7 +145,7 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon='heart-outline'
 							id={item[0]}
-							refresh={() => setUpFeed()}
+							refresh={() => setUpFeed(props.filter)}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
@@ -160,7 +159,12 @@ export default function FeedPage() {
 				}}
 				className='absolute flex flex-row justify-center w-screen'
 			>
-				<Circle />
+				<Circle
+					press={() => {
+						setRefreshing(true);
+						setUpFeed(props.filter);
+					}}
+				/>
 			</StyledView>
 
 			<StyledGradient

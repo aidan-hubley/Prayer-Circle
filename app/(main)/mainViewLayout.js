@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
@@ -9,6 +9,7 @@ import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
 import { Button } from '../../components/Buttons';
+import { useLocalSearchParams } from 'expo-router';
 
 const StyledView = styled(View);
 
@@ -17,6 +18,9 @@ export default function Layout() {
 	const journalRef = useRef();
 	const pagerRef = useRef();
 	const circleNameRef = useRef();
+	const params = useLocalSearchParams();
+	const filter = params.filter || '';
+
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
@@ -48,7 +52,7 @@ export default function Layout() {
 						}}
 					>
 						<JournalPage key='0' />
-						<FeedPage key='1' />
+						<FeedPage key='1' filter={filter} />
 						<ProfilePage key='2' />
 					</PagerView>
 				</StyledView>

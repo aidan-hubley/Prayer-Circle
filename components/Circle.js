@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 
-export function Circle({ size, press }) {
+export function Circle({ press }) {
 	let insets = useSafeAreaInsets();
 	const scale = useRef(new Animated.Value(1)).current;
 	const [pressed, setPressed] = useState(false);
@@ -54,7 +54,10 @@ export function Circle({ size, press }) {
 
 	const tap = Gesture.Tap().onEnd(() => {
 		if (!pressed) {
-			router.push('/filter');
+			router.push({
+				pathname: `/mainViewLayout`,
+				params: { filter: '-NhYtVYMYvc_HpBK-ohk' }
+			});
 		} else {
 			toggleOptions(false);
 		}
