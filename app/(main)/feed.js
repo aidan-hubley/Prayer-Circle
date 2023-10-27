@@ -32,7 +32,7 @@ export default function FeedPage() {
 	const [refreshing, setRefreshing] = useState(false);
 	const [postList, setPostList] = useState([]);
 	const [renderIndex, setRenderIndex] = useState(0);
-	const [initialLoad, setInitialLoad] = useState(true);
+	const [initialLoad, setInitialLoad] = useState('loading');
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -44,6 +44,7 @@ export default function FeedPage() {
 			return b[1].timestamp - a[1].timestamp;
 		});
 		setPosts(pl);
+		setInitialLoad('no posts');
 	};
 
 	async function populateList(list, start, numOfItems) {
@@ -59,7 +60,6 @@ export default function FeedPage() {
 		return renderedList;
 	}
 	useEffect(() => {
-		console.log(initialLoad);
 		setUpFeed();
 	}, []);
 
@@ -116,17 +116,26 @@ export default function FeedPage() {
 						)
 					}
 					ListEmptyComponent={
-						initialLoad ? (
-							<StyledView className='w-full h-screen flex items-center justify-center'>
+						<StyledView className='w-full h-screen flex items-center justify-center'>
+							<StyledView
+								className={`${
+									initialLoad == 'no posts'
+										? 'hidden'
+										: 'flex'
+								}`}
+							>
 								<ActivityIndicator size='large' />
 							</StyledView>
-						) : (
-							<StyledView className='w-full h-screen flex items-center justify-center'>
-								<StyledText className='text-white text-[24px]'>
-									No Posts Yet!
-								</StyledText>
-							</StyledView>
-						)
+							<StyledText
+								className={`${
+									initialLoad == 'no posts'
+										? 'flex'
+										: 'hidden'
+								} text-white text-[24px]`}
+							>
+								No Posts Yet!
+							</StyledText>
+						</StyledView>
 					}
 					renderItem={({ item }) => (
 						<Post

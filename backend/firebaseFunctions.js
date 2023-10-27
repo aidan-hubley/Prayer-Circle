@@ -142,12 +142,12 @@ export async function getPosts(circleId) {
 
 	if (!circleId || circleId == 'unfiltered') {
 		circles = Object.keys(
-			await readData(`prayer_circle/users/${UID}/circles`)
+			(await readData(`prayer_circle/users/${UID}/circles`)) || {}
 		);
 	} else {
 		circles.push(circleId);
 	}
-
+	if (circles.length == 0) return posts;
 	for (circle of circles) {
 		await readData(`prayer_circle/circles/${circle}/posts`).then(
 			(circlePosts) => {
