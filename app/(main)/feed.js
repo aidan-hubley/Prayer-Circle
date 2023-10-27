@@ -106,7 +106,7 @@ export default function FeedPage() {
 							refresh={() => pullData()}
 							owned={false}
 							interaction={0}
-							edited={false}
+							edited={true}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
