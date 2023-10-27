@@ -54,10 +54,11 @@ export function Circle({ press }) {
 
 	const tap = Gesture.Tap().onEnd(() => {
 		if (!pressed) {
-			router.push({
+			/* router.push({
 				pathname: `/mainViewLayout`,
 				params: { filter: '-NhYtVYMYvc_HpBK-ohk' }
-			});
+			}); */
+			router.push('/filter');
 		} else {
 			toggleOptions(false);
 		}
@@ -87,7 +88,7 @@ export function Circle({ press }) {
 				<Button
 					title='Draw a Circle'
 					height='h-[65px]'
-					width='w-11/12'
+					width='w-11/12 max-w-[500px]'
 					press={() => {
 						toggleOptions(false);
 					}}
@@ -97,7 +98,7 @@ export function Circle({ press }) {
 					title='Sketch a Post'
 					height='h-[65px]'
 					btnStyles={'mt-3'}
-					width='w-11/12'
+					width='w-11/12 max-w-[500px]'
 					press={() => {
 						toggleOptions(false);
 					}}

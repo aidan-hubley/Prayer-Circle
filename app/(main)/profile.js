@@ -34,7 +34,7 @@ export default function ProfilePage() {
 						lu2213@gmail.com
 					</StyledText>
 				</StyledView>
-				<StyledView className='mt-3'>
+				<StyledView className='mt-3 flex items-center'>
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'

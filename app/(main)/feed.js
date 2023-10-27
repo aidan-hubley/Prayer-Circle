@@ -1,28 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
 	View,
-	ScrollView,
 	StatusBar,
 	RefreshControl,
 	ActivityIndicator,
 	Text,
 	FlatList
 } from 'react-native';
-import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
-import { Button } from '../../components/Buttons';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-	writeData,
-	generateId,
-	readData,
-	getPosts
-} from '../../backend/firebaseFunctions';
+import { readData, getPosts } from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
-const StyledScrollView = styled(ScrollView);
 const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
 const StyledFlatList = styled(FlatList);
@@ -66,7 +57,7 @@ export default function FeedPage(props) {
 	let insets = useSafeAreaInsets();
 	return (
 		<StyledView className='flex-1 bg-offblack'>
-			<StyledView className='flex-1'>
+			<StyledView className='flex-1 flex items-center'>
 				<StyledFlatList
 					data={posts}
 					onEndReachedThreshold={0.5}

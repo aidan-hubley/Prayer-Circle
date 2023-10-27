@@ -14,7 +14,7 @@ export default function Layout() {
 				<Stack.Screen
 					name='circleSettings'
 					options={{ presentation: 'modal' }}
-				></Stack.Screen>
+				/>
 			</Stack>
 		</ActionSheetProvider>
 	);

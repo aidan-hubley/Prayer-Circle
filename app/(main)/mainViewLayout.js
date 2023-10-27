@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
-import { ExpandableButton } from '../../components/Buttons';
+import { ExpandableButton, Button } from '../../components/Buttons';
 import { Circle } from '../../components/Circle';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import FeedPage from './feed.js';
 import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
-import { Button } from '../../components/Buttons';
 import { useLocalSearchParams } from 'expo-router';
+import { readData } from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
 
@@ -21,12 +21,19 @@ export default function Layout() {
 	const circleNameRef = useRef();
 	const params = useLocalSearchParams();
 	const filter = params.filter || '';
+	const [circleName, setCircleName] = useState('Main Feed');
 
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
-	let circeNameWidth = screenWidth - 170;
+	let circleNameWidth = screenWidth - 170;
 
+	const getCircleName = async () => {
+		let name =
+			(await readData(`prayer_circle/circles/${filter}/title`)) ||
+			'Main Feed';
+		setCircleName(name);
+	};
 	return (
 		<ActionSheetProvider>
 			<>
@@ -36,6 +43,7 @@ export default function Layout() {
 						style={{ flex: 1 }}
 						initialPage={1}
 						onPageSelected={(e) => {
+							getCircleName();
 							let pos = e.nativeEvent.position;
 							if (pos == 0) {
 								journalRef.current.toggleButton('expand');
@@ -59,21 +67,29 @@ export default function Layout() {
 				</StyledView>
 
 				<StyledView
-					style={{bottom: insets.bottom < 10 ? insets.bottom + 15 : insets.bottom}}
+					style={{
+						bottom:
+							insets.bottom < 10
+								? insets.bottom + 15
+								: insets.bottom
+					}}
 					className='absolute flex flex-row justify-center w-screen'
 				>
-					<Circle />
+					<Circle filter={getCircleName} />
 				</StyledView>
 
 				<StyledView
-					style={{ top: topButtonInset, width: circeNameWidth }}
-					className='absolute mx-[85px]'
+					style={{
+						top: topButtonInset,
+						width: circleNameWidth
+					}}
+					className='absolute mx-[85px] flex items-center'
 				>
 					<Button
-						title='Prayer Circle'
+						title={circleName}
 						height='h-[50]'
-						width='w-full'
-						href='/circleSettings'
+						width='w-full max-w-[500px]'
+						href={'/circleSettings'}
 						ref={circleNameRef}
 					/>
 				</StyledView>
