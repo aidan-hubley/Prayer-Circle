@@ -116,16 +116,6 @@ const Post = (post) => {
 		);
 	};
 
-	function bottomBar() {
-		if (!post.end) {
-			return (
-				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px]'></StyledView>
-				</StyledView>
-			);
-		}
-	}
-
 	const tap = Gesture.Tap()
 		.numberOfTaps(2)
 		.onStart(() => {
@@ -146,31 +136,46 @@ const Post = (post) => {
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
-							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
-									className='rounded-lg'
-									style={{ width: 44, height: 44 }}
-									source={{
-										uri: post.img
-									}}
-								/>
-								<StyledView className='ml-2'>
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{post.title.length > 21
-											? post.title.substring(0, 21) +
-											  '...'
-											: post.title}
-									</StyledText>
-									<StyledText className='text-white'>
-										{post.user} • {tS} {post.edited ? '• (edited)' : null}
+							{post.owned ? 
+								<><StyledView className='mb-1 ml-2 flex h-5'>
+									<StyledText className='text-offwhite font-bold text-[18px] w-[90%]'>
+										{post.title}
 									</StyledText>
 								</StyledView>
-							</StyledView>
-							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white'>
-									{post.content}
-								</StyledText>
-							</StyledView>
+								<StyledText className={`${post.edited ? 'flex' : 'hidden'} ml-1 mb-1 text-offwhite text-[12px]`}> (edited) </StyledText>
+								<StyledView className='flex flex-row items-center w-[95%] ml-2'>
+									<StyledText className='text-white'>
+										{post.content}
+									</StyledText>
+								</StyledView></>
+							:
+								<><StyledView className='flex flex-row mb-2 '>
+									<StyledImage
+										className='rounded-lg'
+										style={{ width: 44, height: 44 }}
+										source={{
+											uri: post.img
+										}}
+									/>
+									<StyledView className='ml-2'>
+										<StyledText className='text-offwhite font-bold text-[20px]'>
+											{post.title.length > 21
+												? post.title.substring(0, 21) +
+												'...'
+												: post.title}
+										</StyledText>
+										<StyledText className='text-white'>
+											{post.user} • {tS} {post.edited ? '• (edited)' : null}
+										</StyledText>
+									</StyledView>
+								</StyledView>
+								<StyledView className='flex flex-row items-center w-[95%]'>
+									
+									<StyledText className='text-white'>
+										{post.content}
+									</StyledText>
+								</StyledView></>
+							}								
 						</StyledView>
 					</GestureDetector>
 					<StyledView className='flex flex-col w-[12%] items-center justify-between'>
@@ -379,10 +384,6 @@ const OwnedPost = (post) => {
 						<StyledView className='w-[88%]'>
 							<StyledView className='mb-1 ml-2 flex h-5'>
 								<StyledText className='text-offwhite font-bold text-[18px] w-[90%]'>
-									{/* {post.title.length > 32
-										? post.title.substring(0, 32) +
-											'...'
-										: post.title}  */}
 									{post.title}
 								</StyledText>
 							</StyledView>

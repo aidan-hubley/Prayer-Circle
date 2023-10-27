@@ -104,6 +104,8 @@ export default function FeedPage() {
 							icon='heart-outline'
 							id={item[0]}
 							refresh={() => pullData()}
+							owned={false}
+							interaction={0}
 							edited={false}
 						/>
 					)}

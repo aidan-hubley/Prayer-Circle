@@ -3,7 +3,7 @@ import { Text, View, Image, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
-import { OwnedPost } from '../../components/Post';
+import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
@@ -35,34 +35,37 @@ export default function ProfilePage() {
 					</StyledText>
 				</StyledView>
 				<StyledView className='mt-3'>
-					<OwnedPost
+					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='WWWW WWW WW W wwww www ww w WWWW WWW WW W wwww www ww w'
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla bla bla bla bla bla'
 						icon='heart-outline'
-						interactions={12}
+						owned={true}
+						interaction={10}
 						edited={false}
 					/>
-					<OwnedPost
+					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='test test title test test title 1 2 3 4 test test title test test test test test test'
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin'
 						icon='heart-outline'
-						interactions={3}
+						owned={true}
+						interaction={5}
 						edited={true}
 					/>
-					<OwnedPost
+					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
 						title='IIII III II I iiii iii ii i IIII III II I iiii iii ii i'
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '
 						icon='heart-outline'
-						interactions={10}
+						owned={true}
+						interaction={2}
 						edited={true}
 					/>
 				</StyledView>
