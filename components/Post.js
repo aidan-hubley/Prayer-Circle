@@ -141,6 +141,9 @@ const Post = (post) => {
 									<StyledText className='text-offwhite font-bold text-[18px] w-[90%]'>
 										{post.title}
 									</StyledText>
+									<StyledText className='text-white'>
+										{post.user} • {tS} {post.edited ? '• (edited)' : null}
+									</StyledText>
 								</StyledView>
 								<StyledText className={`${post.edited ? 'flex' : 'hidden'} ml-1 mb-1 text-offwhite text-[12px]`}> (edited) </StyledText>
 								<StyledView className='flex flex-row items-center w-[95%] ml-2'>
