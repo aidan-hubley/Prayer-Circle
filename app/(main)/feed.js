@@ -4,7 +4,7 @@ import {
 	ScrollView,
 	StatusBar,
 	RefreshControl,
-	Dimensions,
+	ActivityIndicator,
 	Text,
 	FlatList
 } from 'react-native';
@@ -20,8 +20,6 @@ import {
 	readData,
 	getPosts
 } from '../../backend/firebaseFunctions';
-import { render } from 'react-dom';
-import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -34,6 +32,7 @@ export default function FeedPage() {
 	const [refreshing, setRefreshing] = useState(false);
 	const [postList, setPostList] = useState([]);
 	const [renderIndex, setRenderIndex] = useState(0);
+	const [initialLoad, setInitialLoad] = useState(true);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -60,6 +59,7 @@ export default function FeedPage() {
 		return renderedList;
 	}
 	useEffect(() => {
+		console.log(initialLoad);
 		setUpFeed();
 	}, []);
 
@@ -82,6 +82,7 @@ export default function FeedPage() {
 					showsHorizontalScrollIndicator={false}
 					refreshControl={
 						<RefreshControl
+							progressViewOffset={insets.top + 60}
 							onRefresh={() => {
 								setRefreshing(true);
 								setUpFeed();
@@ -115,11 +116,17 @@ export default function FeedPage() {
 						)
 					}
 					ListEmptyComponent={
-						<StyledView className='w-full h-screen flex items-center justify-center'>
-							<StyledText className='text-white text-[24px]'>
-								No Posts Yet!
-							</StyledText>
-						</StyledView>
+						initialLoad ? (
+							<StyledView className='w-full h-screen flex items-center justify-center'>
+								<ActivityIndicator size='large' />
+							</StyledView>
+						) : (
+							<StyledView className='w-full h-screen flex items-center justify-center'>
+								<StyledText className='text-white text-[24px]'>
+									No Posts Yet!
+								</StyledText>
+							</StyledView>
+						)
 					}
 					renderItem={({ item }) => (
 						<Post
