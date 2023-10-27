@@ -152,21 +152,6 @@ export default function FeedPage(props) {
 				/>
 			</StyledView>
 
-			<StyledView
-				style={{
-					bottom:
-						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
-				}}
-				className='absolute flex flex-row justify-center w-screen'
-			>
-				<Circle
-					press={() => {
-						setRefreshing(true);
-						setUpFeed(props.filter);
-					}}
-				/>
-			</StyledView>
-
 			<StyledGradient
 				pointerEvents='none'
 				start={{ x: 0, y: 0.3 }}
