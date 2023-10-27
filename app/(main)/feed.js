@@ -20,6 +20,8 @@ import {
 	readData,
 	getPosts
 } from '../../backend/firebaseFunctions';
+import { render } from 'react-dom';
+import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledScrollView = styled(ScrollView);
@@ -28,25 +30,37 @@ const StyledGradient = styled(LinearGradient);
 const StyledFlatList = styled(FlatList);
 
 export default function FeedPage() {
-	const [dataArray, setDataArray] = useState([]);
+	const [posts, setPosts] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 	const [postList, setPostList] = useState([]);
+	const [renderIndex, setRenderIndex] = useState(0);
 
-	function pullData() {
-		setRefreshing(true);
-		setPostList(getPosts());
-		readData(`prayer_circle/posts`).then((data) => {
-			let dataArray = data ? Object.entries(data) : [];
-			dataArray.sort((a, b) => {
-				return b[1].timestamp - a[1].timestamp;
-			});
-			setDataArray(dataArray);
-			setRefreshing(false);
+	const setUpFeed = async () => {
+		setRenderIndex(0);
+		let gp = await getPosts();
+		gp = gp.reverse();
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 7);
+		pl.sort((a, b) => {
+			return b[1].timestamp - a[1].timestamp;
 		});
-	}
+		setPosts(pl);
+	};
 
+	async function populateList(list, start, numOfItems) {
+		let renderedList = [];
+		let endOfList =
+			list.length < start + numOfItems ? list.length - start : numOfItems;
+		for (let i of list.slice(start, endOfList + start)) {
+			let data = (await readData(`prayer_circle/posts/${i}`)) || {};
+			renderedList.push([i, data]);
+		}
+		setRefreshing(false);
+		setRenderIndex(start + endOfList);
+		return renderedList;
+	}
 	useEffect(() => {
-		pullData();
+		setUpFeed();
 	}, []);
 
 	let insets = useSafeAreaInsets();
@@ -55,23 +69,29 @@ export default function FeedPage() {
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1'>
 				<StyledFlatList
-					data={dataArray}
-					onEndReachedThreshold={0.3}
+					data={posts}
+					onEndReachedThreshold={0.5}
+					windowSize={10}
 					onEndReached={() => {
-						console.log('end reached');
+						populateList(postList, renderIndex, 10).then((res) => {
+							setPosts([...posts, ...res]);
+						});
 					}}
 					style={{ paddingHorizontal: 15 }}
 					estimatedItemSize={100}
 					showsHorizontalScrollIndicator={false}
 					refreshControl={
 						<RefreshControl
-							onRefresh={pullData}
+							onRefresh={() => {
+								setRefreshing(true);
+								setUpFeed();
+							}}
 							refreshing={refreshing}
 							tintColor='#ebebeb'
 						/>
 					}
 					ListHeaderComponent={
-						dataArray && dataArray.length > 0 ? (
+						posts && posts.length > 0 ? (
 							<StyledView
 								className='w-full flex items-center mb-[10px]'
 								style={{
@@ -83,7 +103,7 @@ export default function FeedPage() {
 						)
 					}
 					ListFooterComponent={
-						dataArray && dataArray.length > 0 ? (
+						posts && posts.length > 0 ? (
 							<StyledView
 								className='w-full flex items-center mb-[10px]'
 								style={{
@@ -95,7 +115,7 @@ export default function FeedPage() {
 						)
 					}
 					ListEmptyComponent={
-						<StyledView className='w-full h-full flex items-center justify-center'>
+						<StyledView className='w-full h-screen flex items-center justify-center'>
 							<StyledText className='text-white text-[24px]'>
 								No Posts Yet!
 							</StyledText>
@@ -110,7 +130,7 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon='heart-outline'
 							id={item[0]}
-							refresh={() => pullData()}
+							refresh={() => setUpFeed()}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
