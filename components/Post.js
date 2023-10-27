@@ -137,47 +137,51 @@ const Post = (post) => {
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
 							{post.owned ? 
-								<><StyledView className='mb-1 ml-2 flex h-5'>
-									<StyledText className='text-offwhite font-bold text-[18px] w-[90%]'>
-										{post.title}
-									</StyledText>
-									<StyledText className='text-white'>
-										{post.user} • {tS} {post.edited ? '• (edited)' : null}
-									</StyledText>
-								</StyledView>
-								<StyledText className={`${post.edited ? 'flex' : 'hidden'} ml-1 mb-1 text-offwhite text-[12px]`}> (edited) </StyledText>
-								<StyledView className='flex flex-row items-center w-[95%] ml-2'>
-									<StyledText className='text-white'>
-										{post.content}
-									</StyledText>
-								</StyledView></>
-							:
-								<><StyledView className='flex flex-row mb-2 '>
-									<StyledImage
-										className='rounded-lg'
-										style={{ width: 44, height: 44 }}
-										source={{
-											uri: post.img
-										}}
-									/>
-									<StyledView className='ml-2'>
-										<StyledText className='text-offwhite font-bold text-[20px]'>
-											{post.title.length > 21
-												? post.title.substring(0, 21) +
-												'...'
-												: post.title}
+								<>
+									<StyledView className='mb-1 ml-2 flex h-5'>
+										<StyledText className='text-offwhite font-bold text-[18px] w-[90%]'>
+											{post.title}
 										</StyledText>
 										<StyledText className='text-white'>
 											{post.user} • {tS} {post.edited ? '• (edited)' : null}
 										</StyledText>
 									</StyledView>
-								</StyledView>
-								<StyledView className='flex flex-row items-center w-[95%]'>
-									
-									<StyledText className='text-white'>
-										{post.content}
-									</StyledText>
-								</StyledView></>
+									<StyledText className={`${post.edited ? 'flex' : 'hidden'} ml-1 mb-1 text-offwhite text-[12px]`}> (edited) </StyledText>
+									<StyledView className='flex flex-row items-center w-[95%] ml-2'>
+										<StyledText className='text-white'>
+											{post.content}
+										</StyledText>
+									</StyledView>
+								</>
+							:
+								<>
+									<StyledView className='flex flex-row mb-2 '>
+										<StyledImage
+											className='rounded-lg'
+											style={{ width: 44, height: 44 }}
+											source={{
+												uri: post.img
+											}}
+										/>
+										<StyledView className='ml-2'>
+											<StyledText className='text-offwhite font-bold text-[20px]'>
+												{post.title.length > 21
+													? post.title.substring(0, 21) +
+													'...'
+													: post.title}
+											</StyledText>
+											<StyledText className='text-white'>
+												{post.user} • {tS} {post.edited ? '• (edited)' : null}
+											</StyledText>
+										</StyledView>
+									</StyledView>
+									<StyledView className='flex flex-row items-center w-[95%]'>
+										
+										<StyledText className='text-white'>
+											{post.content}
+										</StyledText>
+									</StyledView>
+								</>
 							}								
 						</StyledView>
 					</GestureDetector>
@@ -209,51 +213,104 @@ const Post = (post) => {
 				>
 					<StyledView className='w-full overflow-hidden rounded-full bg-offblack'>
 						<StyledView className='flex flex-row justify-around items-center w-full h-[50px]'>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-							>
-								<StyledIcon
-									name={'flag-outline'}
-									size={29}
-									color='#CC2500'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-							>
-								<StyledIcon
-									name={'eye-off-outline'}
-									size={29}
-									color='#F9A826'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-							>
-								<StyledIcon
-									name={'bookmark-outline'}
-									size={29}
-									color='#00A55E'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-							>
-								<StyledIcon
-									name={'chatbubble-outline'}
-									size={29}
-									color='#5946B2'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
-								activeOpacity={0.4}
-							>
-							</StyledOpacity>
+							{post.owned ?
+								<>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+										onPress={onPress}
+									>
+										<StyledIcon
+											name={'trash-outline'}
+											size={29}
+											color='#CC2500'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'cog-outline'}
+											size={29}
+											color='#F9A826'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'create-outline'}
+											size={29}
+											color='#00A55E'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'chatbubble-outline'}
+											size={29}
+											color='#5946B2'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+										activeOpacity={0.4}
+									>
+									</StyledOpacity>
+								</>
+							:
+								<>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'flag-outline'}
+											size={29}
+											color='#CC2500'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'eye-off-outline'}
+											size={29}
+											color='#F9A826'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'bookmark-outline'}
+											size={29}
+											color='#00A55E'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'chatbubble-outline'}
+											size={29}
+											color='#5946B2'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+										activeOpacity={0.4}
+									>
+									</StyledOpacity>	
+								</>
+							}
 						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
