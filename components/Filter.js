@@ -27,13 +27,16 @@ const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 
+console.log("filter component loaded");
+
 const FilterCarousel = () => {
-  const onSnapToItem = (index) => {
-    // Schedule a function to be executed on the UI thread as soon as possible.
-    Worklet.runOnUIImmediately(() => {
-      console.log('current index:', index);
-    });
-  };
+//   const onSnapToItem = (index) => {
+//     // Schedule a function to be executed on the UI thread as soon as possible.
+//     console.log('index:', index);
+//     Worklet.runOnUIImmediately(() => {
+//       console.log('current index:', index);
+//     });
+//   };
 
   return (
     // <Worklet>
@@ -44,7 +47,7 @@ const FilterCarousel = () => {
         autoPlay={true}
         data={[...new Array(6).keys()]}
         scrollAnimationDuration={1000}
-        onSnapToItem={onSnapToItem}
+        // onSnapToItem={onSnapToItem}
         renderItem={({ index }) => (
           <View
             style={{
@@ -60,6 +63,7 @@ const FilterCarousel = () => {
         )}
       />
     // </Worklet>
+
   );
 };
 

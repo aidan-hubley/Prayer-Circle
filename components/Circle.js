@@ -7,6 +7,7 @@ import { Button } from './Buttons';
 import { Filter } from './Filter';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const StyledView = styled(View);
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 
@@ -136,7 +137,7 @@ export function Circle({ size, press }) {
 						></Button>
 						<StyledView className='absolute bottom-[-105px] w-full h-[300px]'>
 							<StyledView className='flex w-full h-full border border-green'>
-								<Filter/>
+								<Filter />
 							</StyledView>
 						</StyledView>
 						<Button
