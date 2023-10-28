@@ -134,7 +134,11 @@ export function Circle({ size, press }) {
 							borderColor='border-offwhite'
 							btnStyles='absolute border-2 bottom-[-82px] left-[75px]'
 						></Button>
-						<Filter/>
+						<StyledView className='absolute bottom-[-105px] w-full h-[300px]'>
+							<StyledView className='flex w-full h-full border border-green'>
+								<Filter/>
+							</StyledView>
+						</StyledView>
 						<Button
 							icon='apps-outline'
 							iconColor='#FFFBFC'
