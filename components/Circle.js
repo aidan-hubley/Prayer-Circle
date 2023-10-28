@@ -46,7 +46,6 @@ export function Circle({ size, press }) {
 	}
 
 	function toggleOptions(val) {
-		setPressed(!pressed);
 		Animated.timing(menuOpacity, {
 			toValue: val ? 1 : 0,
 			duration: 200,
@@ -54,25 +53,34 @@ export function Circle({ size, press }) {
 		}).start();
 	}
 
-	function toggleOptionsShort(val) {
-		setPressed(!pressed);
-		setShortPressed(!shortpressed);
-	}
-
-	function toggleOptionsLong(val) {
-		setPressed(!pressed);
-		setLongPressed(!longpressed);
-	}
-
 	const tap = Gesture.Tap().onEnd(() => {
-		toggleOptionsShort(true);
+		if (!shortpressed) {
+			toggleOptions(true);
+			setShortPressed(true);
+			setLongPressed(false);
+			if (longpressed) {			
+				setLongPressed(false);
+				setShortPressed(false);
+				toggleOptions(false);
+			}		
+		} else {
+			setShortPressed(false);
+			toggleOptions(false);
+		}
+
 		resize(1);
-		console.log('tap');
 	});
 	const longPress = Gesture.LongPress().onStart(() => {
-		toggleOptionsLong(true);
+		if (!longpressed) {
+			toggleOptions(true);
+			setLongPressed(true);
+			setShortPressed(false);
+		} else {
+			setLongPressed(false);
+			toggleOptions(false);
+		}
+
 		resize(1);
-		console.log('long press');
 	});
 
 	const composed = Gesture.Simultaneous(tap, longPress); //Here
@@ -83,9 +91,6 @@ export function Circle({ size, press }) {
 				style={pressedStyle2}
 				pointerEvents={pressed ? 'auto' : 'none'}
 				className={`absolute bottom-[-40px] left-0 h-screen w-screen bg-[#121212]`}
-				onPress={() => {
-					toggleOptions();
-				}}
 			/>
 			<AnimatedView
 				style={pressedStyle}

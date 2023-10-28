@@ -37,8 +37,6 @@ export default function Layout() {
 	const timerSeconds = elapsedTime % 60;
 	const screenTime = `${timerHours.toString().padStart(2, '0')}:${timerMinutes.toString().padStart(2, '0')}:${timerSeconds.toString().padStart(2, '0')}`;
 
-  	console.log(screenTime);
-
 	return (
 		<ActionSheetProvider>
 			<>
