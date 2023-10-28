@@ -45,7 +45,7 @@ export default function ProfilePage() {
 						icon='heart-outline'
 						owned={true}
 						interaction={10}
-						edited={false}
+						edited={true}
 					/>
 					<Post
 						user='Alex Muresan'
@@ -55,9 +55,8 @@ export default function ProfilePage() {
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin'
 						icon='heart-outline'
-						owned={true}
+						ownedToolBar={true}
 						interaction={5}
-						edited={true}
 					/>
 					<Post
 						user='Alex Muresan'
@@ -67,7 +66,6 @@ export default function ProfilePage() {
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '
 						icon='heart-outline'
-						owned={true}
 						interaction={2}
 						edited={true}
 					/>
