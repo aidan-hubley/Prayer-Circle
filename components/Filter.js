@@ -15,7 +15,7 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
-import { Worklet } from 'react-native-reanimated';
+import { Worklet, runOnJS } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
 const StyledImage = styled(Image);
@@ -30,16 +30,15 @@ const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 console.log("filter component loaded");
 
 const FilterCarousel = () => {
-//   const onSnapToItem = (index) => {
-//     // Schedule a function to be executed on the UI thread as soon as possible.
-//     console.log('index:', index);
-//     Worklet.runOnUIImmediately(() => {
-//       console.log('current index:', index);
-//     });
-//   };
+  const onSnapToItem = (index) => {
+    // Schedule a function to be executed on the UI thread as soon as possible.
+    console.log('index:', index);
+    Worklet.runOnJS(() => {
+      console.log('current index:', index);
+    });
+  };
 
   return (
-    // <Worklet>
       <Carousel
         loop
         width={'100px'}
@@ -47,7 +46,7 @@ const FilterCarousel = () => {
         autoPlay={true}
         data={[...new Array(6).keys()]}
         scrollAnimationDuration={1000}
-        // onSnapToItem={onSnapToItem}
+        onSnapToItem={onSnapToItem}
         renderItem={({ index }) => (
           <View
             style={{
@@ -62,7 +61,6 @@ const FilterCarousel = () => {
           </View>
         )}
       />
-    // </Worklet>
 
   );
 };
