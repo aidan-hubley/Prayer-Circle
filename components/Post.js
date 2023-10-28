@@ -116,16 +116,6 @@ export const Post = (post) => {
 		);
 	};
 
-	function bottomBar() {
-		if (!post.end) {
-			return (
-				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px] border border-[#EBEBEB22]'></StyledView>
-				</StyledView>
-			);
-		}
-	}
-
 	const tap = Gesture.Tap()
 		.numberOfTaps(2)
 		.onStart(() => {
