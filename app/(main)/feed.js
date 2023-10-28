@@ -98,7 +98,6 @@ export default function FeedPage() {
 						<Post
 							user={item[1].name}
 							img={item[1].profile_img}
-							imgshow={true}
 							title={item[1].title}
 							timestamp={`${item[1].timestamp}`}
 							content={item[1].text}
@@ -106,7 +105,6 @@ export default function FeedPage() {
 							id={item[0]}
 							refresh={() => pullData()}
 							owned={false}
-							interaction={0}
 							edited={true}
 						/>
 					)}
