@@ -38,6 +38,7 @@ export default function ProfilePage() {
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
+						imgshow={false}
 						title='WWWW WWW WW W wwww www ww w WWWW WWW WW W wwww www ww w'
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla bla bla bla bla bla'
@@ -49,6 +50,7 @@ export default function ProfilePage() {
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
+						imgshow={false}
 						title='test test title test test title 1 2 3 4 test test title test test test test test test'
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin'
@@ -60,6 +62,7 @@ export default function ProfilePage() {
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
+						imgshow={false}
 						title='IIII III II I iiii iii ii i IIII III II I iiii iii ii i'
 						timestamp={1695846631107}
 						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '

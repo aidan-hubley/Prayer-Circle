@@ -156,7 +156,7 @@ export const Post = (post) => {
 								<>
 									<StyledView className='flex flex-row mb-2 '>
 										<StyledImage
-											className='rounded-lg'
+											className='rounded-lg `${post.imgshow ? : hidden}`'
 											style={{ width: 44, height: 44 }}
 											source={{
 												uri: post.img
