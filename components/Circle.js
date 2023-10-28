@@ -13,6 +13,8 @@ export function Circle({ size, press }) {
 	let insets = useSafeAreaInsets();
 	const scale = useRef(new Animated.Value(1)).current;
 	const [pressed, setPressed] = useState(false);
+	const [shortpressed, setShortPressed] = useState(false);
+	const [longpressed, setLongPressed] = useState(false);
 	const menuOpacity = useRef(new Animated.Value(0)).current;
 
 	const scaleInterpolation = scale.interpolate({
@@ -52,16 +54,25 @@ export function Circle({ size, press }) {
 		}).start();
 	}
 
+	function toggleOptionsShort(val) {
+		setPressed(!pressed);
+		setShortPressed(!shortpressed);
+	}
+
+	function toggleOptionsLong(val) {
+		setPressed(!pressed);
+		setLongPressed(!longpressed);
+	}
+
 	const tap = Gesture.Tap().onEnd(() => {
-		if (!pressed) {
-			router.push('/filter');
-		} else {
-			toggleOptions(false);
-		}
+		toggleOptionsShort(true);
+		resize(1);
+		console.log('tap');
 	});
 	const longPress = Gesture.LongPress().onStart(() => {
-		toggleOptions(true);
+		toggleOptionsLong(true);
 		resize(1);
+		console.log('long press');
 	});
 
 	const composed = Gesture.Simultaneous(tap, longPress); //Here
@@ -81,26 +92,46 @@ export function Circle({ size, press }) {
 				pointerEvents={pressed ? 'auto' : 'none'}
 				className='flex flex-col items-center absolute w-screen'
 			>
-				<Button
-					title='Draw a Circle'
-					height='h-[65px]'
-					width='w-11/12'
-					press={() => {
-						toggleOptions(false);
-					}}
-					href='/createCircle'
-				/>
-				<Button
-					title='Sketch a Post'
-					height='h-[65px]'
-					btnStyles={'mt-3'}
-					width='w-11/12'
-					press={() => {
-						toggleOptions(false);
-					}}
-					href='/createPost'
-				/>
+				{longpressed && (
+					// Render these buttons when pressed is true (long press)
+					<>
+						<Button
+							title='Draw a Circle'
+							height='h-[65px]'
+							width='w-11/12'
+							press={() => {
+								toggleOptions(false);
+							}}
+							href='/createCircle'
+						/>
+						<Button
+							title='Sketch a Post'
+							height='h-[65px]'
+							btnStyles={'mt-3'}
+							width='w-11/12'
+							press={() => {
+								toggleOptions(false);
+							}}
+							href='/createPost'
+						/>
+					</>
+				)}
+
+				{shortpressed && (
+					// Render this button when pressed is false (short tap)
+					<Button
+						title='Filter Feed'
+						height='h-[65px]'
+						btnStyles={'mt-3'}
+						width='w-11/12'
+						press={() => {
+							toggleOptions(false);
+						}}
+						href='/filter'
+					/>
+				)}
 			</AnimatedView>
+
 			<GestureDetector gesture={composed}>
 				<AnimatedPressable
 					style={{ transform: [{ scale: scaleInterpolation }] }}
