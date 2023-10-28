@@ -4,6 +4,7 @@ import { styled } from 'nativewind';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { router } from '../backend/config';
 import { Button } from './Buttons';
+import { Filter } from './Filter';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
@@ -98,7 +99,6 @@ export function Circle({ size, press }) {
 				className='flex flex-col items-center absolute w-screen'
 			>
 				{longpressed && (
-					// Render these buttons when pressed is true (long press)
 					<>
 						<Button
 							title='Draw a Circle'
@@ -123,17 +123,29 @@ export function Circle({ size, press }) {
 				)}
 
 				{shortpressed && (
-					// Render this button when pressed is false (short tap)
-					<Button
-						title='Filter Feed'
-						height='h-[65px]'
-						btnStyles={'mt-3'}
-						width='w-11/12'
-						press={() => {
-							toggleOptions(false);
-						}}
-						href='/filter'
-					/>
+					<>
+						<Button
+							icon='add-outline'
+							iconColor='#FFFBFC'
+							iconSize={50}
+							height='h-[65px]'
+							width='w-[65px]'
+							bgColor='bg-offblack'
+							borderColor='border-offwhite'
+							btnStyles='absolute border-2 bottom-[-82px] left-[75px]'
+						></Button>
+						<Filter/>
+						<Button
+							icon='apps-outline'
+							iconColor='#FFFBFC'
+							iconSize={40}
+							height='h-[65px]'
+							width='w-[65px]'
+							bgColor='bg-offblack'
+							borderColor='border-offwhite'
+							btnStyles='absolute border-2 bottom-[-82px] right-[75px]'
+						></Button>
+					</>					
 				)}
 			</AnimatedView>
 
