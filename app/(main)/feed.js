@@ -104,6 +104,8 @@ export default function FeedPage() {
 							icon='heart-outline'
 							id={item[0]}
 							refresh={() => pullData()}
+							owned={false}
+							edited={true}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}

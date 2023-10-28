@@ -21,6 +21,7 @@ const StyledPressable = styled(Pressable);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
+const StyledIcon = styled(Ionicons);
 
 export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
@@ -115,16 +116,6 @@ export const Post = (post) => {
 		);
 	};
 
-	function bottomBar() {
-		if (!post.end) {
-			return (
-				<StyledView className='flex items-center justify-center h-[30px] w-full'>
-					<StyledView className='w-[75%] h-[1px] border border-[#EBEBEB22]'></StyledView>
-				</StyledView>
-			);
-		}
-	}
-
 	const tap = Gesture.Tap()
 		.numberOfTaps(2)
 		.onStart(() => {
@@ -147,22 +138,42 @@ export const Post = (post) => {
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
 								<StyledImage
-									className='rounded-lg'
+									className={`${
+										post.owned ? 'hidden' : 'flex'
+									} rounded-lg`}
 									style={{ width: 44, height: 44 }}
 									source={{
 										uri: post.img
 									}}
 								/>
-								<StyledView className='ml-2'>
+								<StyledView
+									className={`${post.owned ? '' : 'ml-2'}`}
+								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
 										{post.title.length > 21
 											? post.title.substring(0, 21) +
 											  '...'
 											: post.title}
 									</StyledText>
-									<StyledText className='text-white'>
-										{post.user} • {tS}
-									</StyledText>
+									<StyledView className='flex flex-row'>
+										<StyledText
+											className={`${
+												post.owned ? 'hidden' : ''
+											} text-white`}
+										>
+											{post.user} •{' '}
+										</StyledText>
+										<StyledText className={`text-white`}>
+											{tS}{' '}
+										</StyledText>
+										<StyledText
+											className={`${
+												post.edited ? 'flex' : 'hidden'
+											} text-white`}
+										>
+											(edited){post.edited}
+										</StyledText>
+									</StyledView>
 								</StyledView>
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%]'>
@@ -187,7 +198,7 @@ export const Post = (post) => {
 							}}
 						>
 							<AnimatedImage
-								className='w-[39px] h-[39px]'
+								className='w-[32px] h-[32px]'
 								style={spiralStyle}
 								source={require('../assets/spiral.png')}
 							/>
@@ -196,51 +207,106 @@ export const Post = (post) => {
 				</StyledView>
 				<StyledAnimatedView
 					style={toolbarStyle}
-					className='px-[5px] w-full overflow-hidden'
+					className='px-[10px] w-full overflow-hidden'
 				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-[#EBEBEB33]'>
-						<StyledView className='flex flex-row justify-around items-center w-full h-[50px] mt-[-1px]'>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-								onPress={onPress}
-							>
-								<Ionicons
-									name={'ellipsis-horizontal'}
-									size={29}
-									color='white'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-							>
-								<Ionicons
-									name={'heart-circle-outline'}
-									size={29}
-									color='white'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
-							>
-								<Ionicons
-									name={'chatbubble-outline'}
-									size={29}
-									color='white'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px] rounded-full border-2 border-offwhite'
-								activeOpacity={0.4}
-							>
-								<Ionicons
-									name={'globe'}
-									size={25}
-									color='white'
-								/>
-							</StyledOpacity>
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
+						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
+							{post.owned || post.ownedToolBar ? (
+								<>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+										onPress={onPress}
+									>
+										<StyledIcon
+											name={'trash-outline'}
+											size={29}
+											color='#CC2500'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'cog-outline'}
+											size={29}
+											color='#F9A826'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'create-outline'}
+											size={29}
+											color='#00A55E'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'chatbubble-outline'}
+											size={29}
+											color='#5946B2'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+										activeOpacity={0.4}
+									></StyledOpacity>
+								</>
+							) : (
+								<>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'flag-outline'}
+											size={29}
+											color='#CC2500'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'eye-off-outline'}
+											size={29}
+											color='#F9A826'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'bookmark-outline'}
+											size={29}
+											color='#00A55E'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex items-center justify-center w-[30px] h-[30px]'
+										activeOpacity={0.4}
+									>
+										<StyledIcon
+											name={'chatbubble-outline'}
+											size={29}
+											color='#5946B2'
+										/>
+									</StyledOpacity>
+									<StyledOpacity
+										className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+										activeOpacity={0.4}
+									></StyledOpacity>
+								</>
+							)}
 						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
