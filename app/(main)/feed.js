@@ -147,13 +147,15 @@ export default function FeedPage() {
 							icon='heart-outline'
 							id={item[0]}
 							refresh={() => setUpFeed()}
+							owned={false}
+							edited={item[1].edited}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
 				/>
 			</StyledView>
 
-			<StyledView
+			{/* <StyledView
 				style={{
 					bottom:
 						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
@@ -161,7 +163,7 @@ export default function FeedPage() {
 				className='absolute flex flex-row justify-center w-screen'
 			>
 				<Circle />
-			</StyledView>
+			</StyledView> */}
 
 			<StyledGradient
 				pointerEvents='none'

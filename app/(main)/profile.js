@@ -23,7 +23,7 @@ export default function ProfilePage() {
 				<StyledView className='flex items-center w-full'>
 					<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
 						<StyledImage
-							className='w-full h-full rounded-[20px]'
+							className='w-full h-full rounded-[18px]'
 							source={{ uri: 'https://picsum.photos/1223' }}
 						/>
 					</StyledView>
@@ -38,29 +38,30 @@ export default function ProfilePage() {
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
-						title='Pray for my dog he is very sick'
+						title='WWWW WWW WW W wwww www ww w WWWW WWW WW W wwww www ww w'
 						timestamp={1695846631107}
-						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla bla bla bla bla bla'
 						icon='heart-outline'
+						owned={true}
+						edited={true}
 					/>
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
-						title='Pray for my dog he is very sick'
+						title='test test title test test title 1 2 3 4 test test title test test test test test test'
 						timestamp={1695846631107}
-						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+						content='Description text lamda latin nonesense bla bla bla text lamda latin'
 						icon='heart-outline'
+						ownedToolBar={true}
 					/>
 					<Post
 						user='Alex Muresan'
 						img='https://i.imgur.com/0y8Ftya.png'
-						title='Pray for my dog he is very sick'
+						title='IIII III II I iiii iii ii i IIII III II I iiii iii ii i'
 						timestamp={1695846631107}
-						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
-blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
+						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '
 						icon='heart-outline'
+						edited={true}
 					/>
 				</StyledView>
 				<StyledView className='w-full flex mt-3 items-center'>
