@@ -90,6 +90,7 @@ export default function Page() {
 							);
 
 						let newPostId = generateId();
+						let now = Date.now();
 						let typeSelectedVal = Math.round(
 							Math.abs(typeRef.current.selected._value)
 						);
@@ -100,9 +101,7 @@ export default function Page() {
 
 						let uid = await AsyncStorage.getItem('user');
 						let name = await readData(`prayer_circle/users/${uid}`);
-						console.log(name);
 						name = name.fname + ' ' + name.lname;
-						console.log(name);
 
 						let newPost = {
 							user: uid,
@@ -113,7 +112,7 @@ export default function Page() {
 							title: title,
 							text: body,
 							type: typeSelected,
-							timestamp: Date.now(),
+							timestamp: now,
 							comments: {
 								empty: true
 							},
@@ -134,7 +133,7 @@ export default function Page() {
 						);
 						await writeData(
 							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${newPostId}`,
-							true,
+							now,
 							true
 						);
 						await writeData(
