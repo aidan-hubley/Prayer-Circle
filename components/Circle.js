@@ -4,7 +4,7 @@ import { styled } from 'nativewind';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { router } from '../backend/config';
 import { Button } from './Buttons';
-import { Filter } from './Filter';
+import { FilterCarousel } from './Filter';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledView = styled(View);
@@ -136,8 +136,8 @@ export function Circle({ size, press }) {
 							btnStyles='absolute border-2 bottom-[-82px] left-[75px]'
 						></Button>
 						<StyledView className='absolute bottom-[-105px] w-full h-[300px]'>
-							<StyledView className='flex w-full h-full border border-green'>
-								<Filter />
+							<StyledView className='flex w-full h-full'>
+								<FilterCarousel />
 							</StyledView>
 						</StyledView>
 						<Button
