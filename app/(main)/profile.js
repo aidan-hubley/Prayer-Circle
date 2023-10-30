@@ -1,5 +1,12 @@
-import React from 'react';
-import { Text, View, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+	Text,
+	View,
+	Image,
+	FlatList,
+	RefreshControl,
+	ActivityIndicator
+} from 'react-native';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
@@ -8,75 +15,163 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
 import { router, auth } from '../../backend/config';
+import { readData, getPosts } from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledScrollView = styled(ScrollView);
 const StyledImage = styled(Image);
 const StyledGradient = styled(LinearGradient);
 
 export default function ProfilePage() {
+	const [posts, setPosts] = useState([]);
+	const [refreshing, setRefreshing] = useState(false);
+	const [postList, setPostList] = useState([]);
+	const [renderIndex, setRenderIndex] = useState(0);
+	const [initialLoad, setInitialLoad] = useState('loading');
+	const [scrolling, setScrolling] = useState(false);
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+
+	const setUpFeed = async () => {
+		setRenderIndex(0);
+		let gp = await getPosts();
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 7);
+		setPosts(pl);
+		let gn = await AsyncStorage.getItem('name');
+		setName(gn);
+		let ge = await AsyncStorage.getItem('email');
+		setEmail(ge);
+		setInitialLoad('loaded');
+	};
+
+	async function populateList(list, start, numOfItems) {
+		let me = await AsyncStorage.getItem('user');
+		let renderedList = [];
+		let endOfList =
+			list.length < start + numOfItems ? list.length - start : numOfItems;
+		for (let i of list.slice(start, endOfList + start)) {
+			let id = i[0];
+			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
+			if (data.user == me) renderedList.push([id, data]);
+		}
+		setRefreshing(false);
+		setRenderIndex(start + endOfList);
+		return renderedList;
+	}
+	useEffect(() => {
+		setUpFeed();
+	}, []);
+
 	let insets = useSafeAreaInsets();
 	return (
 		<StyledView className='bg-offblack'>
-			<StyledScrollView className='px-[15px] pt-[145px] '>
-				<StyledView className='flex items-center w-full'>
-					<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
-						<StyledImage
-							className='w-full h-full rounded-[18px]'
-							source={{ uri: 'https://picsum.photos/1223' }}
-						/>
-					</StyledView>
-					<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
-						Lucas Blakely
-					</StyledText>
-					<StyledText className=' text-offwhite text-[18px]'>
-						lu2213@gmail.com
-					</StyledText>
-				</StyledView>
-				<StyledView className='mt-3'>
-					<Post
-						user='Alex Muresan'
-						img='https://i.imgur.com/0y8Ftya.png'
-						title='WWWW WWW WW W wwww www ww w WWWW WWW WW W wwww www ww w'
-						timestamp={1695846631107}
-						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla bla bla bla bla bla'
-						icon='heart-outline'
-						owned={true}
-						edited={true}
-					/>
-					<Post
-						user='Alex Muresan'
-						img='https://i.imgur.com/0y8Ftya.png'
-						title='test test title test test title 1 2 3 4 test test title test test test test test test'
-						timestamp={1695846631107}
-						content='Description text lamda latin nonesense bla bla bla text lamda latin'
-						icon='heart-outline'
-						ownedToolBar={true}
-					/>
-					<Post
-						user='Alex Muresan'
-						img='https://i.imgur.com/0y8Ftya.png'
-						title='IIII III II I iiii iii ii i IIII III II I iiii iii ii i'
-						timestamp={1695846631107}
-						content='Description text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla text lamda latin nonesense bla bla bla '
-						icon='heart-outline'
-						edited={true}
-					/>
-				</StyledView>
-				<StyledView className='w-full flex mt-3 items-center'>
-					<Button
-						title='Sign Out'
-						width='w-[50%]'
-						press={() => {
-							signOut(auth);
-							AsyncStorage.removeItem('user');
-							router.replace('/login');
+			<FlatList
+				data={posts}
+				onEndReachedThreshold={0.4}
+				windowSize={10}
+				onScrollBeginDrag={() => {
+					setScrolling(true);
+				}}
+				onMomentumScrollEnd={() => {
+					setScrolling(false);
+				}}
+				onEndReached={() => {
+					if (initialLoad == 'loading' || !scrolling) return;
+					populateList(postList, renderIndex, 10).then((res) => {
+						setPosts([...posts, ...res]);
+					});
+				}}
+				style={{ paddingHorizontal: 15 }}
+				estimatedItemSize={100}
+				showsHorizontalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl
+						progressViewOffset={insets.top + 60}
+						onRefresh={() => {
+							setRefreshing(true);
+							setUpFeed();
 						}}
+						refreshing={refreshing}
+						tintColor='#ebebeb'
 					/>
-				</StyledView>
-				<StyledView className='h-[230px]'></StyledView>
-			</StyledScrollView>
+				}
+				ListHeaderComponent={
+					<StyledView
+						style={{ paddingTop: insets.top + 100 }}
+						className='flex items-center w-full mb-10'
+					>
+						<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
+							<StyledImage
+								className='w-full h-full rounded-[18px]'
+								source={{ uri: 'https://picsum.photos/1223' }}
+							/>
+						</StyledView>
+						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
+							{name}
+						</StyledText>
+						<StyledText className=' text-offwhite text-[18px]'>
+							{email}
+						</StyledText>
+					</StyledView>
+				}
+				ListFooterComponent={
+					posts && posts.length > 0 ? (
+						<StyledView
+							className='w-full flex items-center mb-[10px]'
+							style={{
+								height: insets.top + 60
+							}}
+						>
+							<Button
+								title='Sign Out'
+								width='w-[50%]'
+								press={() => {
+									signOut(auth);
+									AsyncStorage.removeItem('user');
+									AsyncStorage.removeItem('name');
+									router.replace('/login');
+								}}
+							/>
+						</StyledView>
+					) : (
+						<></>
+					)
+				}
+				ListEmptyComponent={
+					<StyledView className='w-full h-screen flex items-center justify-center'>
+						<StyledView
+							className={`${
+								initialLoad == 'loaded' ? 'hidden' : 'flex'
+							}`}
+						>
+							<ActivityIndicator size='large' />
+						</StyledView>
+						<StyledText
+							className={`${
+								initialLoad == 'loaded' ? 'flex' : 'hidden'
+							} text-white text-[24px]`}
+						>
+							No Posts Yet!
+						</StyledText>
+					</StyledView>
+				}
+				renderItem={({ item }) => (
+					<Post
+						user={item[1].name}
+						img={item[1].profile_img}
+						title={item[1].title}
+						timestamp={`${item[1].timestamp}`}
+						content={item[1].text}
+						icon='heart-outline'
+						id={item[0]}
+						refresh={() => setUpFeed()}
+						owned={true}
+						edited={item[1].edited}
+					/>
+				)}
+				keyExtractor={(item) => item[0]}
+			/>
 			<Button
 				btnStyles='absolute bottom-[26px] right-5'
 				width='w-[60px]'

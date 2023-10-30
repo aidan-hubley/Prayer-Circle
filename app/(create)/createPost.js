@@ -100,8 +100,7 @@ export default function Page() {
 						else if (typeSelectedVal == 2) typeSelected = 'event';
 
 						let uid = await AsyncStorage.getItem('user');
-						let name = await readData(`prayer_circle/users/${uid}`);
-						name = name.fname + ' ' + name.lname;
+						let name = await AsyncStorage.getItem('name');
 
 						let newPost = {
 							user: uid,

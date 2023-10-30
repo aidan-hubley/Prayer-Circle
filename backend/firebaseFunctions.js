@@ -97,6 +97,13 @@ export async function loginUser(email, password) {
 			// Signed in
 			const user = userCredential.user;
 			await AsyncStorage.setItem('user', user.uid);
+
+			let name = await readData(`prayer_circle/users/${user.uid}`);
+			name = name.fname + ' ' + name.lname;
+			await AsyncStorage.setItem('name', name);
+
+			await AsyncStorage.setItem('email', user.email);
+
 			router.replace('/mainViewLayout');
 		})
 		.catch((error) => {

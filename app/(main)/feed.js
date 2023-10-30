@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -24,6 +25,7 @@ export default function FeedPage() {
 	const [renderIndex, setRenderIndex] = useState(0);
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
+	const [me, setMe] = useState('');
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -31,6 +33,8 @@ export default function FeedPage() {
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
 		setPosts(pl);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
 		setInitialLoad('loaded');
 	};
 
@@ -138,23 +142,13 @@ export default function FeedPage() {
 							icon='heart-outline'
 							id={item[0]}
 							refresh={() => setUpFeed()}
-							owned={false}
+							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
 				/>
 			</StyledView>
-
-			{/* <StyledView
-				style={{
-					bottom:
-						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
-				}}
-				className='absolute flex flex-row justify-center w-screen'
-			>
-				<Circle />
-			</StyledView> */}
 
 			<StyledGradient
 				pointerEvents='none'
