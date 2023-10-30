@@ -86,7 +86,6 @@ export const Post = (post) => {
 						break;
 
 					case destructiveButtonIndex:
-						console.log(post.id);
 						writeData(
 							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`,
 							null,

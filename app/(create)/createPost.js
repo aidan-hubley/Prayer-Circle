@@ -136,7 +136,7 @@ export default function Page() {
 							true
 						);
 						await writeData(
-							`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${newPostId}`,
+							`prayer_circle/users/${uid}/posts/${newPostId}`,
 							true,
 							true
 						);

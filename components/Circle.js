@@ -29,7 +29,6 @@ export function Circle({ size, press }) {
 		outputRange: [0, 0.7]
 	});
 
-	const scaleStyle = { scale: scaleInterpolation };
 	const pressedStyle = {
 		opacity: opacityInterpolation1,
 		bottom: insets.bottom < 15 ? insets.bottom + 90 : insets.bottom + 60

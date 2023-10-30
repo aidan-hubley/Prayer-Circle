@@ -167,6 +167,5 @@ export async function getPosts(circleId) {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
-
 	return posts;
 }

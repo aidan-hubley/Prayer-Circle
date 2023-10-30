@@ -23,7 +23,6 @@ const shareCircle = async () => {
 
 export default function Page() {
 	let insets = useSafeAreaInsets();
-	console.log(insets.top);
 	let topInset = insets.top > 30 ? insets.top : insets.top + 10;
 
 	return (

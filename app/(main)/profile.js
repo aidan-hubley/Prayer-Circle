@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
 import { router, auth } from '../../backend/config';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
+import { render } from 'react-dom';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -65,7 +66,7 @@ export default function ProfilePage() {
 
 	let insets = useSafeAreaInsets();
 	return (
-		<StyledView className='bg-offblack'>
+		<StyledView className='flex-1 bg-offblack'>
 			<FlatList
 				data={posts}
 				onEndReachedThreshold={0.4}
@@ -139,7 +140,7 @@ export default function ProfilePage() {
 					)
 				}
 				ListEmptyComponent={
-					<StyledView className='w-full h-screen flex items-center justify-center'>
+					<StyledView className='w-full h-[250px] flex items-center justify-center'>
 						<StyledView
 							className={`${
 								initialLoad == 'loaded' ? 'hidden' : 'flex'
@@ -154,6 +155,15 @@ export default function ProfilePage() {
 						>
 							No Posts Yet!
 						</StyledText>
+						<Button
+							title='Sketch a Post'
+							height='h-[65px]'
+							btnStyles={`mt-3 ${
+								initialLoad == 'loaded' ? 'flex' : 'hidden'
+							}`}
+							width='w-11/12'
+							href='/createPost'
+						/>
 					</StyledView>
 				}
 				renderItem={({ item }) => (
