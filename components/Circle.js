@@ -87,6 +87,28 @@ export function Circle({ size, press }) {
 
 	const composed = Gesture.Simultaneous(tap, longPress); //Here
 
+	// const filterCircle = () => {
+	// 	<Button 
+		// 	height='h-[50px]' 
+		// 	width='h-[50px]'
+		// 	borderColor='border-offwhite'
+		// 	btnStyles="border-2 rounded-full"
+	// 	/>
+	// }
+
+	// const Circles = [
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle,
+	// 	filterCircle
+	// ];
+
 	return (
 		<>
 			<AnimatedPressable
@@ -137,7 +159,6 @@ export function Circle({ size, press }) {
 						></Button>
 						<StyledView className='absolute bottom-[-105px] w-full h-[300px]'>
 							<StyledView className='flex w-full h-full'>
-								<FilterCarousel />
 							</StyledView>
 						</StyledView>
 						<Button
