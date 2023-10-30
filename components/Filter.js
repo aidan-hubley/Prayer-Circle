@@ -25,11 +25,11 @@ const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 
-console.log("Filter.js");
+// console.log("Filter.js");
 
-const FilterCarousel = (FilterCarousel) => {
-	data = FilterCarousel.circles;
-	console.log(data);
-}
+// const FilterCarousel = (FilterCarousel) => {
+// 	data = FilterCarousel.circles;
+// 	console.log(data);
+// }
 
-export { FilterCarousel };
+// export { FilterCarousel };
