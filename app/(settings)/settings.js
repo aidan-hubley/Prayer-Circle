@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
+import { signOut } from 'firebase/auth';
 import { Button } from '../../components/Buttons';
 import { SafeAreaView, TextInput } from 'react-native';
 
