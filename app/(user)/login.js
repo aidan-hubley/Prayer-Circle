@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styled } from 'nativewind';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 import { Link } from 'expo-router';
-import { loginUser } from '../backend/firebaseFunctions';
+import { loginUser } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledImage = styled(Image);
@@ -36,7 +36,7 @@ export default function Login() {
 							<StyledView className='flex items-center justify-center px-[15px] aspect-square my-6 w-full'>
 								<StyledImage
 									className='w-full h-full '
-									source={require('../assets/Logo_Dark.png')}
+									source={require('../../assets/Logo_Dark.png')}
 									resizeMode='contain'
 								/>
 							</StyledView>

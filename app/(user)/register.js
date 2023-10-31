@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styled } from 'nativewind';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 import { Link } from 'expo-router';
-import { checkUsername, registerUser } from '../backend/firebaseFunctions';
-import { passwordValidation } from '../backend/functions';
-import Modal from "react-native-modal";
+import { checkUsername, registerUser } from '../../backend/firebaseFunctions';
+import { passwordValidation } from '../../backend/functions';
+import Modal from 'react-native-modal';
 import { Camera, CameraType, takePictureAsync } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -30,15 +30,19 @@ const StyledModal = styled(Modal);
 
 export default function Register() {
 	const [type, setType] = useState(CameraType.front);
-  	const [permission, requestPermission] = Camera.useCameraPermissions();
+	const [permission, requestPermission] = Camera.useCameraPermissions();
 
 	const [isModalVisible, setModalVisible] = useState(false);
-	const toggleModal = () => { setModalVisible(!isModalVisible); };
+	const toggleModal = () => {
+		setModalVisible(!isModalVisible);
+	};
 
 	const cameraRef = useRef(null);
 
 	function toggleCameraType() {
-		setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+		setType((current) =>
+			current === CameraType.back ? CameraType.front : CameraType.back
+		);
 	}
 
 	const [flashMode, setFlashMode] = useState('off');
@@ -49,7 +53,7 @@ export default function Register() {
 		);
 	}
 
- 	const [profileImage, setProfileImage] = useState(null);
+	const [profileImage, setProfileImage] = useState(null);
 
 	async function takePicture() {
 		const { status } = await Camera.requestCameraPermissionsAsync();
@@ -69,13 +73,12 @@ export default function Register() {
 		}
 	}
 
-
 	const openImagePicker = async () => {
-	let result = await ImagePicker.launchImageLibraryAsync({
-		mediaTypes: ImagePicker.MediaTypeOptions.Images,
-		allowsEditing: true,
-		aspect: [1, 1],
-		quality: 1,
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1
 		});
 
 		if (result.canceled === false && result.assets.length > 0) {
@@ -84,7 +87,6 @@ export default function Register() {
 			toggleModal();
 		}
 	};
-
 
 	const [fname, setFName] = useState('');
 	const [lname, setLName] = useState('');
@@ -105,20 +107,24 @@ export default function Register() {
 											<StyledImage
 												className='w-full h-full rounded-3xl'
 												source={
-													profileImage ? { uri: profileImage } :
-													require('../assets/Squared_Logo_Dark.png')}
+													profileImage
+														? { uri: profileImage }
+														: require('../../assets/Squared_Logo_Dark.png')
+												}
 												resizeMode='contain'
 											/>
 										</TouchableOpacity>
-										{profileImage ? 
+										{profileImage ? (
 											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
-												Tap picture to take a new Profile Picture
+												Tap picture to take a new
+												Profile Picture
 											</StyledText>
-											:
+										) : (
 											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
-												Tap Logo to Upload a Profile Picture
+												Tap Logo to Upload a Profile
+												Picture
 											</StyledText>
-										}
+										)}
 									</StyledView>
 								</StyledView>
 								<StyledView className='flex flex-col items-center justify-center w-full gap-y-4'>
@@ -243,64 +249,73 @@ export default function Register() {
 					</TouchableWithoutFeedback>
 				</KeyboardAwareScrollView>
 				<StatusBar barStyle={'light-content'} />
-				<StyledModal className="w-[90%] self-center" isVisible={isModalVisible}>
+				<StyledModal
+					className='w-[90%] self-center'
+					isVisible={isModalVisible}
+				>
 					<StyledSafeArea className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[90%]'>
 						<StyledView className='flex-1 items-center h-[60%]'>
 							<StyledText className='top-[3%] text-3xl text-offwhite'>
 								Take a Selfie!
 							</StyledText>
-							<StyledView className="top-[8%] w-[300px] h-[300px]" onPress={toggleCameraType}>
-								<StyledCamera 
-									ref={cameraRef} 
+							<StyledView
+								className='top-[8%] w-[300px] h-[300px]'
+								onPress={toggleCameraType}
+							>
+								<StyledCamera
+									ref={cameraRef}
 									mirrorImage={true}
 									fixOrientation={true}
 									// Still mirroring
-									className="w-full h-full" 
-									type={type} 
-									ratio='1:1' 
-									flashMode={flashMode}>		
+									className='w-full h-full'
+									type={type}
+									ratio='1:1'
+									flashMode={flashMode}
+								>
 									{/* Having squared profile pictures means we should do a 1:1 ratio here
 										I don't know how to do that without using w-#px h-#px  */}
 								</StyledCamera>
 							</StyledView>
-							<StyledView className="w-full flex flex-row justify-between absolute bottom-[135px] items-center">
-								<Button 
-									icon="camera-reverse-outline" 
-									btnStyles={"left-[75px]"} 
-									width="w-[50px]" 
-									height="h-[50px]" 
+							<StyledView className='w-full flex flex-row justify-between absolute bottom-[135px] items-center'>
+								<Button
+									icon='camera-reverse-outline'
+									btnStyles={'left-[75px]'}
+									width='w-[50px]'
+									height='h-[50px]'
 									press={toggleCameraType}
 								/>
 								<Button
-									icon="flashlight-outline" 
-									btnStyles={"right-[75px]"}
-									width="w-[50px]" 
-									height="h-[50px]" 
+									icon='flashlight-outline'
+									btnStyles={'right-[75px]'}
+									width='w-[50px]'
+									height='h-[50px]'
 									press={toggleFlashMode}
 								/>
 							</StyledView>
-							<StyledView className="w-full flex flex-row justify-between absolute bottom-5 items-center">
-								<Button 
-									icon="arrow-back-outline" 
-									btnStyles={"left-10"} 
-									width="w-[50px]" 
-									height="h-[50px]" 
+							<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
+								<Button
+									icon='arrow-back-outline'
+									btnStyles={'left-10'}
+									width='w-[50px]'
+									height='h-[50px]'
 									press={toggleModal}
 								/>
-								<Button 
-									icon="camera-outline" 
-									iconColor="#FFFBFC" 
-									btnStyles={"border-4 border-offwhite bg-offblack"}
-									width="w-[100px]" 
-									height="h-[100px]" 
-									press={takePicture} 
+								<Button
+									icon='camera-outline'
+									iconColor='#FFFBFC'
+									btnStyles={
+										'border-4 border-offwhite bg-offblack'
+									}
+									width='w-[100px]'
+									height='h-[100px]'
+									press={takePicture}
 								/>
 								<Button
-									icon="images-outline"
-									btnStyles="right-10"
-									width="w-[50px]"
-									height="h-[50px]"
-									press={(openImagePicker)}
+									icon='images-outline'
+									btnStyles='right-10'
+									width='w-[50px]'
+									height='h-[50px]'
+									press={openImagePicker}
 								/>
 							</StyledView>
 						</StyledView>

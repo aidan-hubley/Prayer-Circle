@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, Text, View, Share } from 'react-native';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 import QRCode from 'react-qr-code';
 
 const StyledView = styled(View);

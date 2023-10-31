@@ -12,7 +12,7 @@ export default function Layout() {
 				}}
 			>
 				<Stack.Screen
-					name='circleSettings'
+					name='(settings)/circleSettings'
 					options={{ presentation: 'modal' }}
 				></Stack.Screen>
 			</Stack>

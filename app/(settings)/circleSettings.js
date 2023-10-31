@@ -9,8 +9,8 @@ import {
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from '../components/Buttons';
-import { Member } from '../components/Member.js';
+import { Button } from '../../components/Buttons';
+import { Member } from '../../components/Member.js';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);

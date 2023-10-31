@@ -7,11 +7,11 @@ import {
 	StatusBar,
 	ScrollView
 } from 'react-native';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 import { styled } from 'nativewind';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Post } from '../components/Post';
+import { Post } from '../../components/Post';
 import { useLocalSearchParams } from 'expo-router';
 
 const StyledView = styled(View);
