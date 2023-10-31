@@ -1,108 +1,153 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-	SafeAreaView,
 	Text,
 	View,
-	Image,
-	StatusBar,
-	ScrollView
+    TouchableOpacity,
+    Animated,
+	Switch
 } from 'react-native';
-import { Button } from '../../components/Buttons';
+import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
-
-import { auth } from '../../backend/config';
-import { signOut } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button } from '../../components/Buttons';
+import { SafeAreaView, TextInput } from 'react-native';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledModal = styled(Modal);
+const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledSafeArea = styled(SafeAreaView);
+const StyledInput = styled(TextInput);
 
 export default function Page() {
-	return (
-		<>
-			<StyledSafeArea
-				className='bg-offblack'
-				style={{ flex: 1, backgroundColor: '#121212' }}
-			>
-				<ScrollView keyboardDismissMode='on-drag p-0 m-0'>
-					<StyledView className='flex flex-col w-screen h-screen'>
-						<StyledView className='flex flex-row h-[75.5%] pt-10 m-3'>
-							<StyledView className='w-1/5'>
-								<Button
-									text='Journal'
-									backgroundColor='#121212'
-									borderColor='#FFFBFC'
-									textColor='#FFFBFC'
-									textSize='text-[20px]'
-									width='w-11/12'
-									height='h-[50px]'
-									href='/journal'
-									press={() => {}}
-								/>
-							</StyledView>
-							<StyledView className='w-1/5'>
-								<Button
-									text='Feed'
-									backgroundColor='#121212'
-									borderColor='#FFFBFC'
-									textColor='#FFFBFC'
-									textSize='text-[20px]'
-									width='w-11/12'
-									height='h-[50px]'
-									href='/feed'
-									press={() => {}}
-								/>
-							</StyledView>
-							<StyledView className='w-1/5'>
-								<Button
-									text='Profile'
-									backgroundColor='#121212'
-									borderColor='#FFFBFC'
-									textColor='#FFFBFC'
-									textSize='text-[20px]'
-									width='w-11/12'
-									height='h-[50px]'
-									href='/profile'
-									press={() => {}}
-								/>
-							</StyledView>
-							<StyledView className='w-2/5'>
-								<Button
-									text='Settings'
-									backgroundColor='#121212'
-									borderColor='#F9A826'
-									textColor='#FFFBFC'
-									textSize='text-[20px]'
-									width='w-11/12'
-									height='h-[50px]'
-									href='/settings'
-									press={() => {}}
-								/>
-							</StyledView>
-						</StyledView>
-						<StyledView className='flex flex-row justify-center w-screen'>
-							<Button
-								text='Logout'
-								backgroundColor='#121212'
-								borderColor='#F9A826'
-								textColor='#FFFBFC'
-								textSize='text-[20px]'
-								width='w-1/2'
-								height='h-[50px]'
-								href='/'
-								press={() => {
-									signOut(auth).then(() => {
-										AsyncStorage.setItem('user', '');
-										router.push('/login');
-									});
+    const [isNotificationsEnabled, setNotificationsEnabled] = useState(true);
+    const [isResetModalVisible, setResetModalVisible] = useState(false);
+    	const ResetModal = () => {
+		setResetModalVisible(!isResetModalVisible);
+	};
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    
+    const [isEnabled, setIsEnabled] = useState(false);
+	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+	const togglePosition = React.useRef(new Animated.Value(1)).current;
+
+    React.useEffect(() => {
+        Animated.timing(togglePosition, {
+            toValue: isEnabled ? 45 : 5,
+            duration: 200,
+            useNativeDriver: false
+        }).start();
+	}, [isEnabled]);
+
+    return (
+        <StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
+            <StyledView className='flex-1 items-center mt-45 pt-10'>
+                <StyledText className='text-3xl text-offwhite text-center tracking-widest leading-10'>
+                    Settings
+                </StyledText>
+					<View className="flex-row items-center mt-5 px-5">
+						<View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+							<Text className="mr-3 text-lg text-offwhite">
+								Notifications
+							</Text>
+						<TouchableOpacity onPress={toggleSwitch}>
+							<StyledView
+								className='pt-9 w-[80px] h-[30px] rounded-full'
+								style={{
+									backgroundColor: isEnabled
+										? '#00A55E'
+										: '#F9A826'
 								}}
-							/>
-						</StyledView>
-					</StyledView>
-				</ScrollView>
-				<StatusBar barStyle={'light-content'} />
-			</StyledSafeArea>
-		</>
-	);
+							>
+								<StyledAnimatedView
+									className='absolute top-1 w-[28px] h-[28px] rounded-full bg-white	'
+									style={{
+										left: togglePosition
+									}}
+								/>
+							</StyledView>
+						</TouchableOpacity>
+						</View>
+					</View>
+
+                    <View className="flex-row items-center mt-5 px-5">
+                        <View className="flex-row items-center justify-between bg-grey p-3 w-full rounded-xl">
+                            <Text className="mr-3 text-lg text-offwhite">
+                                Reset Password
+                            </Text>
+                            <Button
+                                title='Reset'
+                                btnStyles='border-2 border-yellow'
+                                bgColor='offblack'
+                                textStyles='text-yellow'
+                                width='w-[30%]'
+                                press={ResetModal}
+                                // Open the modal on press
+                            />
+                        </View>
+                    </View>
+                                    {/* Reset Password Modal */}
+                <StyledModal
+                    className='w-[80%] self-center z-50'
+                    isVisible={isResetModalVisible}
+                >
+                    <StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
+                        <StyledView className='flex-1 items-center h-[60%]'>
+                            <StyledText className='top-[4%] text-3xl text-offwhite'>
+                                Reset Password
+                            </StyledText>
+
+                            <StyledInput
+                                className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
+                                placeholder="Current Password"
+                                secureTextEntry={true}
+                                value={currentPassword}
+                                onChangeText={setCurrentPassword}
+                            />
+                            <StyledInput
+                                className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
+                                placeholder="New Password"
+                                secureTextEntry={true}
+                                value={newPassword}
+                                onChangeText={setNewPassword}
+                            />
+                            <StyledInput
+                                className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
+                                placeholder="Confirm New Password"
+                                secureTextEntry={true}
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                            />
+
+
+                            <Button
+                                title='Confirm'
+                                btnStyles='mt-5 border-2 border-yellow'
+                                bgColor='bg-offblack'
+                                textStyles='text-yellow'
+                                width='w-[70%]'
+                                press={ResetModal}
+                            />
+                            <Button
+                                title='Cancel'
+                                btnStyles='mt-5'
+                                width='w-[70%]'
+                                press={ResetModal}
+                            />
+                        </StyledView>
+                    </StyledView>
+                </StyledModal>
+                <Button 
+                    icon='person-circle-outline'
+                    href='/profile'
+                    btnStyles={'absolute bottom-10 left-5'}
+                    width={'w-[60px]'}
+                    height={'h-[60px]'}
+                    iconSize={40}
+                >
+                </Button>
+            </StyledView>
+        </StyledSafeArea>
+    );
 }
