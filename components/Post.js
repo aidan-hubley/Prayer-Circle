@@ -146,7 +146,7 @@ export const Post = (post) => {
 									</StyledView>
 								</StyledView>
 							</StyledView>
-							<StyledView className='flex flex-row items-center w-[95%] border border-red'>
+							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] mb-[10px]'>
 									{post.content.length > 300
 										? post.content.substring(0, 297) + '...'
