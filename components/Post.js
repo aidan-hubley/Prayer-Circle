@@ -102,7 +102,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto py-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<GestureDetector gesture={tap}>
 						<StyledView className=' w-[88%]'>
@@ -146,9 +146,11 @@ export const Post = (post) => {
 									</StyledView>
 								</StyledView>
 							</StyledView>
-							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white'>
-									{post.content}
+							<StyledView className='flex flex-row items-center w-[95%] border border-red'>
+								<StyledText className='text-white mt-[2px] mb-[10px]'>
+									{post.content.length > 300
+										? post.content.substring(0, 297) + '...'
+										: post.content}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -162,7 +164,7 @@ export const Post = (post) => {
 							<Ionicons name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square mt-2'
+							className='flex items-center justify-center w-[39px] aspect-square mt-1 mb-[2px]'
 							onPress={() => {
 								toggleToolbar();
 							}}
