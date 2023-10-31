@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
 	Text,
 	View,
@@ -13,6 +13,8 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
+import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -29,6 +31,7 @@ export const Post = (post) => {
 	const [icon, setIcon] = useState(post.icon);
 	const [commentIcon, setCommentIcon] = useState(post.icon);
 	const [toolbarShown, setToolbar] = useState(false);
+	const [me, setMe] = useState('');
 
 	const { showActionSheetWithOptions } = useActionSheet();
 
@@ -128,6 +131,22 @@ export const Post = (post) => {
 			setIcon(icon + '-outline');
 		}
 	}
+
+	async function hidePost(postId) {
+		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
+		toggleToolbar();
+
+		post.refresh();
+	}
+
+	const setUp = async () => {
+		let uid = await AsyncStorage.getItem('user');
+		setMe(uid);
+	};
+
+	useEffect(() => {
+		setUp();
+	});
 
 	return (
 		<StyledView className='w-full max-w-[500px]'>
@@ -273,6 +292,7 @@ export const Post = (post) => {
 									<StyledOpacity
 										className='flex items-center justify-center w-[30px] h-[30px]'
 										activeOpacity={0.4}
+										onPressOut={() => hidePost(post.id)}
 									>
 										<StyledIcon
 											name={'eye-off-outline'}
