@@ -74,10 +74,10 @@ export default function Page() {
                     <View className="flex-row items-center mt-5 px-5">
                         <View className="flex-row items-center justify-between bg-grey p-3 w-full rounded-xl">
                             <Text className="mr-3 text-lg text-offwhite">
-                                Reset Password
+                                Change Password
                             </Text>
                             <Button
-                                title='Reset'
+                                title='Change'
                                 btnStyles='border-2 border-yellow'
                                 bgColor='offblack'
                                 textStyles='text-yellow'
@@ -87,6 +87,17 @@ export default function Page() {
                             />
                         </View>
                     </View>
+                    <View className="flex-row items-center mt-5 px-5"></View>
+                        <Button
+                            title='Sign Out'
+                            width='w-[50%]'
+                            press={() => {
+                                signOut(auth);
+                                AsyncStorage.removeItem('user');
+                                AsyncStorage.removeItem('name');
+                                router.replace('/login');
+                            }}
+                        />
                                     {/* Reset Password Modal */}
                 <StyledModal
                     className='w-[80%] self-center z-50'
@@ -95,7 +106,7 @@ export default function Page() {
                     <StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
                         <StyledView className='flex-1 items-center h-[60%]'>
                             <StyledText className='top-[4%] text-3xl text-offwhite'>
-                                Reset Password
+                                Change Password
                             </StyledText>
 
                             <StyledInput
@@ -140,7 +151,7 @@ export default function Page() {
                 </StyledModal>
                 <Button 
                     icon='person-circle-outline'
-                    href='/profile'
+                    href='/mainViewLayout'
                     btnStyles={'absolute bottom-10 left-5'}
                     width={'w-[60px]'}
                     height={'h-[60px]'}
