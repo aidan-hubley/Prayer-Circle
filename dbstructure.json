@@ -10,7 +10,7 @@
 				"private": {
 					"email": "Email",
 					"phone": "Phone",
-					"timestamp": 1234567890,
+					"created": 1234567890,
 					"circles": {
 						"_pushId_": {
 							"permissions": {
@@ -76,7 +76,7 @@
 		"circles": {
 			"_pushId_": {
 				"name": "Circle name",
-				"timestamp": 1234567890,
+				"created": 1234567890,
 				"icon": "icon.i",
 				"description": "Circle description",
 				"type": "individual/organization",
@@ -85,7 +85,7 @@
 					"_uid_": true
 				},
 				"posts": {
-					"_pushId_": 1234567890
+					"_pushId_": true
 				},
 				"admin": {
 					"_uid_": true

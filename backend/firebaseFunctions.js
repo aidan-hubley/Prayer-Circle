@@ -158,8 +158,8 @@ export async function getPosts(circleId) {
 	for (circle of circles) {
 		await readData(`prayer_circle/circles/${circle}/posts`).then(
 			(circlePosts) => {
-				circlePosts = circlePosts ? Object.entries(circlePosts) : [];
-				posts.push(...circlePosts);
+				circlePosts = circlePosts ? Object.keys(circlePosts) : [];
+				posts.push.apply(posts, circlePosts);
 			}
 		);
 	}
@@ -167,5 +167,6 @@ export async function getPosts(circleId) {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
+
 	return posts;
 }

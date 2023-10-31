@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
@@ -22,6 +22,21 @@ export default function Layout() {
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
 	let circeNameWidth = screenWidth - 170;
+
+	const [elapsedTime, setElapsedTime] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setElapsedTime((prevElapsedTime) => prevElapsedTime + 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+	const timerHours = Math.floor(elapsedTime / 3600);
+	const timerMinutes = Math.floor((elapsedTime % 3600) / 60);
+	const timerSeconds = elapsedTime % 60;
+	const screenTime = `${timerHours.toString().padStart(2, '0')}:${timerMinutes.toString().padStart(2, '0')}:${timerSeconds.toString().padStart(2, '0')}`;
 
 	return (
 		<ActionSheetProvider>
@@ -66,7 +81,9 @@ export default function Layout() {
 					className='absolute mx-[85px]'
 				>
 					<Button
-						title='Prayer Circle'
+						title={screenTime}
+						textColor='text-[#5D5D5D]'
+						bgColor='bg-transparent'
 						height='h-[50]'
 						width='w-full'
 						href='/circleSettings'

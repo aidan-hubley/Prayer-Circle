@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import {
 	View,
+	ScrollView,
 	StatusBar,
 	RefreshControl,
 	ActivityIndicator,
 	Text,
 	FlatList
 } from 'react-native';
+import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
+import { Button } from '../../components/Buttons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledView = styled(View);
+const StyledScrollView = styled(ScrollView);
 const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
+const StyledFlatList = styled(FlatList);
 
 export default function FeedPage() {
 	const [posts, setPosts] = useState([]);
@@ -27,16 +32,22 @@ export default function FeedPage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
 
+
 	const setUpFeed = async () => {
 		setRenderIndex(0);
 		let gp = await getPosts();
+		gp = gp.reverse();
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
+		pl.sort((a, b) => {
+			return b[1].timestamp - a[1].timestamp;
+		});
 		setPosts(pl);
 		let gm = await AsyncStorage.getItem('user');
 		setMe(gm);
 		console.log(me);
 		setInitialLoad('loaded');
+
 	};
 
 	async function populateList(list, start, numOfItems) {
@@ -44,9 +55,8 @@ export default function FeedPage() {
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
-			let id = i[0];
-			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			renderedList.push([id, data]);
+			let data = (await readData(`prayer_circle/posts/${i}`)) || {};
+			renderedList.push([i, data]);
 		}
 		setRefreshing(false);
 		setRenderIndex(start + endOfList);
@@ -61,18 +71,11 @@ export default function FeedPage() {
 	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1'>
-				<FlatList
+				<StyledFlatList
 					data={posts}
-					onEndReachedThreshold={0.4}
+					onEndReachedThreshold={0.5}
 					windowSize={10}
-					onScrollBeginDrag={() => {
-						setScrolling(true);
-					}}
-					onMomentumScrollEnd={() => {
-						setScrolling(false);
-					}}
 					onEndReached={() => {
-						if (initialLoad == 'loading' || !scrolling) return;
 						populateList(postList, renderIndex, 10).then((res) => {
 							setPosts([...posts, ...res]);
 						});
@@ -119,14 +122,18 @@ export default function FeedPage() {
 						<StyledView className='w-full h-screen flex items-center justify-center'>
 							<StyledView
 								className={`${
-									initialLoad == 'loaded' ? 'hidden' : 'flex'
+									initialLoad == 'no posts'
+										? 'hidden'
+										: 'flex'
 								}`}
 							>
 								<ActivityIndicator size='large' />
 							</StyledView>
 							<StyledText
 								className={`${
-									initialLoad == 'loaded' ? 'flex' : 'hidden'
+									initialLoad == 'no posts'
+										? 'flex'
+										: 'hidden'
 								} text-white text-[24px]`}
 							>
 								No Posts Yet!

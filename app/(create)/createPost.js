@@ -90,7 +90,6 @@ export default function Page() {
 							);
 
 						let newPostId = generateId();
-						let now = Date.now();
 						let typeSelectedVal = Math.round(
 							Math.abs(typeRef.current.selected._value)
 						);
@@ -111,7 +110,7 @@ export default function Page() {
 							title: title,
 							text: body,
 							type: typeSelected,
-							timestamp: now,
+							timestamp: Date.now(),
 							comments: {
 								empty: true
 							},
@@ -132,7 +131,7 @@ export default function Page() {
 						);
 						await writeData(
 							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${newPostId}`,
-							now,
+							true,
 							true
 						);
 						await writeData(
