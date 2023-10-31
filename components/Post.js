@@ -224,10 +224,6 @@ export const Post = (post) => {
 											color='#5946B2'
 										/>
 									</StyledOpacity>
-									<StyledOpacity
-										className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
-										activeOpacity={0.4}
-									></StyledOpacity>
 								</>
 							) : (
 								<>
@@ -271,12 +267,13 @@ export const Post = (post) => {
 											color='#5946B2'
 										/>
 									</StyledOpacity>
-									<StyledOpacity
-										className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
-										activeOpacity={0.4}
-									></StyledOpacity>
 								</>
 							)}
+							<StyledOpacity
+								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+								activeOpacity={0.4}
+								onPress={() => {}}
+							/>
 						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
