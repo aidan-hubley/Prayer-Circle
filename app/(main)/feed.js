@@ -35,7 +35,6 @@ export default function FeedPage() {
 		setPosts(pl);
 		let gm = await AsyncStorage.getItem('user');
 		setMe(gm);
-		console.log(me);
 		setInitialLoad('loaded');
 	};
 
@@ -46,7 +45,8 @@ export default function FeedPage() {
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i[0];
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			renderedList.push([id, data]);
+			if (!data.hidden || !data.hidden[`${me}`])
+				renderedList.push([id, data]);
 		}
 		setRefreshing(false);
 		setRenderIndex(start + endOfList);

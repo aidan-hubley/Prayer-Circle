@@ -56,6 +56,9 @@
 					"start_time": "",
 					"end_time": "",
 					"flag_count": 0
+				},
+				"hidden": {
+					"_uid_": true
 				}
 			}
 		},
