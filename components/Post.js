@@ -68,53 +68,6 @@ export const Post = (post) => {
 		}).start();
 	}
 
-	const onPress = () => {
-		const options = ['Delete', 'Save', 'Cancel'];
-		const destructiveButtonIndex = 0;
-		const cancelButtonIndex = 2;
-
-		showActionSheetWithOptions(
-			{
-				options,
-				cancelButtonIndex,
-				destructiveButtonIndex
-			},
-			(selectedIndex) => {
-				switch (selectedIndex) {
-					case 1:
-						// Save
-						break;
-
-					case destructiveButtonIndex:
-						writeData(
-							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`,
-							null,
-							true
-						);
-						writeData(
-							`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${post.id}`,
-							null,
-							true
-						);
-						writeData(
-							`prayer_circle/posts/${post.id}`,
-							null,
-							true
-						).then(() => {
-							setTimeout(() => {
-								post.refresh();
-							}, 200);
-						});
-
-						break;
-
-					case cancelButtonIndex:
-					// Canceled
-				}
-			}
-		);
-	};
-
 	const tap = Gesture.Tap()
 		.numberOfTaps(2)
 		.onStart(() => {
@@ -127,6 +80,24 @@ export const Post = (post) => {
 		} else {
 			setIcon(icon + '-outline');
 		}
+	}
+
+	async function deletePost(id) {
+		writeData(
+			`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`,
+			null,
+			true
+		);
+		writeData(
+			`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${post.id}`,
+			null,
+			true
+		);
+		writeData(`prayer_circle/posts/${post.id}`, null, true).then(() => {
+			setTimeout(() => {
+				post.refresh();
+			}, 100);
+		});
 	}
 
 	return (
@@ -215,7 +186,7 @@ export const Post = (post) => {
 									<StyledOpacity
 										className='flex items-center justify-center w-[30px] h-[30px]'
 										activeOpacity={0.4}
-										onPress={onPress}
+										onPress={deletePost}
 									>
 										<StyledIcon
 											name={'trash-outline'}
