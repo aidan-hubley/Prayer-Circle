@@ -35,7 +35,6 @@ export default function FeedPage() {
 		setPosts(pl);
 		let gm = await AsyncStorage.getItem('user');
 		setMe(gm);
-		console.log(me);
 		setInitialLoad('loaded');
 	};
 

@@ -43,12 +43,13 @@ export const Post = (post) => {
 	});
 	const toolbarMarginInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
-		outputRange: [0, 10]
+		outputRange: [0, 8]
 	});
 	const toolbarStyle = {
 		height: toolbarHeightInter,
 		opacity: toolbarOpactiyInter,
-		marginTop: toolbarMarginInter
+		marginTop: 4,
+		marginBottom: toolbarMarginInter
 	};
 	const spinInter = toolbarVal.interpolate({
 		inputRange: [0, 1],
@@ -147,7 +148,7 @@ export const Post = (post) => {
 								</StyledView>
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white mt-[2px] mb-[10px]'>
+								<StyledText className='text-white mt-[2px] pb-[10px]'>
 									{post.content.length > 300
 										? post.content.substring(0, 297) + '...'
 										: post.content}
@@ -164,7 +165,7 @@ export const Post = (post) => {
 							<Ionicons name={icon} size={35} color='white' />
 						</StyledPressable>
 						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square mt-1 mb-[2px]'
+							className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
 							onPress={() => {
 								toggleToolbar();
 							}}
