@@ -8,7 +8,8 @@ export default function Layout() {
 		<ActionSheetProvider>
 			<Stack
 				screenOptions={{
-					headerShown: false
+					headerShown: false,
+					gestureEnabled: false
 				}}
 			>
 				<Stack.Screen
