@@ -50,12 +50,10 @@ export default function FeedPage() {
 			if (data.hidden && data.hidden[`${me}`] == true) {
 				continue;
 			}
-
 			renderedList.push([id, data]);
 		}
 		setRefreshing(false);
 		setRenderIndex(start + endOfList);
-		console.log(list.length, renderedList.length);
 		return renderedList;
 	}
 	useEffect(() => {

@@ -111,7 +111,11 @@ export default function Page() {
 	return (
 		<StyledView className='bg-offblack flex-1'>
 			<FlatList
-				ListEmptyComponent={
+				style={{
+					backgroundColor: '#121212',
+					paddingHorizontal: 15
+				}}
+				ListHeaderComponent={
 					<>
 						<StyledView
 							className='w-full flex items-center mb-[10px]'
@@ -119,52 +123,51 @@ export default function Page() {
 								height: 80
 							}}
 						/>
-						<StyledView className='w-full px-[15px] flex'>
-							<StyledView className='w-full flex items-center justify-center'>
-								<Button
-									btnStyles='bg-offblack border-4 border-purple'
-									height={'h-[120px]'}
-									width={'w-[120px]'}
-									iconSize={70}
-									icon='musical-notes'
-									iconColor='white'
-									href='/mainViewLayout'
-								/>
-							</StyledView>
-
-							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
-								Frey D302
-							</StyledText>
-							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-								<StyledText className='text-white'>
-									This is where the description of the circle
-									will go. It will be a short description of
-									the circle that will be displayed to users
-									who are interested in joining. You can edit
-									this description by clicking the "Edit
-									Circle Info" button below.
-								</StyledText>
-							</StyledView>
-							<StyledView className='bg-grey h-[50%] py-[10px] rounded-xl px-[10px] my-2'>
-								<StyledText className='w-full text-[28px] font-[600] text-left text-offwhite mb-1'>
-									Members
-								</StyledText>
-								<FlatList
-									style={{ paddingTop: 4 }}
-									data={dummyData}
-									renderItem={({ item }) => {
-										return (
-											<Member
-												name={item.name}
-												username={item.username}
-												role={item.role}
-												img={item.img}
-											/>
-										);
-									}}
-								/>
-							</StyledView>
+						<StyledView className='w-full flex items-center justify-center'>
+							<Button
+								btnStyles='bg-offblack border-4 border-purple'
+								height={'h-[120px]'}
+								width={'w-[120px]'}
+								iconSize={70}
+								icon='musical-notes'
+								iconColor='white'
+								href='/mainViewLayout'
+							/>
 						</StyledView>
+
+						<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
+							Frey D302
+						</StyledText>
+						<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledText className='text-white text-[14px]'>
+								This is where the description of the circle will
+								go. It will be a short description of the circle
+								that will be displayed to users who are
+								interested in joining. Admins can edit this
+								description by clicking into the box and typing.
+							</StyledText>
+						</StyledView>
+						<StyledView className='mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
+							<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
+								Members
+							</StyledText>
+						</StyledView>
+					</>
+				}
+				data={dummyData}
+				renderItem={({ item }) => {
+					return (
+						<Member
+							name={item.name}
+							username={item.username}
+							role={item.role}
+							img={item.img}
+						/>
+					);
+				}}
+				ListFooterComponent={
+					<>
+						<StyledView className='w-full h-[50px] pt-2 bg-grey rounded-b-[20px] items-center justify-center'></StyledView>
 						<StyledView
 							className='w-full flex items-center mb-[10px]'
 							style={{
@@ -176,9 +179,9 @@ export default function Page() {
 			/>
 			<StyledGradient
 				pointerEvents='none'
-				start={{ x: 0, y: 0.5 }}
+				start={{ x: 0, y: 0.1 }}
 				end={{ x: 0, y: 1 }}
-				style={{ height: 90 }}
+				style={{ height: 120 }}
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>

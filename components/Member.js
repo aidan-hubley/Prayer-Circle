@@ -20,10 +20,11 @@ const StyledIcon = styled(Ionicons);
 // 	Animated.createAnimatedComponent(TouchableHighlight)
 // );
 
-function Member({ img, name, username, role, press }) {
+function Member({ img, name, username, role, press, first, last }) {
 	return (
 		<StyledView
-			className={`w-full h-[50px] flex flex-row justify-between items-center`}
+			style={{ width: Dimensions.get('window').width - 30 }}
+			className={`h-[50px] flex flex-row justify-between items-center px-[10px] py-[10px] bg-grey`}
 		>
 			<StyledView className='flex flex-row h-full items-center'>
 				<StyledImage
