@@ -10,7 +10,6 @@
 				},
 				"private": {
 					"email": "Email",
-					"phone": "Phone",
 					"timestamp": 1234567890,
 					"circles": {
 						"_pushId_": {

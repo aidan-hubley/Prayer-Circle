@@ -6,9 +6,8 @@ export function passwordValidation(password) {
 	let number = false;
 
 	let passwordChars = password.split('');
-	//length 12
-	if (password.length >= 12) length = true;
-	//1 uppercase
+	//length 8
+	if (password.length >= 8) length = true;
 	passwordChars.forEach((char) => {
 		let ascii = char.charCodeAt(0);
 		if (ascii >= 65 && ascii <= 90) upper = true;
@@ -16,8 +15,7 @@ export function passwordValidation(password) {
 		if (ascii >= 33 && ascii <= 47) special = true;
 		if (ascii >= 48 && ascii <= 57) number = true;
 	});
-	if (length && upper && lower && special && number) return true;
-	else return false;
+	return !!(length && upper && lower && special && number);
 }
 
 export function timeSince(timeStamp) {

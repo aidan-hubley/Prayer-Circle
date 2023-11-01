@@ -103,10 +103,6 @@ export default function Login() {
 }
 
 function userLogin(email, password) {
-	//clear all fields
-	this.emailInput.clear();
-	this.passInput.clear();
-
 	if (email.length == 0 || password.length == 0)
 		return alert('Please fill out all fields');
 

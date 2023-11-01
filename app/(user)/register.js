@@ -356,11 +356,20 @@ async function createUserData(username, fname, lname, email, password) {
 	this.passInput.clear();
 
 	let userData = {
-		username: username,
-		fname: fname,
-		lname: lname,
-		email: email,
-		created: new Date().getTime()
+		public: {
+			username: username,
+			fname: fname,
+			lname: lname,
+			profile_img: false
+		},
+		private: {
+			email: email,
+			created: new Date().getTime(),
+			circles: false,
+			reactions: false,
+			comments: false,
+			posts: false
+		}
 	};
 	registerUser(email, password, userData);
 }
