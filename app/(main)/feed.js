@@ -29,27 +29,33 @@ export default function FeedPage() {
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
 		let gp = await getPosts();
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
 		setPosts(pl);
-		let gm = await AsyncStorage.getItem('user');
-		setMe(gm);
 		setInitialLoad('loaded');
 	};
 
 	async function populateList(list, start, numOfItems) {
+		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i[0];
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			if (!data.hidden || !data.hidden[`${me}`])
-				renderedList.push([id, data]);
+
+			if (data.hidden && data.hidden[`${me}`] == true) {
+				continue;
+			}
+
+			renderedList.push([id, data]);
 		}
 		setRefreshing(false);
 		setRenderIndex(start + endOfList);
+		console.log(list.length, renderedList.length);
 		return renderedList;
 	}
 	useEffect(() => {

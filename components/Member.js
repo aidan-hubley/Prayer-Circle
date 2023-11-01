@@ -1,5 +1,12 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { Text, View, Image, TouchableHighlight, Animated, Dimensions } from 'react-native';
+import {
+	Text,
+	View,
+	Image,
+	TouchableHighlight,
+	Animated,
+	Dimensions
+} from 'react-native';
 import { styled } from 'nativewind';
 import { router } from '../backend/config';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,30 +20,29 @@ const StyledIcon = styled(Ionicons);
 // 	Animated.createAnimatedComponent(TouchableHighlight)
 // );
 
-function Member({
-	img,
-	name,
-	username,
-	role,
-	press
-}) {
+function Member({ img, name, username, role, press }) {
 	return (
-		<StyledView className={`w-100 h-[50px] flex flex-row`}>
-			<StyledView className={`rounded-lg pt-1 pr-2`}>
-				<StyledImage className='rounded-xl'
+		<StyledView
+			className={`w-full h-[50px] flex flex-row justify-between items-center`}
+		>
+			<StyledView className='flex flex-row h-full items-center'>
+				<StyledImage
+					className='rounded-xl'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
 				/>
+				<StyledView className='pl-2'>
+					<StyledText
+						className={`font-[600] text-offwhite text-[20px]`}
+					>
+						{name}
+					</StyledText>
+					<StyledText className={`text-offwhite text-[14px]`}>
+						{username}
+					</StyledText>
+				</StyledView>
 			</StyledView>
-			<StyledView className={`w-100 h-100`}>
-				<StyledText className={`font-bold text-offwhite text-[20px]`}>
-					{name}
-				</StyledText>
-				<StyledText className={`text-offwhite text-[15px]`}>
-					{username}
-				</StyledText>
-			</StyledView>
-			<StyledView className={`absolute right-5`}>
+			<StyledView className='pr-2'>
 				{role === 'own' ? (
 					<StyledIcon
 						name='key'
@@ -45,11 +51,7 @@ function Member({
 						className='rotate-45'
 					/>
 				) : role === 'mod' ? (
-					<StyledIcon
-						name='shield'
-						size={30}
-						color='#FFFBFC'
-					/>
+					<StyledIcon name='shield' size={30} color='#FFFBFC' />
 				) : role === 'mem' ? (
 					<StyledIcon
 						name='checkmark-circle'
@@ -63,11 +65,7 @@ function Member({
 						color='#F9A826'
 					/>
 				) : role === 'ban' ? (
-					<StyledIcon
-						name='close-circle'
-						size={30}
-						color='#CC2500'
-					/>
+					<StyledIcon name='close-circle' size={30} color='#CC2500' />
 				) : null}
 			</StyledView>
 		</StyledView>
