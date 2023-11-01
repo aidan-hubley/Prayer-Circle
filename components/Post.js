@@ -13,7 +13,6 @@ import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
-import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledImage = styled(Image);
@@ -103,7 +102,7 @@ export const Post = (post) => {
 			}, 100);
 		});
 	}
-  
+
 	async function hidePost(postId) {
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
 		toggleToolbar();
