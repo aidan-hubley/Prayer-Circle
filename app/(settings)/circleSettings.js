@@ -125,7 +125,7 @@ export default function Page() {
 						/>
 						<StyledView className='w-full flex items-center justify-center'>
 							<Button
-								btnStyles='bg-offblack border-4 border-purple'
+								btnStyles='bg-offblack border-[8px] border-purple'
 								height={'h-[120px]'}
 								width={'w-[120px]'}
 								iconSize={70}
@@ -136,7 +136,7 @@ export default function Page() {
 						</StyledView>
 
 						<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
-							Frey D302
+							Circle Name
 						</StyledText>
 						<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
 							<StyledText className='text-white text-[14px]'>
@@ -147,7 +147,7 @@ export default function Page() {
 								description by clicking into the box and typing.
 							</StyledText>
 						</StyledView>
-						<StyledView className='mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
+						<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
 							<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 								Members
 							</StyledText>
@@ -162,12 +162,12 @@ export default function Page() {
 							username={item.username}
 							role={item.role}
 							img={item.img}
+							last={item.key == dummyData.length}
 						/>
 					);
 				}}
 				ListFooterComponent={
 					<>
-						<StyledView className='w-full h-[50px] pt-2 bg-grey rounded-b-[20px] items-center justify-center'></StyledView>
 						<StyledView
 							className='w-full flex items-center mb-[10px]'
 							style={{
