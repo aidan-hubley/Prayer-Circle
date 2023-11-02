@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
 	Text,
 	View,
@@ -6,6 +5,7 @@ import {
     Animated,
 	Switch
 } from 'react-native';
+import React, { useState } from 'react';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
