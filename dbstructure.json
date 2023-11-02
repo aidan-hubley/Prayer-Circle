@@ -10,7 +10,7 @@
 				"private": {
 					"email": "Email",
 					"phone": "Phone",
-					"created": 1234567890,
+					"timestamp": 1234567890,
 					"circles": {
 						"_pushId_": {
 							"permissions": {
@@ -56,6 +56,9 @@
 					"start_time": "",
 					"end_time": "",
 					"flag_count": 0
+				},
+				"hidden": {
+					"_uid_": true
 				}
 			}
 		},
@@ -76,7 +79,7 @@
 		"circles": {
 			"_pushId_": {
 				"name": "Circle name",
-				"created": 1234567890,
+				"timestamp": 1234567890,
 				"icon": "icon.i",
 				"description": "Circle description",
 				"type": "individual/organization",
@@ -85,7 +88,7 @@
 					"_uid_": true
 				},
 				"posts": {
-					"_pushId_": true
+					"_pushId_": 1234567890
 				},
 				"admin": {
 					"_uid_": true

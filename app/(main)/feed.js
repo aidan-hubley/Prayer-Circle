@@ -1,49 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import {
 	View,
-	ScrollView,
 	StatusBar,
 	RefreshControl,
-	Dimensions,
+	ActivityIndicator,
 	Text,
 	FlatList
 } from 'react-native';
-import { Circle } from '../../components/Circle';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
-import { Button } from '../../components/Buttons';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-	writeData,
-	generateId,
-	readData
-} from '../../backend/firebaseFunctions';
+import { readData, getPosts } from '../../backend/firebaseFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledView = styled(View);
-const StyledScrollView = styled(ScrollView);
 const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
-const StyledFlatList = styled(FlatList);
 
 export default function FeedPage() {
-	const [dataArray, setDataArray] = useState([]);
+	const [posts, setPosts] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
+	const [postList, setPostList] = useState([]);
+	const [renderIndex, setRenderIndex] = useState(0);
+	const [initialLoad, setInitialLoad] = useState('loading');
+	const [scrolling, setScrolling] = useState(false);
+	const [me, setMe] = useState('');
 
-	function pullData() {
-		setRefreshing(true);
-		readData(`prayer_circle/posts`).then((data) => {
-			let dataArray = data ? Object.entries(data) : [];
-			dataArray.sort((a, b) => {
-				return b[1].timestamp - a[1].timestamp;
-			});
-			setDataArray(dataArray);
-			setRefreshing(false);
-		});
+	const setUpFeed = async () => {
+		setRenderIndex(0);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
+		let gp = await getPosts();
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 7);
+		setPosts(pl);
+		setInitialLoad('loaded');
+	};
+
+	async function populateList(list, start, numOfItems) {
+		let me = await AsyncStorage.getItem('user');
+		let renderedList = [];
+		let endOfList =
+			list.length < start + numOfItems ? list.length - start : numOfItems;
+		for (let i of list.slice(start, endOfList + start)) {
+			let id = i[0];
+			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
+
+			if (data.hidden && data.hidden[`${me}`] == true) {
+				continue;
+			}
+			renderedList.push([id, data]);
+		}
+		setRefreshing(false);
+		setRenderIndex(start + endOfList);
+		return renderedList;
 	}
-
 	useEffect(() => {
-		pullData();
+		setUpFeed();
 	}, []);
 
 	let insets = useSafeAreaInsets();
@@ -51,20 +65,38 @@ export default function FeedPage() {
 	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<StyledView className='flex-1'>
-				<StyledFlatList
-					data={dataArray}
+				<FlatList
+					data={posts}
+					onEndReachedThreshold={0.4}
+					windowSize={10}
+					onScrollBeginDrag={() => {
+						setScrolling(true);
+					}}
+					onMomentumScrollEnd={() => {
+						setScrolling(false);
+					}}
+					onEndReached={() => {
+						if (initialLoad == 'loading' || !scrolling) return;
+						populateList(postList, renderIndex, 10).then((res) => {
+							setPosts([...posts, ...res]);
+						});
+					}}
 					style={{ paddingHorizontal: 15 }}
 					estimatedItemSize={100}
 					showsHorizontalScrollIndicator={false}
 					refreshControl={
 						<RefreshControl
-							onRefresh={pullData}
+							progressViewOffset={insets.top + 60}
+							onRefresh={() => {
+								setRefreshing(true);
+								setUpFeed();
+							}}
 							refreshing={refreshing}
 							tintColor='#ebebeb'
 						/>
 					}
 					ListHeaderComponent={
-						dataArray && dataArray.length > 0 ? (
+						posts && posts.length > 0 ? (
 							<StyledView
 								className='w-full flex items-center mb-[10px]'
 								style={{
@@ -76,7 +108,7 @@ export default function FeedPage() {
 						)
 					}
 					ListFooterComponent={
-						dataArray && dataArray.length > 0 ? (
+						posts && posts.length > 0 ? (
 							<StyledView
 								className='w-full flex items-center mb-[10px]'
 								style={{
@@ -88,8 +120,19 @@ export default function FeedPage() {
 						)
 					}
 					ListEmptyComponent={
-						<StyledView className='w-full h-full flex items-center justify-center'>
-							<StyledText className='text-white text-[24px]'>
+						<StyledView className='w-full h-screen flex items-center justify-center'>
+							<StyledView
+								className={`${
+									initialLoad == 'loaded' ? 'hidden' : 'flex'
+								}`}
+							>
+								<ActivityIndicator size='large' />
+							</StyledView>
+							<StyledText
+								className={`${
+									initialLoad == 'loaded' ? 'flex' : 'hidden'
+								} text-white text-[24px]`}
+							>
 								No Posts Yet!
 							</StyledText>
 						</StyledView>
@@ -103,22 +146,14 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon='heart-outline'
 							id={item[0]}
-							refresh={() => pullData()}
+							refresh={() => setUpFeed()}
+							ownedToolBar={item[1].user == me}
+							edited={item[1].edited}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
 				/>
 			</StyledView>
-
-			{/* <StyledView
-				style={{
-					bottom:
-						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
-				}}
-				className='absolute flex flex-row justify-center w-screen'
-			>
-				<Circle />
-			</StyledView> */}
 
 			<StyledGradient
 				pointerEvents='none'
