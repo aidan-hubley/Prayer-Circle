@@ -103,7 +103,7 @@ export function Circle({ size, press }) {
 			<AnimatedPressable
 				style={pressedStyle}
 				pointerEvents={pressed != 'none' ? 'auto' : 'none'}
-				className={`absolute bottom-[-40px] left-0 h-screen w-screen bg-[#121212]`}
+				className={`absolute bottom-0 left-[-100px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
 					toggleLongOptions();
 					toggleShortOptions();
