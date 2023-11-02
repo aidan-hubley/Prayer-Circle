@@ -24,10 +24,10 @@ function Member({ img, name, username, role, press, last }) {
 	return (
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
-			className={`h-[50px] flex flex-row justify-between items-center bg-grey px-[10px] py-[10px] border-x border-[#6666660d] 
+			className={`h-[50px] flex flex-row justify-between items-center bg-grey px-[10px] py-[10px] border-x border-[#6666660d]
 			${last ? 'rounded-b-[20px] h-[60px]' : ''}`}
 		>
-			<StyledView className='flex flex-row h-full items-start'>
+			<StyledView className='flex flex-row'>
 				<StyledImage
 					className='rounded-xl'
 					style={{ width: 40, height: 40 }}

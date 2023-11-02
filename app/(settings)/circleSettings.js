@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
 	Text,
 	View,
-	TouchableOpacity,
+	Platform,
 	Animated,
 	ScrollView,
 	FlatList
@@ -109,7 +109,10 @@ export default function Page() {
 	];
 
 	return (
-		<StyledView className='bg-offblack flex-1'>
+		<StyledView
+			className='bg-offblack flex-1'
+			style={{ paddingTop: Platform.OS == 'android' ? insets.top : 0 }}
+		>
 			<FlatList
 				style={{
 					backgroundColor: '#121212',
@@ -185,7 +188,10 @@ export default function Page() {
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
-			<StyledView className='absolute top-[15px] w-screen flex flex-row items-center justify-between px-[15px]'>
+			<StyledView
+				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
+				className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
+			>
 				<Button
 					btnStyles='rotate-180'
 					bgColor='bg-offblack'
