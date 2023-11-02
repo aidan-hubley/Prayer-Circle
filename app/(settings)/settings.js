@@ -13,6 +13,7 @@ import { Button } from '../../components/Buttons';
 import { router, auth } from '../../backend/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, TextInput } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -34,6 +35,8 @@ export default function Page() {
     const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 	const togglePosition = React.useRef(new Animated.Value(1)).current;
+    const insets = useSafeAreaInsets();
+
 
     React.useEffect(() => {
         Animated.timing(togglePosition, {
@@ -152,16 +155,17 @@ export default function Page() {
                         </StyledView>
                     </StyledView>
                 </StyledModal>
-                <Button 
-                    icon='person-circle-outline'
-                    href='/mainViewLayout'
-                    btnStyles={'absolute bottom-10 left-5'}
-                    width={'w-[60px]'}
-                    height={'h-[60px]'}
-                    iconSize={40}
-                >
-                </Button>
             </StyledView>
+                <StyledView style={{bottom: insets.bottom}} className='absolute w-screen px-[15px]'>
+                    <Button 
+                        icon='person-circle-outline'
+                        href='/mainViewLayout'
+                        width={'w-[60px]'}
+                        height={'h-[60px]'}
+                        iconSize={40}
+                    >
+                    </Button>
+                </StyledView>
         </StyledSafeArea>
     );
 }
