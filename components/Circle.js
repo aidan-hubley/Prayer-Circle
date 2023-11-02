@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { Pressable, View, Animated, Text } from 'react-native';
 import { styled } from 'nativewind';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import { router } from '../backend/config';
 import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,7 +12,7 @@ const StyledText = styled(Text);
 export function Circle({ size, press }) {
 	let insets = useSafeAreaInsets();
 	const scale = useRef(new Animated.Value(1)).current;
-	const [pressed, setPressed] = useState(false);
+	const [pressed, setPressed] = useState('none');
 	const longOpacity = useRef(new Animated.Value(0)).current;
 	const shortOpacity = useRef(new Animated.Value(0)).current;
 	const bgOpacity = useRef(new Animated.Value(0)).current;
@@ -54,7 +53,7 @@ export function Circle({ size, press }) {
 	}
 
 	function toggleLongOptions(val) {
-		setPressed(!pressed);
+		setPressed(val ? 'long' : 'none');
 		toggleBackdrop(val);
 		Animated.timing(longOpacity, {
 			toValue: val ? 1 : 0,
@@ -63,7 +62,7 @@ export function Circle({ size, press }) {
 		}).start();
 	}
 	function toggleShortOptions(val) {
-		setPressed(!pressed);
+		setPressed(val ? 'short' : 'none');
 		toggleBackdrop(val);
 		Animated.timing(shortOpacity, {
 			toValue: val ? 1 : 0,
@@ -80,7 +79,7 @@ export function Circle({ size, press }) {
 	}
 
 	const tap = Gesture.Tap().onEnd(() => {
-		if (!pressed) {
+		if (pressed == 'none') {
 			toggleShortOptions(true);
 		} else {
 			toggleLongOptions(false);
@@ -88,7 +87,7 @@ export function Circle({ size, press }) {
 		}
 	});
 	const longPress = Gesture.LongPress().onStart(() => {
-		if (!pressed) {
+		if (pressed == 'none') {
 			toggleLongOptions(true);
 		} else {
 			toggleLongOptions(false);
@@ -103,15 +102,16 @@ export function Circle({ size, press }) {
 		<>
 			<AnimatedPressable
 				style={pressedStyle}
-				pointerEvents={pressed ? 'auto' : 'none'}
+				pointerEvents={pressed != 'none' ? 'auto' : 'none'}
 				className={`absolute bottom-[-40px] left-0 h-screen w-screen bg-[#121212]`}
 				onPress={() => {
 					toggleLongOptions();
+					toggleShortOptions();
 				}}
 			/>
 			<AnimatedView
 				style={longPressedStyle}
-				pointerEvents={pressed ? 'auto' : 'none'}
+				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
 				className='flex flex-col items-center absolute w-screen'
 			>
 				<Button
@@ -136,12 +136,22 @@ export function Circle({ size, press }) {
 			</AnimatedView>
 			<AnimatedView
 				style={shortPressedStyle}
-				pointerEvents={pressed ? 'auto' : 'none'}
+				pointerEvents={pressed == 'short' ? 'auto' : 'none'}
 				className='flex flex-col items-center absolute w-screen'
 			>
 				<StyledText className='text-[30px] font-bold text-white'>
 					Filter
 				</StyledText>
+				<Button
+					title='Sketch a Post'
+					height='h-[65px]'
+					btnStyles={'mt-3'}
+					width='w-11/12'
+					press={() => {
+						toggleLongOptions(false);
+					}}
+					href='/createPost'
+				/>
 			</AnimatedView>
 			<GestureDetector gesture={composed}>
 				<AnimatedPressable
