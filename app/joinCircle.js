@@ -50,7 +50,7 @@ export default function Page() {
     }
 
     return (
-        <StyledSafeArea className="bg-offblack border" style={{ flex: 1 }}>
+        <StyledSafeArea className="bg-offblack  flex: 1 " bounces={false}>
             <KeyboardAwareScrollView>
                 <StyledView className="flex items-center justify-center text-center w-screen h-[90px]">
                     <StyledText className="text-offwhite font-bold text-4xl">
