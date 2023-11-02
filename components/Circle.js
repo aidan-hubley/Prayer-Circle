@@ -1,7 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { Pressable, View, Animated, Text } from 'react-native';
 import { styled } from 'nativewind';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import {
+	GestureHandlerRootView,
+	GestureDetector,
+	Gesture
+} from 'react-native-gesture-handler';
 import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -78,7 +82,7 @@ export function Circle({ size, press }) {
 		}).start();
 	}
 
-	const tap = Gesture.Tap().onEnd(() => {
+	const tap = Gesture.Tap().onFinalize(() => {
 		if (pressed == 'none') {
 			toggleShortOptions(true);
 		} else {
@@ -99,7 +103,7 @@ export function Circle({ size, press }) {
 	const composed = Gesture.Simultaneous(tap, longPress);
 
 	return (
-		<>
+		<GestureHandlerRootView>
 			<AnimatedPressable
 				style={pressedStyle}
 				pointerEvents={pressed != 'none' ? 'auto' : 'none'}
@@ -160,6 +164,6 @@ export function Circle({ size, press }) {
 					}}
 				></AnimatedPressable>
 			</GestureDetector>
-		</>
+		</GestureHandlerRootView>
 	);
 }

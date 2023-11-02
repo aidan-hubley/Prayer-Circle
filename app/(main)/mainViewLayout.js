@@ -10,6 +10,8 @@ import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
 import { Button } from '../../components/Buttons';
+import { Filter } from '../../components/Filter.js';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const StyledView = styled(View);
 
@@ -24,7 +26,7 @@ export default function Layout() {
 	let circeNameWidth = screenWidth - 170;
 
 	return (
-		<ActionSheetProvider>
+		<GestureHandlerRootView style={{ flex: 1 }}>
 			<>
 				<StyledView className='bg-offblack flex-1'>
 					<PagerView
@@ -55,9 +57,15 @@ export default function Layout() {
 				</StyledView>
 
 				<StyledView
-					style={{bottom: insets.bottom < 10 ? insets.bottom + 15 : insets.bottom}}
+					style={{
+						bottom:
+							insets.bottom < 10
+								? insets.bottom + 15
+								: insets.bottom
+					}}
 					className='absolute flex flex-row justify-center w-screen'
 				>
+					<Filter />
 					<Circle />
 				</StyledView>
 
@@ -129,6 +137,6 @@ export default function Layout() {
 					/>
 				</StyledView>
 			</>
-		</ActionSheetProvider>
+		</GestureHandlerRootView>
 	);
 }
