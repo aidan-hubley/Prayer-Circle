@@ -16,6 +16,7 @@
     "@shopify/flash-list": "1.4.3",
     "eas-cli": "^5.2.0",
     "expo": "~49.0.8",
+    "expo-barcode-scanner": "~12.5.3",
     "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
     "expo-device": "~5.4.0",

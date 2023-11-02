@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
     SafeAreaView,
     Text,
@@ -10,20 +10,44 @@ import {
 import { styled } from "nativewind";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Button } from "../components/Buttons";
-import { useActionSheet } from "@expo/react-native-action-sheet";
-import { Camera, CameraType, useWebQRScanner } from "expo-camera";
+import { BarCodeScanner } from "expo-barcode-scanner";
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
-const StyledOpacity = styled(TouchableOpacity);
-const StyledCamera = styled(Camera);
 
 export default function Page() {
     const [code, setCode] = useState("");
-    const [type, setType] = useState(CameraType.back);
-    const [permission, requestPermission] = Camera.useCameraPermissions();
+    const [hasPermission, setHasPermission] = useState(null);
+    const [scanned, setScanned] = useState(false);
+
+    useEffect(() => {
+        const getBarCodeScannerPermissions = async () => {
+            const { status } = await BarCodeScanner.requestPermissionsAsync();
+            setHasPermission(status === "granted");
+        };
+
+        getBarCodeScannerPermissions();
+    }, []);
+
+    const handleBarCodeScanned = ({ type, data }) => {
+        setScanned(true);
+        if (type == "org.iso.QRCode") {
+            alert(
+                `Bar code with type ${type} and data ${data} has been scanned!`
+            );
+        } else {
+            alert("Invalid code type!");
+        }
+    };
+
+    if (hasPermission === null) {
+        return <Text>Requesting for camera permission</Text>;
+    }
+    if (hasPermission === false) {
+        return <Text>No access to camera</Text>;
+    }
 
     return (
         <StyledSafeArea className="bg-offblack border" style={{ flex: 1 }}>
@@ -35,14 +59,15 @@ export default function Page() {
                 </StyledView>
                 <StyledView className="flex-row justify-center">
                     <StyledView className="w-[300px] h-[300px] border-2 border-offwhite">
-                        <StyledCamera
+                        <BarCodeScanner
                             mirrorImage={true}
                             fixOrientation={true}
                             className="w-full h-full"
-                            type={type}
                             ratio="1:1"
-                            useWebQRScanner
-                        ></StyledCamera>
+                            onBarCodeScanned={
+                                scanned ? undefined : handleBarCodeScanned
+                            }
+                        />
                     </StyledView>
                 </StyledView>
                 <StyledView className="flex items-center justify-center text-center w-screen h-[90px]">
