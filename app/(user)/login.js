@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
-	SafeAreaView,
-	Text,
-	View,
-	TextInput,
-	StatusBar,
-	Keyboard,
-	TouchableWithoutFeedback,
-	Image
+  SafeAreaView,
+  Text,
+  View,
+  TextInput,
+  StatusBar,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Image,
+  Modal,
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styled } from 'nativewind';
@@ -15,6 +19,7 @@ import { Button } from '../../components/Buttons';
 import { Link } from 'expo-router';
 import { loginUser } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../../backend/config'; // Ensure you import your Firebase auth instance
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -26,6 +31,20 @@ const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollView);
 export default function Login() {
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
+	const [modalVisible, setModalVisible] = useState(false);
+	const [resetEmail, setResetEmail] = useState('');
+
+	const handlePasswordReset = async () => {
+		try {
+		await auth.sendPasswordResetEmail(resetEmail);
+		Alert.alert("Check your email", "A link to reset your password has been sent to your email address.", [
+			{ text: "OK", onPress: () => setModalVisible(false) }
+		]);
+		setResetEmail('');
+		} catch (error) {
+		Alert.alert("Error", error.message);
+		}
+	};
 
 	return (
 		<>
@@ -96,12 +115,44 @@ export default function Login() {
 										</StyledText>
 									</Link>
 								</StyledText>
+
+								<TouchableOpacity onPress={() => setModalVisible(true)}>
+									<StyledText className='text-yellow text-center text-[18px] mb-4'>
+										Forgot Password?
+									</StyledText>
+								</TouchableOpacity>
+
 							</StyledView>
 						</StyledView>
 					</TouchableWithoutFeedback>
 				</StyledKeyboardAwareScrollView>
 				<StatusBar barStyle={'light-content'} />
 			</StyledSafeArea>
+
+				<Modal
+			animationType="slide"
+			transparent={true}
+			visible={modalVisible}
+			onRequestClose={() => {
+			setModalVisible(!modalVisible);
+			}}
+			>
+			<View style={{ marginTop: 50, backgroundColor: 'white', padding: 20 }}>
+			<Text>Enter your email here</Text>
+			<TextInput
+				placeholder="Email"
+				value={resetEmail}
+				onChangeText={setResetEmail}
+				autoCapitalize="none"
+				keyboardType="email-address"
+			/>
+			<Button
+				title='Submit'
+				// ... add your button styling
+				press={handlePasswordReset}
+			/>
+			</View>
+		</Modal>
 		</>
 	);
 }
