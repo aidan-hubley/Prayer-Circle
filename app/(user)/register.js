@@ -323,7 +323,6 @@ export default function Register() {
 }
 
 async function createUserData(username, fname, lname, email, password) {
-	console.log(username, fname, lname, email, password);
 	if (username.length < 1) return alert('Invalid Username'); // check username length
 
 	let taken = await checkUsername(username); // check if username is taken

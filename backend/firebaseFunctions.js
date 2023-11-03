@@ -99,7 +99,8 @@ export async function loginUser(email, password) {
 			await AsyncStorage.setItem('user', user.uid);
 
 			let name = await readData(`prayer_circle/users/${user.uid}`);
-			name = name.fname + ' ' + name.lname;
+			console.log(name);
+			name = name.public.fname + ' ' + name.public.lname;
 			await AsyncStorage.setItem('name', name);
 
 			await AsyncStorage.setItem('email', user.email);
@@ -135,7 +136,6 @@ export function generateId() {
 export function userLoggedIn(onLogIn, onLogOut) {
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
-			console.log(user);
 			if (onLogIn) onLogIn();
 		} else {
 			if (onLogOut) onLogOut();
