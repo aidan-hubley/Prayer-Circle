@@ -357,7 +357,6 @@ async function createUserData(username, fname, lname, email, password) {
 
 	let userData = {
 		public: {
-			username: username,
 			fname: fname,
 			lname: lname,
 			profile_img: false
