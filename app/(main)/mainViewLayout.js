@@ -4,15 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { ExpandableButton } from '../../components/Buttons';
 import { Circle } from '../../components/Circle';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import FeedPage from './feed.js';
 import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
 import { Button } from '../../components/Buttons';
 import { getCircles } from '../../backend/firebaseFunctions.js';
-import { Filter } from '../../components/Filter.js';
-import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 
@@ -65,13 +62,13 @@ export default function Layout() {
 					<ProfilePage key='2' />
 				</PagerView>
 			</StyledView>
-
 			<StyledView
 				style={{
 					bottom:
-						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom
+						insets.bottom < 10 ? insets.bottom + 15 : insets.bottom,
+					width: Dimensions.get('window').width - 200
 				}}
-				className='absolute flex flex-row justify-center w-screen'
+				className='absolute flex flex-row mx-[100px] justify-center z-0'
 			>
 				<Circle circles={circles} />
 			</StyledView>
