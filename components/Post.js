@@ -102,7 +102,7 @@ export const Post = (post) => {
 			}, 100);
 		});
 	}
-  
+
 	async function hidePost(postId) {
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
 		toggleToolbar();
