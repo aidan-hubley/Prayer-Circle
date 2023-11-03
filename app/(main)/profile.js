@@ -161,7 +161,12 @@ export default function ProfilePage() {
 								initialLoad == 'loaded' ? 'flex' : 'hidden'
 							}`}
 							width='w-11/12'
-							href='/createPost'
+							//href='/createPost'
+							press={() => {
+								signOut(auth);
+								AsyncStorage.removeItem('user');
+								router.push('/login');
+							}}
 						/>
 					</StyledView>
 				}
@@ -196,11 +201,6 @@ export default function ProfilePage() {
 				icon='mail-unread'
 				iconSize={36}
 				href='/settings'
-				press={() => {
-					signOut();
-					AsyncStorage.removeItem('user');
-					router.push('/login');
-				}}
 			/>
 			<StyledGradient
 				pointerEvents='none'

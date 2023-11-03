@@ -16,7 +16,12 @@ export default function Page() {
 	userLoggedIn();
 
 	AsyncStorage.getItem('user').then((user) => {
-		if (!user || user.length == 0) router.push('/login');
-		else router.push('/mainViewLayout');
+		console.log(user);
+		if (!user || user.length == 0) {
+			console.log('user is not logged in');
+			router.push('/login');
+		} else {
+			router.push('/mainViewLayout');
+		}
 	});
 }

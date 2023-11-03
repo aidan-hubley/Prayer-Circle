@@ -75,13 +75,13 @@ export async function createCircle(data) {
 	);
 }
 
-export async function registerUser(email, password, data) {
+export async function registerUser(username, email, password, data) {
 	await createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
-			writeData(`usernames/${data.username}`, user.uid, true);
+			writeData(`usernames/${username}`, user.uid, true);
 			loginUser(email, password);
 		})
 		.catch((error) => {
@@ -115,7 +115,7 @@ export async function loginUser(email, password) {
 }
 
 export async function checkUsername(username) {
-	let usernames = await readData(`usernames`);
+	let usernames = (await readData(`usernames`)) || {};
 	let taken = false;
 
 	usernames = Object.keys(usernames);
@@ -135,6 +135,7 @@ export function generateId() {
 export function userLoggedIn(onLogIn, onLogOut) {
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
+			console.log(user);
 			if (onLogIn) onLogIn();
 		} else {
 			if (onLogOut) onLogOut();
