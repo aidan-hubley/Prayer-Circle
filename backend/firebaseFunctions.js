@@ -99,7 +99,6 @@ export async function loginUser(email, password) {
 			await AsyncStorage.setItem('user', user.uid);
 
 			let name = await readData(`prayer_circle/users/${user.uid}`);
-			console.log(name);
 			name = name.public.fname + ' ' + name.public.lname;
 			await AsyncStorage.setItem('name', name);
 
@@ -150,7 +149,7 @@ export async function getPosts(circleId) {
 
 	if (!circleId || circleId == 'unfiltered') {
 		circles = Object.keys(
-			(await readData(`prayer_circle/users/${UID}/circles`)) || {}
+			(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 		);
 	} else {
 		circles.push(circleId);
