@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import {
-	SafeAreaView,
 	Text,
 	View,
 	TextInput,
@@ -11,6 +10,7 @@ import {
 	StatusBar
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
 import { checkUsername, registerUser } from '../../backend/firebaseFunctions';
