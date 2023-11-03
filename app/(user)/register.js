@@ -364,7 +364,7 @@ async function createUserData(username, fname, lname, email, password) {
 		fname: fname,
 		lname: lname,
 		email: email,
-		created: new Date().getTime()
+		timestamp: new Date().getTime()
 	};
 	registerUser(email, password, userData);
 }

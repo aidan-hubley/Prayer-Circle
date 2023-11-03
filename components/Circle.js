@@ -1,25 +1,23 @@
 import React, { useRef, useState } from 'react';
 import { Pressable, View, Animated, Text } from 'react-native';
 import { styled } from 'nativewind';
-import {
-	GestureHandlerRootView,
-	GestureDetector,
-	Gesture
-} from 'react-native-gesture-handler';
 import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSharedValue } from 'react-native-reanimated';
+import { Filter } from './Filter';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledText = styled(Text);
 
-export function Circle({ size, press }) {
+export function Circle({ circles, press }) {
 	let insets = useSafeAreaInsets();
 	const scale = useRef(new Animated.Value(1)).current;
 	const [pressed, setPressed] = useState('none');
 	const longOpacity = useRef(new Animated.Value(0)).current;
 	const shortOpacity = useRef(new Animated.Value(0)).current;
 	const bgOpacity = useRef(new Animated.Value(0)).current;
+	const filterRef = useRef();
 
 	const scaleInterpolation = scale.interpolate({
 		inputRange: [0, 1],
@@ -68,11 +66,7 @@ export function Circle({ size, press }) {
 	function toggleShortOptions(val) {
 		setPressed(val ? 'short' : 'none');
 		toggleBackdrop(val);
-		Animated.timing(shortOpacity, {
-			toValue: val ? 1 : 0,
-			duration: 200,
-			useNativeDriver: true
-		}).start();
+		filterRef.current.toggleShown(val);
 	}
 	function toggleBackdrop(val) {
 		Animated.timing(bgOpacity, {
@@ -82,28 +76,8 @@ export function Circle({ size, press }) {
 		}).start();
 	}
 
-	const tap = Gesture.Tap().onFinalize(() => {
-		if (pressed == 'none') {
-			toggleShortOptions(true);
-		} else {
-			toggleLongOptions(false);
-			toggleShortOptions(false);
-		}
-	});
-	const longPress = Gesture.LongPress().onStart(() => {
-		if (pressed == 'none') {
-			toggleLongOptions(true);
-		} else {
-			toggleLongOptions(false);
-			toggleShortOptions(false);
-		}
-		resize(1);
-	});
-
-	const composed = Gesture.Simultaneous(tap, longPress);
-
 	return (
-		<GestureHandlerRootView>
+		<>
 			<AnimatedPressable
 				style={pressedStyle}
 				pointerEvents={pressed != 'none' ? 'auto' : 'none'}
@@ -139,31 +113,42 @@ export function Circle({ size, press }) {
 				/>
 			</AnimatedView>
 			<AnimatedView
-				style={shortPressedStyle}
+				style={(shortPressedStyle, { position: 'absolute', bottom: 0 })}
 				pointerEvents={pressed == 'short' ? 'auto' : 'none'}
-				className='flex flex-col items-center absolute w-screen'
+				className='flex flex-col items-center w-screen'
 			>
-				<StyledText className='text-[30px] font-bold text-white'>
-					Filter
-				</StyledText>
+				<Filter data={circles} ref={filterRef} />
 			</AnimatedView>
-			<GestureDetector gesture={composed}>
-				<AnimatedPressable
-					style={{ transform: [{ scale: scaleInterpolation }] }}
-					className={`rounded-full border-[6px] border-offwhite
+			<AnimatedPressable
+				style={{ transform: [{ scale: scaleInterpolation }] }}
+				className={`rounded-full border-[6px] border-offwhite
                 h-[80px] w-[80px]
             `}
-					onPressIn={() => {
-						resize(0.7);
-					}}
-					onPressOut={() => {
-						resize(1);
-					}}
-					onPress={() => {
-						if (press) press();
-					}}
-				></AnimatedPressable>
-			</GestureDetector>
-		</GestureHandlerRootView>
+				onPressIn={() => {
+					resize(0.7);
+				}}
+				onLongPress={() => {
+					if (pressed == 'none') {
+						toggleLongOptions(true);
+					} else {
+						toggleLongOptions(false);
+						toggleShortOptions(false);
+					}
+					resize(1);
+				}}
+				onPressOut={() => {
+					resize(1);
+				}}
+				onPress={() => {
+					if (pressed == 'none') {
+						toggleShortOptions(true);
+					} else {
+						toggleLongOptions(false);
+						toggleShortOptions(false);
+					}
+					if (press) press();
+				}}
+			></AnimatedPressable>
+		</>
 	);
 }

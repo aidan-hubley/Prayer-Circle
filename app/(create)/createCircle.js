@@ -162,7 +162,7 @@ export default function Page() {
 								title: title,
 								description: description,
 								icon: circleIcon,
-								created: Date.now(),
+								timestamp: Date.now(),
 								type: 'individual',
 								color: '#5946B2',
 								members: {},

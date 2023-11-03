@@ -20,8 +20,6 @@ const StyledAnimatedHighlight = styled(
 
 const FilterItem = forwardRef(
 	({ data, index, contentOffset, itemSize, itemMargin }, ref) => {
-		const width = Dimensions.get('window').width;
-
 		const itemStyle = useAnimatedStyle(() => {
 			const inputRange = [
 				(index - 3) * (itemSize + itemMargin),
@@ -66,7 +64,11 @@ const FilterItem = forwardRef(
 				]}
 				className='flex border-[6px] items-center justify-center rounded-full'
 			>
-				<StyledIcon name={data.icon} size={35} color={data.color} />
+				<StyledIcon
+					name={data.icon}
+					size={35}
+					color={data.iconColor || data.color}
+				/>
 			</StyledAnimatedHighlight>
 		);
 	}

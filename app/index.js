@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../components/PostTypeSelector';

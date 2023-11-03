@@ -142,6 +142,35 @@ export function userLoggedIn(onLogIn, onLogOut) {
 	});
 }
 
+export async function getCircles() {
+	const UID = await getUIDFromStorage();
+	let circles = await readData(`prayer_circle/users/${UID}/circles`);
+	circles = Object.keys(
+		(await readData(`prayer_circle/users/${UID}/circles`)) || {}
+	);
+	let circlesData = [];
+
+	for (circle of circles) {
+		let circleData = await readData(`prayer_circle/circles/${circle}`);
+
+		let circleStruct = {
+			id: circle,
+			iconColor: circleData.iconColor,
+			title: circleData.title,
+			color: circleData.color,
+			timestamp: circleData.timestamp,
+			description: circleData.description,
+			type: circleData.type,
+			icon: circleData.icon,
+			members: Object.keys(circleData.members),
+			admin: Object.keys(circleData.admin),
+			owner: circleData.owner == UID
+		};
+		circlesData.push(circleStruct);
+	}
+	return circlesData;
+}
+
 export async function getPosts(circleId) {
 	const UID = await getUIDFromStorage();
 	let circles = [];
