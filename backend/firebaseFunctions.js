@@ -75,13 +75,13 @@ export async function createCircle(data) {
 	);
 }
 
-export async function registerUser(email, password, data) {
+export async function registerUser(username, email, password, data) {
 	await createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
-			writeData(`usernames/${data.username}`, true, true);
+			writeData(`usernames/${username}`, user.uid, true);
 			loginUser(email, password);
 		})
 		.catch((error) => {
@@ -99,7 +99,7 @@ export async function loginUser(email, password) {
 			await AsyncStorage.setItem('user', user.uid);
 
 			let name = await readData(`prayer_circle/users/${user.uid}`);
-			name = name.fname + ' ' + name.lname;
+			name = name.public.fname + ' ' + name.public.lname;
 			await AsyncStorage.setItem('name', name);
 
 			await AsyncStorage.setItem('email', user.email);
@@ -115,7 +115,7 @@ export async function loginUser(email, password) {
 }
 
 export async function checkUsername(username) {
-	let usernames = await readData(`usernames`);
+	let usernames = (await readData(`usernames`)) || {};
 	let taken = false;
 
 	usernames = Object.keys(usernames);
@@ -149,7 +149,7 @@ export async function getPosts(circleId) {
 
 	if (!circleId || circleId == 'unfiltered') {
 		circles = Object.keys(
-			(await readData(`prayer_circle/users/${UID}/circles`)) || {}
+			(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 		);
 	} else {
 		circles.push(circleId);
