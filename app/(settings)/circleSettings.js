@@ -2,25 +2,27 @@ import React, { useState } from 'react';
 import {
 	Text,
 	View,
-	TouchableOpacity,
+	Platform,
 	Animated,
-	ScrollView
+	ScrollView,
+	FlatList
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledScrollView = styled(ScrollView);
 const StyledModal = styled(Modal);
+const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 	let insets = useSafeAreaInsets();
-	let topInset = insets.top > 30 ? insets.top : insets.top + 100;
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
 	const toggleModal1 = () => {
@@ -47,170 +49,194 @@ export default function Page() {
 		}).start();
 	}, [isEnabled]);
 
+	const dummyData = [
+		{
+			key: '1',
+			name: 'Josh Philips',
+			username: 'JoshuaP.149134',
+			role: 'own',
+			img: Trevor
+		},
+		{
+			key: '2',
+			name: 'Alex Muresan',
+			username: 'muresanCoder.20',
+			role: 'mod',
+			img: Trevor
+		},
+		{
+			key: '3',
+			name: 'Nason Allen',
+			username: 'AllenNasin0987654',
+			role: 'mod',
+			img: Trevor
+		},
+		{
+			key: '4',
+			name: 'Aidan Hubley',
+			username: 'HubleyPraying',
+			role: 'ban',
+			img: Trevor
+		},
+		{
+			key: '5',
+			name: 'Trevor Bunch',
+			username: 'BunchTrevoraccount',
+			role: 'mem',
+			img: Trevor
+		},
+		{
+			key: '6',
+			name: 'Another Account',
+			username: 'ExampleAccount1',
+			role: 'sus',
+			img: Trevor
+		},
+		{
+			key: '7',
+			name: 'Another Account',
+			username: 'ExampleAccount2',
+			role: 'mem',
+			img: Trevor
+		},
+		{
+			key: '8',
+			name: 'Another Account',
+			username: 'ExampleAccount3',
+			role: 'mem',
+			img: Trevor
+		}
+	];
+
 	return (
 		<StyledView
 			className='bg-offblack flex-1'
-			style={{ paddingTop: topInset }}
+			style={{ paddingTop: Platform.OS == 'android' ? insets.top : 0 }}
 		>
-			<StyledView className='items-center'>
-				<Button // Leave Circle
-					btnStyles='absolute left-5 bg-grey rotate-180'
+			<FlatList
+				style={{
+					backgroundColor: '#121212',
+					paddingHorizontal: 15
+				}}
+				ListHeaderComponent={
+					<>
+						<StyledView
+							className='w-full flex items-center mb-[10px]'
+							style={{
+								height: 80
+							}}
+						/>
+						<StyledView className='w-full flex items-center justify-center'>
+							<Button
+								btnStyles='bg-offblack border-[8px] border-purple'
+								height={'h-[120px]'}
+								width={'w-[120px]'}
+								iconSize={70}
+								icon='musical-notes'
+								iconColor='white'
+								href='/mainViewLayout'
+							/>
+						</StyledView>
+
+						<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
+							Circle Name
+						</StyledText>
+						<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledText className='text-white text-[14px]'>
+								This is where the description of the circle will
+								go. It will be a short description of the circle
+								that will be displayed to users who are
+								interested in joining. Admins can edit this
+								description by clicking into the box and typing.
+							</StyledText>
+						</StyledView>
+						<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
+							<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
+								Members
+							</StyledText>
+						</StyledView>
+					</>
+				}
+				data={dummyData}
+				renderItem={({ item }) => {
+					return (
+						<Member
+							name={item.name}
+							username={item.username}
+							role={item.role}
+							img={item.img}
+							last={item.key == dummyData.length}
+						/>
+					);
+				}}
+				ListFooterComponent={
+					<>
+						<StyledView
+							className='w-full flex items-center mb-[10px]'
+							style={{
+								height: insets.bottom + 55
+							}}
+						/>
+					</>
+				}
+			/>
+			<StyledGradient
+				pointerEvents='none'
+				start={{ x: 0, y: 0.1 }}
+				end={{ x: 0, y: 1 }}
+				style={{ height: 120 }}
+				className='absolute w-screen'
+				colors={['#121212ee', 'transparent']}
+			/>
+			<StyledView
+				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
+				className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
+			>
+				<Button
+					btnStyles='rotate-180'
+					bgColor='bg-offblack'
+					borderColor='border-yellow'
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon='log-out'
+					icon='log-out-outline'
 					iconColor='#F9A826'
 					press={toggleModal1}
 				/>
-				<StyledView className='absolute bg-grey h-[50px] px-[35px] py-[8px] rounded-full'>
-					<StyledText className='text-3xl text-offwhite'>
-						Settings
-					</StyledText>
-				</StyledView>
-				<Button // Delete Circle
-					btnStyles='absolute right-5 bg-grey'
+				<StyledText className='text-3xl font-bold text-offwhite'>
+					Settings
+				</StyledText>
+				<Button
+					bgColor='bg-offblack'
+					borderColor='border-red'
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon='trash'
+					icon='trash-outline'
 					iconColor='#CC2500'
 					press={toggleModal2}
 				/>
-
-				<StyledView className='top-[90px] w-[85%] gap-y-8 flex'>
-					<StyledView className='bg-grey h-[60px] py-[9px] px-[50px] rounded-xl justify-center items-center'>
-						<Button
-							btnStyles='absolute left-5 bg-grey border-2 border-purple mr-3'
-							height={'h-[45px]'}
-							width={'w-[45px]'}
-							iconSize={30}
-							icon='musical-notes'
-							iconColor='white'
-							href='/mainViewLayout'
-						/>
-						<StyledText className='font-bold text-3xl text-offwhite'>
-							Circle Name
-						</StyledText>
-					</StyledView>
-					<StyledView className='bg-grey h-[60px] py-[12px] rounded-xl pl-5 flex flex-row'>
-						<StyledText className='font-bold text-3xl text-offwhite'>
-							Notifications
-						</StyledText>
-						<TouchableOpacity onPress={toggleSwitch}>
-							<StyledView
-								className='left-[50px] pt-9 w-[80px] h-[30px] rounded-full'
-								style={{
-									backgroundColor: isEnabled
-										? '#00A55E'
-										: '#F9A826'
-								}}
-							>
-								<StyledAnimatedView
-									className='absolute top-1 w-[28px] h-[28px] rounded-full bg-white	'
-									style={{
-										left: togglePosition
-									}}
-								/>
-							</StyledView>
-						</TouchableOpacity>
-					</StyledView>
-					<StyledView className='bg-grey h-[425px] py-[12px] rounded-xl pl-5'>
-						<StyledText className='font-bold text-3xl text-offwhite'>
-							Members
-						</StyledText>
-						<StyledScrollView className=''>
-							<Member
-								img={Trevor}
-								name='Josh Philips'
-								username='JoshuaP.149134'
-								role='own'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Alex Muresan'
-								username='muresanCoder.20'
-								role='mod'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Nason Allen'
-								username='AllenNasin0987654'
-								role='mod'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Aidan Hubley'
-								username='HubleyPraying'
-								role='ban'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Trevor Bunch'
-								username='BunchTrevoraccount'
-								role='mem'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Another Account'
-								username='ExampleAccount1'
-								role='sus'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Another Account'
-								username='ExampleAccount2'
-								role='mem'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Another Account'
-								username='ExampleAccount3'
-								role='mem'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Another Account'
-								username='ExampleAccount4'
-								role='mem'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Another Account'
-								username='ExampleAccount5'
-								role='mem'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Another Account'
-								username='ExampleAccount6'
-								role='mem'
-							></Member>
-							<Member
-								img={Trevor}
-								name='Last Account'
-								username='ExampleAccount7'
-								role='ban'
-							></Member>
-						</StyledScrollView>
-					</StyledView>
-				</StyledView>
 			</StyledView>
-			<Button // to Share Page
-				btnStyles='absolute right-5 bottom-5'
-				height={'h-[50px]'}
-				width={'w-[50px]'}
-				iconSize={30}
-				icon='qr-code'
-				href='shareCircle'
-			/>
-			<Button // Back to Feed Page
-				btnStyles='absolute left-5 bottom-5'
-				height={'h-[50px]'}
-				width={'w-[50px]'}
-				iconSize={30}
-				icon='arrow-back'
-				href='/mainViewLayout'
-			/>
+
+			<StyledView
+				className='absolute flex flex-row w-screen px-[15px] justify-between'
+				style={{ bottom: insets.bottom }}
+			>
+				<Button // Back to Feed Page
+					height={'h-[50px]'}
+					width={'w-[50px]'}
+					iconSize={30}
+					icon='arrow-back'
+					href='/mainViewLayout'
+				/>
+				<Button // to Share Page
+					height={'h-[50px]'}
+					width={'w-[50px]'}
+					iconSize={30}
+					icon='qr-code'
+					href='shareCircle'
+				/>
+			</StyledView>
 
 			<StyledModal
 				className='w-[80%] self-center'

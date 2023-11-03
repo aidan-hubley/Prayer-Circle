@@ -55,8 +55,14 @@ export default function Layout() {
 				</StyledView>
 
 				<StyledView
-					style={{bottom: insets.bottom < 10 ? insets.bottom + 15 : insets.bottom}}
-					className='absolute flex flex-row justify-center w-screen'
+					style={{
+						bottom:
+							insets.bottom < 10
+								? insets.bottom + 15
+								: insets.bottom,
+						width: Dimensions.get('window').width - 200
+					}}
+					className='absolute flex flex-row mx-[100px] justify-center z-0'
 				>
 					<Circle />
 				</StyledView>

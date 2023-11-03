@@ -186,22 +186,28 @@ export default function ProfilePage() {
 				)}
 				keyExtractor={(item) => item[0]}
 			/>
-			<Button
-				btnStyles='absolute bottom-[26px] right-5'
-				width='w-[60px]'
-				height='h-[60px]'
-				icon='settings'
-				iconSize={38}
-				href='/settings'
-			/>
-			<Button
-				btnStyles='absolute bottom-[26px] left-5'
-				width='w-[60px]'
-				height='h-[60px]'
-				icon='mail-unread'
-				iconSize={36}
-				href='/settings'
-			/>
+			<StyledView
+				style={{ bottom: insets.bottom }}
+				className='absolute w-screen px-[15px] flex flex-row justify-between'
+			>
+				<Button
+					width='w-[60px]'
+					height='h-[60px]'
+					icon='mail-unread'
+					iconSize={36}
+					href='/joinCircle'
+				/>
+				<Button
+					width='w-[60px]'
+					height='h-[60px]'
+					icon='settings'
+					iconSize={38}
+					href='/settings'
+					press={() => {
+						console.log('press');
+					}}
+				/>
+			</StyledView>
 			<StyledGradient
 				pointerEvents='none'
 				start={{ x: 0, y: 0.1 }}
