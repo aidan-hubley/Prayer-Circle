@@ -69,7 +69,7 @@ export async function createCircle(data) {
 
 	writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
-		`prayer_circle/users/${UID}/circles/${circleId}/permissions`,
+		`prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
 	);
@@ -144,9 +144,8 @@ export function userLoggedIn(onLogIn, onLogOut) {
 
 export async function getCircles() {
 	const UID = await getUIDFromStorage();
-	let circles = await readData(`prayer_circle/users/${UID}/circles`);
-	circles = Object.keys(
-		(await readData(`prayer_circle/users/${UID}/circles`)) || {}
+	let circles = Object.keys(
+		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 	);
 	let circlesData = [];
 

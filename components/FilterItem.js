@@ -34,20 +34,51 @@ const FilterItem = forwardRef(
 				(index + 2.5) * (itemSize + itemMargin),
 				(index + 3) * (itemSize + itemMargin)
 			];
-			const outputRange = [180, 120, 75, 50, 15, 0, 15, 50, 75, 120, 180];
+			const shrinkOutputRange = [
+				0.6, 0.6, 0.7, 0.8, 0.8, 1, 0.8, 0.8, 0.7, 0.6, 0.6
+			];
+			const fadeOutputRange = [
+				0.6, 0.6, 0.6, 0.6, 0.6, 1, 0.6, 0.6, 0.6, 0.6, 0.6
+			];
+			const xOutputRange = [-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70];
+			const yOutputRange = [
+				200, 110, 75, 50, 20, 0, 20, 50, 75, 110, 200
+			];
+			const translateX = interpolate(
+				contentOffset.value,
+				inputRange,
+				xOutputRange,
+				Extrapolate.CLAMP
+			);
 			const translateY = interpolate(
 				contentOffset.value,
 				inputRange,
-				outputRange,
+				yOutputRange,
 				Extrapolate.CLAMP
 			);
-
+			const shrink = interpolate(
+				contentOffset.value,
+				inputRange,
+				shrinkOutputRange
+			);
+			const fade = interpolate(
+				contentOffset.value,
+				inputRange,
+				fadeOutputRange
+			);
 			return {
 				transform: [
 					{
+						translateX: translateX
+					},
+					{
 						translateY: translateY
+					},
+					{
+						scale: shrink
 					}
-				]
+				],
+				opacity: fade
 			};
 		});
 

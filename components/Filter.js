@@ -24,7 +24,6 @@ const AnimatedView = Animated.createAnimatedComponent(StyledView);
 const StyledTouchableHighlight = Animated.createAnimatedComponent(
 	styled(TouchableHighlight)
 );
-const StyledIcon = styled(Ionicons);
 
 const Filter = forwardRef((props, ref) => {
 	const width = Dimensions.get('window').width;
@@ -68,6 +67,7 @@ const Filter = forwardRef((props, ref) => {
 					contentOffset.value = e.nativeEvent.contentOffset.x;
 				}}
 				horizontal
+				showsHorizontalScrollIndicator={false}
 				scrollEventThrottle={16}
 				snapToInterval={itemSize + itemMargin}
 				decelerationRate={'fast'}
