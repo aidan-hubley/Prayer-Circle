@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
 import { router, auth } from '../../backend/config';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
-import { render } from 'react-dom';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -197,6 +196,11 @@ export default function ProfilePage() {
 				icon='mail-unread'
 				iconSize={36}
 				href='/settings'
+				press={() => {
+					signOut();
+					AsyncStorage.removeItem('user');
+					router.push('/login');
+				}}
 			/>
 			<StyledGradient
 				pointerEvents='none'
