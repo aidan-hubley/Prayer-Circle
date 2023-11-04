@@ -31,7 +31,6 @@ const IconSelector = forwardRef(({ close }, ref) => {
 		'aperture',
 		'globe',
 		'attach',
-		// 'bandage',
 		'barbell',
 		'baseball',
 		'basketball',
