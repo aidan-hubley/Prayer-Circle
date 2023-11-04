@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
-import { ExpandableButton } from '../../components/Buttons';
+import { ExpandableButton, Button } from '../../components/Buttons';
 import { Circle } from '../../components/Circle';
 import FeedPage from './feed.js';
 import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
-import { Button } from '../../components/Buttons';
 import { getCircles } from '../../backend/firebaseFunctions.js';
 
 const StyledView = styled(View);
@@ -27,6 +26,7 @@ export default function Layout() {
 	const setUp = async () => {
 		let gc = await getCircles();
 		setCircles(gc);
+		console.log(gc);
 	};
 
 	useEffect(() => {

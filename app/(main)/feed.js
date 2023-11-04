@@ -11,11 +11,7 @@ import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-	readData,
-	getPosts,
-	getCircles
-} from '../../backend/firebaseFunctions';
+import { readData, getPosts } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledView = styled(View);

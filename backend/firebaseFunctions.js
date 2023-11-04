@@ -149,6 +149,8 @@ export async function getCircles() {
 	);
 	let circlesData = [];
 
+	console.log(circles);
+
 	for (circle of circles) {
 		let circleData = await readData(`prayer_circle/circles/${circle}`);
 
@@ -184,7 +186,7 @@ export async function getPosts(circleId) {
 	}
 	if (circles.length == 0) return posts;
 	for (circle of circles) {
-		await readData(`prayer_circle/circles/${circle}/posts`).then(
+		await readData(`prayer_circle/circles/${circle}/private/posts`).then(
 			(circlePosts) => {
 				circlePosts = circlePosts ? Object.entries(circlePosts) : [];
 				posts.push(...circlePosts);
