@@ -9,6 +9,7 @@ import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
 import { getCircles } from '../../backend/firebaseFunctions.js';
+import { Filter } from '../../components/Filter.js';
 
 const StyledView = styled(View);
 
@@ -18,6 +19,8 @@ export default function Layout() {
 	const pagerRef = useRef();
 	const circleNameRef = useRef();
 	const [circles, setCircles] = useState([]);
+	const [swipingEnabled, setSwipingEnabled] = useState(true);
+	const filterRef = useRef();
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
@@ -26,7 +29,6 @@ export default function Layout() {
 	const setUp = async () => {
 		let gc = await getCircles();
 		setCircles(gc);
-		console.log(gc);
 	};
 
 	useEffect(() => {
@@ -37,6 +39,8 @@ export default function Layout() {
 		<>
 			<StyledView className='bg-offblack flex-1'>
 				<PagerView
+					onTouchEvent={(e) => {}}
+					scrollEnabled={swipingEnabled}
 					ref={pagerRef}
 					style={{ flex: 1 }}
 					initialPage={1}
@@ -62,6 +66,12 @@ export default function Layout() {
 					<ProfilePage key='2' />
 				</PagerView>
 			</StyledView>
+
+			<Filter
+				data={circles}
+				ref={filterRef}
+				touchEvents={swipingEnabled}
+			/>
 			<StyledView
 				style={{
 					bottom:
@@ -70,7 +80,11 @@ export default function Layout() {
 				}}
 				className='absolute flex flex-row mx-[100px] justify-center z-0'
 			>
-				<Circle circles={circles} />
+				<Circle
+					circles={circles}
+					toggleSwiping={setSwipingEnabled}
+					filter={filterRef}
+				/>
 			</StyledView>
 
 			<StyledView

@@ -1,23 +1,21 @@
 import React, { useRef, useState } from 'react';
-import { Pressable, View, Animated, Text } from 'react-native';
+import { Pressable, View, Animated, Text, Platform } from 'react-native';
 import { styled } from 'nativewind';
 import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSharedValue } from 'react-native-reanimated';
-import { Filter } from './Filter';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledText = styled(Text);
 
-export function Circle({ circles, press }) {
+export function Circle({ filter, press, toggleSwiping }) {
 	let insets = useSafeAreaInsets();
 	const scale = useRef(new Animated.Value(1)).current;
 	const [pressed, setPressed] = useState('none');
 	const longOpacity = useRef(new Animated.Value(0)).current;
 	const shortOpacity = useRef(new Animated.Value(0)).current;
 	const bgOpacity = useRef(new Animated.Value(0)).current;
-	const filterRef = useRef();
 
 	const scaleInterpolation = scale.interpolate({
 		inputRange: [0, 1],
@@ -42,8 +40,7 @@ export function Circle({ circles, press }) {
 		bottom: insets.bottom < 15 ? insets.bottom + 90 : insets.bottom + 60
 	};
 	const shortPressedStyle = {
-		opacity: shortOpacityInter,
-		bottom: insets.bottom < 15 ? insets.bottom + 90 : insets.bottom + 60
+		opacity: shortOpacityInter
 	};
 	const pressedStyle = { opacity: bgOpacityInter };
 
@@ -57,6 +54,7 @@ export function Circle({ circles, press }) {
 	function toggleLongOptions(val) {
 		setPressed(val ? 'long' : 'none');
 		toggleBackdrop(val);
+		toggleSwiping(!val);
 		Animated.timing(longOpacity, {
 			toValue: val ? 1 : 0,
 			duration: 200,
@@ -65,8 +63,8 @@ export function Circle({ circles, press }) {
 	}
 	function toggleShortOptions(val) {
 		setPressed(val ? 'short' : 'none');
-		toggleBackdrop(val);
-		filterRef.current.toggleShown(val);
+		toggleSwiping(!val);
+		filter.current.toggleShown(val);
 	}
 	function toggleBackdrop(val) {
 		Animated.timing(bgOpacity, {
@@ -78,16 +76,16 @@ export function Circle({ circles, press }) {
 
 	return (
 		<>
-			<AnimatedView pointerEvents={pressed != 'none' ? 'auto' : 'none'}>
-				<AnimatedPressable
-					style={pressedStyle}
-					className={`absolute bottom-[-40px] left-[-100px] h-screen w-screen bg-[#121212]`}
-					onPress={() => {
-						toggleLongOptions();
-						toggleShortOptions();
-					}}
-				/>
-			</AnimatedView>
+			<AnimatedPressable
+				style={pressedStyle}
+				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
+				className={`absolute bottom-[-40px] left-[-100px] h-screen w-screen bg-[#121212]`}
+				onPress={() => {
+					toggleLongOptions();
+					toggleShortOptions();
+				}}
+			/>
+
 			<AnimatedView
 				style={longPressedStyle}
 				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
@@ -113,13 +111,7 @@ export function Circle({ circles, press }) {
 					href='/createPost'
 				/>
 			</AnimatedView>
-			<AnimatedView
-				style={(shortPressedStyle, { position: 'absolute', bottom: 0 })}
-				pointerEvents={pressed == 'short' ? 'auto' : 'none'}
-				className='flex flex-col items-center w-screen'
-			>
-				<Filter data={circles} ref={filterRef} />
-			</AnimatedView>
+
 			<AnimatedPressable
 				style={{ transform: [{ scale: scaleInterpolation }] }}
 				className={`rounded-full border-[6px] border-offwhite
