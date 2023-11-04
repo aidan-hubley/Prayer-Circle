@@ -4,18 +4,12 @@ import React, {
 	forwardRef,
 	useImperativeHandle
 } from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
-import {
-	MaterialCommunityIcons,
-	FontAwesome5,
-	MaterialIcons
-} from '@expo/vector-icons';
 
 const StyledView = styled(View);
+const StyledImg = styled(Image);
 const StyledOpacity = styled(TouchableOpacity);
-const StyledMaterialCommunityIcon = styled(MaterialCommunityIcons);
-const StyledMaterialIcon = styled(MaterialIcons);
 const StyledAnimatedView = styled(Animated.View);
 
 const PostTypeSelector = forwardRef(({}, ref) => {
@@ -52,27 +46,28 @@ const PostTypeSelector = forwardRef(({}, ref) => {
 				className='flex items-center justify-center w-[50px] h-[50px]'
 				onPress={() => handlePress(0)}
 			>
-				<StyledMaterialIcon
-					name='celebration'
-					size={26}
-					color='white'
+				<StyledImg
+					source={require('../assets/praise_outline.png')}
+					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
 			<StyledOpacity
 				className='flex items-center justify-center w-[50px] h-[50px]'
 				onPress={() => handlePress(1)}
 			>
-				<StyledMaterialCommunityIcon
-					name='hands-pray'
-					size={26}
-					color='white'
+				<StyledImg
+					source={require('../assets/prayer_outline.png')}
+					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
 			<StyledOpacity
 				className='flex items-center justify-center w-[50px] h-[50px]'
 				onPress={() => handlePress(2)}
 			>
-				<StyledMaterialIcon name='event' size={27} color='white' />
+				<StyledImg
+					source={require('../assets/calendar_outline.png')}
+					className='w-[26px] h-[26px]'
+				/>
 			</StyledOpacity>
 		</StyledView>
 	);

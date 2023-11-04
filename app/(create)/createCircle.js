@@ -83,12 +83,6 @@ export default function Page() {
 									);
 								}}
 							>
-								{/* <StyledImage
-									className='w-full h-full rounded-full'
-									source={{
-										uri: 'https://picsum.photos/435'
-									}}
-								/> */}
 								<StyledIcon
 									name={circleIcon}
 									size={80}
