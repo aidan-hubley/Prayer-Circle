@@ -149,11 +149,9 @@ export async function getCircles() {
 	);
 	let circlesData = [];
 
-	console.log(circles);
-
-	for (circle of circles) {
+	for (let i = 0; i < circles.length; i++) {
+		let circle = circles[i];
 		let circleData = await readData(`prayer_circle/circles/${circle}`);
-
 		let circleStruct = {
 			id: circle,
 			iconColor: circleData.iconColor,
@@ -197,6 +195,5 @@ export async function getPosts(circleId) {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
-	console.log('posts', posts);
 	return posts;
 }
