@@ -123,6 +123,9 @@ export function Circle({ filter, press, toggleSwiping }) {
 				onLongPress={() => {
 					if (pressed == 'none') {
 						toggleLongOptions(true);
+					} else if (pressed == 'short') {
+						toggleLongOptions(true);
+						filter.current.toggleShown(false);
 					} else {
 						toggleLongOptions(false);
 						toggleShortOptions(false);

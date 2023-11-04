@@ -26,7 +26,7 @@ const Filter = forwardRef((props, ref) => {
 	});
 
 	function toggleShown(toggle) {
-		console.log(props.touchEvents);
+		props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
 			toValue: toggle ? 1 : 0,
 			duration: 200,
@@ -52,8 +52,8 @@ const Filter = forwardRef((props, ref) => {
 		<>
 			<AnimatedPressable
 				style={backdropOpacityStyle}
-				/*pointerEvents={pressed == 'long' ? 'auto' : 'none'} */
-				className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212] border border-red`}
+				pointerEvents={props.touchEvents ? 'none' : 'auto'}
+				className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
 					toggleShown();
 				}}

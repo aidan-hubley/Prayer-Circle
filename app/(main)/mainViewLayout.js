@@ -71,6 +71,7 @@ export default function Layout() {
 				data={circles}
 				ref={filterRef}
 				touchEvents={swipingEnabled}
+				toggleSwiping={setSwipingEnabled}
 			/>
 			<StyledView
 				style={{
