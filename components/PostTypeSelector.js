@@ -47,7 +47,7 @@ const PostTypeSelector = forwardRef(({}, ref) => {
 				onPress={() => handlePress(0)}
 			>
 				<StyledImg
-					source={require('../assets/praise_outline.png')}
+					source={require('../assets/post/praise_outline.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
@@ -56,7 +56,7 @@ const PostTypeSelector = forwardRef(({}, ref) => {
 				onPress={() => handlePress(1)}
 			>
 				<StyledImg
-					source={require('../assets/prayer_outline.png')}
+					source={require('../assets/post/prayer_outline.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
@@ -65,7 +65,7 @@ const PostTypeSelector = forwardRef(({}, ref) => {
 				onPress={() => handlePress(2)}
 			>
 				<StyledImg
-					source={require('../assets/calendar_outline.png')}
+					source={require('../assets/post/calendar_outline.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>

@@ -27,7 +27,7 @@ const StyledIcon = styled(Ionicons);
 export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 
-	const [icon, setIcon] = useState(post.icon);
+	const [iconType, setIconType] = useState(`${post.icon}_outline`);
 	const [commentIcon, setCommentIcon] = useState(post.icon);
 	const [toolbarShown, setToolbar] = useState(false);
 	const [me, setMe] = useState('');
@@ -77,11 +77,34 @@ export const Post = (post) => {
 			toggleIcon();
 		});
 
+	const images = {
+		praise: {
+			outline: require('../assets/post/praise_outline.png'),
+			nonOutline: require('../assets/post/praise.png'),
+		},
+		event: {
+			outline: require('../assets/post/calendar_outline.png'),
+			nonOutline: require('../assets/post/calendar.png'),
+		},
+		request: {
+			outline: require('../assets/post/prayer_outline.png'),
+			nonOutline: require('../assets/post/prayer.png'),
+		},
+	};
+
+	function getTypeSource(iconType, isOutline) {
+		const iconKey = iconType.replace('_outline', '');
+		if (!['praise', 'event', 'request'].includes(iconKey)) {
+			console.error(`Invalid icon type: ${iconType}`);
+			return;
+		}
+		return isOutline ? images[iconKey].outline : images[iconKey].nonOutline;
+	}
+
 	function toggleIcon() {
-		if (icon.includes('-outline')) {
-			setIcon(icon.replace('-outline', ''));
-		} else {
-			setIcon(icon + '-outline');
+		const iconKey = iconType.replace('_outline', '');
+		if (['praise', 'event', 'request'].includes(iconKey)) {
+			setIconType(iconType.includes('outline') ? iconKey : iconKey + '_outline');
 		}
 	}
 
@@ -176,11 +199,11 @@ export const Post = (post) => {
 					</GestureDetector>
 					<StyledView className='flex flex-col w-[12%] items-center justify-between'>
 						<StyledPressable
-							onPress={() => {
-								toggleIcon();
-							}}
-						>
-							<Ionicons name={icon} size={35} color='white' />
+							onPress={toggleIcon}>
+							<StyledImage 
+								className='w-[28px] h-[28px]' 
+								source={getTypeSource(iconType, iconType.includes('outline'))} 
+							/>
 						</StyledPressable>
 						<StyledPressable
 							className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'

@@ -40,7 +40,7 @@ export default function Page() {
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -49,7 +49,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -58,7 +58,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -67,7 +67,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -76,7 +76,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -85,7 +85,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -94,7 +94,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -103,7 +103,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 					/>
 					<Post
 						user='Alex Muresan'
@@ -112,7 +112,7 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 						timestamp={1695846631107}
 						content='He is very sick blah blah blah blah oh blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
-						icon='heart-outline'
+						icon='prayer'
 						end={true}
 					/>
 					<StyledView
