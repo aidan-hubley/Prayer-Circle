@@ -131,12 +131,12 @@ export default function Page() {
 							true
 						);
 						await writeData(
-							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${newPostId}`,
+							`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${newPostId}`,
 							now,
 							true
 						);
 						await writeData(
-							`prayer_circle/users/${uid}/posts/${newPostId}`,
+							`prayer_circle/users/${uid}/private/posts/${newPostId}`,
 							true,
 							true
 						);
