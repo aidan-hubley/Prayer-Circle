@@ -147,23 +147,23 @@ export async function getCircles() {
 	let circles = Object.keys(
 		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 	);
+	return circles;
+}
+
+export async function getFilterCircles() {
+	let circles = getCircles();
 	let circlesData = [];
 
 	for (let i = 0; i < circles.length; i++) {
 		let circle = circles[i];
-		let circleData = await readData(`prayer_circle/circles/${circle}`);
+		let circleData =
+			(await readData(`prayer_circle/circles/${circle}`)) || {};
 		let circleStruct = {
 			id: circle,
 			iconColor: circleData.iconColor,
 			title: circleData.title,
 			color: circleData.color,
-			timestamp: circleData.timestamp,
-			description: circleData.description,
-			type: circleData.type,
-			icon: circleData.icon,
-			members: Object.keys(circleData.members),
-			admin: Object.keys(circleData.admin),
-			owner: circleData.owner == UID
+			icon: circleData.icon
 		};
 		circlesData.push(circleStruct);
 	}

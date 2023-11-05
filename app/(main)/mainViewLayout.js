@@ -8,7 +8,7 @@ import FeedPage from './feed.js';
 import ProfilePage from './profile.js';
 import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
-import { getCircles } from '../../backend/firebaseFunctions.js';
+import { getFilterCircles } from '../../backend/firebaseFunctions.js';
 import { Filter } from '../../components/Filter.js';
 
 const StyledView = styled(View);
@@ -27,7 +27,7 @@ export default function Layout() {
 	let circeNameWidth = screenWidth - 170;
 
 	const setUp = async () => {
-		let gc = await getCircles();
+		let gc = await getFilterCircles();
 		setCircles(gc);
 	};
 
