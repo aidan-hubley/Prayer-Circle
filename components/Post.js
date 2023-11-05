@@ -13,6 +13,7 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -113,7 +114,13 @@ export const Post = (post) => {
 	});
 
 	return (
-		<StyledView className='w-full max-w-[500px]'>
+		<StyledPressable
+			className='w-full max-w-[500px]'
+			onLongPress={() => {
+				Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+				toggleToolbar();
+			}}
+		>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 					<StyledView className=' w-[88%]'>
@@ -167,6 +174,7 @@ export const Post = (post) => {
 					<StyledView className='flex flex-col w-[12%] items-center justify-between'>
 						<StyledPressable
 							onPress={() => {
+								Haptics.selectionAsync();
 								toggleIcon();
 							}}
 						>
@@ -175,6 +183,9 @@ export const Post = (post) => {
 						<StyledPressable
 							className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
 							onPress={() => {
+								Haptics.notificationAsync(
+									Haptics.NotificationFeedbackType.Warning
+								);
 								toggleToolbar();
 							}}
 						>
@@ -290,6 +301,6 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledAnimatedView>
 			</StyledView>
-		</StyledView>
+		</StyledPressable>
 	);
 };

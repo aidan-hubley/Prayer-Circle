@@ -1,10 +1,5 @@
-import React, {
-	useState,
-	useRef,
-	forwardRef,
-	useImperativeHandle
-} from 'react';
-import { View, TouchableHighlight, Dimensions } from 'react-native';
+import React, { forwardRef } from 'react';
+import { TouchableHighlight } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, {

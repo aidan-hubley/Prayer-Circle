@@ -8,6 +8,7 @@ import { Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
 import { router } from '../backend/config';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as Haptics from 'expo-haptics';
 
 const StyledText = styled(Text);
 const StyledTouchableHighlight = Animated.createAnimatedComponent(
@@ -72,6 +73,7 @@ const Button = forwardRef(
 					borderColor ? `border ${borderColor}` : 'border-none'
 				} ${btnStyles || ''} `}
 				onPress={() => {
+					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					if (press) press();
 					if (href) router.push(href);
 				}}
@@ -146,6 +148,7 @@ const ExpandableButton = forwardRef(
 		};
 
 		function toggleButton(direction) {
+			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 			if (direction == 'expand') {
 				setPressed(true);
 				Animated.spring(wi, {

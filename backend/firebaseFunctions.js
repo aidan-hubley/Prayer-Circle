@@ -151,7 +151,7 @@ export async function getCircles() {
 }
 
 export async function getFilterCircles() {
-	let circles = getCircles();
+	let circles = await getCircles();
 	let circlesData = [];
 
 	for (let i = 0; i < circles.length; i++) {
