@@ -103,6 +103,10 @@ export const Post = (post) => {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
+		// If the post is owned, always return the non-outline image
+		if (post.owned) {
+			return images[iconKey].nonOutline;
+		}
 		return isOutline ? images[iconKey].outline : images[iconKey].nonOutline;
 	}
 
@@ -222,7 +226,7 @@ export const Post = (post) => {
 							<AnimatedImage 
 								className='w-[26px] h-[26px]' 
 								style={{ transform: [{ scale: iconAnimation }] }}
-								source={getTypeSource(iconType, iconType.includes('outline'))} 
+								source={getTypeSource(iconType, post.owned ? false : iconType.includes('outline'))} 
 							/>
 						</StyledPressable>
 						<StyledPressable
