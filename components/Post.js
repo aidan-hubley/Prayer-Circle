@@ -92,8 +92,8 @@ export const Post = (post) => {
 			nonOutline: require('../assets/post/prayer.png'),
 		},
 		prayer: {
-			outline: require('../assets/post/prayer_outline.png'), // replace with the correct image paths
-			nonOutline: require('../assets/post/prayer.png'), // replace with the correct image paths
+			outline: require('../assets/post/prayer_outline.png'),
+			nonOutline: require('../assets/post/prayer.png'),
 		},
 	};
 
@@ -103,7 +103,6 @@ export const Post = (post) => {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
-		// If the post is owned, always return the non-outline image
 		if (post.owned) {
 			return images[iconKey].nonOutline;
 		}
