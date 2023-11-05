@@ -90,11 +90,15 @@ export const Post = (post) => {
 			outline: require('../assets/post/prayer_outline.png'),
 			nonOutline: require('../assets/post/prayer.png'),
 		},
+		prayer: {
+			outline: require('../assets/post/prayer_outline.png'), // replace with the correct image paths
+			nonOutline: require('../assets/post/prayer.png'), // replace with the correct image paths
+		},
 	};
 
 	function getTypeSource(iconType, isOutline) {
 		const iconKey = iconType.replace('_outline', '');
-		if (!['praise', 'event', 'request'].includes(iconKey)) {
+		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
@@ -103,7 +107,7 @@ export const Post = (post) => {
 
 	function toggleIcon() {
 		const iconKey = iconType.replace('_outline', '');
-		if (['praise', 'event', 'request'].includes(iconKey)) {
+		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			setIconType(iconType.includes('outline') ? iconKey : iconKey + '_outline');
 		}
 	}
