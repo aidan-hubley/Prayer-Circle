@@ -28,27 +28,27 @@ const IconSelector = forwardRef(({ close }, ref) => {
 	const icons = [
 		{
 			title: 'Transportation',
-			icons: ['trail-sign', 'airplane', 'baseball', 'basketball', 'boat', 'bus', 'car', 'subway', 'globe', 'compass', 'location', 'map', 'navigate', ],
+			icons: ['trail-sign', 'airplane', 'boat', 'bus', 'car', 'subway', 'globe', 'compass', 'location', 'map', 'navigate', 'paper-plane',],
 		},
 		{
 			title: 'Sports',
-			icons: ['american-football', 'bicycle', 'golf', 'tennisball',],
+			icons: ['american-football', 'baseball', 'basketball', 'football', 'bicycle', 'golf', 'tennisball',],
 		},
 		{
 			title: 'Health & Fitness',
-			icons: ['barbell', 'eye', 'body', 'fitness', 'ear', 'bandage', 'medical', 'medkit', 'pulse',],
+			icons: ['barbell', 'eye', 'body', 'fitness', 'ear', 'medical', 'medkit', 'pulse',],
 		},
 		{
 			title: 'Food & Drink',
-			icons: ['cafe', 'fast-food', 'ice-cream', 'pizza', 'football', 'nutrition',],
+			icons: ['cafe', 'fast-food', 'ice-cream', 'pizza', 'nutrition', 'restaurant',],
 		},
 		{
 			title: 'Technology',
-			icons: ['power', 'radio', 'desktop', 'camera', 'headset', 'mic', 'laptop', 'videocam', 'chatbox-ellipses', 'chatbubble-ellipses', 'chatbubbles', 'code-slash', 'cog', 'attach', 'settings',],
+			icons: ['power', 'radio', 'desktop', 'camera', 'headset', 'mic', 'laptop', 'videocam', 'chatbox-ellipses', 'chatbubble-ellipses', 'chatbubbles', 'code-slash', 'cog', 'reader', 'reload', 'attach', 'sync', 'settings',],
 		},
 		{
 			title: 'Entertainment',
-			icons: ['film', 'game-controller', 'headset', 'mic', 'musical-note', 'musical-notes', 'play', 'tv', 'disc',],
+			icons: ['film', 'game-controller', 'headset', 'musical-note', 'musical-notes', 'play', 'tv', 'disc',],
 		},
 		{
 			title: 'Education',
@@ -60,23 +60,23 @@ const IconSelector = forwardRef(({ close }, ref) => {
 		},
 		{
 			title: 'Nature',
-			icons: ['leaf', 'flower', 'planet', 'rose', 'earth', 'moon', 'cloud', 'cloudy-night', 'rainy', 'snow', 'sunny', 'partly-sunny', 'thunderstorm', 'umbrella', 'bonfire', 'bug',],
+			icons: ['leaf', 'flower', 'rose', 'bug', 'planet', 'earth', 'moon', 'sunny', 'flame', 'flash', 'snow', 'cloud', 'cloudy-night', 'rainy', 'partly-sunny', 'thunderstorm', 'paw', 'umbrella', 'bonfire',],
 		},
 		{
 			title: 'Shapes',
-			icons: ['square', 'triangle', 'ellipse', 'shapes', 'shield', 'star', 'infinite', 'cube', 'heart', 'radio-button-off', 'radio-button-on',],
+			icons: ['square', 'triangle', 'ellipse', 'shapes', 'shield', 'star', 'infinite', 'cube', 'grid', 'heart', 'radio-button-off', 'radio-button-on',],
 		},		
 		{
 			title: 'People',
-			icons: ['female', 'woman', 'male', 'man', 'hand-left', 'hand-right', 'happy', 'finger-print',],
+			icons: ['female', 'woman', 'male', 'man', 'hand-left', 'hand-right', 'people', 'person', 'happy', 'finger-print', 'home',],
 		},
 		{
 			title: 'Work',
-			icons: ['briefcase', 'business', 'construct', 'hammer', 'people', 'person', 'restaurant',],
+			icons: ['briefcase', 'business', 'construct', 'hammer', 'mail', 'newspaper', 'today',],
 		},
 		{
 			title: 'Other',
-			icons: ['options', 'aperture', 'color-palette', 'contrast', 'flag', 'flame', 'flash', 'glasses', 'grid', 'home', 'images', 'key', 'mail', 'newspaper', 'paper-plane', 'paw', 'reader', 'reload', 'ribbon', 'sync', 'today', 'trophy',],
+			icons: ['options', 'aperture', 'color-palette', 'contrast', 'flag', 'glasses',  'images', 'key', 'ribbon', 'trophy',],
 		},
 	];
 	const [icon, setIcon] = useState('');
