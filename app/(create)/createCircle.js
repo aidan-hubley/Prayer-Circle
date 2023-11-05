@@ -64,9 +64,9 @@ export default function Page() {
 	}
 
 	return (
-		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
+		<StyledSafeArea className='bg-offblack flex-1'>
 			<>
-				<KeyboardAwareScrollView>
+				<KeyboardAwareScrollView bounces={false}>
 					<>
 						<StyledView className='flex items-center justify-center text-center w-screen h-[100px]'>
 							<StyledText className='text-offwhite font-bold text-4xl'>
@@ -92,11 +92,10 @@ export default function Page() {
 
 							<StyledView className='w-full flex flex-row items-center justify-between'>
 								<StyledInput
-									className='bg-offblack text-[18px] flex-1 h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[5px] mr-1'
+									className='bg-offblack text-[18px] flex-1 h-[42px] text-offwhite border border-outline rounded-lg px-3 py-[5px] mr-1'
 									placeholder={'Circle Name'}
 									placeholderTextColor={'#ffffff66'}
 									inputMode='text'
-									autoFocus
 									maxLength={22}
 									onChangeText={(text) => {
 										setTitle(text);
@@ -109,14 +108,16 @@ export default function Page() {
 									}}
 								/>
 								{/* TODO: Make into a fuctioning color picker */}
-								<StyledView className='w-[50px] h-[42px] ml-1 rounded-lg bg-purple border border-offwhite'></StyledView>
+								<StyledView className='w-[50px] h-[42px] ml-1 rounded-lg bg-purple border border-outline'></StyledView>
 							</StyledView>
 							<StyledInput
-								className='bg-offblack text-[18px] w-full h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-3'
+								className='bg-offblack text-[18px] w-full h-auto text-offwhite border border-outline rounded-lg px-3 py-[10px] my-3'
 								placeholder={'Write a bit about this Circle...'}
 								placeholderTextColor={'#ffffff66'}
 								inputMode='text'
-								maxLength={500}
+								maxLength={300}
+								multiline
+								rows={3}
 								onChangeText={(text) => {
 									setDescription(text);
 								}}

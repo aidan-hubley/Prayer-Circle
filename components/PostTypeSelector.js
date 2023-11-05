@@ -37,7 +37,7 @@ const PostTypeSelector = forwardRef(({}, ref) => {
 	}));
 
 	return (
-		<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+		<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
 			<StyledAnimatedView
 				style={highlightPosition}
 				className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[55px] h-[36px]'
