@@ -3,6 +3,7 @@ import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledView = styled(View);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
@@ -25,6 +26,8 @@ const Filter = forwardRef((props, ref) => {
 		outputRange: [0, 0.6]
 	});
 
+	let insets = useSafeAreaInsets();
+
 	function toggleShown(toggle) {
 		props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
@@ -36,7 +39,8 @@ const Filter = forwardRef((props, ref) => {
 
 	const opacityStyle = {
 		opacity: opacityInter,
-		transform: [{ scale: opacityInter }]
+		transform: [{ scale: opacityInter }],
+		bottom: insets.bottom
 	};
 	const backdropOpacityStyle = {
 		opacity: backdropOpacityInter
@@ -60,7 +64,7 @@ const Filter = forwardRef((props, ref) => {
 			/>
 			<AnimatedView
 				style={opacityStyle}
-				className='absolute bottom-0 w-screen h-[200px] max-w-[500px] flex items-start justify-center overflow-visible'
+				className='absolute w-screen h-[200px] max-w-[500px] flex items-start justify-center overflow-visible'
 			>
 				<FlatList
 					data={props.data}
