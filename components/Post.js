@@ -29,6 +29,7 @@ export const Post = (post) => {
 
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
 	const [commentIcon, setCommentIcon] = useState(post.icon);
+	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
 	const [me, setMe] = useState('');
 
@@ -109,6 +110,19 @@ export const Post = (post) => {
 		const iconKey = iconType.replace('_outline', '');
 		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			setIconType(iconType.includes('outline') ? iconKey : iconKey + '_outline');
+			
+			Animated.sequence([
+				Animated.timing(iconAnimation, {
+					toValue: 1.5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(iconAnimation, {
+					toValue: 1,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+			]).start();
 		}
 	}
 
@@ -203,9 +217,11 @@ export const Post = (post) => {
 					</GestureDetector>
 					<StyledView className='flex flex-col w-[12%] items-center justify-between'>
 						<StyledPressable
+							className='rounded-full aspect-square flex items-center justify-center' // radial gradient??
 							onPress={toggleIcon}>
-							<StyledImage 
-								className='w-[28px] h-[28px]' 
+							<AnimatedImage 
+								className='w-[26px] h-[26px]' 
+								style={{ transform: [{ scale: iconAnimation }] }}
 								source={getTypeSource(iconType, iconType.includes('outline'))} 
 							/>
 						</StyledPressable>
