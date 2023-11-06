@@ -30,6 +30,7 @@ const Filter = forwardRef((props, ref) => {
 	let insets = useSafeAreaInsets();
 
 	function toggleShown(toggle) {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
 			toValue: toggle ? 1 : 0,
@@ -60,6 +61,7 @@ const Filter = forwardRef((props, ref) => {
 				pointerEvents={props.touchEvents ? 'none' : 'auto'}
 				className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
+					//Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					toggleShown();
 				}}
 			/>
