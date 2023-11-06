@@ -71,35 +71,36 @@ export default function Page() {
 			<>
 				<KeyboardAwareScrollView bounces={false}>
 					<>
-						<StyledView className='flex items-center justify-center text-center w-screen h-[100px]'>
-							<StyledText className='text-offwhite font-bold text-4xl'>
-								Form a Circle
-							</StyledText>
-						</StyledView>
-						<StyledView className='flex flex-col w-screen items-center px-[20px]'>
-							<StyledColorPicker
-								className='w-full h-[400px]'
-								sliderComponent={Slider}
-								hideSliders={true}
-								onColorSelected={color => alert(`Color selected: ${color}`)}
-								style={{flex: 1}}
+					<StyledView className='flex items-center justify-center text-center w-screen h-[150px]'>
+						<StyledText className='text-offwhite font-bold text-4xl'>
+							Form a Circle
+						</StyledText>
+						<StyledText className='text-offwhite font-bold text-2xl'>
+							Select a Color and Icon! 
+						</StyledText>
+					</StyledView>
+					<StyledView className='bottom-[10%] items-center h-screen w-screen'>
+						<StyledColorPicker
+							className='w-full h-[400px]'
+							sliderComponent={Slider}
+							hideSliders={true}
+							onColorSelected={color => alert(`Color selected: ${color}`)}
+							style={{flex: 1}}
+						/>
+						<StyledOpacity
+							className='relative bottom-[50%] w-[167px] h-[167px] items-center justify-center bg-offblack rounded-full'
+							onPress={() => {
+								iconSelectorRef.current.toggleSelector(true);
+							}}
+						>
+							<StyledIcon
+								name={circleIcon}
+								size={80}
+								color={'#ffffff'}
 							/>
-							<StyledOpacity
-								className='absolute top-[21%] w-[167px] h-[167px] items-center justify-center bg-offblack rounded-full'
-								onPress={() => {
-									iconSelectorRef.current.toggleSelector(
-										true
-									);
-								}}
-							>
-								<StyledIcon
-									name={circleIcon}
-									size={80}
-									color={'#ffffff'}
-								/>
-							</StyledOpacity>
-
-							<StyledView className='w-full flex flex-row items-center justify-between'>
+						</StyledOpacity>
+					</StyledView>
+							{/* <StyledView className='w-full flex flex-row items-center justify-between'>
 								<StyledInput
 									className='bg-offblack text-[18px] flex-1 h-[42px] text-offwhite border border-outline rounded-lg px-3 py-[5px] mr-1'
 									placeholder={'Circle Name'}
@@ -131,8 +132,7 @@ export default function Page() {
 								ref={(input) => {
 									this.circleDescription = input;
 								}}
-							/>
-						</StyledView>
+							/> */}
 					</>
 				</KeyboardAwareScrollView>
 				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-between px-[15px] mt-auto'>
