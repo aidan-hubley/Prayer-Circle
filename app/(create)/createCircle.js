@@ -14,6 +14,8 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { IconSelector } from '../../components/iconSelector';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
+import { ColorPicker } from 'react-native-color-picker'
+import Slider from '@react-native-community/slider';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -22,6 +24,7 @@ const StyledInput = styled(TextInput);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledImage = styled(Image);
 const StyledIcon = styled(Ionicons);
+const StyledColorPicker = styled(ColorPicker);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
@@ -74,10 +77,16 @@ export default function Page() {
 							</StyledText>
 						</StyledView>
 						<StyledView className='flex flex-col w-screen items-center px-[20px]'>
+							<StyledColorPicker
+								className='w-full h-[400px]'
+								sliderComponent={Slider}
+								hideSliders={true}
+								onColorSelected={color => alert(`Color selected: ${color}`)}
+								style={{flex: 1}}
+							/>
 							<StyledOpacity
-								className='w-[120px] h-[120px] border-[5px] items-center justify-center border-purple rounded-full mb-5'
+								className='absolute top-[21%] w-[167px] h-[167px] items-center justify-center bg-offblack rounded-full'
 								onPress={() => {
-									/* onPress(); */
 									iconSelectorRef.current.toggleSelector(
 										true
 									);
@@ -107,8 +116,6 @@ export default function Page() {
 										this.circleTitle = input;
 									}}
 								/>
-								{/* TODO: Make into a fuctioning color picker */}
-								<StyledView className='w-[50px] h-[42px] ml-1 rounded-lg bg-purple border border-outline'></StyledView>
 							</StyledView>
 							<StyledInput
 								className='bg-offblack text-[18px] w-full h-auto text-offwhite border border-outline rounded-lg px-3 py-[10px] my-3'
