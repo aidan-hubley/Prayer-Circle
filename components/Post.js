@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
@@ -167,57 +166,54 @@ export const Post = (post) => {
 		<StyledView className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
-					<GestureDetector gesture={tap}>
-						<StyledView className=' w-[88%]'>
-							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
-									className={`${
-										post.owned ? 'hidden' : 'flex'
-									} rounded-lg`}
-									style={{ width: 44, height: 44 }}
-									source={{
-										uri: post.img
-									}}
-								/>
-								<StyledView
-									className={`${post.owned ? '' : 'ml-2'}`}
-								>
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{post.title.length > 21
-											? post.title.substring(0, 21) +
-											  '...'
-											: post.title}
+					<StyledView className=' w-[88%]'>
+						<StyledView className='flex flex-row mb-2 '>
+							<StyledImage
+								className={`${
+									post.owned ? 'hidden' : 'flex'
+								} rounded-lg`}
+								style={{ width: 44, height: 44 }}
+								source={{
+									uri: post.img
+								}}
+							/>
+							<StyledView
+								className={`${post.owned ? '' : 'ml-2'}`}
+							>
+								<StyledText className='text-offwhite font-bold text-[20px]'>
+									{post.title.length > 21
+										? post.title.substring(0, 21) + '...'
+										: post.title}
+								</StyledText>
+								<StyledView className='flex flex-row'>
+									<StyledText
+										className={`${
+											post.owned ? 'hidden' : ''
+										} text-white`}
+									>
+										{post.user} •{' '}
 									</StyledText>
-									<StyledView className='flex flex-row'>
-										<StyledText
-											className={`${
-												post.owned ? 'hidden' : ''
-											} text-white`}
-										>
-											{post.user} •{' '}
-										</StyledText>
-										<StyledText className={`text-white`}>
-											{tS}{' '}
-										</StyledText>
-										<StyledText
-											className={`${
-												post.edited ? 'flex' : 'hidden'
-											} text-white`}
-										>
-											(edited){post.edited}
-										</StyledText>
-									</StyledView>
+									<StyledText className={`text-white`}>
+										{tS}{' '}
+									</StyledText>
+									<StyledText
+										className={`${
+											post.edited ? 'flex' : 'hidden'
+										} text-white`}
+									>
+										(edited){post.edited}
+									</StyledText>
 								</StyledView>
 							</StyledView>
-							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white mt-[2px] pb-[10px]'>
-									{post.content.length > 300
-										? post.content.substring(0, 297) + '...'
-										: post.content}
-								</StyledText>
-							</StyledView>
 						</StyledView>
-					</GestureDetector>
+						<StyledView className='flex flex-row items-center w-[95%]'>
+							<StyledText className='text-white mt-[2px] pb-[10px]'>
+								{post.content.length > 300
+									? post.content.substring(0, 297) + '...'
+									: post.content}
+							</StyledText>
+						</StyledView>
+					</StyledView>
 					<StyledView className='flex flex-col w-[12%] items-center justify-between'>
 						<StyledPressable
 							className='rounded-full aspect-square flex items-center justify-center' // radial gradient??

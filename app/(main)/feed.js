@@ -26,6 +26,7 @@ export default function FeedPage() {
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
+	const [circles, setCircles] = useState([]);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);

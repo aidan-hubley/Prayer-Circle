@@ -156,8 +156,9 @@ export default function Page() {
 							let data = {
 								title: title,
 								description: description,
+								iconColor: `#fff`,
 								icon: circleIcon,
-								created: Date.now(),
+								timestamp: Date.now(),
 								type: 'individual',
 								color: '#5946B2',
 								members: {},

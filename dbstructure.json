@@ -80,7 +80,8 @@
 			"_pushId_": {
 				"name": "Circle name",
 				"timestamp": 1234567890,
-				"icon": "icon.i",
+				"icon": "icon",
+				"iconColor": "#000000",
 				"description": "Circle description",
 				"type": "individual/organization",
 				"color": "#000000",
