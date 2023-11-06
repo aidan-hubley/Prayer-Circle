@@ -71,12 +71,6 @@ export const Post = (post) => {
 		}).start();
 	}
 
-	const tap = Gesture.Tap()
-		.numberOfTaps(2)
-		.onStart(() => {
-			toggleIcon();
-		});
-
 	const images = {
 		praise: {
 			outline: require('../assets/post/praise_outline.png'),
