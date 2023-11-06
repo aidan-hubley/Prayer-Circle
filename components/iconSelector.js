@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { TriangleColorPicker } from 'react-native-color-picker'
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -23,6 +24,7 @@ const StyledFlatList = styled(FlatList);
 const StyledAnimView = styled(Animated.View);
 const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledOpacity = styled(TouchableOpacity);
+const StyledColorPicker = styled(TriangleColorPicker);
 
 const IconSelector = forwardRef(({ close }, ref) => {
 	const icons = [
@@ -80,6 +82,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 		},
 	];
 	const [icon, setIcon] = useState('');
+	const [iconColor, setIconColor] = useState('#ffffff');
 	const [opened, setOpened] = useState(false);
 	const opacity = useRef(new Animated.Value(0)).current;
 	const opacityInterpolation = opacity.interpolate({
@@ -121,7 +124,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 					key={index}
 					name={item}
 					size={40}
-					color={'#ffffff'}
+					color={iconColor}
 				/>
 			</StyledOpacity>
 		);
@@ -130,7 +133,6 @@ const IconSelector = forwardRef(({ close }, ref) => {
 	function renderCategory({ item }) {	
 		return (
 			<View key={item.title} style={{width: '100%', flexDirection: 'column'}}>
-				<View style={{height: 1, backgroundColor: '#ffffff', width: '100%'}} />
 				<Text style={{color: '#ffffff', fontSize: 18, marginVertical: 10}}>{item.title}</Text>
 				<StyledFlatList
 					data={item.icons}
@@ -157,9 +159,20 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			<StyledAnimView
 				style={{ opacity: opacityInterpolation }}
 				pointerEvents={opened ? 'auto' : 'none'}
-				className='absolute -translate-x-[150px] left-1/2 top-[60%] -translate-y-[280px] w-[80%] p-[15px] max-w-[300px] h-[85%] max-h-[500px] bg-offblack border border-[#3D3D3D] rounded-[20px] content-center items-center'
+				className='absolute -translate-x-[150px] left-1/2 top-[10%] w-[80%] p-[15px] max-w-[300px] h-[80%] bg-offblack border border-[#3D3D3D] rounded-[20px] content-center items-center'
 			>
-				<StyledText className='text-offwhite font-bold text-3xl text-center mb-3'>
+				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
+                    Select an Icon Color
+                </StyledText>
+				<StyledColorPicker
+					className='w-full h-[200px]'
+					onColorSelected={color => {
+						alert(`Color selected: ${color}`);
+						setIconColor(color);
+					}}
+					hideControls={true}
+				/>
+				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
                     Select an Icon
                 </StyledText>
 				<StyledFlatList
