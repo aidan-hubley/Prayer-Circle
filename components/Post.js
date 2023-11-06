@@ -31,6 +31,8 @@ export const Post = (post) => {
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
 	const [me, setMe] = useState('');
+	const [lastTap, setLastTap] = useState(null);
+	const timer = useRef(null);
 
 	const { showActionSheetWithOptions } = useActionSheet();
 
@@ -70,6 +72,12 @@ export const Post = (post) => {
 			useNativeDriver: false
 		}).start();
 	}
+
+	useEffect(() => {
+		return () => {
+			clearTimeout(timer.current);
+		};
+		}, []);
 
 	const images = {
 		praise: {
@@ -159,79 +167,92 @@ export const Post = (post) => {
 	return (
 		<StyledView className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
-				<StyledView className='w-full flex flex-row justify-between px-[10px]'>
-					<StyledView className=' w-[88%]'>
-						<StyledView className='flex flex-row mb-2 '>
-							<StyledImage
-								className={`${
-									post.owned ? 'hidden' : 'flex'
-								} rounded-lg`}
-								style={{ width: 44, height: 44 }}
-								source={{
-									uri: post.img
-								}}
-							/>
-							<StyledView
-								className={`${post.owned ? '' : 'ml-2'}`}
-							>
-								<StyledText className='text-offwhite font-bold text-[20px]'>
-									{post.title.length > 21
-										? post.title.substring(0, 21) + '...'
-										: post.title}
-								</StyledText>
-								<StyledView className='flex flex-row'>
-									<StyledText
-										className={`${
-											post.owned ? 'hidden' : ''
-										} text-white`}
-									>
-										{post.user} •{' '}
+				<StyledPressable
+					onPressIn={() => {
+						const now = Date.now();
+						if (lastTap && (now - lastTap) < 300) {
+							clearTimeout(timer.current);
+							toggleIcon();
+						} else {
+							setLastTap(now);
+							timer.current = setTimeout(() => {}, 300);
+						}
+					}}
+				>
+					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
+						<StyledView className=' w-[88%]'>
+							<StyledView className='flex flex-row mb-2 '>
+								<StyledImage
+									className={`${
+										post.owned ? 'hidden' : 'flex'
+									} rounded-lg`}
+									style={{ width: 44, height: 44 }}
+									source={{
+										uri: post.img
+									}}
+								/>
+								<StyledView
+									className={`${post.owned ? '' : 'ml-2'}`}
+								>
+									<StyledText className='text-offwhite font-bold text-[20px]'>
+										{post.title.length > 21
+											? post.title.substring(0, 21) + '...'
+											: post.title}
 									</StyledText>
-									<StyledText className={`text-white`}>
-										{tS}{' '}
-									</StyledText>
-									<StyledText
-										className={`${
-											post.edited ? 'flex' : 'hidden'
-										} text-white`}
-									>
-										(edited){post.edited}
-									</StyledText>
+									<StyledView className='flex flex-row'>
+										<StyledText
+											className={`${
+												post.owned ? 'hidden' : ''
+											} text-white`}
+										>
+											{post.user} •{' '}
+										</StyledText>
+										<StyledText className={`text-white`}>
+											{tS}{' '}
+										</StyledText>
+										<StyledText
+											className={`${
+												post.edited ? 'flex' : 'hidden'
+											} text-white`}
+										>
+											(edited){post.edited}
+										</StyledText>
+									</StyledView>
 								</StyledView>
 							</StyledView>
+							<StyledView className='flex flex-row items-center w-[95%]'>
+								<StyledText className='text-white mt-[2px] pb-[10px]'>
+									{post.content.length > 300
+										? post.content.substring(0, 297) + '...'
+										: post.content}
+								</StyledText>
+							</StyledView>
 						</StyledView>
-						<StyledView className='flex flex-row items-center w-[95%]'>
-							<StyledText className='text-white mt-[2px] pb-[10px]'>
-								{post.content.length > 300
-									? post.content.substring(0, 297) + '...'
-									: post.content}
-							</StyledText>
-						</StyledView>
+						<StyledView className='flex flex-col w-[12%] items-center justify-between'>
+							<StyledPressable
+								className='rounded-full aspect-square flex items-center justify-center' // bg-radial gradient??
+								onPress={toggleIcon}>
+								<AnimatedImage 
+									className='w-[26px] h-[26px]' 
+									style={{ transform: [{ scale: iconAnimation }] }}
+									source={getTypeSource(iconType, post.owned ? false : iconType.includes('outline'))} 
+								/>
+							</StyledPressable>
+							<StyledPressable
+								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
+								onPress={() => {
+									toggleToolbar();
+								}}
+							>
+								<AnimatedImage
+									className='w-[32px] h-[32px]'
+									style={spiralStyle}
+									source={require('../assets/spiral.png')}
+								/>
+							</StyledPressable>
+						</StyledView>										
 					</StyledView>
-					<StyledView className='flex flex-col w-[12%] items-center justify-between'>
-						<StyledPressable
-							className='rounded-full aspect-square flex items-center justify-center' // radial gradient??
-							onPress={toggleIcon}>
-							<AnimatedImage 
-								className='w-[26px] h-[26px]' 
-								style={{ transform: [{ scale: iconAnimation }] }}
-								source={getTypeSource(iconType, post.owned ? false : iconType.includes('outline'))} 
-							/>
-						</StyledPressable>
-						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
-							onPress={() => {
-								toggleToolbar();
-							}}
-						>
-							<AnimatedImage
-								className='w-[32px] h-[32px]'
-								style={spiralStyle}
-								source={require('../assets/spiral.png')}
-							/>
-						</StyledPressable>
-					</StyledView>
-				</StyledView>
+				</StyledPressable>
 				<StyledAnimatedView
 					style={toolbarStyle}
 					className='px-[10px] w-full overflow-hidden'
