@@ -26,7 +26,7 @@ const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledOpacity = styled(TouchableOpacity);
 const StyledColorPicker = styled(TriangleColorPicker);
 
-const IconSelector = forwardRef(({ close }, ref) => {
+const IconSelector = forwardRef((props, ref) => {
 	const icons = [
 		{
 			title: 'Transportation',
@@ -81,8 +81,9 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			icons: ['options', 'aperture', 'color-palette', 'contrast', 'flag', 'glasses',  'images', 'key', 'ribbon', 'trophy',],
 		},
 	];
+	const [selectedIcon, setSelectedIcon] = useState(null);
+	const [selectedColor, setSelectedColor] = useState(null);
 	const [icon, setIcon] = useState('');
-	const [iconColor, setIconColor] = useState('#ffffff');
 	const [opened, setOpened] = useState(false);
 	const opacity = useRef(new Animated.Value(0)).current;
 	const opacityInterpolation = opacity.interpolate({
@@ -105,8 +106,8 @@ const IconSelector = forwardRef(({ close }, ref) => {
 	};
 
 	useImperativeHandle(ref, () => ({
-		toggleSelector,
-		icon
+		getSelectedIcon: () => selectedIcon,
+		getSelectedColor: () => selectedColor,
 	}));
 
 	function renderIcon({ item, index }) {
@@ -124,7 +125,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 					key={index}
 					name={item}
 					size={40}
-					color={iconColor}
+					color={'#ffffff'}
 				/>
 			</StyledOpacity>
 		);

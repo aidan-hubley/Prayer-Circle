@@ -27,56 +27,65 @@ const StyledIcon = styled(Ionicons);
 const StyledColorPicker = styled(ColorPicker);
 
 export default function Page() {
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [circleIcon, setCircleIcon] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+
+    const [circleIcon, setCircleIcon] = useState(null);
+    const [circleColor, setCircleColor] = useState(null);
 
 	const iconSelectorRef = useRef();
 
-	const { showActionSheetWithOptions } = useActionSheet();
+    const { showActionSheetWithOptions } = useActionSheet();
 
-	const onPress = () => {
-		showActionSheetWithOptions(
-			{
-				options: ['Image', 'Icon', 'Cancel'],
-				cancelButtonIndex: 2,
-				userInterfaceStyle: 'dark'
-			},
-			(selectedIndex) => {
-				switch (selectedIndex) {
-					case 0:
-						console.log('Image');
+    const onPress = () => {
+        showActionSheetWithOptions(
+            {
+                options: ['Image', 'Icon', 'Cancel'],
+                cancelButtonIndex: 2,
+                userInterfaceStyle: 'dark'
+            },
+            (selectedIndex) => {
+                switch (selectedIndex) {
+                    case 0:
+                        console.log('Image');
+                        break;
 
-						break;
-
-					case 1:
+                    case 1:
+						console.log('Icon');
 						iconSelectorRef.current.toggleSelector(true);
 						break;
 
 					case 2:
-					// Canceled
+						// Canceled
+						break;
 				}
 			}
 		);
 	};
 
 	function updateIcon() {
-		setTimeout(() => {
-			setCircleIcon(iconSelectorRef.current.icon);
-		}, 100);
-	}
+        const selectedIcon = iconSelectorRef.current.getSelectedIcon();
+        const selectedColor = iconSelectorRef.current.getSelectedColor();
+        if (selectedIcon) {
+            setCircleIcon(selectedIcon);
+            setCircleColor(selectedColor);
+        }
+    }
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
 			<>
 				{/* <KeyboardAwareScrollView bounces={false}> */}
 					<>
-					<StyledView className='flex items-center justify-center text-center w-screen h-[150px]'>
+					<StyledView className='flex items-center justify-center text-center w-screen h-[170px]'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
 							Form a Circle
 						</StyledText>
 						<StyledText className='text-offwhite font-bold text-2xl'>
 							Select a Color and Icon! 
+						</StyledText>
+						<StyledText className='text-offwhite font-bold text-2'>
+							To select an icon, click the circle below!
 						</StyledText>
 					</StyledView>
 					<StyledView className='bottom-[10%] items-center h-screen w-screen'>
@@ -90,13 +99,14 @@ export default function Page() {
 						<StyledOpacity
 							className='relative bottom-[50%] w-[167px] h-[167px] items-center justify-center bg-offblack rounded-full'
 							onPress={() => {
-								iconSelectorRef.current.toggleSelector(true);
+								onPress();
+								// updateIcon();
 							}}
 						>
 							<StyledIcon
 								name={circleIcon}
 								size={80}
-								color={'#ffffff'}
+								color={circleColor}
 							/>
 						</StyledOpacity>
 					</StyledView>
@@ -180,7 +190,7 @@ export default function Page() {
 					/>
 				</StyledView>
 				<IconSelector
-					close={() => updateIcon()}
+					close={updateIcon}
 					ref={iconSelectorRef}
 				/>
 			</>
