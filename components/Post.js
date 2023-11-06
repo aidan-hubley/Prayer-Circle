@@ -170,14 +170,7 @@ export const Post = (post) => {
 	});
 
 	return (
-		<StyledPressable
-			className='w-full max-w-[500px]'
-			onLongPress={() => {
-				console.log('long press');
-				Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-				toggleToolbar();
-			}}
-		>
+		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
@@ -189,6 +182,9 @@ export const Post = (post) => {
 							setLastTap(now);
 							timer.current = setTimeout(() => {}, 300);
 						}
+					}}
+					onLongPress={() => {
+						toggleToolbar();
 					}}
 				>
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
