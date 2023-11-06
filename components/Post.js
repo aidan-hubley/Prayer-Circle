@@ -67,6 +67,7 @@ export const Post = (post) => {
 
 	function toggleToolbar() {
 		setToolbar(!toolbarShown);
+		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
 			duration: 100,
@@ -112,6 +113,7 @@ export const Post = (post) => {
 	}
 
 	function toggleIcon() {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		const iconKey = iconType.replace('_outline', '');
 		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			setIconType(
@@ -271,31 +273,6 @@ export const Post = (post) => {
 							</StyledPressable>
 						</StyledView>
 					</StyledView>
-					{/* <StyledView className='flex flex-col w-[12%] items-center justify-between'>
-						<StyledPressable
-							onPress={() => {
-								Haptics.selectionAsync();
-								toggleIcon();
-							}}
-						>
-							<Ionicons name={icon} size={35} color='white' />
-						</StyledPressable>
-						<StyledPressable
-							className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
-							onPress={() => {
-								Haptics.notificationAsync(
-									Haptics.NotificationFeedbackType.Warning
-								);
-								toggleToolbar();
-							}}
-						>
-							<AnimatedImage
-								className='w-[32px] h-[32px]'
-								style={spiralStyle}
-								source={require('../assets/spiral.png')}
-							/>
-						</StyledPressable>
-					</StyledView> */}
 				</StyledPressable>
 				<StyledAnimatedView
 					style={toolbarStyle}
