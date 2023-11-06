@@ -28,56 +28,185 @@ const IconSelector = forwardRef(({ close }, ref) => {
 	const icons = [
 		{
 			title: 'Transportation',
-			icons: ['trail-sign', 'airplane', 'boat', 'bus', 'car', 'subway', 'globe', 'compass', 'location', 'map', 'navigate', 'paper-plane',],
+			icons: [
+				'trail-sign',
+				'airplane',
+				'boat',
+				'bus',
+				'car',
+				'subway',
+				'globe',
+				'compass',
+				'location',
+				'map',
+				'navigate',
+				'paper-plane'
+			]
 		},
 		{
 			title: 'Sports',
-			icons: ['american-football', 'baseball', 'basketball', 'football', 'bicycle', 'golf', 'tennisball',],
+			icons: [
+				'american-football',
+				'baseball',
+				'basketball',
+				'football',
+				'bicycle',
+				'golf',
+				'tennisball'
+			]
 		},
 		{
 			title: 'Health & Fitness',
-			icons: ['barbell', 'eye', 'body', 'fitness', 'ear', 'medical', 'medkit', 'pulse',],
+			icons: [
+				'barbell',
+				'eye',
+				'body',
+				'fitness',
+				'ear',
+				'medical',
+				'medkit',
+				'pulse'
+			]
 		},
 		{
 			title: 'Food & Drink',
-			icons: ['cafe', 'fast-food', 'ice-cream', 'pizza', 'nutrition', 'restaurant',],
+			icons: [
+				'cafe',
+				'fast-food',
+				'ice-cream',
+				'pizza',
+				'nutrition',
+				'restaurant'
+			]
 		},
 		{
 			title: 'Technology',
-			icons: ['power', 'radio', 'desktop', 'camera', 'headset', 'mic', 'laptop', 'videocam', 'chatbox-ellipses', 'chatbubble-ellipses', 'chatbubbles', 'code-slash', 'cog', 'reader', 'reload', 'attach', 'sync', 'settings',],
+			icons: [
+				'power',
+				'radio',
+				'desktop',
+				'camera',
+				'headset',
+				'mic',
+				'laptop',
+				'videocam',
+				'chatbox-ellipses',
+				'chatbubble-ellipses',
+				'chatbubbles',
+				'code-slash',
+				'cog',
+				'reader',
+				'reload',
+				'attach',
+				'sync',
+				'settings'
+			]
 		},
 		{
 			title: 'Entertainment',
-			icons: ['film', 'game-controller', 'headset', 'musical-note', 'musical-notes', 'play', 'tv', 'disc',],
+			icons: [
+				'film',
+				'game-controller',
+				'headset',
+				'musical-note',
+				'musical-notes',
+				'play',
+				'tv',
+				'disc'
+			]
 		},
 		{
 			title: 'Education',
-			icons: ['book', 'library', 'school', 'flask', 'rocket', 'language',],
+			icons: ['book', 'library', 'school', 'flask', 'rocket', 'language']
 		},
 		{
 			title: 'Finance',
-			icons: ['cash', 'card', 'wallet', 'calculator',],
+			icons: ['cash', 'card', 'wallet', 'calculator']
 		},
 		{
 			title: 'Nature',
-			icons: ['leaf', 'flower', 'rose', 'bug', 'planet', 'earth', 'moon', 'sunny', 'flame', 'flash', 'snow', 'cloud', 'cloudy-night', 'rainy', 'partly-sunny', 'thunderstorm', 'paw', 'umbrella', 'bonfire',],
+			icons: [
+				'leaf',
+				'flower',
+				'rose',
+				'bug',
+				'planet',
+				'earth',
+				'moon',
+				'sunny',
+				'flame',
+				'flash',
+				'snow',
+				'cloud',
+				'cloudy-night',
+				'rainy',
+				'partly-sunny',
+				'thunderstorm',
+				'paw',
+				'umbrella',
+				'bonfire'
+			]
 		},
 		{
 			title: 'Shapes',
-			icons: ['square', 'triangle', 'ellipse', 'shapes', 'shield', 'star', 'infinite', 'cube', 'grid', 'heart', 'radio-button-off', 'radio-button-on',],
-		},		
+			icons: [
+				'square',
+				'triangle',
+				'ellipse',
+				'shapes',
+				'shield',
+				'star',
+				'infinite',
+				'cube',
+				'grid',
+				'heart',
+				'radio-button-off',
+				'radio-button-on'
+			]
+		},
 		{
 			title: 'People',
-			icons: ['female', 'woman', 'male', 'man', 'hand-left', 'hand-right', 'people', 'person', 'happy', 'finger-print', 'home',],
+			icons: [
+				'female',
+				'woman',
+				'male',
+				'man',
+				'hand-left',
+				'hand-right',
+				'people',
+				'person',
+				'happy',
+				'finger-print',
+				'home'
+			]
 		},
 		{
 			title: 'Work',
-			icons: ['briefcase', 'business', 'construct', 'hammer', 'mail', 'newspaper', 'today',],
+			icons: [
+				'briefcase',
+				'business',
+				'construct',
+				'hammer',
+				'mail',
+				'newspaper',
+				'today'
+			]
 		},
 		{
 			title: 'Other',
-			icons: ['options', 'aperture', 'color-palette', 'contrast', 'flag', 'glasses',  'images', 'key', 'ribbon', 'trophy',],
-		},
+			icons: [
+				'options',
+				'aperture',
+				'color-palette',
+				'contrast',
+				'flag',
+				'glasses',
+				'images',
+				'key',
+				'ribbon',
+				'trophy'
+			]
+		}
 	];
 	const [icon, setIcon] = useState('');
 	const [opened, setOpened] = useState(false);
@@ -115,7 +244,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 					toggleSelector(false);
 					close();
 				}}
-				className='w-[60px] h-[60px] items-center justify-center mb-1'
+				className='w-[25%] aspect-square items-center justify-center mb-1'
 			>
 				<StyledIcon
 					key={index}
@@ -127,17 +256,23 @@ const IconSelector = forwardRef(({ close }, ref) => {
 		);
 	}
 
-	function renderCategory({ item }) {	
+	function renderCategory({ item }) {
 		return (
-			<View key={item.title} style={{width: '100%', flexDirection: 'column'}}>
-				<View style={{height: 1, backgroundColor: '#ffffff', width: '100%'}} />
-				<Text style={{color: '#ffffff', fontSize: 18, marginVertical: 10}}>{item.title}</Text>
+			<View key={item.title} className='flex flex-column w-[100%]'>
+				<StyledView
+					className={`${
+						item.title == 'Transportation' ? 'hidden' : ''
+					} h-[1px] bg-outline w-full`}
+				/>
+				<Text className='text-offwhite text-[18px] mt-[10px] mb-[5px]'>
+					{item.title}
+				</Text>
 				<StyledFlatList
 					data={item.icons}
 					renderItem={renderIcon}
 					keyExtractor={(item, index) => `icon${index}`}
 					numColumns={4}
-					contentContainerStyle={{justifyContent: 'space-around'}}
+					contentContainerStyle={{ justifyContent: 'space-around' }}
 				/>
 			</View>
 		);
@@ -157,16 +292,24 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			<StyledAnimView
 				style={{ opacity: opacityInterpolation }}
 				pointerEvents={opened ? 'auto' : 'none'}
-				className='absolute -translate-x-[150px] left-1/2 top-[60%] -translate-y-[280px] w-[80%] p-[15px] max-w-[300px] h-[85%] max-h-[500px] bg-offblack border border-[#3D3D3D] rounded-[20px] content-center items-center'
+				className='absolute -translate-x-[150px] left-1/2 top-[60%] -translate-y-[280px] w-[80%] px-[15px] max-w-[300px] h-[85%] max-h-[500px] bg-offblack border border-[#3D3D3D] rounded-[20px] items-center'
 			>
-				<StyledText className='text-offwhite font-bold text-3xl text-center mb-3'>
-                    Select an Icon
-                </StyledText>
-				<StyledFlatList
-					data={icons}
-					renderItem={renderCategory}
-					keyExtractor={(item, index) => `category${index}`}
-				/>
+				<StyledView className='w-full h-full'>
+					<StyledFlatList
+						data={icons}
+						stickyHeaderIndices={[0]}
+						stickyHeaderHiddenOnScroll={true}
+						ListHeaderComponent={
+							<StyledView className='bg-offblack pt-[10px]'>
+								<StyledText className='text-offwhite font-bold text-3xl text-center mb-3'>
+									Select an Icon
+								</StyledText>
+							</StyledView>
+						}
+						renderItem={renderCategory}
+						keyExtractor={(item, index) => `category${index}`}
+					/>
+				</StyledView>
 			</StyledAnimView>
 		</>
 	);
