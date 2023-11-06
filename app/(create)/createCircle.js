@@ -69,7 +69,7 @@ export default function Page() {
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
 			<>
-				<KeyboardAwareScrollView bounces={false}>
+				{/* <KeyboardAwareScrollView bounces={false}> */}
 					<>
 					<StyledView className='flex items-center justify-center text-center w-screen h-[150px]'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
@@ -134,7 +134,7 @@ export default function Page() {
 								}}
 							/> */}
 					</>
-				</KeyboardAwareScrollView>
+				{/* </KeyboardAwareScrollView> */}
 				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-between px-[15px] mt-auto'>
 					<Button
 						title='Erase'
@@ -144,10 +144,10 @@ export default function Page() {
 						bgColor={'bg-offblack'}
 						borderColor={'border-offwhite border-2'}
 						textColor={'text-offwhite'}
-						press={() => {
-							this.circleTitle.clear();
-							this.circleDescription.clear();
-						}}
+						// press={() => {
+						// 	this.circleTitle.clear();
+						// 	this.circleDescription.clear();
+						// }}
 					/>
 					<Button
 						title='Draw'

@@ -13,7 +13,7 @@
 		"@expo/react-native-action-sheet": "^4.0.1",
 		"@expo/webpack-config": "^19.0.0",
 		"@react-native-async-storage/async-storage": "1.18.2",
-		"@react-native-community/slider": "^4.4.3",
+		"@react-native-community/slider": "^4.4.2",
 		"eas-cli": "^5.2.0",
 		"expo": "~49.0.8",
 		"expo-barcode-scanner": "~12.5.3",
