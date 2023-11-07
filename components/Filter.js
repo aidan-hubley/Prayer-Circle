@@ -58,10 +58,9 @@ const Filter = forwardRef((props, ref) => {
 		toggleShown
 	}));
 
-	const [isModalVisible1, setModalVisible1] = useState(false);
-	const toggleModal1 = () => {
-		setModalVisible1(!isModalVisible1);
-		console.log(props.data);
+	const [isFilterModal, setFilterModal] = useState(false);
+	const toggleFilterModal = () => {
+		setFilterModal(!isFilterModal);
 	};
 
 	return (
@@ -117,7 +116,7 @@ const Filter = forwardRef((props, ref) => {
 						iconSize={35}
 						btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
 						borderColor={'border-outline'}
-						press={toggleModal1}
+						press={toggleFilterModal}
 					/>
 				</StyledView>
 				<StyledView
@@ -137,8 +136,8 @@ const Filter = forwardRef((props, ref) => {
 
 			<StyledModal
 				className='w-[80%] self-center'
-				isVisible={isModalVisible1}
-				onBackdropPress={toggleModal1}
+				isVisible={isFilterModal}
+				onBackdropPress={toggleFilterModal}
 			>
 				<StyledView className='bg-offblack border-[2px] border-outline rounded-2xl h-[70%]'>
 					<StyledView className='flex-1 items-center h-[60%]'>
@@ -176,7 +175,7 @@ const Filter = forwardRef((props, ref) => {
 							borderColor={'border-outline'}
 							btnStyles={'absolute bottom-[3%]'}
 							width='w-[70%]'
-							press={toggleModal1}
+							press={toggleFilterModal}
 						/>
 					</StyledView>
 				</StyledView>
