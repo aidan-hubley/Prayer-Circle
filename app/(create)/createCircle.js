@@ -63,6 +63,11 @@ export default function Page() {
 		);
 	};
 
+	const handleIconSelected = (icon, color) => {
+		setCircleIcon(icon);
+		setCircleColor(color);
+	}
+
 	function updateIcon() {
         const selectedIcon = iconSelectorRef.current.getSelectedIcon();
         const selectedColor = iconSelectorRef.current.getSelectedColor();
@@ -190,8 +195,9 @@ export default function Page() {
 					/>
 				</StyledView>
 				<IconSelector
-					close={updateIcon}
-					ref={iconSelectorRef}
+					onIconSelected={handleIconSelected}
+					// close={updateIcon}
+					// ref={iconSelectorRef}
 				/>
 			</>
 		</StyledSafeArea>

@@ -102,7 +102,11 @@ const IconSelector = forwardRef((props, ref) => {
 			toValue: opened ? 0 : 1,
 			duration: 400,
 			useNativeDriver: false
-		}).start();
+		}).start(() => {
+			if (!opened && props.close) {
+				props.close();
+			}
+		});
 	};
 
 	useImperativeHandle(ref, () => ({
@@ -118,6 +122,7 @@ const IconSelector = forwardRef((props, ref) => {
 				onPress={() => {
 					setIcon(item);
 					toggleSelector(false);
+					props.onIconSelected(item, selectedColor);
 				}}
 				className='w-[60px] h-[60px] items-center justify-center mb-1'
 			>
@@ -168,11 +173,12 @@ const IconSelector = forwardRef((props, ref) => {
 				<StyledColorPicker
 					className='w-[200px] h-[200px]'
 					onColorChange={color => {
-						console.log(color);
-						color = fromHsv(color);
-						console.log(color);
-						// need to change hsv to hex
-						// setSelectedColor(color);
+						if (selectedIcon) {
+							color = fromHsv(color);
+							setSelectedColor(color);
+							console.log(color);
+							console.log(selectedIcon);
+						}
 					}}
 					hideControls={true}
 				/>
