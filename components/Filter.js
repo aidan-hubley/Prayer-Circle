@@ -1,11 +1,13 @@
 import React, { useRef, forwardRef, useImperativeHandle } from 'react';
-import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
+import { View, Text, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
+import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledView = styled(View);
+const StyledText = styled(Text);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
 const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
@@ -53,7 +55,7 @@ const Filter = forwardRef((props, ref) => {
 	}));
 
 	return (
-		<>
+		<>				
 			<AnimatedPressable
 				style={backdropOpacityStyle}
 				pointerEvents={props.touchEvents ? 'none' : 'auto'}
@@ -64,7 +66,7 @@ const Filter = forwardRef((props, ref) => {
 			/>
 			<AnimatedView
 				style={opacityStyle}
-				className='absolute w-screen h-[200px] max-w-[500px] flex items-start justify-center overflow-visible'
+				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center overflow-visible'
 			>
 				<FlatList
 					data={props.data}
@@ -90,6 +92,40 @@ const Filter = forwardRef((props, ref) => {
 					}}
 					keyExtractor={(item) => item.id}
 				/>
+				<StyledView
+					className='absolute bottom-[250px] w-full h-[60px] flex items-center justify-center'
+				>
+					<StyledText					
+						className='text-white text-2xl font-bold'
+					>
+						Circle Name
+					</StyledText>
+				</StyledView>
+				<StyledView
+					className='absolute bottom-[20px] right-[70px]'
+				>
+					<Button
+						bgColor={'bg-offdark'}
+						icon={'apps-outline'}
+						iconColor={'#FFFBFC'}
+						iconSize={35}
+						btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
+						borderColor={'border-outline'}
+					/>
+				</StyledView>
+				<StyledView
+					className='absolute bottom-[20px] left-[70px]'
+				>
+					<Button
+						bgColor={'bg-offdark'}
+						icon={'add-outline'}
+						iconColor={'#FFFBFC'}
+						iconSize={45}
+						btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
+						borderColor={'border-outline'}
+						href={'joinCircle'}
+					/>
+				</StyledView>
 			</AnimatedView>
 		</>
 	);

@@ -40,9 +40,11 @@ const FilterItem = forwardRef(
 			const fadeOutputRange = [
 				0.6, 0.6, 0.6, 0.6, 0.6, 1, 0.6, 0.6, 0.6, 0.6, 0.6
 			];
-			const xOutputRange = [-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70];
+			const xOutputRange = [
+				-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70
+			];
 			const yOutputRange = [
-				200, 110, 75, 50, 20, 0, 20, 50, 75, 110, 200
+				300, 150, 75, 50, 20, 0, 20, 50, 75, 150, 300
 			];
 			const translateX = interpolate(
 				contentOffset.value,
