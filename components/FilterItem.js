@@ -4,7 +4,7 @@ import React, {
 	forwardRef,
 	useImperativeHandle
 } from 'react';
-import { View, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, TouchableHighlight, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, {
@@ -13,6 +13,8 @@ import Animated, {
 	Extrapolate
 } from 'react-native-reanimated';
 
+const StyledView = styled(View);
+const StyledText = styled(Text);
 const StyledIcon = styled(Ionicons);
 const StyledAnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
@@ -84,7 +86,7 @@ const FilterItem = forwardRef(
 			};
 		});
 
-		return (
+		return (			
 			<StyledAnimatedHighlight
 				style={[
 					{

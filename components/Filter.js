@@ -101,11 +101,6 @@ const Filter = forwardRef((props, ref) => {
 					}}
 					keyExtractor={(item) => item.id}
 				/>
-				<StyledView className='absolute bottom-[250px] w-full h-[60px] flex items-center justify-center'>
-					<StyledText className='text-white text-2xl font-bold'>
-						Circle Name
-					</StyledText>
-				</StyledView>
 				<StyledView
 					className='absolute bottom-[20px] right-[70px]'
 				>
@@ -152,15 +147,22 @@ const Filter = forwardRef((props, ref) => {
 								numColumns={3}
 								renderItem={({ item }) => {
 									return (
-										<StyledView 
-											style={{borderColor: item.color}}
-											className='w-[80px] h-[80px] mx-2 my-2 flex border-[6px] items-center justify-center rounded-full'
-										>
-											<StyledIcon
-												name={item.icon}
-												size={35}
-												color={item.iconColor}
-											/>
+										<StyledView className='w-[100px] h-[130px] flex items-center justify-center'>
+											<StyledView className='w-[90px] h-[35px]'>
+												<StyledText className='text-center inline-block align-baseline text-offwhite'>
+													{item.title}
+												</StyledText>
+											</StyledView>
+											<StyledView 
+												style={{borderColor: item.color}}
+												className='w-[80px] h-[80px] border-[6px] items-center justify-center rounded-full'
+											>
+												<StyledIcon
+													name={item.icon}
+													size={35}
+													color={item.iconColor}
+												/>
+											</StyledView>
 										</StyledView>
 									);
 								}}
