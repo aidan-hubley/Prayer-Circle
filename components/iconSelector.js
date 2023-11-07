@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { TriangleColorPicker } from 'react-native-color-picker'
+import { TriangleColorPicker, fromHsv } from 'react-native-color-picker'
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -108,6 +108,7 @@ const IconSelector = forwardRef((props, ref) => {
 	useImperativeHandle(ref, () => ({
 		getSelectedIcon: () => selectedIcon,
 		getSelectedColor: () => selectedColor,
+		toggleSelector,
 	}));
 
 	function renderIcon({ item, index }) {
@@ -117,7 +118,6 @@ const IconSelector = forwardRef((props, ref) => {
 				onPress={() => {
 					setIcon(item);
 					toggleSelector(false);
-					close();
 				}}
 				className='w-[60px] h-[60px] items-center justify-center mb-1'
 			>
@@ -166,10 +166,13 @@ const IconSelector = forwardRef((props, ref) => {
                     Select an Icon Color
                 </StyledText>
 				<StyledColorPicker
-					className='w-full h-[200px]'
-					onColorSelected={color => {
-						alert(`Color selected: ${color}`);
-						setIconColor(color);
+					className='w-[200px] h-[200px]'
+					onColorChange={color => {
+						console.log(color);
+						color = fromHsv(color);
+						console.log(color);
+						// need to change hsv to hex
+						// setSelectedColor(color);
 					}}
 					hideControls={true}
 				/>
