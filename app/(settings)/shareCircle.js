@@ -55,23 +55,25 @@ export default function Page() {
 					</StyledText>
 				</StyledView>
 			</StyledView>
-			<Button // Share Circle
-				btnStyles='absolute right-5 bottom-5'
-				height={'h-[60px]'}
-				width={'w-[60px]'}
-				iconSize={40}
-				icon='share'
-				press={() => shareCircle()}
-			/>
-
-			<Button // to Settings Page
-				btnStyles='absolute left-5 bottom-5'
-				height={'h-[60px]'}
-				width={'w-[60px]'}
-				iconSize={40}
-				icon='cog'
-				href='circleSettings'
-			/>
+			<StyledView
+				className='absolute flex flex-row w-screen px-[15px] justify-between'
+				style={{ bottom: insets.bottom }}
+			>
+				<Button // to Settings Page
+					height={'h-[50px]'}
+					width={'w-[50px]'}
+					iconSize={30}
+					icon='cog'
+					href='circleSettings'
+				/>
+				<Button // Share Circle
+					height={'h-[50px]'}
+					width={'w-[50px]'}
+					iconSize={30}
+					icon='share'
+					press={() => shareCircle()}
+				/>
+			</StyledView>
 		</StyledView>
 	);
 }
