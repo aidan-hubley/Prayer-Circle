@@ -22,8 +22,8 @@ export default function Page() {
 	const typeRef = useRef();
 
 	return (
-		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
-			<KeyboardAwareScrollView>
+		<StyledSafeArea className='bg-offblack flex-1'>
+			<KeyboardAwareScrollView bounces={false}>
 				<>
 					<StyledView className='flex items-center justify-center text-center w-screen h-[100px]'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
@@ -32,12 +32,12 @@ export default function Page() {
 					</StyledView>
 					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
 						<StyledInput
-							className='bg-offblack text-[18px] w-full text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-2'
+							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 							placeholder={'Title'}
 							placeholderTextColor={'#fff'}
 							inputMode='text'
 							autoCorrect
-							maxLength={22}
+							maxLength={39}
 							ref={(input) => {
 								this.postTitle = input;
 							}}
@@ -46,7 +46,7 @@ export default function Page() {
 							}}
 						/>
 						<StyledInput
-							className='bg-offblack text-[18px] w-full min-h-[200px] h-[300px] max-h-[50%] text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-2'
+							className='bg-offblack text-[18px] w-full min-h-[200px] h-[300px] max-h-[50%] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 							placeholder={'Write a Post'}
 							multiline
 							autoCorrect
@@ -131,12 +131,12 @@ export default function Page() {
 							true
 						);
 						await writeData(
-							`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${newPostId}`,
+							`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${newPostId}`,
 							now,
 							true
 						);
 						await writeData(
-							`prayer_circle/users/${uid}/posts/${newPostId}`,
+							`prayer_circle/users/${uid}/private/posts/${newPostId}`,
 							true,
 							true
 						);

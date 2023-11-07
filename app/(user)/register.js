@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import {
-	SafeAreaView,
 	Text,
 	View,
 	TextInput,
@@ -11,14 +10,15 @@ import {
 	StatusBar
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
-import { Link } from 'expo-router';
 import { checkUsername, registerUser } from '../../backend/firebaseFunctions';
 import { passwordValidation } from '../../backend/functions';
 import Modal from 'react-native-modal';
-import { Camera, CameraType, takePictureAsync } from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from '../../backend/config';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -95,234 +95,230 @@ export default function Register() {
 	const [pass, setPass] = useState('');
 
 	return (
-		<>
-			<StyledSafeArea className='bg-offblack flex-1'>
-				<KeyboardAwareScrollView onScrollEndDrag={Keyboard.dismiss}>
-					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-						<>
-							<StyledView className='flex flex-col pb-5 px-[15px] w-screen'>
-								<StyledView className='w-full flex flex-col items-center mb-2'>
-									<StyledView className='w-[89%] aspect-square mt-[15%] mb-[13%]'>
-										<TouchableOpacity onPress={toggleModal}>
-											<StyledImage
-												className='w-full h-full rounded-3xl'
-												source={
-													profileImage
-														? { uri: profileImage }
-														: require('../../assets/Squared_Logo_Dark.png')
-												}
-												resizeMode='contain'
-											/>
-										</TouchableOpacity>
-										{profileImage ? (
-											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
-												Tap picture to take a new
-												Profile Picture
-											</StyledText>
-										) : (
-											<StyledText className='text-offwhite text-center text-[18px] mt-5'>
-												Tap Logo to Upload a Profile
-												Picture
-											</StyledText>
-										)}
-									</StyledView>
+		<StyledSafeArea className='bg-offblack flex-1'>
+			<KeyboardAwareScrollView bounces={false}>
+				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+					<>
+						<StyledView className='flex flex-col pb-5 px-[15px] w-screen'>
+							<StyledView className='w-full flex flex-col items-center mb-2'>
+								<StyledView className='w-11/12 aspect-square mt-[20px] mb-[40px]'>
+									<TouchableOpacity onPress={toggleModal}>
+										<StyledImage
+											className='h-full aspect-square rounded-3xl'
+											source={
+												profileImage
+													? { uri: profileImage }
+													: require('../../assets/Squared_Logo_Dark.png')
+											}
+											resizeMode='contain'
+										/>
+									</TouchableOpacity>
+									<StyledText className='text-offwhite text-center text-[18px] mt-2'>
+										{profileImage
+											? 'Tap Photo to Retake Picture'
+											: 'Tap Logo to Upload a Profile Picture'}
+									</StyledText>
 								</StyledView>
-								<StyledView className='flex flex-col items-center justify-center w-full gap-y-4'>
+							</StyledView>
+							<StyledView className='flex flex-col items-center justify-center w-full gap-y-2'>
+								<StyledInput
+									className=' bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+									placeholder={'Username'}
+									placeholderTextColor={'#fff'}
+									inputMode='text'
+									maxLength={30}
+									autoCorrect={false}
+									ref={(input) => {
+										this.usernameInput = input;
+									}}
+									onSubmitEditing={() => {
+										this.fNameInput.focus();
+									}}
+									blurOnSubmit={false}
+									onEndEditing={(text) => {
+										setUsername(text.nativeEvent.text);
+									}}
+								/>
+								<StyledView className='flex flex-row w-11/12'>
 									<StyledInput
-										className=' bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-										placeholder={'Username'}
+										className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+										placeholder={'First Name'}
 										placeholderTextColor={'#fff'}
 										inputMode='text'
 										maxLength={30}
-										autoCorrect={false}
 										ref={(input) => {
-											this.usernameInput = input;
+											this.fNameInput = input;
 										}}
 										onSubmitEditing={() => {
-											this.fNameInput.focus();
+											this.lNameInput.focus();
 										}}
+										autoComplete='given-name'
 										blurOnSubmit={false}
 										onEndEditing={(text) => {
-											setUsername(text.nativeEvent.text);
+											setFName(text.nativeEvent.text);
 										}}
 									/>
-									<StyledView className='flex flex-row w-11/12'>
-										<StyledInput
-											className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-											placeholder={'First Name'}
-											placeholderTextColor={'#fff'}
-											inputMode='text'
-											maxLength={30}
-											ref={(input) => {
-												this.fNameInput = input;
-											}}
-											onSubmitEditing={() => {
-												this.lNameInput.focus();
-											}}
-											autoComplete='given-name'
-											blurOnSubmit={false}
-											onEndEditing={(text) => {
-												setFName(text.nativeEvent.text);
-											}}
-										/>
-										<StyledInput
-											className='bg-offblack text-[18px] ml-1 w-auto flex-1 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-											placeholder={'Last Name'}
-											placeholderTextColor={'#fff'}
-											inputMode='text'
-											maxLength={30}
-											ref={(input) => {
-												this.lNameInput = input;
-											}}
-											onSubmitEditing={() => {
-												this.emailInput.focus();
-											}}
-											autoComplete='family-name'
-											blurOnSubmit={false}
-											onEndEditing={(text) => {
-												setLName(text.nativeEvent.text);
-											}}
-										/>
-									</StyledView>
 									<StyledInput
-										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-										placeholder={'Email'}
+										className='bg-offblack text-[18px] ml-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+										placeholder={'Last Name'}
 										placeholderTextColor={'#fff'}
-										autoCapitalize='none'
-										inputMode='email'
-										autoComplete='email'
+										inputMode='text'
 										maxLength={30}
 										ref={(input) => {
-											this.emailInput = input;
+											this.lNameInput = input;
 										}}
 										onSubmitEditing={() => {
-											this.passInput.focus();
+											this.emailInput.focus();
 										}}
+										autoComplete='family-name'
 										blurOnSubmit={false}
 										onEndEditing={(text) => {
-											setEmail(text.nativeEvent.text);
-										}}
-									/>
-									<StyledInput
-										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-										placeholder={'Password'}
-										placeholderTextColor={'#fff'}
-										secureTextEntry={true}
-										maxLength={25}
-										ref={(input) => {
-											this.passInput = input;
-										}}
-										onEndEditing={(text) => {
-											setPass(text.nativeEvent.text);
+											setLName(text.nativeEvent.text);
 										}}
 									/>
 								</StyledView>
-							</StyledView>
-							<StyledView className='flex flex-col items-center'>
-								<Button
-									width='w-[85%]'
-									title='Register'
-									textColor='#F7F1E3'
-									backgroundColor='#121212'
-									borderColor='#F9A826'
-									press={() => {
-										Keyboard.dismiss();
-										createUserData(
-											username,
-											fname,
-											lname,
-											email,
-											pass
-										);
+								<StyledInput
+									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+									placeholder={'Email'}
+									placeholderTextColor={'#fff'}
+									autoCapitalize='none'
+									inputMode='email'
+									autoComplete='email'
+									maxLength={30}
+									ref={(input) => {
+										this.emailInput = input;
+									}}
+									onSubmitEditing={() => {
+										this.passInput.focus();
+									}}
+									blurOnSubmit={false}
+									onEndEditing={(text) => {
+										setEmail(text.nativeEvent.text);
 									}}
 								/>
-								<StyledText className='text-offwhite text-center text-[18px] mt-5'>
-									Already have an account?{' '}
-									<Link href='/login'>
-										<StyledText className='text-yellow font-bold'>
-											Login
-										</StyledText>
-									</Link>
-								</StyledText>
-							</StyledView>
-						</>
-					</TouchableWithoutFeedback>
-				</KeyboardAwareScrollView>
-				<StatusBar barStyle={'light-content'} />
-				<StyledModal
-					className='w-[90%] self-center'
-					isVisible={isModalVisible}
-				>
-					<StyledSafeArea className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[90%]'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<StyledText className='top-[3%] text-3xl text-offwhite'>
-								Take a Selfie!
-							</StyledText>
-							<StyledView
-								className='top-[8%] w-[300px] h-[300px]'
-								onPress={toggleCameraType}
-							>
-								<StyledCamera
-									ref={cameraRef}
-									mirrorImage={true}
-									fixOrientation={true}
-									// Still mirroring
-									className='w-full h-full'
-									type={type}
-									ratio='1:1'
-									flashMode={flashMode}
-								>
-									{/* Having squared profile pictures means we should do a 1:1 ratio here
-										I don't know how to do that without using w-#px h-#px  */}
-								</StyledCamera>
-							</StyledView>
-							<StyledView className='w-full flex flex-row justify-between absolute bottom-[135px] items-center'>
-								<Button
-									icon='camera-reverse-outline'
-									btnStyles={'left-[75px]'}
-									width='w-[50px]'
-									height='h-[50px]'
-									press={toggleCameraType}
-								/>
-								<Button
-									icon='flashlight-outline'
-									btnStyles={'right-[75px]'}
-									width='w-[50px]'
-									height='h-[50px]'
-									press={toggleFlashMode}
-								/>
-							</StyledView>
-							<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
-								<Button
-									icon='arrow-back-outline'
-									btnStyles={'left-10'}
-									width='w-[50px]'
-									height='h-[50px]'
-									press={toggleModal}
-								/>
-								<Button
-									icon='camera-outline'
-									iconColor='#FFFBFC'
-									btnStyles={
-										'border-4 border-offwhite bg-offblack'
-									}
-									width='w-[100px]'
-									height='h-[100px]'
-									press={takePicture}
-								/>
-								<Button
-									icon='images-outline'
-									btnStyles='right-10'
-									width='w-[50px]'
-									height='h-[50px]'
-									press={openImagePicker}
+								<StyledInput
+									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+									placeholder={'Password'}
+									placeholderTextColor={'#fff'}
+									secureTextEntry={true}
+									maxLength={25}
+									ref={(input) => {
+										this.passInput = input;
+									}}
+									onEndEditing={(text) => {
+										setPass(text.nativeEvent.text);
+									}}
 								/>
 							</StyledView>
 						</StyledView>
-					</StyledSafeArea>
-				</StyledModal>
-			</StyledSafeArea>
-		</>
+						<StyledView className='flex flex-col items-center'>
+							<Button
+								width='w-[85%]'
+								title='Register'
+								textColor='#F7F1E3'
+								backgroundColor='#121212'
+								borderColor='#F9A826'
+								press={() => {
+									Keyboard.dismiss();
+									createUserData(
+										username,
+										fname,
+										lname,
+										email,
+										pass
+									);
+								}}
+							/>
+							<StyledText className='text-offwhite text-center text-[18px] mt-5'>
+								Already have an account?{' '}
+								<TouchableWithoutFeedback
+									onPress={() => {
+										router.replace('/login');
+									}}
+								>
+									<StyledText className='text-yellow font-bold'>
+										Login
+									</StyledText>
+								</TouchableWithoutFeedback>
+							</StyledText>
+						</StyledView>
+					</>
+				</TouchableWithoutFeedback>
+			</KeyboardAwareScrollView>
+			<StatusBar barStyle={'light-content'} />
+			<StyledModal
+				className='w-[90%] self-center'
+				isVisible={isModalVisible}
+			>
+				<StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px] h-[90%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledText className='top-[3%] text-3xl text-offwhite'>
+							Take a Selfie!
+						</StyledText>
+						<StyledView
+							className='top-[8%] w-[300px] aspect-square rounded-[20px]'
+							onPress={toggleCameraType}
+						>
+							<StyledCamera
+								ref={cameraRef}
+								mirrorImage={true}
+								fixOrientation={true}
+								// Still mirroring
+								className='w-full h-full rounded-[20px]'
+								type={type}
+								ratio='1:1'
+								flashMode={flashMode}
+							>
+								{/* Having squared profile pictures means we should do a 1:1 ratio here
+										I don't know how to do that without using w-#px h-#px  */}
+							</StyledCamera>
+						</StyledView>
+						<StyledView className='w-full flex flex-row justify-between absolute bottom-[135px] items-center'>
+							<Button
+								icon='camera-reverse-outline'
+								btnStyles={'left-[75px]'}
+								width='w-[50px]'
+								height='h-[50px]'
+								press={toggleCameraType}
+							/>
+							<Button
+								icon='flashlight-outline'
+								btnStyles={'right-[75px]'}
+								width='w-[50px]'
+								height='h-[50px]'
+								press={toggleFlashMode}
+							/>
+						</StyledView>
+						<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
+							<Button
+								icon='arrow-back-outline'
+								btnStyles={'left-10'}
+								width='w-[50px]'
+								height='h-[50px]'
+								press={toggleModal}
+							/>
+							<Button
+								icon='camera-outline'
+								iconColor='#FFFBFC'
+								btnStyles={
+									'border-4 border-offwhite bg-offblack'
+								}
+								width='w-[80px]'
+								height='h-[80px]'
+								press={takePicture}
+							/>
+							<Button
+								icon='images-outline'
+								btnStyles='right-10'
+								width='w-[50px]'
+								height='h-[50px]'
+								press={openImagePicker}
+							/>
+						</StyledView>
+					</StyledView>
+				</StyledSafeArea>
+			</StyledModal>
+		</StyledSafeArea>
 	);
 }
 
@@ -360,11 +356,19 @@ async function createUserData(username, fname, lname, email, password) {
 	this.passInput.clear();
 
 	let userData = {
-		username: username,
-		fname: fname,
-		lname: lname,
-		email: email,
-		created: new Date().getTime()
+		public: {
+			fname: fname,
+			lname: lname,
+			profile_img: false
+		},
+		private: {
+			email: email,
+			timestamp: Date.now(),
+			circles: false,
+			reactions: false,
+			comments: false,
+			posts: false
+		}
 	};
-	registerUser(email, password, userData);
+	registerUser(username, email, password, userData);
 }

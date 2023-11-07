@@ -26,6 +26,7 @@ export default function FeedPage() {
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
+	const [circles, setCircles] = useState([]);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -144,7 +145,7 @@ export default function FeedPage() {
 							title={item[1].title}
 							timestamp={`${item[1].timestamp}`}
 							content={item[1].text}
-							icon='heart-outline'
+							icon={item[1].type}
 							id={item[0]}
 							refresh={() => setUpFeed()}
 							ownedToolBar={item[1].user == me}

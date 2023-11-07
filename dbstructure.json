@@ -5,11 +5,11 @@
 				"public": {
 					"username": "Username",
 					"fname": "First Name",
-					"lname": "Last Name"
+					"lname": "Last Name",
+					"profile_img": "https://www.gravatar.com/"
 				},
 				"private": {
 					"email": "Email",
-					"phone": "Phone",
 					"timestamp": 1234567890,
 					"circles": {
 						"_pushId_": {
@@ -80,7 +80,8 @@
 			"_pushId_": {
 				"name": "Circle name",
 				"timestamp": 1234567890,
-				"icon": "icon.i",
+				"icon": "icon",
+				"iconColor": "#000000",
 				"description": "Circle description",
 				"type": "individual/organization",
 				"color": "#000000",
