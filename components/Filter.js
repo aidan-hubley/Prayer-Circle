@@ -1,16 +1,20 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { View, Text, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
 import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Modal from 'react-native-modal';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
 const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
+const StyledModal = styled(Modal);
+const StyledIcon = styled(Ionicons);
 
 const Filter = forwardRef((props, ref) => {
 	const width = Dimensions.get('window').width;
@@ -54,6 +58,12 @@ const Filter = forwardRef((props, ref) => {
 		toggleShown
 	}));
 
+	const [isModalVisible1, setModalVisible1] = useState(false);
+	const toggleModal1 = () => {
+		setModalVisible1(!isModalVisible1);
+		console.log(props.data);
+	};
+
 	return (
 		<>				
 			<AnimatedPressable
@@ -92,12 +102,8 @@ const Filter = forwardRef((props, ref) => {
 					}}
 					keyExtractor={(item) => item.id}
 				/>
-				<StyledView
-					className='absolute bottom-[250px] w-full h-[60px] flex items-center justify-center'
-				>
-					<StyledText					
-						className='text-white text-2xl font-bold'
-					>
+				<StyledView className='absolute bottom-[250px] w-full h-[60px] flex items-center justify-center'>
+					<StyledText className='text-white text-2xl font-bold'>
 						Circle Name
 					</StyledText>
 				</StyledView>
@@ -111,6 +117,7 @@ const Filter = forwardRef((props, ref) => {
 						iconSize={35}
 						btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
 						borderColor={'border-outline'}
+						press={toggleModal1}
 					/>
 				</StyledView>
 				<StyledView
@@ -127,6 +134,53 @@ const Filter = forwardRef((props, ref) => {
 					/>
 				</StyledView>
 			</AnimatedView>
+
+			<StyledModal
+				className='w-[80%] self-center'
+				isVisible={isModalVisible1}
+				onBackdropPress={toggleModal1}
+			>
+				<StyledView className='bg-offblack border-[2px] border-outline rounded-2xl h-[70%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledView className='top-[3%]'>
+							<StyledText className='text-3xl font-bold text-offwhite'>
+								Your circles
+							</StyledText>
+						</StyledView>
+						<StyledView className='top-[7%] h-[70%]'>
+							<FlatList
+								data={props.data}
+								numColumns={3}
+								renderItem={({ item }) => {
+									return (
+										<StyledView 
+											style={{borderColor: item.color}}
+											className='w-[80px] h-[80px] mx-2 my-2 flex border-[6px] items-center justify-center rounded-full'
+										>
+											<StyledIcon
+												name={item.icon}
+												size={35}
+												color={item.iconColor}
+											/>
+										</StyledView>
+									);
+								}}
+								keyExtractor={(item) => item.id}
+								showsVerticalScrollIndicator={false}
+							/>
+						</StyledView>
+						<Button
+							title='close'
+							textColor={'text-offwhite'}
+							bgColor={'bg-offblack'}
+							borderColor={'border-outline'}
+							btnStyles={'absolute bottom-[3%]'}
+							width='w-[70%]'
+							press={toggleModal1}
+						/>
+					</StyledView>
+				</StyledView>
+			</StyledModal>
 		</>
 	);
 });
