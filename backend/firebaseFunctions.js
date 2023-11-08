@@ -57,9 +57,6 @@ export async function createCircle(data) {
     const UID = await getUIDFromStorage();
     let circleId = generateId();
 
-    let allCircles = await readData('prayer_circle/circles');
-    console.log(allCircles.length);
-
     /* for (let i = 0; i < 2; i++) {
         let unusedCode = false;
         while (!unusedCode) {
