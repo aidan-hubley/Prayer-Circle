@@ -177,7 +177,7 @@ export default function ProfilePage() {
 						title={item[1].title}
 						timestamp={`${item[1].timestamp}`}
 						content={item[1].text}
-						icon='heart-outline'
+						icon={item[1].type}
 						id={item[0]}
 						refresh={() => setUpFeed()}
 						owned={true}

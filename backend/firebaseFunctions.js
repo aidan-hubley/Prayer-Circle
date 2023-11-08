@@ -90,7 +90,7 @@ export async function createCircle(data) {
 
     writeData(`prayer_circle/circles/${circleId}`, data, true);
     writeData(
-        `prayer_circle/users/${UID}/circles/${circleId}/permissions`,
+        `prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
         circlePermissions,
         true
     );
@@ -161,6 +161,34 @@ export function userLoggedIn(onLogIn, onLogOut) {
             if (onLogOut) onLogOut();
         }
     });
+}
+
+export async function getCircles() {
+    const UID = await getUIDFromStorage();
+    let circles = Object.keys(
+        (await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
+    );
+    return circles;
+}
+
+export async function getFilterCircles() {
+    let circles = await getCircles();
+    let circlesData = [];
+
+    for (let i = 0; i < circles.length; i++) {
+        let circle = circles[i];
+        let circleData =
+            (await readData(`prayer_circle/circles/${circle}`)) || {};
+        let circleStruct = {
+            id: circle,
+            iconColor: circleData.iconColor,
+            title: circleData.title,
+            color: circleData.color,
+            icon: circleData.icon
+        };
+        circlesData.push(circleStruct);
+    }
+    return circlesData;
 }
 
 export async function getPosts(circleId) {
