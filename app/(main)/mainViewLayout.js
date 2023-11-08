@@ -1,5 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Dimensions } from 'react-native';
+import React, {
+	useEffect,
+	useRef,
+	useState,
+	useMemo,
+	useCallback
+} from 'react';
+import { View, Dimensions, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { ExpandableButton, Button } from '../../components/Buttons';
@@ -10,6 +16,7 @@ import JournalPage from './journal.js';
 import PagerView from 'react-native-pager-view';
 import { getFilterCircles } from '../../backend/firebaseFunctions.js';
 import { Filter } from '../../components/Filter.js';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 
@@ -36,7 +43,7 @@ export default function Layout() {
 	}, []);
 
 	return (
-		<>
+		<BottomSheetModalProvider>
 			<StyledView className='bg-offblack flex-1'>
 				<PagerView
 					onTouchEvent={(e) => {}}
@@ -155,6 +162,6 @@ export default function Layout() {
 					}}
 				/>
 			</StyledView>
-		</>
+		</BottomSheetModalProvider>
 	);
 }

@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {
+	useState,
+	useRef,
+	useEffect,
+	useMemo,
+	useCallback
+} from 'react';
 import {
 	Text,
 	View,
@@ -7,14 +13,17 @@ import {
 	TouchableOpacity,
 	Animated
 } from 'react-native';
-import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
+import {
+	BottomSheetModal,
+	BottomSheetFlatList,
+	BottomSheetBackdrop
+} from '@gorhom/bottom-sheet';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -23,12 +32,11 @@ const StyledPressable = styled(Pressable);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
-const StyledModal = styled(Modal);
 const StyledIcon = styled(Ionicons);
 
 export const Post = (post) => {
+	// variables
 	const tS = timeSince(post.timestamp);
-
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
 	const [commentIcon, setCommentIcon] = useState(post.icon);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
@@ -36,9 +44,34 @@ export const Post = (post) => {
 	const [me, setMe] = useState('');
 	const [lastTap, setLastTap] = useState(null);
 	const timer = useRef(null);
+	const bottomSheetModalRef = useRef(null);
+	const images = {
+		praise: {
+			outline: require('../assets/post/praise_outline.png'),
+			nonOutline: require('../assets/post/praise.png')
+		},
+		event: {
+			outline: require('../assets/post/calendar_outline.png'),
+			nonOutline: require('../assets/post/calendar.png')
+		},
+		request: {
+			outline: require('../assets/post/prayer_outline.png'),
+			nonOutline: require('../assets/post/prayer.png')
+		},
+		prayer: {
+			outline: require('../assets/post/prayer_outline.png'),
+			nonOutline: require('../assets/post/prayer.png')
+		}
+	};
 
-	const { showActionSheetWithOptions } = useActionSheet();
+	// bottom sheet modal
+	const snapPoints = useMemo(() => ['10%', '45%', '80%'], []);
+	const handlePresentModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.present();
+	}, []);
+	const handleSheetChanges = useCallback((index) => {}, []);
 
+	// animations
 	const toolbarVal = useRef(new Animated.Value(0)).current;
 	const toolbarHeightInter = toolbarVal.interpolate({
 		inputRange: [0, 0.5, 0.75, 1],
@@ -67,41 +100,30 @@ export const Post = (post) => {
 		transform: [{ rotate: spinInter }]
 	};
 
-	function toggleToolbar() {
-		setToolbar(!toolbarShown);
-		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-		Animated.spring(toolbarVal, {
-			toValue: toolbarShown ? 0 : 1,
-			duration: 100,
-			useNativeDriver: false
-		}).start();
-	}
-
-	useEffect(() => {
-		return () => {
-			clearTimeout(timer.current);
-		};
-	}, []);
-
-	const images = {
-		praise: {
-			outline: require('../assets/post/praise_outline.png'),
-			nonOutline: require('../assets/post/praise.png')
-		},
-		event: {
-			outline: require('../assets/post/calendar_outline.png'),
-			nonOutline: require('../assets/post/calendar.png')
-		},
-		request: {
-			outline: require('../assets/post/prayer_outline.png'),
-			nonOutline: require('../assets/post/prayer.png')
-		},
-		prayer: {
-			outline: require('../assets/post/prayer_outline.png'),
-			nonOutline: require('../assets/post/prayer.png')
-		}
+	const handle = () => {
+		return (
+			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] py-3 border-b border-[#ffffff33]'>
+				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
+				<StyledText className='text-white font-[500] text-[20px]'>
+					Support
+				</StyledText>
+			</StyledView>
+		);
 	};
 
+	const backdrop = (backdropProps) => {
+		return (
+			<BottomSheetBackdrop
+				{...backdropProps}
+				opacity={0.5}
+				appearsOnIndex={0}
+				disappearsOnIndex={-1}
+				enableTouchThrough={true}
+			/>
+		);
+	};
+
+	//functions
 	function getTypeSource(iconType, isOutline) {
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
@@ -137,6 +159,16 @@ export const Post = (post) => {
 		}
 	}
 
+	function toggleToolbar() {
+		setToolbar(!toolbarShown);
+		Animated.spring(toolbarVal, {
+			toValue: toolbarShown ? 0 : 1,
+			duration: 100,
+			useNativeDriver: false
+		}).start();
+	}
+
+	// db related functions
 	async function deletePost() {
 		writeData(
 			`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`,
@@ -155,11 +187,6 @@ export const Post = (post) => {
 		});
 	}
 
-	const [isCommentModalVisible, setCommentModalVisible] = useState(false);
-	const toggleCommentModal = () => {
-		setCommentModalVisible(!isCommentModalVisible);
-	};
-
 	async function hidePost(postId) {
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
 		toggleToolbar();
@@ -167,6 +194,7 @@ export const Post = (post) => {
 		post.refresh();
 	}
 
+	// post setup
 	const setUp = async () => {
 		let uid = await AsyncStorage.getItem('user');
 		setMe(uid);
@@ -176,7 +204,11 @@ export const Post = (post) => {
 		setUp();
 	});
 
-	// let insets = useSafeAreaInsets();
+	const dummyData = [
+		{ user: 'alex', content: 'comment 1', edited: false },
+		{ user: 'aidan', content: 'comment 2', edited: false },
+		{ user: 'nason', content: 'comment 3', edited: false }
+	];
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
@@ -318,17 +350,6 @@ export const Post = (post) => {
 											color='#00A55E'
 										/>
 									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPress={toggleCommentModal}
-									>
-										<StyledIcon
-											name={'chatbubble-outline'}
-											size={29}
-											color='#5946B2'
-										/>
-									</StyledOpacity>
 								</>
 							) : (
 								<>
@@ -363,19 +384,21 @@ export const Post = (post) => {
 											color='#00A55E'
 										/>
 									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPress={toggleCommentModal}
-									>
-										<StyledIcon
-											name={'chatbubble-outline'}
-											size={29}
-											color='#5946B2'
-										/>
-									</StyledOpacity>
 								</>
 							)}
+							<StyledOpacity
+								className='flex items-center justify-center w-[30px] h-[30px]'
+								activeOpacity={0.4}
+								onPress={() => {
+									handlePresentModalPress();
+								}}
+							>
+								<StyledIcon
+									name={'chatbubble-outline'}
+									size={29}
+									color='#5946B2'
+								/>
+							</StyledOpacity>
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
@@ -385,44 +408,23 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledAnimatedView>
 			</StyledView>
-
-			<StyledModal
-				className='w-[100%] self-center'
-				isVisible={isCommentModalVisible}
-				onBackdropPress={toggleCommentModal}
+			<BottomSheetModal
+				enableDismissOnClose={true}
+				ref={bottomSheetModalRef}
+				index={1}
+				snapPoints={snapPoints}
+				onChange={handleSheetChanges}
+				handleIndicatorStyle={{
+					backgroundColor: '#ffffff33'
+				}}
+				handleComponent={handle}
+				backdropComponent={(backdropProps) => backdrop(backdropProps)}
+				keyboardBehavior='extend'
 			>
-				<StyledView className='position-absolute mt-[80%] bg-offblack border-[5px] border-yellow rounded-2xl justify-bottom h-[70%]'>
-					<StyledView className='h-[60%]'>
-						<StyledView className='flex flex-row'>
-							<StyledView className='w-[80%] ml-[5%]'>
-								<StyledText className='top-[8%] text-xl text-left text-offwhite'>
-									Comments on
-								</StyledText>
-								<StyledText className='top-[8%] text-4xl text-offwhite'>
-									{post.title.length > 21
-										? post.title.substring(0, 21) + '...'
-										: post.title}
-								</StyledText>
-							</StyledView>
-							{/* <StyledView className='flex-1'>
-								<Button
-									btnStyles='top-[3%] bg-offblack'
-									height={'h-[60px]'}
-									width={'w-[60px]'}
-									iconSize={60}
-									icon='close'
-									iconColor='#FFFBFC'
-									press={toggleCommentModal}
-								/>
-							</StyledView> 
-							This button is unnecessary given the onBackdropPress, but I left it in just in case*/}
-						</StyledView>
-						{/* Comments component goes here. NRA recommends:
-						-using a similar format to journal.js (esp horizontal lines)
-						-and placing it inside feed.js format (esp gradiant; some import work for that already done here)*/}
-					</StyledView>
+				<StyledView className='flex-1 bg-grey'>
+					<BottomSheetFlatList />
 				</StyledView>
-			</StyledModal>
+			</BottomSheetModal>
 		</StyledPressable>
 	);
 };

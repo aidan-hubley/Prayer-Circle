@@ -56,6 +56,16 @@ export async function deleteData(path) {
 export async function createCircle(data) {
 	const UID = await getUIDFromStorage();
 	let circleId = generateId();
+	let circleCode = '';
+	let divisor = 10;
+	for (let i = 0; i < circleId.length / divisor; i++) {
+		let section = circleId.substring(i * divisor, i * divisor + divisor);
+		let sectionCode = 0;
+		for (char of section) {
+			sectionCode += char.charCodeAt(0);
+		}
+		circleCode += sectionCode.toString() + '.';
+	}
 	data.members[`${UID}`] = true;
 	data.admin[`${UID}`] = true;
 	data.owner = UID;
@@ -67,12 +77,12 @@ export async function createCircle(data) {
 		owner: true
 	};
 
-	writeData(`prayer_circle/circles/${circleId}`, data, true);
+	/* writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
 		`prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
-	);
+	); */
 }
 
 export async function registerUser(username, email, password, data) {
