@@ -89,21 +89,46 @@ const Filter = forwardRef((props, ref) => {
 					decelerationRate={'fast'}
 					contentContainerStyle={{ paddingHorizontal: paddingH }}
 					renderItem={({ item, index }) => {
-						return (
-							<FilterItem
-								data={item}
-								index={index}
-								contentOffset={contentOffset}
-								itemSize={itemSize}
-								itemMargin={itemMargin}
-							></FilterItem>
-						);
+						if (index === 0) {
+							return (
+								<Button
+									bgColor={'bg-offdark'}
+									icon={'apps-outline'}
+									iconColor={'#FFFBFC'}
+									iconSize={35}
+									btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
+									borderColor={'border-outline'}
+									press={toggleFilterModal}
+								/>
+							);
+						} else if (index === 1) {
+							return (
+								<Button
+									bgColor={'bg-offdark'}
+									icon={'add-outline'}
+									iconColor={'#FFFBFC'}
+									iconSize={45}
+									btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
+									borderColor={'border-outline'}
+									href={'joinCircle'}
+								/>
+							);
+						} else {
+							return (
+								<FilterItem
+									data={item}
+									index={index}
+									contentOffset={contentOffset}
+									itemSize={itemSize}
+									itemMargin={itemMargin}
+								/>
+							);
+						}
 					}}
 					keyExtractor={(item) => item.id}
 				/>
-				<StyledView
-					className='absolute bottom-[20px] right-[70px]'
-				>
+				{/*
+					// If index is 0 show this button
 					<Button
 						bgColor={'bg-offdark'}
 						icon={'apps-outline'}
@@ -113,10 +138,8 @@ const Filter = forwardRef((props, ref) => {
 						borderColor={'border-outline'}
 						press={toggleFilterModal}
 					/>
-				</StyledView>
-				<StyledView
-					className='absolute bottom-[20px] left-[70px]'
-				>
+					
+					// If index is 1 show this button
 					<Button
 						bgColor={'bg-offdark'}
 						icon={'add-outline'}
@@ -126,7 +149,9 @@ const Filter = forwardRef((props, ref) => {
 						borderColor={'border-outline'}
 						href={'joinCircle'}
 					/>
-				</StyledView>
+
+					// starting at index 2 show the data from the array
+				*/}
 			</AnimatedView>
 
 			<StyledModal
