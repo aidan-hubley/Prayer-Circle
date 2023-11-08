@@ -1,4 +1,3 @@
-{
 	"expo": {
 		"name": "Prayer Circle",
 		"scheme": "prayer-circle",
@@ -8,9 +7,9 @@
 		"icon": "./assets/Logo_Dark.png",
 		"userInterfaceStyle": "light",
 		"splash": {
-			"image": "./assets/splash.png",
+			"image": "./assets/Dark_Margin.png",
 			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#121212"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
@@ -35,4 +34,3 @@
 		},
 		"owner": "prayer-circle"
 	}
-}
