@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	Animated
 } from 'react-native';
+import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useActionSheet } from '@expo/react-native-action-sheet';
@@ -22,6 +23,7 @@ const StyledPressable = styled(Pressable);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
+const StyledModal = styled(Modal);
 const StyledIcon = styled(Ionicons);
 
 export const Post = (post) => {
@@ -153,6 +155,11 @@ export const Post = (post) => {
 		});
 	}
 
+	const [isCommentModalVisible, setCommentModalVisible] = useState(false);
+	const toggleCommentModal = () => {
+		setCommentModalVisible(!isCommentModalVisible);
+	};
+
 	async function hidePost(postId) {
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
 		toggleToolbar();
@@ -168,6 +175,8 @@ export const Post = (post) => {
 	useEffect(() => {
 		setUp();
 	});
+
+	// let insets = useSafeAreaInsets();
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
@@ -312,6 +321,7 @@ export const Post = (post) => {
 									<StyledOpacity
 										className='flex items-center justify-center w-[30px] h-[30px]'
 										activeOpacity={0.4}
+										onPress={toggleCommentModal}
 									>
 										<StyledIcon
 											name={'chatbubble-outline'}
@@ -356,6 +366,7 @@ export const Post = (post) => {
 									<StyledOpacity
 										className='flex items-center justify-center w-[30px] h-[30px]'
 										activeOpacity={0.4}
+										onPress={toggleCommentModal}
 									>
 										<StyledIcon
 											name={'chatbubble-outline'}
@@ -374,6 +385,44 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledAnimatedView>
 			</StyledView>
+
+			<StyledModal
+				className='w-[100%] self-center'
+				isVisible={isCommentModalVisible}
+				onBackdropPress={toggleCommentModal}
+			>
+				<StyledView className='position-absolute mt-[80%] bg-offblack border-[5px] border-yellow rounded-2xl justify-bottom h-[70%]'>
+					<StyledView className='h-[60%]'>
+						<StyledView className='flex flex-row'>
+							<StyledView className='w-[80%] ml-[5%]'>
+								<StyledText className='top-[8%] text-xl text-left text-offwhite'>
+									Comments on
+								</StyledText>
+								<StyledText className='top-[8%] text-4xl text-offwhite'>
+									{post.title.length > 21
+										? post.title.substring(0, 21) + '...'
+										: post.title}
+								</StyledText>
+							</StyledView>
+							{/* <StyledView className='flex-1'>
+								<Button
+									btnStyles='top-[3%] bg-offblack'
+									height={'h-[60px]'}
+									width={'w-[60px]'}
+									iconSize={60}
+									icon='close'
+									iconColor='#FFFBFC'
+									press={toggleCommentModal}
+								/>
+							</StyledView> 
+							This button is unnecessary given the onBackdropPress, but I left it in just in case*/}
+						</StyledView>
+						{/* Comments component goes here. NRA recommends:
+						-using a similar format to journal.js (esp horizontal lines)
+						-and placing it inside feed.js format (esp gradiant; some import work for that already done here)*/}
+					</StyledView>
+				</StyledView>
+			</StyledModal>
 		</StyledPressable>
 	);
 };
