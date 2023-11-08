@@ -160,6 +160,7 @@ export const Post = (post) => {
 	}
 
 	function toggleToolbar() {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		setToolbar(!toolbarShown);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
@@ -390,6 +391,9 @@ export const Post = (post) => {
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 								onPress={() => {
+									Haptics.impactAsync(
+										Haptics.ImpactFeedbackStyle.Light
+									);
 									handlePresentModalPress();
 								}}
 							>
