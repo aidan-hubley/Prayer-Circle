@@ -1,13 +1,15 @@
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, Animated, Dimensions, FlatList, Pressable } from 'react-native';
+import { View, Text, Image, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
 import { Button } from './Buttons';
+import { router } from '../backend/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Modal from 'react-native-modal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+const StyledImage = styled(Image);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
@@ -91,27 +93,33 @@ const Filter = forwardRef((props, ref) => {
 					renderItem={({ item, index }) => {
 						if (index === 0) {
 							return (
-								<Button
-									bgColor={'bg-offdark'}
-									icon={'apps-outline'}
-									iconColor={'#FFFBFC'}
-									iconSize={35}
-									btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
-									borderColor={'border-outline'}
-									press={toggleFilterModal}
-								/>
+								<StyledPressable className='w-[65px] h-[65px] flex items-center justify-center' onPress={router.push('joinCircle')}>
+									<StyledImage
+										source={require('../assets/spiral/thin.png')}
+										style={{ width: 65, height: 65 }}
+									/>
+									<StyledIcon
+										name={'add-outline'}
+										size={45}
+										color={'#FFFBFC'}
+										style={{ position: 'absolute' }}
+									/>
+								</StyledPressable>
 							);
 						} else if (index === 1) {
-							return (
-								<Button
-									bgColor={'bg-offdark'}
-									icon={'add-outline'}
-									iconColor={'#FFFBFC'}
-									iconSize={45}
-									btnStyles={'h-[65px] w-[65px] rounded-full border-2'}
-									borderColor={'border-outline'}
-									href={'joinCircle'}
-								/>
+							return (								
+								<StyledPressable className='w-[65px] h-[65px] flex items-center justify-center' onPress={toggleFilterModal}>
+									<StyledImage
+										source={require('../assets/spiral/thin.png')}
+										style={{ width: 65, height: 65 }}
+									/>
+									<StyledIcon
+										name={'apps-outline'}
+										size={35}
+										color={'#FFFBFC'}
+										style={{ position: 'absolute' }}
+									/>
+								</StyledPressable>
 							);
 						} else {
 							return (
