@@ -71,6 +71,10 @@ export async function createCircle(data) {
                     Math.random() * 90000000 + 10000000
                 );
             }
+
+            for (let j = 0; j < ; j++) {
+                
+            }
         }
     }*/
     data.members[`${UID}`] = true;
