@@ -1,3 +1,4 @@
+{
 	"expo": {
 		"name": "Prayer Circle",
 		"scheme": "prayer-circle",
@@ -34,3 +35,4 @@
 		},
 		"owner": "prayer-circle"
 	}
+}
