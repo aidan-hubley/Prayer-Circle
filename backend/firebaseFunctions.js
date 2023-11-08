@@ -56,8 +56,10 @@ export async function deleteData(path) {
 export async function createCircle(data) {
     const UID = await getUIDFromStorage();
     let circleId = generateId();
-    data.adminCode = Math.floor(Math.random() * 90000000 + 10000000);
-    data.publicCode = Math.floor(Math.random() * 90000000 + 10000000);
+
+    let allCircles = await readData('prayer_circle/circles');
+    console.log(allCircles.length);
+
     /* for (let i = 0; i < 2; i++) {
         let unusedCode = false;
         while (!unusedCode) {
