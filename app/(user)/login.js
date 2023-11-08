@@ -8,7 +8,6 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Image,
-  Modal,
   TouchableOpacity,
   Alert
 } from 'react-native';
@@ -20,6 +19,7 @@ import { Link } from 'expo-router';
 import { loginUser } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../backend/config'; // Ensure you import your Firebase auth instance
+import Modal from 'react-native-modal';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -27,12 +27,17 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollView);
+const StyledModal = styled(Modal);
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
-  const [isForgotPasswordModalVisible, setIsForgotPasswordModalVisible] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+
+  const [isModalVisible1, setModalVisible1] = useState(false);
+	const toggleModal1 = () => {
+		setModalVisible1(!isModalVisible1);
+	};
 
   const handlePasswordReset = async () => {
     try {
@@ -98,7 +103,7 @@ export default function Login() {
                     </StyledText>
                   </Link>
                 </StyledText>
-                <TouchableOpacity onPress={() => setIsForgotPasswordModalVisible(true)}>
+                <TouchableOpacity onPress={toggleModal1}>
                   <StyledText className='text-yellow text-center text-[18px] mb-4'>
                     Forgot Password?
                   </StyledText>
@@ -109,33 +114,36 @@ export default function Login() {
         </StyledKeyboardAwareScrollView>
         <StatusBar barStyle={'light-content'} />
       </StyledSafeArea>
-
-      {/* Forgot Password Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isForgotPasswordModalVisible}
-        onRequestClose={() => setIsForgotPasswordModalVisible(false)}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%', alignItems: 'center' }}>
-            <Text style={{ marginBottom: 15 }}>Enter your email here</Text>
-            <TextInput
-              style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, width: '100%', paddingHorizontal: 10 }}
+      <StyledModal
+				className='w-[80%] self-center'
+				isVisible={isModalVisible1}
+        onBackdropPress={toggleModal1}
+			>
+				<StyledView className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[40%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledText className='absolute top-[6%] text-3xl text-offwhite'>
+							Reset Password
+						</StyledText>
+            <StyledText className='absolute top-[20%] text-xl text-offwhite'>
+              Enter your email here:
+            </StyledText>
+						<StyledInput
+              className='absolute top-[35%] text-[18px] w-[85%] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
               placeholder="Email"
               value={resetEmail}
               onChangeText={setResetEmail}
               autoCapitalize="none"
               keyboardType="email-address"
             />
-            <Button
-              title='Submit'
-              
-              press={handlePasswordReset}
-            />
-          </View>
-        </View>
-      </Modal>
+						<Button
+							title='Submit'
+							btnStyles={'absolute bottom-[10%]'}
+							width='w-[70%]'
+							press={handlePasswordReset}
+						/>
+					</StyledView>
+				</StyledView>
+			</StyledModal>
     </>
 	);
 }
