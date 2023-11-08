@@ -203,7 +203,7 @@ export default function Page() {
 					iconColor='#F9A826'
 					press={toggleModal1}
 				/>
-				<StyledText className='text-3xl font-bold text-offwhite'>
+				<StyledText className='text-4xl font-bold text-offwhite'>
 					Settings
 				</StyledText>
 				<Button

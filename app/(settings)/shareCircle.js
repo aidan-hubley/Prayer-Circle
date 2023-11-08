@@ -4,9 +4,11 @@ import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import QRCode from 'react-qr-code';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledIcon = styled(Ionicons);
 
 const shareCircle = async () => {
 	try {
@@ -31,13 +33,13 @@ export default function Page() {
 			style={{ paddingTop: topInset }}
 		>
 			<StyledView className='flex-1 items-center'>
-				<StyledView className='bg-grey text-center h-[60px] px-[35px] py-[12px] rounded-full'>
-					<StyledText className='text-3xl text-offwhite'>
+				<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
+					<StyledText className='text-offwhite font-bold text-4xl'>
 						Circle Name
 					</StyledText>
 				</StyledView>
 
-				<StyledView className='absolute top-[20%] border-[10px] bg-offwhite border-purple p-[10px] rounded-xl'>
+				<StyledView className='absolute top-[15%] border-[10px] bg-offwhite border-purple p-[10px] rounded-xl'>
 					<StyledView className='p-[15px] rounded-xl'>
 						<QRCode
 							size={240}
@@ -46,14 +48,27 @@ export default function Page() {
 						/>
 					</StyledView>
 				</StyledView>
-				<StyledView className='absolute bottom-[25%] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl'>
+				<StyledView className='absolute bottom-[30%] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl'>
 					<StyledText
 						className='px-[5px] font-bold text-3xl text-offblack'
 						onPress={() => shareCircle()}
 					>
 						1234567890
 					</StyledText>
-				</StyledView>
+				</StyledView>	
+				<StyledView className='absolute bottom-[15%] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl flex flex-row items-center'>
+					<StyledIcon 
+						name='shield' 
+						size={30} 
+						color='#121212'
+					/>
+					<StyledText
+						className='px-[5px] font-bold text-3xl text-offblack'
+						onPress={() => shareCircle()}
+					>
+						1234567890
+					</StyledText>
+				</StyledView>				
 			</StyledView>
 			<StyledView
 				className='absolute flex flex-row w-screen px-[15px] justify-between'
