@@ -5,16 +5,18 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Image
+	Image, 
+	Keyboard
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { IconSelector } from '../../components/iconSelector';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
-import { ColorPicker } from 'react-native-color-picker'
+import { ColorPicker, fromHsv } from 'react-native-color-picker'
 import Slider from '@react-native-community/slider';
 
 const StyledSafeArea = styled(SafeAreaView);
@@ -27,12 +29,15 @@ const StyledIcon = styled(Ionicons);
 const StyledColorPicker = styled(ColorPicker);
 
 export default function Page() {
+	let insets = useSafeAreaInsets();
+
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
-    const [circleIcon, setCircleIcon] = useState(null);
-    const [circleColor, setCircleColor] = useState(null);
-
+    const [icon, setIcon] = useState(null);
+    const [iconcolor, setIconColor] = useState(null);
+	const [bordercolor, setBorderColor] = useState(null);
+	
 	const iconSelectorRef = useRef();
 
     const { showActionSheetWithOptions } = useActionSheet();
@@ -63,84 +68,93 @@ export default function Page() {
 		);
 	};
 
-	const handleIconSelected = (icon, color) => {
-		setCircleIcon(icon);
-		setCircleColor(color);
-		console.log(icon, color);
+	const handleIconSelected = (icon, iconcolor) => {
+		setIcon(icon);
+		setIconColor(iconcolor);
+		console.log(icon, iconcolor);
 	}
 
 	return (
-		<StyledSafeArea className='bg-offblack flex-1'>
-			<>
-				<KeyboardAwareScrollView bounces={false}>
-					<>
-					<StyledView className='flex items-center justify-center text-center w-screen h-[170px]'>
-						<StyledText className='text-offwhite font-bold text-4xl'>
-							Form a Circle
-						</StyledText>
-						<StyledText className='text-offwhite font-bold text-2xl'>
-							Select a Color and Icon! 
-						</StyledText>
-						<StyledText className='text-offwhite font-bold text-2'>
-							To select an icon, click the circle below!
-						</StyledText>
-					</StyledView>
-					<StyledView className='bottom-[10%] items-center h-screen w-screen'>
-						<StyledColorPicker
-							className='w-full h-[400px]'
-							sliderComponent={Slider}
-							hideSliders={true}
-							style={{flex: 1}}
+		<>
+			<StyledView
+				className='bg-offblack flex-1 h-screen'
+				style={{ paddingTop: Platform.OS == 'android' ? insets.top : 0 }}
+			>
+				<StyledView className='flex items-center justify-center text-center w-screen h-[170px]'>
+					<StyledText className='text-offwhite font-bold text-4xl'>
+						Form a Circle
+					</StyledText>
+					<StyledText className='text-offwhite font-bold text-2xl'>
+						Select a Color and Icon! 
+					</StyledText>
+					<StyledText className='text-offwhite font-bold text-2'>
+						To select an icon, click the circle below!
+					</StyledText>
+				</StyledView>
+				<StyledView className='relative flex h-[40%] justify-center align-middle items-center content-center'>
+					<StyledColorPicker
+						className='w-[100%] self-center'
+						sliderComponent={Slider}
+						hideSliders={true}
+						style={{flex: 1}}
+						onColorChange={bordercolor => {
+							setBorderColor(fromHsv(bordercolor));
+						}}
+					/>
+					<StyledOpacity
+						className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
+						onPress={() => {
+							onPress();								
+						}}
+					>
+						<StyledIcon
+							name={icon}
+							size={85}
+							color={iconcolor}
 						/>
-						<StyledOpacity
-							className='relative bottom-[50%] w-[167px] h-[167px] items-center justify-center bg-offblack rounded-full'
-							onPress={() => {
-								onPress();								
-							}}
-						>
-							<StyledIcon
-								name={circleIcon}
-								size={80}
-								color={circleColor}
-							/>
-						</StyledOpacity>
-					</StyledView>
-							<StyledView className='w-full flex flex-row items-center justify-between'>
-								<StyledInput
-									className='bg-offblack text-[18px] flex-1 h-[42px] text-offwhite border border-outline rounded-lg px-3 py-[5px] mr-1'
-									placeholder={'Circle Name'}
-									placeholderTextColor={'#ffffff66'}
-									inputMode='text'
-									maxLength={22}
-									onChangeText={(text) => {
-										setTitle(text);
-									}}
-									onBlur={() => {
-										this.circleDescription.focus();
-									}}
-									ref={(input) => {
-										this.circleTitle = input;
-									}}
-								/>
-							</StyledView>
-							<StyledInput
-								className='bg-offblack text-[18px] w-full h-auto text-offwhite border border-outline rounded-lg px-3 py-[10px] my-3'
-								placeholder={'Write a bit about this Circle...'}
-								placeholderTextColor={'#ffffff66'}
-								inputMode='text'
-								maxLength={300}
-								multiline
-								rows={3}
-								onChangeText={(text) => {
-									setDescription(text);
-								}}
-								ref={(input) => {
-									this.circleDescription = input;
-								}}
-							/>
-					</>
-				</KeyboardAwareScrollView>
-				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-between px-[15px] mt-auto'>
+					</StyledOpacity>
+				</StyledView>
+				<StyledView className='w-[80%] flex items-center justify-between self-center absolute bottom-[100px]'>
+					<StyledInput
+						className='bg-offblack text-[18px] flex-1 h-[42px] w-full text-offwhite border border-offwhite rounded-lg px-3 py-[5px] mr-1'
+						placeholder={'Circle Name'}
+						placeholderTextColor={'#ffffff66'}
+						inputMode='text'
+						maxLength={22}
+						onChangeText={(text) => {
+							setTitle(text);
+						}}
+						onBlur={() => {
+							Keyboard.dismiss();
+							this.circleDescription.focus();
+						}}
+						ref={(input) => {
+							this.circleTitle = input;
+						}}
+					/>
+					<StyledInput
+						className='bg-offblack text-[18px] w-full h-auto text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-3'
+						placeholder={'Write a bit about this Circle...'}
+						placeholderTextColor={'#ffffff66'}
+						inputMode='text'
+						maxLength={300}
+						multiline
+						rows={3}
+						onChangeText={(text) => {
+							setDescription(text);
+						}}
+						onBlur={() => {
+							Keyboard.dismiss();
+						}}
+						ref={(input) => {
+							this.circleDescription = input;
+						}}
+					/>
+				</StyledView>						
+				<StyledView
+					className='absolute flex flex-row w-screen px-[15px] justify-between bg-offblack pb-5'
+					style={{ bottom: insets.bottom }}
+				>						
 					<Button
 						title='Erase'
 						width='w-[125px]'
@@ -149,10 +163,10 @@ export default function Page() {
 						bgColor={'bg-offblack'}
 						borderColor={'border-offwhite border-2'}
 						textColor={'text-offwhite'}
-						// press={() => {
-						// 	this.circleTitle.clear();
-						// 	this.circleDescription.clear();
-						// }}
+						press={() => {
+							this.circleTitle.clear();
+							this.circleDescription.clear();
+						}}
 					/>
 					<Button
 						title='Draw'
@@ -168,11 +182,11 @@ export default function Page() {
 							let data = {
 								title: title,
 								description: description,
-								iconColor: `#fff`,
-								icon: circleIcon,
+								iconColor: iconcolor,
+								icon: icon,
 								timestamp: Date.now(),
 								type: 'individual',
-								color: '#5946B2',
+								color: bordercolor,
 								members: {},
 								admin: {},
 								owner: false
@@ -189,7 +203,7 @@ export default function Page() {
 					// close={updateIcon}
 					ref={iconSelectorRef}
 				/>
-			</>
-		</StyledSafeArea>
+			</StyledView>
+		</>		
 	);
 }
