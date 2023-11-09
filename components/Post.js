@@ -409,9 +409,6 @@ export const Post = (post) => {
 				index={1}
 				snapPoints={snapPoints}
 				onChange={handleSheetChanges}
-				handleIndicatorStyle={{
-					backgroundColor: '#ffffff33'
-				}}
 				handleComponent={handle}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
