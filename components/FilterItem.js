@@ -1,7 +1,9 @@
 import React, {
 	useState,
 	useRef,
+	useMemo,
 	forwardRef,
+	useCallback,
 	useImperativeHandle
 } from 'react';
 import { View, Text, TouchableHighlight, Pressable, Dimensions, Image } from 'react-native';
@@ -13,6 +15,12 @@ import Animated, {
 	interpolate,
 	Extrapolate
 } from 'react-native-reanimated';
+import {
+	BottomSheetModalProvider,
+	BottomSheetModal,
+	BottomSheetFlatList,
+	BottomSheetBackdrop,
+} from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -89,6 +97,37 @@ const FilterItem = forwardRef(
 			};
 		});
 
+		const bottomSheetModalRef = useRef(null);
+		const snapPoints = useMemo(() => ['10%', '45%', '80%'], []);
+
+		const handlePresentModalPress = useCallback(() => {
+			bottomSheetModalRef.current?.present();
+		}, []);
+		const handleSheetChanges = useCallback((index) => {}, []);
+
+		const handle = () => {
+			return (
+				<StyledView className='absolute bottom-0 w-screen flex items-center justify-center bg-grey rounded-t-[10px] py-3 border-b border-[#ffffff33]'>
+					<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
+					<StyledText className='text-white font-[500] text-[20px]'>
+						Circles
+					</StyledText>
+				</StyledView>
+			);
+		};
+
+		const backdrop = (backdropProps) => {
+			return (
+				<BottomSheetBackdrop
+					{...backdropProps}
+					opacity={0.5}
+					appearsOnIndex={0}
+					disappearsOnIndex={-1}
+					enableTouchThrough={true}
+				/>
+			);
+		};
+
 		if (data.id == 'addCircles') {
 			return (
 				<StyledAnimatedHighlight
@@ -119,32 +158,52 @@ const FilterItem = forwardRef(
 			);
 		} else if (data.id == 'Gridview') {
 			return (
-				<StyledAnimatedHighlight
-					style={[
-						{
-							borderColor: data.color,
-							width: itemSize,
-							height: itemSize,
-							marginHorizontal: itemMargin / 2
-						},
-						itemStyle
-					]}
-					className='justify-center'
-				>
-					{/* Call CircleList.js */}
-					<StyledPressable className='flex items-center justify-center'>
-						<StyledImage
-							source={require('../assets/spiral/thin.png')}
-							style={{ width: 80, height: 80 }}
-						/>
-						<StyledIcon
-							name={'apps-outline'}
-							size={35}
-							color={'#FFFBFC'}
-							style={{ position: 'absolute' }}
-						/>
-					</StyledPressable>					
-				</StyledAnimatedHighlight>
+				<>
+					<StyledAnimatedHighlight
+						style={[
+							{
+								borderColor: data.color,
+								width: itemSize,
+								height: itemSize,
+								marginHorizontal: itemMargin / 2
+							},
+							itemStyle
+						]}
+						className='justify-center'
+					>
+						<StyledPressable 
+							className='flex items-center justify-center' 
+							onPress={() => {handlePresentModalPress()}}
+						>
+							<StyledImage
+								source={require('../assets/spiral/thin.png')}
+								style={{ width: 80, height: 80 }}
+							/>
+							<StyledIcon
+								name={'apps-outline'}
+								size={35}
+								color={'#FFFBFC'}
+								style={{ position: 'absolute' }}
+							/>
+							<BottomSheetModalProvider>
+								<BottomSheetModal
+									enableDismissOnClose={true}
+									ref={bottomSheetModalRef}
+									index={1}
+									snapPoints={snapPoints}
+									onChange={handleSheetChanges}
+									handleComponent={handle}
+									backdropComponent={(backdropProps) => backdrop(backdropProps)}
+									keyboardBehavior='extend'
+								>
+									<StyledView className='flex-1 bg-grey'>
+
+									</StyledView>
+								</BottomSheetModal>		
+							</BottomSheetModalProvider>
+						</StyledPressable>							
+					</StyledAnimatedHighlight>
+				</>
 			)
 		} else {
 			return (			

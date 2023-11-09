@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@expo/react-native-action-sheet": "^4.0.1",
 		"@expo/webpack-config": "^19.0.0",
+		"@gorhom/bottom-sheet": "^4.5.1",
 		"@react-native-async-storage/async-storage": "1.18.2",
 		"eas-cli": "^5.2.0",
 		"expo": "~49.0.8",
