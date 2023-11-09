@@ -20,7 +20,7 @@ import { Button } from '../../components/Buttons';
 import { Link } from 'expo-router';
 import { loginUser } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth } from '../../backend/config'; // Ensure you import your Firebase auth instance
+import { auth } from '../../backend/config'; 
 import Modal from 'react-native-modal';
 
 const StyledImage = styled(Image);
@@ -45,7 +45,7 @@ export default function Login() {
     try {
       await sendPasswordResetEmail(auth, resetEmail);
       Alert.alert("Check your email", "A link to reset your password has been sent to your email address.", [
-        { text: "OK", onPress: () => setIsForgotPasswordModalVisible(false) }
+        { text: "OK", onPress: () => setModalVisible1(false) }
       ]);
       setResetEmail('');
     } catch (error) {
