@@ -64,7 +64,7 @@ const Filter = forwardRef((props, ref) => {
 			/>
 			<AnimatedView
 				style={opacityStyle}
-				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center overflow-visible'
+				className='absolute w-screen h-[200px] max-w-[500px] flex items-start justify-center overflow-visible'
 			>
 				<FlatList
 					data={props.data}
