@@ -78,15 +78,26 @@ export async function createCircle(data) {
                 data.adminCode = Math.floor(
                     Math.random() * 90000000 + 10000000
                 );
+                for (let j = 0; j < ; j++) {
+                    if ([j].adminCode === data.adminCode) {
+                        unusedCode = false;
+                    }
+                }
             } else {
                 data.publicCode = Math.floor(
                     Math.random() * 90000000 + 10000000
                 );
+                if (publicCode === adminCode) {
+                        unusedCode = false;
+                } else {
+                    for (let j = 0; j < ; j++) {
+                    if ([j].adminCode === data.publicCode) {
+                        unusedCode = false;
+                    }
+                }
+            }
         }
-    }
-        for (let j = 0; j < ; j++) {
-                
-        }*/
+    }*/
 
     data.members[`${UID}`] = true;
     data.admin[`${UID}`] = true;
