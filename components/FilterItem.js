@@ -4,7 +4,7 @@ import React, {
 	forwardRef,
 	useImperativeHandle
 } from 'react';
-import { View, Text, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, TouchableHighlight, Pressable, Dimensions, Image } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, {
@@ -15,6 +15,8 @@ import Animated, {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledPressable = styled(Pressable);
+const StyledImage = styled(Image);
 const StyledIcon = styled(Ionicons);
 const StyledAnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
@@ -86,26 +88,85 @@ const FilterItem = forwardRef(
 			};
 		});
 
-		return (			
-			<StyledAnimatedHighlight
-				style={[
-					{
-						borderColor: data.color,
-						width: itemSize,
-						height: itemSize,
-						marginHorizontal: itemMargin / 2
-					},
-					itemStyle
-				]}
-				className='flex border-[6px] items-center justify-center rounded-full'
-			>
-				<StyledIcon
-					name={data.icon}
-					size={35}
-					color={data.iconColor || data.color}
-				/>
-			</StyledAnimatedHighlight>
-		);
+		if (data.id == 'addCircles') {
+			return (
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: data.color,
+							width: itemSize,
+							height: itemSize,
+							marginHorizontal: itemMargin / 2
+						},
+						itemStyle
+					]}
+					className='justify-center'
+				>
+					<StyledPressable className='flex items-center justify-center' onPress={async () => {router.push('../joinCircle')}}>
+						<StyledImage
+							source={require('../assets/spiral/thin.png')}
+							style={{ width: 80, height: 80 }}
+						/>
+						<StyledIcon
+							name={'add-outline'}
+							size={45}
+							color={'#FFFBFC'}
+							style={{ position: 'absolute' }}
+						/>
+					</StyledPressable>
+				</StyledAnimatedHighlight>
+			);
+		} else if (data.id == 'Gridview') {
+			return (
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: data.color,
+							width: itemSize,
+							height: itemSize,
+							marginHorizontal: itemMargin / 2
+						},
+						itemStyle
+					]}
+					className='justify-center'
+				>
+					<StyledPressable className='flex items-center justify-center' >
+						<StyledImage
+							source={require('../assets/spiral/thin.png')}
+							style={{ width: 80, height: 80 }}
+						/>
+						<StyledIcon
+							name={'apps-outline'}
+							size={35}
+							color={'#FFFBFC'}
+							style={{ position: 'absolute' }}
+						/>
+					</StyledPressable>
+				</StyledAnimatedHighlight>
+			)
+		} else {
+			return (			
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: data.color,
+							width: itemSize,
+							height: itemSize,
+							marginHorizontal: itemMargin / 2
+						},
+						itemStyle
+					]}
+					className='flex border-[6px] items-center justify-center rounded-full'
+				>
+					<StyledIcon
+						name={data.icon}
+						size={35}
+						color={data.iconColor || data.color}
+					/>
+				</StyledAnimatedHighlight>
+			);
+	
+		}
 	}
 );
 

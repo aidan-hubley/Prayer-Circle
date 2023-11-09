@@ -91,37 +91,37 @@ const Filter = forwardRef((props, ref) => {
 					decelerationRate={'fast'}
 					contentContainerStyle={{ paddingHorizontal: paddingH }}
 					renderItem={({ item, index }) => {
-						if (index === 0) {
-							return (
-								<StyledPressable className='w-[65px] h-[65px] flex items-center justify-center' onPress={router.push('joinCircle')}>
-									<StyledImage
-										source={require('../assets/spiral/thin.png')}
-										style={{ width: 65, height: 65 }}
-									/>
-									<StyledIcon
-										name={'add-outline'}
-										size={45}
-										color={'#FFFBFC'}
-										style={{ position: 'absolute' }}
-									/>
-								</StyledPressable>
-							);
-						} else if (index === 1) {
-							return (								
-								<StyledPressable className='w-[65px] h-[65px] flex items-center justify-center' onPress={toggleFilterModal}>
-									<StyledImage
-										source={require('../assets/spiral/thin.png')}
-										style={{ width: 65, height: 65 }}
-									/>
-									<StyledIcon
-										name={'apps-outline'}
-										size={35}
-										color={'#FFFBFC'}
-										style={{ position: 'absolute' }}
-									/>
-								</StyledPressable>
-							);
-						} else {
+						// if (index === 0) {
+						// 	return (
+						// 		<StyledPressable className='w-[65px] h-[65px] flex items-center justify-center' onPress={async () => {router.push('joinCircle')}}>
+						// 			<StyledImage
+						// 				source={require('../assets/spiral/thin.png')}
+						// 				style={{ width: 65, height: 65 }}
+						// 			/>
+						// 			<StyledIcon
+						// 				name={'add-outline'}
+						// 				size={45}
+						// 				color={'#FFFBFC'}
+						// 				style={{ position: 'absolute' }}
+						// 			/>
+						// 		</StyledPressable>
+						// 	);
+						// } else if (index === 1) {
+						// 	return (								
+						// 		<StyledPressable className='w-[65px] h-[65px] flex items-center justify-center' onPress={toggleFilterModal}>
+						// 			<StyledImage
+						// 				source={require('../assets/spiral/thin.png')}
+						// 				style={{ width: 65, height: 65 }}
+						// 			/>
+						// 			<StyledIcon
+						// 				name={'apps-outline'}
+						// 				size={35}
+						// 				color={'#FFFBFC'}
+						// 				style={{ position: 'absolute' }}
+						// 			/>
+						// 		</StyledPressable>
+						// 	);
+						// } else {
 							return (
 								<FilterItem
 									data={item}
@@ -131,7 +131,7 @@ const Filter = forwardRef((props, ref) => {
 									itemMargin={itemMargin}
 								/>
 							);
-						}
+						// }
 					}}
 					keyExtractor={(item) => item.id}
 				/>
