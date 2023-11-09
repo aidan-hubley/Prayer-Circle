@@ -7,6 +7,7 @@ import React, {
 import { View, Text, TouchableHighlight, Pressable, Dimensions, Image } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from '../backend/config';
 import Animated, {
 	useAnimatedStyle,
 	interpolate,
@@ -102,7 +103,7 @@ const FilterItem = forwardRef(
 					]}
 					className='justify-center'
 				>
-					<StyledPressable className='flex items-center justify-center' onPress={async () => {router.push('../joinCircle')}}>
+					<StyledPressable className='flex items-center justify-center' onPress={async () => {router.push('joinCircle')}}>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}

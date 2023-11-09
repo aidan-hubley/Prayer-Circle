@@ -4,7 +4,6 @@ import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
 import { Button } from './Buttons';
-import { router } from '../backend/config';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Modal from 'react-native-modal';
 import Ionicons from '@expo/vector-icons/Ionicons';
