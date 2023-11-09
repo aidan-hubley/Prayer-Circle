@@ -56,6 +56,19 @@ export async function deleteData(path) {
 export async function createCircle(data) {
     const UID = await getUIDFromStorage();
     let circleId = generateId();
+    let circleCode = '';
+    let divisor = 10;
+    for (let i = 0; i < circleId.length / divisor; i++) {
+        let section = circleId.substring(i * divisor, i * divisor + divisor);
+        let sectionCode = 0;
+        for (char of section) {
+            sectionCode += char.charCodeAt(0);
+        }
+        circleCode += sectionCode.toString() + '.';
+    }
+    data.members[`${UID}`] = true;
+    data.admin[`${UID}`] = true;
+    data.owner = UID;
 
     /* for (let i = 0; i < 2; i++) {
         let unusedCode = false;
@@ -69,17 +82,15 @@ export async function createCircle(data) {
                 data.publicCode = Math.floor(
                     Math.random() * 90000000 + 10000000
                 );
-            }
-
-            for (let j = 0; j < ; j++) {
-                
-            }
         }
-    }*/
+    }
+        for (let j = 0; j < ; j++) {
+                
+        }*/
+
     data.members[`${UID}`] = true;
     data.admin[`${UID}`] = true;
     data.owner = UID;
-
     let circlePermissions = {
         admin: true,
         read: true,
