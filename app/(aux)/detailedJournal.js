@@ -138,15 +138,20 @@ blah blah blah blah blah blah blah oh no he’s gonna die ahhhhhhhhhhh'
 				</StyledText>
 			</StyledGradient>
 
-			<Button
-				btnStyles={'absolute right-5 bottom-[26px]'}
-				height={'h-[60px]'}
-				width={'w-[60px]'}
-				iconSize={40}
-				icon='journal-outline'
-				expanded={false}
-				href='/mainViewLayout'
-			/>
+			<StyledView
+					className='absolute flex flex-row w-screen px-[15px] justify-between'
+					style={{ bottom: insets.bottom }}
+				>
+				<StyledView></StyledView>
+				<Button
+					height={'h-[50px]'}
+					width={'w-[50px]'}
+					iconSize={30}
+					icon='journal-outline'
+					expanded={false}
+					href='/mainViewLayout'
+				/>
+			</StyledView>
 			<StatusBar barStyle={'light-content'} />
 		</StyledView>
 	);

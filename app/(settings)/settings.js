@@ -160,9 +160,9 @@ export default function Page() {
                     <Button 
                         icon='person-circle-outline'
                         href='/mainViewLayout'
-                        width={'w-[60px]'}
-                        height={'h-[60px]'}
-                        iconSize={40}
+                        width={'w-[50px]'}
+                        height={'h-[50px]'}
+                        iconSize={30}
                     >
                     </Button>
                 </StyledView>
