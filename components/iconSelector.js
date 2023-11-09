@@ -15,7 +15,8 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { TriangleColorPicker, fromHsv } from 'react-native-color-picker'
+import { fromHsv, ColorPicker } from 'react-native-color-picker'
+import Slider from '@react-native-community/slider';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -24,7 +25,8 @@ const StyledFlatList = styled(FlatList);
 const StyledAnimView = styled(Animated.View);
 const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledOpacity = styled(TouchableOpacity);
-const StyledColorPicker = styled(TriangleColorPicker);
+const StyledSlider = styled(Slider);
+const StyledColorPicker = styled(ColorPicker);
 
 const IconSelector = forwardRef((props, ref) => {
 	const icons = [
@@ -81,8 +83,7 @@ const IconSelector = forwardRef((props, ref) => {
 			icons: ['options', 'aperture', 'color-palette', 'contrast', 'flag', 'glasses',  'images', 'key', 'ribbon', 'trophy',],
 		},
 	];
-	const [selectedIcon, setSelectedIcon] = useState(null);
-	const [selectedColor, setSelectedColor] = useState(null);
+	const [color, setColor] = useState('#ffffff');
 	const [icon, setIcon] = useState('');
 	const [opened, setOpened] = useState(false);
 	const opacity = useRef(new Animated.Value(0)).current;
@@ -94,6 +95,8 @@ const IconSelector = forwardRef((props, ref) => {
 		inputRange: [0, 1],
 		outputRange: [0, 0.5]
 	});
+
+
 
 	const toggleSelector = (direction) => {
 		if (direction) setOpened(direction);
@@ -110,8 +113,8 @@ const IconSelector = forwardRef((props, ref) => {
 	};
 
 	useImperativeHandle(ref, () => ({
-		getSelectedIcon: () => selectedIcon,
-		getSelectedColor: () => selectedColor,
+		getSelectedIcon: () => icon,
+		getSelectedColor: () => color,
 		toggleSelector,
 	}));
 
@@ -122,7 +125,7 @@ const IconSelector = forwardRef((props, ref) => {
 				onPress={() => {
 					setIcon(item);
 					toggleSelector(false);
-					props.onIconSelected(item, selectedColor);
+					props.onIconSelected(item, color);
 				}}
 				className='w-[60px] h-[60px] items-center justify-center mb-1'
 			>
@@ -158,7 +161,6 @@ const IconSelector = forwardRef((props, ref) => {
 				pointerEvents={opened ? 'auto' : 'none'}
 				onPress={() => {
 					toggleSelector(false);
-					close();
 				}}
 				className='absolute top-0 left-0 bg-offblack w-screen h-screen'
 			/>
@@ -169,19 +171,39 @@ const IconSelector = forwardRef((props, ref) => {
 			>
 				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
                     Select an Icon Color
-                </StyledText>
+                </StyledText>				
 				<StyledColorPicker
 					className='w-[200px] h-[200px]'
+					// color={pickerColor}
 					onColorChange={color => {
-						if (selectedIcon) {
-							color = fromHsv(color);
-							setSelectedColor(color);
-							console.log(color);
-							console.log(selectedIcon);
-						}
+						color = fromHsv(color);
+						setColor(color);
 					}}
-					hideControls={true}
+					sliderComponent={Slider}
+					hideSliders={true}
 				/>
+				<StyledView 
+					className='absolute top-[106px] w-[106px] h-[106px] rounded-full'
+					style={{backgroundColor: color}}
+				>
+				</StyledView>
+				<StyledView className='flex flex-row justify-between items-center pb-4 pt-1'>
+					<StyledView className='w-[25px] h-[25px] rounded-full bg-black border-2 border-white'></StyledView>
+					<StyledSlider 
+						className=' w-[200px] h-[40px]'
+						minimumTrackTintColor="#FFFFFF"
+						maximumTrackTintColor="#FFFFFF"
+						thumbTintColor='#FFFFFF'
+						value={1}
+						onValueChange={color => {
+							color = Math.floor(color * 255);
+							color = color.toString(16);
+							color = '#' + color + color + color;
+							setColor(color);
+						}}
+					/>
+					<StyledView className='w-[25px] h-[25px] rounded-full bg-white'></StyledView>
+				</StyledView>
 				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
                     Select an Icon
                 </StyledText>

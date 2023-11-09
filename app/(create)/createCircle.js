@@ -66,16 +66,8 @@ export default function Page() {
 	const handleIconSelected = (icon, color) => {
 		setCircleIcon(icon);
 		setCircleColor(color);
+		console.log(icon, color);
 	}
-
-	function updateIcon() {
-        const selectedIcon = iconSelectorRef.current.getSelectedIcon();
-        const selectedColor = iconSelectorRef.current.getSelectedColor();
-        if (selectedIcon) {
-            setCircleIcon(selectedIcon);
-            setCircleColor(selectedColor);
-        }
-    }
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
@@ -98,14 +90,12 @@ export default function Page() {
 							className='w-full h-[400px]'
 							sliderComponent={Slider}
 							hideSliders={true}
-							onColorSelected={color => alert(`Color selected: ${color}`)}
 							style={{flex: 1}}
 						/>
 						<StyledOpacity
 							className='relative bottom-[50%] w-[167px] h-[167px] items-center justify-center bg-offblack rounded-full'
 							onPress={() => {
-								onPress();
-								// updateIcon();
+								onPress();								
 							}}
 						>
 							<StyledIcon
@@ -197,7 +187,7 @@ export default function Page() {
 				<IconSelector
 					onIconSelected={handleIconSelected}
 					// close={updateIcon}
-					// ref={iconSelectorRef}
+					ref={iconSelectorRef}
 				/>
 			</>
 		</StyledSafeArea>
