@@ -10,7 +10,6 @@ import {
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
-import { useActionSheet } from '@expo/react-native-action-sheet';
 import { IconSelector } from '../../components/iconSelector';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
@@ -29,33 +28,6 @@ export default function Page() {
 	const [circleIcon, setCircleIcon] = useState('');
 
 	const iconSelectorRef = useRef();
-
-	const { showActionSheetWithOptions } = useActionSheet();
-
-	const onPress = () => {
-		showActionSheetWithOptions(
-			{
-				options: ['Image', 'Icon', 'Cancel'],
-				cancelButtonIndex: 2,
-				userInterfaceStyle: 'dark'
-			},
-			(selectedIndex) => {
-				switch (selectedIndex) {
-					case 0:
-						console.log('Image');
-
-						break;
-
-					case 1:
-						iconSelectorRef.current.toggleSelector(true);
-						break;
-
-					case 2:
-					// Canceled
-				}
-			}
-		);
-	};
 
 	function updateIcon() {
 		setTimeout(() => {
