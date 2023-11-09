@@ -131,7 +131,8 @@ const FilterItem = forwardRef(
 					]}
 					className='justify-center'
 				>
-					<StyledPressable className='flex items-center justify-center' >
+					{/* Call CircleList.js */}
+					<StyledPressable className='flex items-center justify-center'>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
@@ -142,7 +143,7 @@ const FilterItem = forwardRef(
 							color={'#FFFBFC'}
 							style={{ position: 'absolute' }}
 						/>
-					</StyledPressable>
+					</StyledPressable>					
 				</StyledAnimatedHighlight>
 			)
 		} else {
@@ -166,7 +167,6 @@ const FilterItem = forwardRef(
 					/>
 				</StyledAnimatedHighlight>
 			);
-	
 		}
 	}
 );
