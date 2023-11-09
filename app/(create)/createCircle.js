@@ -72,7 +72,7 @@ export default function Page() {
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
 			<>
-				{/* <KeyboardAwareScrollView bounces={false}> */}
+				<KeyboardAwareScrollView bounces={false}>
 					<>
 					<StyledView className='flex items-center justify-center text-center w-screen h-[170px]'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
@@ -105,7 +105,7 @@ export default function Page() {
 							/>
 						</StyledOpacity>
 					</StyledView>
-							{/* <StyledView className='w-full flex flex-row items-center justify-between'>
+							<StyledView className='w-full flex flex-row items-center justify-between'>
 								<StyledInput
 									className='bg-offblack text-[18px] flex-1 h-[42px] text-offwhite border border-outline rounded-lg px-3 py-[5px] mr-1'
 									placeholder={'Circle Name'}
@@ -137,9 +137,9 @@ export default function Page() {
 								ref={(input) => {
 									this.circleDescription = input;
 								}}
-							/> */}
+							/>
 					</>
-				{/* </KeyboardAwareScrollView> */}
+				</KeyboardAwareScrollView>
 				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-between px-[15px] mt-auto'>
 					<Button
 						title='Erase'

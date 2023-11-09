@@ -174,7 +174,6 @@ const IconSelector = forwardRef((props, ref) => {
                 </StyledText>				
 				<StyledColorPicker
 					className='w-[200px] h-[200px]'
-					// color={pickerColor}
 					onColorChange={color => {
 						color = fromHsv(color);
 						setColor(color);
