@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { fromHsv, ColorPicker } from 'react-native-color-picker'
+import { fromHsv, ColorPicker } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
 
 const StyledView = styled(View);
@@ -32,56 +32,185 @@ const IconSelector = forwardRef((props, ref) => {
 	const icons = [
 		{
 			title: 'Transportation',
-			icons: ['trail-sign', 'airplane', 'boat', 'bus', 'car', 'subway', 'globe', 'compass', 'location', 'map', 'navigate', 'paper-plane',],
+			icons: [
+				'trail-sign',
+				'airplane',
+				'boat',
+				'bus',
+				'car',
+				'subway',
+				'globe',
+				'compass',
+				'location',
+				'map',
+				'navigate',
+				'paper-plane'
+			]
 		},
 		{
 			title: 'Sports',
-			icons: ['american-football', 'baseball', 'basketball', 'football', 'bicycle', 'golf', 'tennisball',],
+			icons: [
+				'american-football',
+				'baseball',
+				'basketball',
+				'football',
+				'bicycle',
+				'golf',
+				'tennisball'
+			]
 		},
 		{
 			title: 'Health & Fitness',
-			icons: ['barbell', 'eye', 'body', 'fitness', 'ear', 'medical', 'medkit', 'pulse',],
+			icons: [
+				'barbell',
+				'eye',
+				'body',
+				'fitness',
+				'ear',
+				'medical',
+				'medkit',
+				'pulse'
+			]
 		},
 		{
 			title: 'Food & Drink',
-			icons: ['cafe', 'fast-food', 'ice-cream', 'pizza', 'nutrition', 'restaurant',],
+			icons: [
+				'cafe',
+				'fast-food',
+				'ice-cream',
+				'pizza',
+				'nutrition',
+				'restaurant'
+			]
 		},
 		{
 			title: 'Technology',
-			icons: ['power', 'radio', 'desktop', 'camera', 'headset', 'mic', 'laptop', 'videocam', 'chatbox-ellipses', 'chatbubble-ellipses', 'chatbubbles', 'code-slash', 'cog', 'reader', 'reload', 'attach', 'sync', 'settings',],
+			icons: [
+				'power',
+				'radio',
+				'desktop',
+				'camera',
+				'headset',
+				'mic',
+				'laptop',
+				'videocam',
+				'chatbox-ellipses',
+				'chatbubble-ellipses',
+				'chatbubbles',
+				'code-slash',
+				'cog',
+				'reader',
+				'reload',
+				'attach',
+				'sync',
+				'settings'
+			]
 		},
 		{
 			title: 'Entertainment',
-			icons: ['film', 'game-controller', 'headset', 'musical-note', 'musical-notes', 'play', 'tv', 'disc',],
+			icons: [
+				'film',
+				'game-controller',
+				'headset',
+				'musical-note',
+				'musical-notes',
+				'play',
+				'tv',
+				'disc'
+			]
 		},
 		{
 			title: 'Education',
-			icons: ['book', 'library', 'school', 'flask', 'rocket', 'language',],
+			icons: ['book', 'library', 'school', 'flask', 'rocket', 'language']
 		},
 		{
 			title: 'Finance',
-			icons: ['cash', 'card', 'wallet', 'calculator',],
+			icons: ['cash', 'card', 'wallet', 'calculator']
 		},
 		{
 			title: 'Nature',
-			icons: ['leaf', 'flower', 'rose', 'bug', 'planet', 'earth', 'moon', 'sunny', 'flame', 'flash', 'snow', 'cloud', 'cloudy-night', 'rainy', 'partly-sunny', 'thunderstorm', 'paw', 'umbrella', 'bonfire',],
+			icons: [
+				'leaf',
+				'flower',
+				'rose',
+				'bug',
+				'planet',
+				'earth',
+				'moon',
+				'sunny',
+				'flame',
+				'flash',
+				'snow',
+				'cloud',
+				'cloudy-night',
+				'rainy',
+				'partly-sunny',
+				'thunderstorm',
+				'paw',
+				'umbrella',
+				'bonfire'
+			]
 		},
 		{
 			title: 'Shapes',
-			icons: ['square', 'triangle', 'ellipse', 'shapes', 'shield', 'star', 'infinite', 'cube', 'grid', 'heart', 'radio-button-off', 'radio-button-on',],
-		},		
+			icons: [
+				'square',
+				'triangle',
+				'ellipse',
+				'shapes',
+				'shield',
+				'star',
+				'infinite',
+				'cube',
+				'grid',
+				'heart',
+				'radio-button-off',
+				'radio-button-on'
+			]
+		},
 		{
 			title: 'People',
-			icons: ['female', 'woman', 'male', 'man', 'hand-left', 'hand-right', 'people', 'person', 'happy', 'finger-print', 'home',],
+			icons: [
+				'female',
+				'woman',
+				'male',
+				'man',
+				'hand-left',
+				'hand-right',
+				'people',
+				'person',
+				'happy',
+				'finger-print',
+				'home'
+			]
 		},
 		{
 			title: 'Work',
-			icons: ['briefcase', 'business', 'construct', 'hammer', 'mail', 'newspaper', 'today',],
+			icons: [
+				'briefcase',
+				'business',
+				'construct',
+				'hammer',
+				'mail',
+				'newspaper',
+				'today'
+			]
 		},
 		{
 			title: 'Other',
-			icons: ['options', 'aperture', 'color-palette', 'contrast', 'flag', 'glasses',  'images', 'key', 'ribbon', 'trophy',],
-		},
+			icons: [
+				'options',
+				'aperture',
+				'color-palette',
+				'contrast',
+				'flag',
+				'glasses',
+				'images',
+				'key',
+				'ribbon',
+				'trophy'
+			]
+		}
 	];
 	const [color, setColor] = useState('#ffffff');
 	const [icon, setIcon] = useState('');
@@ -95,8 +224,6 @@ const IconSelector = forwardRef((props, ref) => {
 		inputRange: [0, 1],
 		outputRange: [0, 0.5]
 	});
-
-
 
 	const toggleSelector = (direction) => {
 		if (direction) setOpened(direction);
@@ -115,7 +242,7 @@ const IconSelector = forwardRef((props, ref) => {
 	useImperativeHandle(ref, () => ({
 		getSelectedIcon: () => icon,
 		getSelectedColor: () => color,
-		toggleSelector,
+		toggleSelector
 	}));
 
 	function renderIcon({ item, index }) {
@@ -139,16 +266,27 @@ const IconSelector = forwardRef((props, ref) => {
 		);
 	}
 
-	function renderCategory({ item }) {	
+	function renderCategory({ item }) {
 		return (
-			<View key={item.title} style={{width: '100%', flexDirection: 'column'}}>
-				<Text style={{color: '#ffffff', fontSize: 18, marginVertical: 10}}>{item.title}</Text>
+			<View
+				key={item.title}
+				style={{ width: '100%', flexDirection: 'column' }}
+			>
+				<Text
+					style={{
+						color: '#ffffff',
+						fontSize: 18,
+						marginVertical: 10
+					}}
+				>
+					{item.title}
+				</Text>
 				<StyledFlatList
 					data={item.icons}
 					renderItem={renderIcon}
 					keyExtractor={(item, index) => `icon${index}`}
 					numColumns={4}
-					contentContainerStyle={{justifyContent: 'space-around'}}
+					contentContainerStyle={{ justifyContent: 'space-around' }}
 				/>
 			</View>
 		);
@@ -167,34 +305,33 @@ const IconSelector = forwardRef((props, ref) => {
 			<StyledAnimView
 				style={{ opacity: opacityInterpolation }}
 				pointerEvents={opened ? 'auto' : 'none'}
-				className='absolute -translate-x-[150px] left-1/2 top-[10%] w-[80%] p-[15px] max-w-[300px] h-[80%] bg-offblack border border-[#3D3D3D] rounded-[20px] content-center items-center'
+				className='absolute -translate-x-[150px] left-1/2 top-[10%] w-[80%] p-[15px] max-w-[300px] h-[80%] bg-offblack border border-[#3D3D3D] rounded-[20px] items-center'
 			>
 				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
-                    Select an Icon Color
-                </StyledText>				
+					Select an Icon Color
+				</StyledText>
 				<StyledColorPicker
 					className='w-[200px] h-[200px]'
-					onColorChange={color => {
+					onColorChange={(color) => {
 						color = fromHsv(color);
 						setColor(color);
 					}}
 					sliderComponent={Slider}
 					hideSliders={true}
 				/>
-				<StyledView 
+				<StyledView
 					className='absolute top-[106px] w-[106px] h-[106px] rounded-full'
-					style={{backgroundColor: color}}
-				>
-				</StyledView>
+					style={{ backgroundColor: color }}
+				></StyledView>
 				<StyledView className='flex flex-row justify-between items-center pb-4 pt-1'>
 					<StyledView className='w-[25px] h-[25px] rounded-full bg-black border-2 border-white'></StyledView>
-					<StyledSlider 
+					<StyledSlider
 						className=' w-[200px] h-[40px]'
-						minimumTrackTintColor="#FFFFFF"
-						maximumTrackTintColor="#FFFFFF"
+						minimumTrackTintColor='#FFFFFF'
+						maximumTrackTintColor='#FFFFFF'
 						thumbTintColor='#FFFFFF'
 						value={1}
-						onValueChange={color => {
+						onValueChange={(color) => {
 							color = Math.floor(color * 255);
 							color = color.toString(16);
 							color = '#' + color + color + color;
@@ -204,8 +341,8 @@ const IconSelector = forwardRef((props, ref) => {
 					<StyledView className='w-[25px] h-[25px] rounded-full bg-white'></StyledView>
 				</StyledView>
 				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
-                    Select an Icon
-                </StyledText>
+					Select an Icon
+				</StyledText>
 				<StyledFlatList
 					data={icons}
 					renderItem={renderCategory}
