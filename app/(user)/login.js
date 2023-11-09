@@ -113,41 +113,41 @@ export default function Login() {
           </TouchableWithoutFeedback>
         </StyledKeyboardAwareScrollView>
         <StatusBar barStyle={'light-content'} />
-      </StyledSafeArea>
-      <StyledModal
-				className='w-[80%] self-center'
-				isVisible={isModalVisible1}
-        onBackdropPress={toggleModal1}
-        avoidKeyboard={true}
-			>
-				<StyledView className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[40%]'>
-					<StyledView className='flex-1 items-center h-[60%]'>
-						<StyledText className='absolute top-[6%] text-3xl text-offwhite'>
-							Reset Password
-						</StyledText>
-            <StyledText className='absolute top-[20%] text-xl text-offwhite'>
-              Enter your email here:
-            </StyledText>
-            <StyledView className='my-[30px] absolute top-[35%]  w-[85%]'>
-              <StyledInput
-                className='text-[18px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-                placeholder="Email"
-                value={resetEmail}
-                onChangeText={setResetEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
+        <StyledModal
+          className='w-[80%] self-center h-[90%]'
+          isVisible={isModalVisible1}
+          onBackdropPress={toggleModal1}
+          avoidKeyboard={true}
+        >
+          <StyledView className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[40%]'>
+            <StyledView className='flex-1 items-center h-[60%]'>
+              <StyledText className='absolute top-[6%] text-3xl text-offwhite'>
+                Reset Password
+              </StyledText>
+              <StyledText className='absolute top-[20%] text-xl text-offwhite'>
+                Enter your email here:
+              </StyledText>
+              <StyledView className='absolute top-[35%] w-[85%]'>
+                <StyledInput
+                  className='text-[18px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+                  placeholder="Email"
+                  value={resetEmail}
+                  onChangeText={setResetEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </StyledView>
+              <Button
+                title='Submit'
+                btnStyles={'absolute bottom-[10%]'}
+                width='w-[70%]'
+                press={handlePasswordReset}
               />
+              
             </StyledView>
-						<Button
-							title='Submit'
-							btnStyles={'absolute bottom-[10%]'}
-							width='w-[70%]'
-							press={handlePasswordReset}
-						/>
-            
-					</StyledView>
-				</StyledView>
-			</StyledModal>
+          </StyledView>
+        </StyledModal>
+      </StyledSafeArea>      
     </>
 	);
 }
