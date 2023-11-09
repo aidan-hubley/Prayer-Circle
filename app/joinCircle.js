@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
@@ -18,6 +19,9 @@ const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 
 export default function Page() {
+	let insets = useSafeAreaInsets();
+	let topInset = insets.top > 30 ? insets.top : insets.top + 10;
+
 	const [code, setCode] = useState('');
 	const [hasPermission, setHasPermission] = useState(null);
 	const [scanned, setScanned] = useState(false);
@@ -50,76 +54,76 @@ export default function Page() {
 	}
 
 	return (
-		<StyledSafeArea className='bg-offblack  flex-1'>
+		<StyledSafeArea
+			className='bg-offblack flex-1 h-screen'
+			style={{ paddingTop: topInset }}
+		>
 			<KeyboardAwareScrollView bounces={false}>
-				<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
-					<StyledText className='text-offwhite font-bold text-4xl'>
-						Join New Circle:
-					</StyledText>
-				</StyledView>
-				<StyledView className='flex-row justify-center'>
-					<StyledView className='w-[300px] h-[300px] border-2 border-offwhite'>
-						<BarCodeScanner
-							mirrorImage={true}
-							fixOrientation={true}
-							className='w-full h-full'
-							ratio='1:1'
-							onBarCodeScanned={
-								scanned ? undefined : handleBarCodeScanned
-							}
-						/>
+				<StyledView className='flex-1 items-center h-screen'>
+					<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
+						<StyledText className='text-offwhite font-bold text-4xl'>
+							Join New Circle
+						</StyledText>
 					</StyledView>
+
+					<StyledView className='absolute top-[15%] border-[10px] border-offwhite rounded-xl'>
+						<StyledView className='w-[300px] h-[300px]'>
+							<BarCodeScanner
+								mirrorImage={true}
+								fixOrientation={true}
+								className='w-full h-full'
+								ratio='1:1'
+								onBarCodeScanned={
+									scanned ? undefined : handleBarCodeScanned
+								}
+							/>
+						</StyledView>
+					</StyledView>
+					<StyledView className='absolute w-[70%] bottom-[30%] border-[10px] border-offwhite mt-20 rounded-xl'>
+						<StyledInput
+							className='bg-offblack px-[10px] font-bold text-2xl flex-1 h-[42px] text-offwhite rounded-lg py-[5px] mr-1'
+							placeholder={'Code:'}
+							placeholderTextColor={'#FFFBFC'}
+							inputMode='numeric'
+							maxLength={8}
+							onChangeText={(text) => {
+								setCode(text);
+							}}
+							ref={(input) => {
+								this.searchCode = input;
+							}}
+						/>
+					</StyledView>				
 				</StyledView>
-				<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
-					<StyledText className='text-offwhite font-bold text-4xl'>
-						Circle Code:
-					</StyledText>
-				</StyledView>
-				<StyledView className='flex items-center justify-center'>
-					<StyledInput
-						className='bg-offblack text-[18px] flex-1 w-[300px] h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[5px] mr-1'
-						placeholder={'Code:'}
-						placeholderTextColor={'#ffffff66'}
-						inputMode='numeric'
-						maxLength={8}
-						onChangeText={(text) => {
-							setCode(text);
-						}}
-						ref={(input) => {
-							this.searchCode = input;
+				<StyledView
+					className='absolute flex flex-row w-screen px-[15px] justify-between'
+					style={{ bottom: insets.bottom }}
+				>
+					<Button
+						height={'h-[50px]'}
+						width={'w-[50px]'}
+						iconSize={30}
+						icon='arrow-back-outline'
+						href='/mainViewLayout'
+						press={() => {
+							this.searchCode.clear();
 						}}
 					/>
-				</StyledView>
-				<StyledView className='w-[365px] items-center'>
-					<StyledView className='flex-row items-center justify-between h-[90px] w-[300px]'>
-						<Button
-							title='Cancel'
-							width='w-[125px]'
-							height='h-[60px]'
-							href='/mainViewLayout'
-							bgColor={'bg-offblack'}
-							borderColor={'border-offwhite border-2'}
-							textColor={'text-offwhite'}
-							press={() => {
-								this.searchCode.clear();
-							}}
-						/>
-						<Button
-							title='Search'
-							width='w-[125px]'
-							height='h-[60px]'
-							href='/mainViewLayout'
-							press={async () => {
-								if (code.length < 8) {
-									alert('Please enter 8 digits');
-									return;
-								} else {
-									alert(code);
-								}
-								this.searchCode.clear();
-							}}
-						/>
-					</StyledView>
+					<Button
+						height={'h-[50px]'}
+						width={'w-[50px]'}
+						iconSize={30}
+						icon='search-outline'
+						press={async () => {
+							if (code.length < 8) {
+								alert('Please enter 8 digits');
+								return;
+							} else {
+								alert(code);
+							}
+							this.searchCode.clear();
+						}}
+					/>
 				</StyledView>
 			</KeyboardAwareScrollView>
 		</StyledSafeArea>
