@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styled } from 'nativewind';
@@ -104,7 +104,7 @@ export default function Login() {
                   </Link>
                 </StyledText>
                 <TouchableOpacity onPress={toggleModal1}>
-                  <StyledText className='text-yellow text-center text-[18px] mb-4'>
+                  <StyledText className='text-yellow text-center text-[18px] mb-4 font-bold'>
                     Forgot Password?
                   </StyledText>
                 </TouchableOpacity>
@@ -118,6 +118,7 @@ export default function Login() {
 				className='w-[80%] self-center'
 				isVisible={isModalVisible1}
         onBackdropPress={toggleModal1}
+        avoidKeyboard={true}
 			>
 				<StyledView className='bg-offblack border-[5px] border-offwhite rounded-2xl h-[40%]'>
 					<StyledView className='flex-1 items-center h-[60%]'>
@@ -127,20 +128,23 @@ export default function Login() {
             <StyledText className='absolute top-[20%] text-xl text-offwhite'>
               Enter your email here:
             </StyledText>
-						<StyledInput
-              className='absolute top-[35%] text-[18px] w-[85%] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
-              placeholder="Email"
-              value={resetEmail}
-              onChangeText={setResetEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+            <StyledView className='my-[30px] absolute top-[35%]  w-[85%]'>
+              <StyledInput
+                className='text-[18px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+                placeholder="Email"
+                value={resetEmail}
+                onChangeText={setResetEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </StyledView>
 						<Button
 							title='Submit'
 							btnStyles={'absolute bottom-[10%]'}
 							width='w-[70%]'
 							press={handlePasswordReset}
 						/>
+            
 					</StyledView>
 				</StyledView>
 			</StyledModal>
