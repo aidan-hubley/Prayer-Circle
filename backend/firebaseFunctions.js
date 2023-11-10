@@ -173,7 +173,7 @@ export async function loginUser(email, password) {
 }
 
 export async function checkUsername(username) {
-	let usernames = await readData(`usernames`);
+	let usernames = (await readData(`usernames`)) || {};
 	let taken = false;
 
 	usernames = Object.keys(usernames);
