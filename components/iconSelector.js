@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { fromHsv, ColorPicker } from 'react-native-color-picker';
+import { fromHsv, TriangleColorPicker } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
 
 const StyledView = styled(View);
@@ -26,9 +26,12 @@ const StyledAnimView = styled(Animated.View);
 const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledOpacity = styled(TouchableOpacity);
 const StyledSlider = styled(Slider);
-const StyledColorPicker = styled(ColorPicker);
+const StyledColorPicker = styled(TriangleColorPicker);
 
 const IconSelector = forwardRef((props, ref) => {
+	const [opened, setOpened] = useState(false);
+	const iconColorRef = useRef();
+
 	const icons = [
 		{
 			title: 'Transportation',
@@ -212,9 +215,7 @@ const IconSelector = forwardRef((props, ref) => {
 			]
 		}
 	];
-	const [color, setColor] = useState('#ffffff');
-	const [icon, setIcon] = useState('');
-	const [opened, setOpened] = useState(false);
+
 	const opacity = useRef(new Animated.Value(0)).current;
 	const opacityInterpolation = opacity.interpolate({
 		inputRange: [0, 1],
@@ -240,8 +241,6 @@ const IconSelector = forwardRef((props, ref) => {
 	};
 
 	useImperativeHandle(ref, () => ({
-		getSelectedIcon: () => icon,
-		getSelectedColor: () => color,
 		toggleSelector
 	}));
 
@@ -250,9 +249,11 @@ const IconSelector = forwardRef((props, ref) => {
 			<StyledOpacity
 				key={`icon${index}`}
 				onPress={() => {
-					setIcon(item);
 					toggleSelector(false);
-					props.onIconSelected(item, color);
+					props.onIconSelected(
+						item,
+						fromHsv(iconColorRef.current.state.color)
+					);
 				}}
 				className='w-[60px] h-[60px] items-center justify-center mb-1'
 			>
@@ -312,35 +313,11 @@ const IconSelector = forwardRef((props, ref) => {
 				</StyledText>
 				<StyledColorPicker
 					className='w-[200px] h-[200px]'
-					onColorChange={(color) => {
-						color = fromHsv(color);
-						setColor(color);
-					}}
+					ref={iconColorRef}
 					sliderComponent={Slider}
 					hideSliders={true}
 				/>
-				<StyledView
-					className='absolute top-[106px] w-[106px] h-[106px] rounded-full'
-					style={{ backgroundColor: color }}
-				></StyledView>
-				<StyledView className='flex flex-row justify-between items-center pb-4 pt-1'>
-					<StyledView className='w-[25px] h-[25px] rounded-full bg-black border-2 border-white'></StyledView>
-					<StyledSlider
-						className=' w-[200px] h-[40px]'
-						minimumTrackTintColor='#FFFFFF'
-						maximumTrackTintColor='#FFFFFF'
-						thumbTintColor='#FFFFFF'
-						value={1}
-						onValueChange={(color) => {
-							color = Math.floor(color * 255);
-							color = color.toString(16);
-							color = '#' + color + color + color;
-							setColor(color);
-						}}
-					/>
-					<StyledView className='w-[25px] h-[25px] rounded-full bg-white'></StyledView>
-				</StyledView>
-				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
+				<StyledText className='text-offwhite font-bold text-2xl text-center mt-3 mb-2'>
 					Select an Icon
 				</StyledText>
 				<StyledFlatList
