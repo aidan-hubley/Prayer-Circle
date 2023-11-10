@@ -70,7 +70,22 @@ export async function createCircle(data) {
     data.admin[`${UID}`] = true;
     data.owner = UID;
 
-    /* for (let i = 0; i < 2; i++) {
+    let circles = Object.keys((await readData(`prayer_circle/circles`)) || {});
+    const allAdminCodes = new Array(circles.length);
+    const allPublicCodes = new Array(circles.length);
+    for (let i = 0; i < circles.length; i++) {
+        let circle = circles[i];
+        let circleData =
+            (await readData(`prayer_circle/circles/${circle}`)) || {};
+        let circleStruct = {
+            adminCode: circleData.adminCode,
+            publicCode: circleData.publicCode
+        };
+        allAdminCodes[i] = circleStruct.adminCode;
+        allPublicCodes[i] = circleStruct.publicCode;
+    }
+
+    for (let i = 0; i < 2; i++) {
         let unusedCode = false;
         while (!unusedCode) {
             unusedCode = true;
@@ -78,8 +93,8 @@ export async function createCircle(data) {
                 data.adminCode = Math.floor(
                     Math.random() * 90000000 + 10000000
                 );
-                for (let j = 0; j < ; j++) {
-                    if ([j].adminCode === data.adminCode) {
+                for (let j = 0; j < allAdminCodes.length; j++) {
+                    if (allAdminCodes[j] === data.adminCode) {
                         unusedCode = false;
                     }
                 }
@@ -87,17 +102,18 @@ export async function createCircle(data) {
                 data.publicCode = Math.floor(
                     Math.random() * 90000000 + 10000000
                 );
-                if (publicCode === adminCode) {
-                        unusedCode = false;
+                if (data.publicCode === data.adminCode) {
+                    unusedCode = false;
                 } else {
-                    for (let j = 0; j < ; j++) {
-                    if ([j].adminCode === data.publicCode) {
-                        unusedCode = false;
+                    for (let j = 0; j < allPublicCodes.length; j++) {
+                        if (allPublicCodes[j] === data.publicCode) {
+                            unusedCode = false;
+                        }
                     }
                 }
             }
         }
-    }*/
+    }
 
     data.members[`${UID}`] = true;
     data.admin[`${UID}`] = true;
