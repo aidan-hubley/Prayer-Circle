@@ -133,7 +133,7 @@ export async function createCircle(data) {
 	);
 }
 
-export async function registerUser(email, password, data) {
+export async function registerUser(username, email, password, data) {
 	await createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
 			// Signed in
