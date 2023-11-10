@@ -69,48 +69,37 @@ export async function createCircle(data) {
 	data.members[`${UID}`] = true;
 	data.admin[`${UID}`] = true;
 	data.owner = UID;
+	data.codes = { admin: admin_Code, public: public_Code };
 
 	let circles = Object.keys((await readData(`prayer_circle/circles`)) || {});
-	const allAdminCodes = new Array(circles.length);
-	const allPublicCodes = new Array(circles.length);
+	let allCodes = [];
 	for (let i = 0; i < circles.length; i++) {
 		let circle = circles[i];
 		let circleData =
-			(await readData(`prayer_circle/circles/${circle}`)) || {};
-		let circleStruct = {
+			(await readData(`prayer_circle/circles/${circle}/codes`)) || {};
+		/*let circleStruct = {
 			adminCode: circleData.adminCode,
 			publicCode: circleData.publicCode
-		};
-		allAdminCodes[i] = circleStruct.adminCode;
-		allPublicCodes[i] = circleStruct.publicCode;
+		};*/
+		allCodes.push(circleData.admin_Code);
+		allCodes.push(circleData.public_Code);
 	}
-
-	for (let i = 0; i < 2; i++) {
-		let unusedCode = false;
-		while (!unusedCode) {
-			unusedCode = true;
-			if (i === 0) {
-				data.adminCode = Math.floor(
-					Math.random() * 90000000 + 10000000
-				);
-				for (let j = 0; j < allAdminCodes.length; j++) {
-					if (allAdminCodes[j] === data.adminCode) {
-						unusedCode = false;
-					}
-				}
-			} else {
-				data.publicCode = Math.floor(
-					Math.random() * 90000000 + 10000000
-				);
-				if (data.publicCode === data.adminCode) {
-					unusedCode = false;
-				} else {
-					for (let j = 0; j < allPublicCodes.length; j++) {
-						if (allPublicCodes[j] === data.publicCode) {
-							unusedCode = false;
-						}
-					}
-				}
+	data.admin_Code = 0;
+	data.public_Code = 0;
+	while (data.admin_Code === 0 || data.public_Code === 0) {
+		if (data.admin_Code === 0) {
+			let tempAdminCode = Math.floor(Math.random() * 90000000 + 10000000);
+			if (!allCodes.includes(tempAdminCode)) {
+				data.admin_Code = tempAdminCode;
+				allCodes.push(tempAdminCode);
+			}
+		}
+		if (data.public_Code === 0) {
+			let tempPublicCode = Math.floor(
+				Math.random() * 90000000 + 10000000
+			);
+			if (!allCodes.includes(tempPublicCode)) {
+				data.public_Code = tempPublicCode;
 			}
 		}
 	}

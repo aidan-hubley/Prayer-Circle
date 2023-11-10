@@ -94,7 +94,11 @@
 				"admin": {
 					"_uid_": true
 				},
-				"owner": "_uid_"
+				"owner": "_uid_",
+				"codes": {
+					"admin_Code": 12345678,
+					"public_Code": 12345678
+				}
 			}
 		}
 	}
