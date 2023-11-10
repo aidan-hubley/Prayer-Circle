@@ -255,7 +255,7 @@ const IconSelector = forwardRef((props, ref) => {
 						fromHsv(iconColorRef.current.state.color)
 					);
 				}}
-				className='w-[60px] h-[60px] items-center justify-center mb-1'
+				className='w-[25%] aspect-square items-center justify-center mb-1'
 			>
 				<StyledIcon
 					key={index}
@@ -269,19 +269,10 @@ const IconSelector = forwardRef((props, ref) => {
 
 	function renderCategory({ item }) {
 		return (
-			<View
-				key={item.title}
-				style={{ width: '100%', flexDirection: 'column' }}
-			>
-				<Text
-					style={{
-						color: '#ffffff',
-						fontSize: 18,
-						marginVertical: 10
-					}}
-				>
+			<StyledView key={item.title} className='flex flex-column w-[100%]'>
+				<StyledText className='text-offwhite text-[18px] mt-[10px] mb-[5px]'>
 					{item.title}
-				</Text>
+				</StyledText>
 				<StyledFlatList
 					data={item.icons}
 					renderItem={renderIcon}
@@ -289,7 +280,7 @@ const IconSelector = forwardRef((props, ref) => {
 					numColumns={4}
 					contentContainerStyle={{ justifyContent: 'space-around' }}
 				/>
-			</View>
+			</StyledView>
 		);
 	}
 
