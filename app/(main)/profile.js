@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
 import { router, auth } from '../../backend/config';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
-import { render } from 'react-dom';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -162,7 +161,12 @@ export default function ProfilePage() {
 								initialLoad == 'loaded' ? 'flex' : 'hidden'
 							}`}
 							width='w-11/12'
-							href='/createPost'
+							//href='/createPost'
+							press={() => {
+								signOut(auth);
+								AsyncStorage.removeItem('user');
+								router.push('/login');
+							}}
 						/>
 					</StyledView>
 				}
@@ -173,7 +177,7 @@ export default function ProfilePage() {
 						title={item[1].title}
 						timestamp={`${item[1].timestamp}`}
 						content={item[1].text}
-						icon='heart-outline'
+						icon={item[1].type}
 						id={item[0]}
 						refresh={() => setUpFeed()}
 						owned={true}

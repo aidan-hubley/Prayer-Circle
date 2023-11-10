@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../components/PostTypeSelector';
@@ -16,7 +16,10 @@ export default function Page() {
 	userLoggedIn();
 
 	AsyncStorage.getItem('user').then((user) => {
-		if (!user || user.length == 0) router.push('/login');
-		else router.push('/mainViewLayout');
+		if (!user || user.length == 0) {
+			router.push('/login');
+		} else {
+			router.push('/mainViewLayout');
+		}
 	});
 }

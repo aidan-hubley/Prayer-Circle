@@ -56,6 +56,16 @@ export async function deleteData(path) {
 export async function createCircle(data) {
 	const UID = await getUIDFromStorage();
 	let circleId = generateId();
+	let circleCode = '';
+	let divisor = 10;
+	for (let i = 0; i < circleId.length / divisor; i++) {
+		let section = circleId.substring(i * divisor, i * divisor + divisor);
+		let sectionCode = 0;
+		for (char of section) {
+			sectionCode += char.charCodeAt(0);
+		}
+		circleCode += sectionCode.toString() + '.';
+	}
 	data.members[`${UID}`] = true;
 	data.admin[`${UID}`] = true;
 	data.owner = UID;
@@ -67,21 +77,21 @@ export async function createCircle(data) {
 		owner: true
 	};
 
-	writeData(`prayer_circle/circles/${circleId}`, data, true);
+	/* writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
-		`prayer_circle/users/${UID}/circles/${circleId}/permissions`,
+		`prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
-	);
+	); */
 }
 
-export async function registerUser(email, password, data) {
+export async function registerUser(username, email, password, data) {
 	await createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
 			// Signed in
 			const user = userCredential.user;
 			writeData(`prayer_circle/users/${user.uid}`, data, true);
-			writeData(`usernames/${data.username}`, true, true);
+			writeData(`usernames/${username}`, user.uid, true);
 			loginUser(email, password);
 		})
 		.catch((error) => {
@@ -99,7 +109,7 @@ export async function loginUser(email, password) {
 			await AsyncStorage.setItem('user', user.uid);
 
 			let name = await readData(`prayer_circle/users/${user.uid}`);
-			name = name.fname + ' ' + name.lname;
+			name = name.public.fname + ' ' + name.public.lname;
 			await AsyncStorage.setItem('name', name);
 
 			await AsyncStorage.setItem('email', user.email);
@@ -115,7 +125,7 @@ export async function loginUser(email, password) {
 }
 
 export async function checkUsername(username) {
-	let usernames = await readData(`usernames`);
+	let usernames = (await readData(`usernames`)) || {};
 	let taken = false;
 
 	usernames = Object.keys(usernames);
@@ -142,6 +152,34 @@ export function userLoggedIn(onLogIn, onLogOut) {
 	});
 }
 
+export async function getCircles() {
+	const UID = await getUIDFromStorage();
+	let circles = Object.keys(
+		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
+	);
+	return circles;
+}
+
+export async function getFilterCircles() {
+	let circles = await getCircles();
+	let circlesData = [];
+
+	for (let i = 0; i < circles.length; i++) {
+		let circle = circles[i];
+		let circleData =
+			(await readData(`prayer_circle/circles/${circle}`)) || {};
+		let circleStruct = {
+			id: circle,
+			iconColor: circleData.iconColor,
+			title: circleData.title,
+			color: circleData.color,
+			icon: circleData.icon
+		};
+		circlesData.push(circleStruct);
+	}
+	return circlesData;
+}
+
 export async function getPosts(circleId) {
 	const UID = await getUIDFromStorage();
 	let circles = [];
@@ -149,7 +187,7 @@ export async function getPosts(circleId) {
 
 	if (!circleId || circleId == 'unfiltered') {
 		circles = Object.keys(
-			(await readData(`prayer_circle/users/${UID}/circles`)) || {}
+			(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 		);
 	} else {
 		circles.push(circleId);
