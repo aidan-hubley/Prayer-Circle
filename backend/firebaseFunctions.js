@@ -157,7 +157,7 @@ export async function loginUser(email, password) {
 			await AsyncStorage.setItem('user', user.uid);
 
 			let name = await readData(`prayer_circle/users/${user.uid}`);
-			name = name.fname + ' ' + name.lname;
+			name = name.public.fname + ' ' + name.public.lname;
 			await AsyncStorage.setItem('name', name);
 
 			await AsyncStorage.setItem('email', user.email);
