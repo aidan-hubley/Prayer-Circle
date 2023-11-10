@@ -235,7 +235,7 @@ export async function getPosts(circleId) {
 
 	if (!circleId || circleId == 'unfiltered') {
 		circles = Object.keys(
-			(await readData(`prayer_circle/users/${UID}/circles`)) || {}
+			(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 		);
 	} else {
 		circles.push(circleId);
