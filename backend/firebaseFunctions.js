@@ -69,7 +69,7 @@ export async function createCircle(data) {
 	data.members[`${UID}`] = true;
 	data.admin[`${UID}`] = true;
 	data.owner = UID;
-	data.codes = { adminCode: 0, publicCode: 0 };
+	data.codes = { admin: 0, public: 0 };
 
 	let circles = Object.keys((await readData(`prayer_circle/circles`)) || {});
 	let allCodes = [];
@@ -77,24 +77,24 @@ export async function createCircle(data) {
 		let circle = circles[i];
 		let circleData =
 			(await readData(`prayer_circle/circles/${circle}/codes`)) || {};
-		allCodes.push(circleData.adminCode);
-		allCodes.push(circleData.publicCode);
+		allCodes.push(circleData.admin);
+		allCodes.push(circleData.public);
 	}
 
-	while (data.codes.adminCode === 0 || data.codes.publicCode === 0) {
-		if (data.codes.adminCode === 0) {
+	while (data.codes.admin === 0 || data.codes.public === 0) {
+		if (data.codes.admin === 0) {
 			let tempAdminCode = Math.floor(Math.random() * 90000000 + 10000000);
 			if (!allCodes.includes(tempAdminCode)) {
-				data.codes.adminCode = tempAdminCode;
+				data.codes.admin = tempAdminCode;
 				allCodes.push(tempAdminCode);
 			}
 		}
-		if (data.codes.publicCode === 0) {
+		if (data.codes.public === 0) {
 			let tempPublicCode = Math.floor(
 				Math.random() * 90000000 + 10000000
 			);
 			if (!allCodes.includes(tempPublicCode)) {
-				data.codes.publicCode = tempPublicCode;
+				data.codes.public = tempPublicCode;
 			}
 		}
 	}
