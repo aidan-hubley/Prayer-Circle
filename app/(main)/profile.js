@@ -195,7 +195,7 @@ export default function ProfilePage() {
 					height='h-[50px]'
 					icon='mail-unread'
 					iconSize={30}
-					href='/joinCircle'
+					href='/findCircles'
 				/>
 				<Button
 					width='w-[50px]'
