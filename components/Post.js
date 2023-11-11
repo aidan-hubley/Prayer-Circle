@@ -300,7 +300,7 @@ export const Post = (post) => {
 								<AnimatedImage
 									className='w-[32px] h-[32px]'
 									style={spiralStyle}
-									source={require('../assets/spiral.png')}
+									source={require('../assets/spiral/spiral.png')}
 								/>
 							</StyledPressable>
 						</StyledView>
