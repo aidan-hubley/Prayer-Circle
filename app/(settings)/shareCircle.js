@@ -3,6 +3,7 @@ import { Text, View, Share, Platform, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import QRCode from 'react-qr-code';
 
 	const StyledView = styled(View);
