@@ -3,7 +3,8 @@ import {
 	View,
     TouchableOpacity,
     Animated,
-	Switch
+	Switch,
+    Alert,
 } from 'react-native';
 import React, { useState } from 'react';
 import Modal from 'react-native-modal';
@@ -14,6 +15,8 @@ import { router, auth } from '../../backend/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+//import { auth } from '../../backend/config'; 
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -23,7 +26,7 @@ const StyledSafeArea = styled(SafeAreaView);
 const StyledInput = styled(TextInput);
 
 export default function Page() {
-    const [isNotificationsEnabled, setNotificationsEnabled] = useState(true);
+   // const [isNotificationsEnabled, setNotificationsEnabled] = useState(true);
     const [isResetModalVisible, setResetModalVisible] = useState(false);
     	const ResetModal = () => {
 		setResetModalVisible(!isResetModalVisible);
@@ -36,6 +39,27 @@ export default function Page() {
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 	const togglePosition = React.useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
+
+
+    const handlePasswordReset = async () => {
+    // Check if the user is signed in
+    const user = auth.currentUser;
+    if (user && user.email) {
+        try {
+        await sendPasswordResetEmail(auth, user.email);
+        Alert.alert(
+            "Check your email",
+            "A link to reset your password has been sent to your email address.",
+            [{ text: "OK", onPress: () => setResetModalVisible(false) }]
+        );
+        } catch (error) {
+        Alert.alert("Error", error.message);
+        }
+    } else {
+        // No user is signed in, or there is no email on record
+        Alert.alert("Error", "No user is currently signed in.");
+    }
+    };
 
 
     React.useEffect(() => {
@@ -145,6 +169,15 @@ export default function Page() {
                                 textStyles='text-yellow'
                                 width='w-[70%]'
                                 press={ResetModal}
+                            />
+
+                            <Button
+                                title='Change With Email'
+                                btnStyles='mt-5 border-2 border-yellow'
+                                bgColor='bg-offblack'
+                                textStyles='text-yellow'
+                                width='w-[70%]'
+                                press={handlePasswordReset}
                             />
                             <Button
                                 title='Cancel'
