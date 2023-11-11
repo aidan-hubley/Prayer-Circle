@@ -77,12 +77,12 @@ export async function createCircle(data) {
 		owner: true
 	};
 
-	/* writeData(`prayer_circle/circles/${circleId}`, data, true);
+	writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
 		`prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
-	); */
+	);
 }
 
 export async function registerUser(username, email, password, data) {

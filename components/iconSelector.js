@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { fromHsv, TriangleColorPicker } from 'react-native-color-picker';
+import Slider from '@react-native-community/slider';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -23,8 +25,13 @@ const StyledFlatList = styled(FlatList);
 const StyledAnimView = styled(Animated.View);
 const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledOpacity = styled(TouchableOpacity);
+const StyledSlider = styled(Slider);
+const StyledColorPicker = styled(TriangleColorPicker);
 
-const IconSelector = forwardRef(({ close }, ref) => {
+const IconSelector = forwardRef((props, ref) => {
+	const [opened, setOpened] = useState(false);
+	const iconColorRef = useRef();
+
 	const icons = [
 		{
 			title: 'Transportation',
@@ -208,8 +215,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			]
 		}
 	];
-	const [icon, setIcon] = useState('');
-	const [opened, setOpened] = useState(false);
+
 	const opacity = useRef(new Animated.Value(0)).current;
 	const opacityInterpolation = opacity.interpolate({
 		inputRange: [0, 1],
@@ -227,12 +233,15 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			toValue: opened ? 0 : 1,
 			duration: 400,
 			useNativeDriver: false
-		}).start();
+		}).start(() => {
+			if (!opened && props.close) {
+				props.close();
+			}
+		});
 	};
 
 	useImperativeHandle(ref, () => ({
-		toggleSelector,
-		icon
+		toggleSelector
 	}));
 
 	function renderIcon({ item, index }) {
@@ -240,9 +249,11 @@ const IconSelector = forwardRef(({ close }, ref) => {
 			<StyledOpacity
 				key={`icon${index}`}
 				onPress={() => {
-					setIcon(item);
 					toggleSelector(false);
-					close();
+					props.onIconSelected(
+						item,
+						fromHsv(iconColorRef.current.state.color)
+					);
 				}}
 				className='w-[25%] aspect-square items-center justify-center mb-1'
 			>
@@ -258,15 +269,10 @@ const IconSelector = forwardRef(({ close }, ref) => {
 
 	function renderCategory({ item }) {
 		return (
-			<View key={item.title} className='flex flex-column w-[100%]'>
-				<StyledView
-					className={`${
-						item.title == 'Transportation' ? 'hidden' : ''
-					} h-[1px] bg-outline w-full`}
-				/>
-				<Text className='text-offwhite text-[18px] mt-[10px] mb-[5px]'>
+			<StyledView key={item.title} className='flex flex-column w-[100%]'>
+				<StyledText className='text-offwhite text-[18px] mt-[10px] mb-[5px]'>
 					{item.title}
-				</Text>
+				</StyledText>
 				<StyledFlatList
 					data={item.icons}
 					renderItem={renderIcon}
@@ -274,7 +280,7 @@ const IconSelector = forwardRef(({ close }, ref) => {
 					numColumns={4}
 					contentContainerStyle={{ justifyContent: 'space-around' }}
 				/>
-			</View>
+			</StyledView>
 		);
 	}
 
@@ -285,31 +291,31 @@ const IconSelector = forwardRef(({ close }, ref) => {
 				pointerEvents={opened ? 'auto' : 'none'}
 				onPress={() => {
 					toggleSelector(false);
-					close();
 				}}
 				className='absolute top-0 left-0 bg-offblack w-screen h-screen'
 			/>
 			<StyledAnimView
 				style={{ opacity: opacityInterpolation }}
 				pointerEvents={opened ? 'auto' : 'none'}
-				className='absolute -translate-x-[150px] left-1/2 top-[60%] -translate-y-[280px] w-[80%] px-[15px] max-w-[300px] h-[85%] max-h-[500px] bg-offblack border border-[#3D3D3D] rounded-[20px] items-center'
+				className='absolute -translate-x-[150px] left-1/2 top-[10%] w-[80%] p-[15px] max-w-[300px] h-[80%] bg-offblack border border-[#3D3D3D] rounded-[20px] items-center'
 			>
-				<StyledView className='w-full h-full'>
-					<StyledFlatList
-						data={icons}
-						stickyHeaderIndices={[0]}
-						stickyHeaderHiddenOnScroll={true}
-						ListHeaderComponent={
-							<StyledView className='bg-offblack pt-[10px]'>
-								<StyledText className='text-offwhite font-bold text-3xl text-center mb-3'>
-									Select an Icon
-								</StyledText>
-							</StyledView>
-						}
-						renderItem={renderCategory}
-						keyExtractor={(item, index) => `category${index}`}
-					/>
-				</StyledView>
+				<StyledText className='text-offwhite font-bold text-2xl text-center mb-3'>
+					Select an Icon Color
+				</StyledText>
+				<StyledColorPicker
+					className='w-[200px] h-[200px]'
+					ref={iconColorRef}
+					sliderComponent={Slider}
+					hideSliders={true}
+				/>
+				<StyledText className='text-offwhite font-bold text-2xl text-center mt-3 mb-2'>
+					Select an Icon
+				</StyledText>
+				<StyledFlatList
+					data={icons}
+					renderItem={renderCategory}
+					keyExtractor={(item, index) => `category${index}`}
+				/>
 			</StyledAnimView>
 		</>
 	);
