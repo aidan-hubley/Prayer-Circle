@@ -14,9 +14,11 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { LinearGradient } from 'expo-linear-gradient';
-// import { useSafeAreaInsets } from 'react-native-safe-area-context';
-// import { Button } from '../components/Buttons';
+// import { Comment } from '../../components/Comment'; NRA this component doesn't exist yet, but I'm mimicking FeedPage.js
+// import { readData, getComments } from '../../backend/firebaseFunctions'; NRA this function doesn't exist yet, but I'm mimicking FeedPage.js
+import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+// import { Button } from '../components/Buttons'; NRA this not needed unless adding back the close button
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -27,10 +29,55 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledModal = styled(Modal);
 const StyledIcon = styled(Ionicons);
-// const [scrolling, setScrolling] = useState(false);
-// const StyledGradient = styled(LinearGradient);
+// const StyledGradient = styled(LinearGradient); NRA
 
 export const Post = (post) => {
+	//NRA copy from feed.js
+	// const [posts, setPosts] = useState([]);
+	// const [refreshing, setRefreshing] = useState(false);
+	// const [postList, setPostList] = useState([]);
+	// const [renderIndex, setRenderIndex] = useState(0);
+	// const [initialLoad, setInitialLoad] = useState('loading');
+	// const [scrolling, setScrolling] = useState(false);
+	// const [me, setMe] = useState('');
+	// const [circles, setCircles] = useState([]);
+
+	// const setUpFeed = async () => {
+	// 	setRenderIndex(0);
+	// 	let gm = await AsyncStorage.getItem('user');
+	// 	setMe(gm);
+	// 	let gp = await getPosts();
+	// 	setPostList(gp);
+	// 	let pl = await populateList(gp, 0, 7);
+	// 	setPosts(pl);
+	// 	setInitialLoad('loaded');
+	// };
+
+	// async function populateList(list, start, numOfItems) {
+	// 	let me = await AsyncStorage.getItem('user');
+	// 	let renderedList = [];
+	// 	let endOfList =
+	// 		list.length < start + numOfItems ? list.length - start : numOfItems;
+	// 	for (let i of list.slice(start, endOfList + start)) {
+	// 		let id = i[0];
+	// 		let data = (await readData(`prayer_circle/posts/${id}`)) || {};
+
+	// 		if (data.hidden && data.hidden[`${me}`] == true) {
+	// 			continue;
+	// 		}
+	// 		renderedList.push([id, data]);
+	// 	}
+	// 	setRefreshing(false);
+	// 	setRenderIndex(start + endOfList);
+	// 	return renderedList;
+	// }
+	// useEffect(() => {
+	// 	setUpFeed();
+	// }, []);
+
+	// let insets = useSafeAreaInsets();
+	//NRA end copy from feed.js
+
 	const tS = timeSince(post.timestamp);
 
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
@@ -197,6 +244,7 @@ export const Post = (post) => {
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
 								<StyledImage
+								// NRA
 									className={`${
 										post.owned ? 'hidden' : 'flex'
 									} rounded-lg`}
@@ -382,7 +430,7 @@ export const Post = (post) => {
 				<StyledView className='position-absolute mt-[80%] bg-offblack border-[5px] border-yellow rounded-2xl justify-bottom h-[70%]'>
 					<StyledView className='h-[60%]'>
 						<StyledView className='flex flex-row'>
-							<StyledView className='w-[80%] ml-[5%]'>
+							<StyledView className='w-[80%] ml-[5%] mb-[5%]'>
 								<StyledText className='top-[8%] text-xl text-left text-offwhite'>
 									Comments on
 								</StyledText>
@@ -393,6 +441,7 @@ export const Post = (post) => {
 									: post.title}
 								</StyledText>
 							</StyledView>
+							{/* NRA */}
 							{/* <StyledView className='flex-1'>
 								<Button
 									btnStyles='top-[3%] bg-offblack'
@@ -406,6 +455,169 @@ export const Post = (post) => {
 							</StyledView> 
 							This button is unnecessary given the onBackdropPress, but I left it in just in case*/}
 						</StyledView>
+						<StyledView className='flex flex-col w-full justify-start items-center rounded-b-[20px] pt-[4px] pb-[10px]'>
+							<StyledView className='w-[90%] flex flex-row justify-between'>
+								<StyledView className=' flex flex-row w-[70%]'>
+									<StyledView className=' items-center justify-center'>
+										<StyledImage
+										// NRA
+										className={`rounded-lg`}
+										style={{ width: 44, height: 44 }}
+										source={{
+											// uri: comment.img
+											uri: 'https://picsum.photos/1223'
+										}}
+										/>
+									</StyledView>
+									<StyledView className='ml-[8px]'>
+										<StyledText className='font-bold text-[18px] text-white'>
+											Comment #1 hello hello hello hello hello hello
+										</StyledText>
+										<StyledText className='text-white text-[12px]'>
+											Person who posted
+										</StyledText>
+									</StyledView>
+								</StyledView>
+								<StyledView className=' flex flex-col items-end justify-center w-[10%]'>
+									<StyledText className='text-[13px] text-white'>
+										17h
+									</StyledText>
+								</StyledView>
+							</StyledView>
+
+							<StyledView className='w-[90%] border-t border-outline mt-[5px] mb-[3px]'></StyledView>
+
+							<StyledView className='w-[90%] flex flex-row justify-between'>
+								<StyledView className=' flex flex-row'>
+									<StyledView className=' items-center justify-center'>
+										<StyledImage
+											// NRA
+											className={`rounded-lg`}
+											style={{ width: 44, height: 44 }}
+											source={{
+												// uri: comment.img
+												uri: 'https://picsum.photos/1223'
+											}}
+										/>
+									</StyledView>
+									<StyledView className='ml-[8px]'>
+										<StyledText className='font-bold text-[18px] text-white'>
+											Comment #2
+										</StyledText>
+										<StyledText className='text-white text-[12px]'>
+											Person who posted
+										</StyledText>
+									</StyledView>
+								</StyledView>
+								<StyledView className=' flex flex-col items-end justify-center'>
+									<StyledText className='text-[13px] text-white'>
+										17h
+									</StyledText>
+								</StyledView>
+							</StyledView>
+						</StyledView>
+						{/* <StyledView className='flex-1 bg-offblack'> NRA copy from feed.js
+							<StyledView className='flex-1'>
+								<FlatList
+									data={posts}
+									onEndReachedThreshold={0.4}
+									windowSize={10}
+									onScrollBeginDrag={() => {
+										setScrolling(true);
+									}}
+									onMomentumScrollEnd={() => {
+										setScrolling(false);
+									}}
+									onEndReached={() => {
+										if (initialLoad == 'loading' || !scrolling) return;
+										populateList(postList, renderIndex, 10).then((res) => {
+											setPosts([...posts, ...res]);
+										});
+									}}
+									style={{ paddingHorizontal: 15 }}
+									estimatedItemSize={100}
+									showsHorizontalScrollIndicator={false}
+									refreshControl={
+										<RefreshControl
+											progressViewOffset={insets.top + 60}
+											onRefresh={() => {
+												setRefreshing(true);
+												setUpFeed();
+											}}
+											refreshing={refreshing}
+											tintColor='#ebebeb'
+										/>
+									}
+									ListHeaderComponent={
+										posts && posts.length > 0 ? (
+											<StyledView
+												className='w-full flex items-center mb-[10px]'
+												style={{
+													height: insets.top + 60
+												}}
+											/>
+										) : (
+											<></>
+										)
+									}
+									ListFooterComponent={
+										posts && posts.length > 0 ? (
+											<StyledView
+												className='w-full flex items-center mb-[10px]'
+												style={{
+													height: insets.top + 60
+												}}
+											/>
+										) : (
+											<></>
+										)
+									}
+									ListEmptyComponent={
+										<StyledView className='w-full h-screen flex items-center justify-center'>
+											<StyledView
+												className={`${
+													initialLoad == 'loaded' ? 'hidden' : 'flex'
+												}`}
+											>
+												<ActivityIndicator size='large' />
+											</StyledView>
+											<StyledText
+												className={`${
+													initialLoad == 'loaded' ? 'flex' : 'hidden'
+												} text-white text-[24px]`}
+											>
+												No Posts Yet!
+											</StyledText>
+										</StyledView>
+									}
+									renderItem={({ item }) => (
+										<Post
+											user={item[1].name}
+											img={item[1].profile_img}
+											title={item[1].title}
+											timestamp={`${item[1].timestamp}`}
+											content={item[1].text}
+											icon={item[1].type}
+											id={item[0]}
+											refresh={() => setUpFeed()}
+											ownedToolBar={item[1].user == me}
+											edited={item[1].edited}
+										/>
+									)}
+									keyExtractor={(item) => item[0]}
+								/>
+							</StyledView>
+
+							<StyledGradient
+								pointerEvents='none'
+								start={{ x: 0, y: 0.3 }}
+								end={{ x: 0, y: 1 }}
+								style={{ height: insets.top + 50 }}
+								className='absolute w-screen'
+								colors={['#121212ee', 'transparent']}
+							/>
+							<StatusBar barStyle={'light-content'} />
+						</StyledView> */}
 						{/* Comments component goes here. NRA recommends:
 						-using a similar format to journal.js (esp horizontal lines)
 						-and placing it inside feed.js format (esp gradiant; some import work for that already done here)*/}
