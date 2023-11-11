@@ -39,7 +39,7 @@ export default function Page() {
 					</StyledText>
 				</StyledView>
 
-				<StyledView className='absolute top-[15%] border-[10px] bg-offwhite border-purple p-[10px] rounded-xl'>
+				<StyledView className='absolute top-[90px] border-[10px] bg-offwhite border-purple p-[10px] rounded-xl'>
 					<StyledView className='p-[15px] rounded-xl'>
 						<QRCode
 							size={240}
@@ -48,7 +48,7 @@ export default function Page() {
 						/>
 					</StyledView>
 				</StyledView>
-				<StyledView className='absolute bottom-[30%] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl'>
+				<StyledView className='absolute bottom-[240px] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl'>
 					<StyledText
 						className='px-[5px] font-bold text-3xl text-offblack'
 						onPress={() => shareCircle()}
@@ -56,7 +56,7 @@ export default function Page() {
 						1234567890
 					</StyledText>
 				</StyledView>	
-				<StyledView className='absolute bottom-[15%] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl flex flex-row items-center'>
+				<StyledView className='absolute bottom-[90px] border-[10px] border-purple bg-white mt-20 p-[10px] rounded-xl flex flex-row items-center'>
 					<StyledIcon 
 						name='shield' 
 						size={30} 
