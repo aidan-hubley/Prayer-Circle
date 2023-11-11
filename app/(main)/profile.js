@@ -190,13 +190,17 @@ export default function ProfilePage() {
 				style={{ bottom: insets.bottom }}
 				className='absolute w-screen px-[15px] flex flex-row justify-between'
 			>
-				<Button
-					width='w-[50px]'
-					height='h-[50px]'
-					icon='mail-unread'
-					iconSize={30}
-					href='/findCircles'
-				/>
+				{/* Only show when invite is pending for user to join circle */}
+				<StyledView>
+					<Button
+						btnStyles='hidden'
+						width='w-[60px]'
+						height='h-[60px]'
+						icon='mail-unread'
+						iconSize={36}
+						// href='/'
+					/>
+				</StyledView>
 				<Button
 					width='w-[50px]'
 					height='h-[50px]'

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-	SafeAreaView,
 	Text,
 	View,
 	Image,
@@ -10,7 +9,7 @@ import {
 import { Button } from '../../components/Buttons';
 import { styled } from 'nativewind';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { useLocalSearchParams } from 'expo-router';
 

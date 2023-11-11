@@ -1,10 +1,9 @@
-	import React from 'react';
-	import { SafeAreaView, Text, View, Share, Platform, ScrollView } from 'react-native';
-	import { styled } from 'nativewind';
-	import { useSafeAreaInsets } from 'react-native-safe-area-context';
-	import { Button } from '../../components/Buttons';
-	import QRCode from 'react-qr-code';
-	import Ionicons from '@expo/vector-icons/Ionicons';
+import React from 'react';
+import { Text, View, Share, Platform, ScrollView } from 'react-native';
+import { styled } from 'nativewind';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button } from '../../components/Buttons';
+import QRCode from 'react-qr-code';
 
 	const StyledView = styled(View);
 	const StyledText = styled(Text);
