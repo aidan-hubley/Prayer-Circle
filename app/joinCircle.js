@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-	SafeAreaView,
 	Text,
 	View,
 	TextInput,
@@ -11,6 +10,7 @@ import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);

@@ -13,8 +13,8 @@ import { signOut } from 'firebase/auth';
 import { Button } from '../../components/Buttons';
 import { router, auth } from '../../backend/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaView, TextInput } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TextInput } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 //import { auth } from '../../backend/config'; 
 import { sendPasswordResetEmail } from 'firebase/auth';
 

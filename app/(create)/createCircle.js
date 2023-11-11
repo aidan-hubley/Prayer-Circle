@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import {
-	SafeAreaView,
 	Text,
 	View,
 	TextInput,
@@ -13,7 +12,7 @@ import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import { IconSelector } from '../../components/iconSelector';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
 import { ColorPicker, fromHsv } from 'react-native-color-picker';
