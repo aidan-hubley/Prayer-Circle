@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
@@ -55,7 +55,7 @@ const Filter = forwardRef((props, ref) => {
 	}));
 
 	return (
-		<>
+		<>				
 			<AnimatedPressable
 				style={backdropOpacityStyle}
 				pointerEvents={props.touchEvents ? 'none' : 'auto'}
@@ -88,7 +88,7 @@ const Filter = forwardRef((props, ref) => {
 								contentOffset={contentOffset}
 								itemSize={itemSize}
 								itemMargin={itemMargin}
-							></FilterItem>
+							/>
 						);
 					}}
 					keyExtractor={(item) => item.id}

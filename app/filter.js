@@ -1,7 +1,9 @@
 import React from "react";
-import { SafeAreaView, Text, View, StatusBar } from "react-native";
+import { Text, View, StatusBar } from "react-native";
 import { styled } from "nativewind";
 import { Button } from "../components/Buttons";
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);

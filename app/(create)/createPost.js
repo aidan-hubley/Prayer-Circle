@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { SafeAreaView, Text, View, TextInput, StatusBar } from 'react-native';
+import { Text, View, TextInput, StatusBar } from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -8,6 +8,7 @@ import { writeData, generateId } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from '../../backend/config';
 import { readData } from '../../backend/firebaseFunctions';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);

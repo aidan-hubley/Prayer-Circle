@@ -77,12 +77,12 @@ export async function createCircle(data) {
 		owner: true
 	};
 
-	/* writeData(`prayer_circle/circles/${circleId}`, data, true);
+	writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
 		`prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
-	); */
+	);
 }
 
 export async function registerUser(username, email, password, data) {
@@ -162,7 +162,10 @@ export async function getCircles() {
 
 export async function getFilterCircles() {
 	let circles = await getCircles();
-	let circlesData = [];
+	let circlesData = [
+		{ id: 'addCircles' },
+		{ id: 'Gridview' },
+	];
 
 	for (let i = 0; i < circles.length; i++) {
 		let circle = circles[i];

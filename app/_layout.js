@@ -5,7 +5,8 @@ export default function Layout() {
 	return (
 		<Stack
 			screenOptions={{
-				headerShown: false
+				headerShown: false,
+				gestureEnabled: false
 			}}
 		>
 			<Stack.Screen
