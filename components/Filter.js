@@ -4,6 +4,7 @@ import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 const StyledView = styled(View);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
@@ -12,9 +13,9 @@ const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
 
 const Filter = forwardRef((props, ref) => {
 	const width = Dimensions.get('window').width;
-	const itemSize = width <= 500 ? width / 5 : 120;
+	const itemSize = 80;
 	const itemMargin = 10;
-	const paddingH = width / 2 - (itemSize + itemMargin / 2) / 2;
+	const paddingH = width / 2 - (itemSize + itemMargin) / 2;
 	const opacity = useRef(new Animated.Value(0)).current;
 
 	const opacityInter = opacity.interpolate({
@@ -29,6 +30,7 @@ const Filter = forwardRef((props, ref) => {
 	let insets = useSafeAreaInsets();
 
 	function toggleShown(toggle) {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
 			toValue: toggle ? 1 : 0,
@@ -59,6 +61,7 @@ const Filter = forwardRef((props, ref) => {
 				pointerEvents={props.touchEvents ? 'none' : 'auto'}
 				className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
+					//Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					toggleShown();
 				}}
 			/>

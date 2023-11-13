@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { Pressable, View, Animated, Text, Platform } from 'react-native';
+import { Pressable, View, Animated, Text } from 'react-native';
 import { styled } from 'nativewind';
 import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSharedValue } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
@@ -81,6 +81,7 @@ export function Circle({ filter, press, toggleSwiping }) {
 				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
 				className={`absolute bottom-[-40px] left-[-100px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
+					Haptics.selectionAsync();
 					toggleLongOptions();
 					toggleShortOptions();
 				}}
@@ -131,11 +132,13 @@ export function Circle({ filter, press, toggleSwiping }) {
 						toggleShortOptions(false);
 					}
 					resize(1);
-				}}
-				onPressOut={() => {
-					resize(1);
+
+					Haptics.notificationAsync(
+						Haptics.NotificationFeedbackType.Success
+					);
 				}}
 				onPress={() => {
+					resize(1);
 					if (pressed == 'none') {
 						toggleShortOptions(true);
 					} else {
@@ -143,6 +146,7 @@ export function Circle({ filter, press, toggleSwiping }) {
 						toggleShortOptions(false);
 					}
 					if (press) press();
+					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 				}}
 			></AnimatedPressable>
 		</>

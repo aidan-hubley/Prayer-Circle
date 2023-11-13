@@ -18,6 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince } from '../backend/functions';
 import { writeData } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
@@ -136,6 +137,7 @@ export const Post = (post) => {
 	}
 
 	function toggleIcon() {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		const iconKey = iconType.replace('_outline', '');
 		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			setIconType(
@@ -158,6 +160,7 @@ export const Post = (post) => {
 	}
 
 	function toggleToolbar() {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		setToolbar(!toolbarShown);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
@@ -209,7 +212,7 @@ export const Post = (post) => {
 	];
 
 	return (
-		<StyledView className='w-full max-w-[500px]'>
+		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
@@ -221,6 +224,9 @@ export const Post = (post) => {
 							setLastTap(now);
 							timer.current = setTimeout(() => {}, 300);
 						}
+					}}
+					onLongPress={() => {
+						toggleToolbar();
 					}}
 				>
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
@@ -385,6 +391,9 @@ export const Post = (post) => {
 								className='flex items-center justify-center w-[30px] h-[30px]'
 								activeOpacity={0.4}
 								onPress={() => {
+									Haptics.impactAsync(
+										Haptics.ImpactFeedbackStyle.Light
+									);
 									handlePresentModalPress();
 								}}
 							>
@@ -417,6 +426,6 @@ export const Post = (post) => {
 					<BottomSheetFlatList />
 				</StyledView>
 			</BottomSheetModal>
-		</StyledView>
+		</StyledPressable>
 	);
 };
