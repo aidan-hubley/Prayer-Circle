@@ -202,16 +202,16 @@ export default function ProfilePage() {
 					/>
 				</StyledView>
 				<Button
-					width='w-[60px]'
-					height='h-[60px]'
+					width='w-[50px]'
+					height='h-[50px]'
 					icon='settings'
-					iconSize={38}
+					iconSize={30}
 					href='/settings'
 					press={() => {
 						console.log('press');
 					}}
 				/>
-			</StyledView>
+			</StyledView>			
 			<StyledGradient
 				pointerEvents='none'
 				start={{ x: 0, y: 0.1 }}

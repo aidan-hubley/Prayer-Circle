@@ -142,7 +142,7 @@ const FilterItem = forwardRef(
 					]}
 					className='justify-center'
 				>
-					<StyledPressable className='flex items-center justify-center' onPress={async () => {router.push('joinCircle')}}>
+					<StyledPressable className='flex items-center justify-center' onPress={async () => {router.push('findCircles')}}>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}

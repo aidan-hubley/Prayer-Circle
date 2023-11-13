@@ -17,6 +17,7 @@ import { Button } from '../../components/Buttons';
 import { router } from '../../backend/config';
 import { loginUser } from '../../backend/firebaseFunctions';
 import Modal from 'react-native-modal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
