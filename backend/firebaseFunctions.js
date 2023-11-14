@@ -174,14 +174,17 @@ export function generateId() {
 	return push(ref(database)).key;
 }
 
-export function userLoggedIn(onLogIn, onLogOut) {
-	onAuthStateChanged(auth, (user) => {
+export async function userLoggedIn(onLogIn, onLogOut) {
+	let loggedIn = false;
+	await onAuthStateChanged(auth, (user) => {
 		if (user) {
 			if (onLogIn) onLogIn();
+			loggedIn = true;
 		} else {
 			if (onLogOut) onLogOut();
 		}
 	});
+	return loggedIn;
 }
 
 export async function getCircles() {
@@ -194,10 +197,7 @@ export async function getCircles() {
 
 export async function getFilterCircles() {
 	let circles = await getCircles();
-	let circlesData = [
-		{ id: 'addCircles' },
-		{ id: 'Gridview' },
-	];
+	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
 
 	for (let i = 0; i < circles.length; i++) {
 		let circle = circles[i];

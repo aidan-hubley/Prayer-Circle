@@ -14,13 +14,8 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function Page() {
-	userLoggedIn();
-
-	AsyncStorage.getItem('user').then((user) => {
-		if (!user || user.length == 0) {
-			router.push('/login');
-		} else {
-			router.push('/mainViewLayout');
-		}
+	userLoggedIn().then((loggedStatus) => {
+		if (loggedStatus) router.replace('/mainViewLayout');
+		else router.replace('/login');
 	});
 }
