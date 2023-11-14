@@ -148,7 +148,7 @@ const FilterItem = forwardRef(
 							style={{ width: 80, height: 80 }}
 						/>
 						<StyledIcon
-							name={'add-outline'}
+							name={'search-outline'}
 							size={45}
 							color={'#FFFBFC'}
 							style={{ position: 'absolute' }}
