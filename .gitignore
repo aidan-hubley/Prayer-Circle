@@ -8,6 +8,7 @@ package-lock.json
 .expo/
 dist/
 web-build/
+.idea/
 
 # Native
 *.orig.*
