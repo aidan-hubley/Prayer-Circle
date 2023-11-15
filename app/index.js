@@ -14,8 +14,12 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function Page() {
-	userLoggedIn().then((loggedStatus) => {
-		if (loggedStatus) router.replace('/mainViewLayout');
-		else router.replace('/login');
-	});
+	userLoggedIn(
+		() => {
+			router.push('/mainViewLayout');
+		},
+		() => {
+			router.push('/login');
+		}
+	);
 }

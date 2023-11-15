@@ -364,7 +364,16 @@ async function createUserData(username, fname, lname, email, password) {
 		private: {
 			email: email,
 			timestamp: Date.now(),
-			circles: false,
+			circles: {
+				'-NiN-27IuGR02mcGS2CS': {
+					permissions: {
+						admin: false,
+						owner: false,
+						read: true,
+						write: true
+					}
+				}
+			},
 			reactions: false,
 			comments: false,
 			posts: false

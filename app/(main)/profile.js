@@ -154,20 +154,6 @@ export default function ProfilePage() {
 						>
 							No Posts Yet!
 						</StyledText>
-						<Button
-							title='Sketch a Post'
-							height='h-[65px]'
-							btnStyles={`mt-3 ${
-								initialLoad == 'loaded' ? 'flex' : 'hidden'
-							}`}
-							width='w-11/12'
-							//href='/createPost'
-							press={() => {
-								signOut(auth);
-								AsyncStorage.removeItem('user');
-								router.push('/login');
-							}}
-						/>
 					</StyledView>
 				}
 				renderItem={({ item }) => (
@@ -211,7 +197,7 @@ export default function ProfilePage() {
 						console.log('press');
 					}}
 				/>
-			</StyledView>			
+			</StyledView>
 			<StyledGradient
 				pointerEvents='none'
 				start={{ x: 0, y: 0.1 }}
