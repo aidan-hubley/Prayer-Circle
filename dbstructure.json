@@ -62,13 +62,6 @@
 				}
 			}
 		},
-		"reactions": {
-			"_pushId_": {
-				"user": "_uid_",
-				"post": "_pushId_",
-				"reaction": "Reaction type"
-			}
-		},
 		"comments": {
 			"_pushId_": {
 				"user": "_uid_",
