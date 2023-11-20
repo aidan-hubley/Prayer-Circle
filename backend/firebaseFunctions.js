@@ -175,16 +175,13 @@ export function generateId() {
 }
 
 export async function userLoggedIn(onLogIn, onLogOut) {
-	let loggedIn = false;
 	await onAuthStateChanged(auth, (user) => {
 		if (user) {
 			if (onLogIn) onLogIn();
-			loggedIn = true;
 		} else {
 			if (onLogOut) onLogOut();
 		}
 	});
-	return loggedIn;
 }
 
 export async function getCircles() {

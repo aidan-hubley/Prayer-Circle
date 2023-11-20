@@ -34,7 +34,7 @@ export default function FeedPage() {
 		setMe(gm);
 		let gp = await getPosts();
 		setPostList(gp);
-		let pl = await populateList(gp, 0, 7);
+		let pl = await populateList(gp, 0, 12);
 		setPosts(pl);
 		setInitialLoad('loaded');
 	};

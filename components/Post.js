@@ -171,13 +171,14 @@ export const Post = (post) => {
 
 	// db related functions
 	async function deletePost() {
+		const me = await AsyncStorage.getItem('user');
 		writeData(
-			`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`,
+			`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${post.id}`,
 			null,
 			true
 		);
 		writeData(
-			`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${post.id}`,
+			`prayer_circle/users/${me}/private/posts/${post.id}`,
 			null,
 			true
 		);
@@ -245,7 +246,7 @@ export const Post = (post) => {
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{post.title.length > 21
+										{post.title?.length > 21
 											? post.title.substring(0, 21) +
 											  '...'
 											: post.title}
@@ -273,7 +274,7 @@ export const Post = (post) => {
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] pb-[10px]'>
-									{post.content.length > 300
+									{post.content?.length > 300
 										? post.content.substring(0, 297) + '...'
 										: post.content}
 								</StyledText>
