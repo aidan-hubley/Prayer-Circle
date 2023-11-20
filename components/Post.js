@@ -16,7 +16,7 @@ import {
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince } from '../backend/functions';
-import { writeData } from '../backend/firebaseFunctions';
+import { writeData, deleteData } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import {
@@ -171,17 +171,14 @@ export const Post = (post) => {
 
 	// db related functions
 	async function deletePost() {
-		writeData(
-			`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`,
-			null,
-			true
+		await deleteData(
+			`prayer_circle/circles/-NhYtVYMYvc_HpBK-ohk/posts/${post.id}`
 		);
-		writeData(
-			`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${post.id}`,
-			null,
-			true
+
+		await deleteData(
+			`prayer_circle/users/BBAzhYq9VGgofMNO5Jl3cmpT2xe2/posts/${post.id}`
 		);
-		writeData(`prayer_circle/posts/${post.id}`, null, true).then(() => {
+		deleteData(`prayer_circle/posts/${post.id}`).then(() => {
 			setTimeout(() => {
 				post.refresh();
 			}, 100);
