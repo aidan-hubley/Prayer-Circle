@@ -436,6 +436,7 @@ export const Post = (post) => {
 									content={item.content}
 									edited={item.edited}
 									timestamp={timeSince(item.timestamp)}
+									img={item.img}
 								/>
 							);
 						}}

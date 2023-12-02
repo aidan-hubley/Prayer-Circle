@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Image } from 'react-native';
 import { styled } from 'nativewind';
-import Ionicons from '@expo/vector-icons/Ionicons';
+//import Ionicons from '@expo/vector-icons/Ionicons'; placeholder for profile pic
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledImage = styled(Image);
 
 export const Comment = (comment) => {
 	return (
@@ -12,7 +13,13 @@ export const Comment = (comment) => {
 			<StyledView className='w-[90%] flex flex-row justify-between'>
 				<StyledView className=' flex flex-row'>
 					<StyledView className=' items-center justify-center'>
-						<Ionicons name={'hand-left'} size={24} color='white' />
+					{/* <Ionicons name={'hand-left'} size={24} color='white' /> */}
+						<StyledImage
+							style={{ width: 24, height: 24 }}
+							source={{
+								uri: comment.img
+							}}
+						/>
 					</StyledView>
 					<StyledView className='ml-[8px]'>
 						<StyledView className=' flex flex-row'>
