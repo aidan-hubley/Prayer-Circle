@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, View, Share, Platform, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, Image, Share, Pressable, Platform, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
@@ -9,6 +9,8 @@ import QRCode from 'react-qr-code';
 	const StyledView = styled(View);
 	const StyledText = styled(Text);
 	const StyledIcon = styled(Ionicons);
+	const StyledImg = styled(Image);
+	const StyledPressable = styled(Pressable);
 
 	const shareCircle = async () => {
 		try {
@@ -26,6 +28,13 @@ import QRCode from 'react-qr-code';
 	export default function Page() {
 		let insets = useSafeAreaInsets();
 		let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
+
+		const [isCodeVisible, setIsCodeVisible] = useState(false);
+
+		const toggleVisibleCode = () => {
+			console.log("Toggling visibility of code");
+			setIsCodeVisible(!isCodeVisible);
+		};
 
 		return (
 			<StyledView
@@ -57,19 +66,31 @@ import QRCode from 'react-qr-code';
 									1234567890
 								</StyledText>
 							</StyledView>	
-							<StyledView className='border-[4px] border-purple bg-white mt-7 p-[10px] rounded-xl flex flex-row items-center align-center'>
-								<StyledIcon 
-									name='shield' 
-									size={30} 
-									color='#121212'
-								/>
-								<StyledText
-									className='px-[5px] font-bold text-3xl text-offblack text-center'
-									onPress={() => shareCircle()}
-								>
-									0987654321
-								</StyledText>
-							</StyledView>
+							<StyledPressable className='border-[4px] border-purple bg-white mt-7 p-[10px] rounded-xl flex flex-row items-center align-center'
+								onPress={toggleVisibleCode}
+							>
+								{isCodeVisible ? (
+									<>
+										<StyledIcon 
+											name='shield' 
+											size={30} 
+											color='#121212'
+											onPress={toggleVisibleCode}
+										/>
+										<StyledText
+											className='px-[5px] font-bold text-3xl text-offblack text-center'
+											onPress={() => shareCircle()}
+										>
+											0987654321
+										</StyledText>
+									</>
+								) : (
+									<StyledImg
+										source={require('../../assets/Private_Code.png')}
+										className='m-[-10px]'
+									/>
+								)}
+							</StyledPressable>
 						</StyledView>
 					</StyledView>
 				</ScrollView>
