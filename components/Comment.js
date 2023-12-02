@@ -16,16 +16,16 @@ export const Comment = (comment) => {
 					</StyledView>
 					<StyledView className='ml-[8px]'>
 						<StyledText className='font-bold text-[18px] text-white'>
-							Comment #1
+							{comment.content}
 						</StyledText>
 						<StyledText className='text-white text-[12px]'>
-							Person who posted
+							{comment.user}
 						</StyledText>
 					</StyledView>
 				</StyledView>
 				<StyledView className=' flex flex-col items-end justify-center'>
 					<StyledText className='text-[13px] text-white'>
-						17h
+						{comment.timestamp}
 					</StyledText>
 				</StyledView>
 			</StyledView>

@@ -435,6 +435,7 @@ export const Post = (post) => {
 									user={item.user}
 									content={item.content}
 									edited={item.edited}
+									timestampt={item.timestamp}
 								/>
 							);
 						}}
