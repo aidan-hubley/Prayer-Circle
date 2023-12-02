@@ -24,6 +24,7 @@ import {
 	BottomSheetFlatList,
 	BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
+import { Comment } from './Comment';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -65,7 +66,7 @@ export const Post = (post) => {
 	};
 
 	// bottom sheet modal
-	const snapPoints = useMemo(() => ['10%', '45%', '80%'], []);
+	const snapPoints = useMemo(() => ['60%', '90%'], []);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
@@ -424,7 +425,20 @@ export const Post = (post) => {
 				keyboardBehavior='extend'
 			>
 				<StyledView className='flex-1 bg-grey'>
-					<BottomSheetFlatList />
+					<BottomSheetFlatList
+						data={dummyData}
+						renderItem={({ item }) => {
+							console.log(item);
+							return (
+								<Comment
+									user={item.user}
+									content={item.content}
+									edited={item.edited}
+								/>
+							);
+						}}
+						keyExtractor={(item) => item[0]}
+					/>
 				</StyledView>
 			</BottomSheetModal>
 		</StyledPressable>
