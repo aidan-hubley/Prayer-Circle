@@ -11,12 +11,21 @@ import {
 	Image,
 	Pressable,
 	TouchableOpacity,
-	Animated
+	Animated,
+	RefreshControl,
+	TextInput,
+	Keyboard,
+	KeyboardAvoidingView
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince } from '../backend/functions';
-import { writeData } from '../backend/firebaseFunctions';
+import {
+	writeData,
+	readData,
+	generateId,
+	deleteData
+} from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import {
@@ -25,6 +34,7 @@ import {
 	BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -34,6 +44,7 @@ const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
+const StyledInput = styled(TextInput);
 
 export const Post = (post) => {
 	// variables
@@ -44,6 +55,9 @@ export const Post = (post) => {
 	const [toolbarShown, setToolbar] = useState(false);
 	const [me, setMe] = useState('');
 	const [lastTap, setLastTap] = useState(null);
+	const [commentData, setCommentData] = useState([]);
+	const [newComment, setNewComment] = useState('');
+	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const images = {
@@ -66,7 +80,7 @@ export const Post = (post) => {
 	};
 
 	// bottom sheet modal
-	const snapPoints = useMemo(() => ['60%', '90%'], []);
+	const snapPoints = useMemo(() => ['85%'], []);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
@@ -101,11 +115,17 @@ export const Post = (post) => {
 		transform: [{ rotate: spinInter }]
 	};
 
+	const onCommentChange = (e) => {
+		setNewComment(e.nativeEvent.text);
+	};
+
+	let insets = useSafeAreaInsets();
+
 	const handle = () => {
 		return (
-			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] py-3 border-b border-[#ffffff33]'>
+			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[500] text-[20px]'>
+				<StyledText className='text-white font-[600] text-[24px]'>
 					Comments
 				</StyledText>
 			</StyledView>
@@ -201,18 +221,77 @@ export const Post = (post) => {
 	const setUp = async () => {
 		let uid = await AsyncStorage.getItem('user');
 		setMe(uid);
+
+		await populateComments(post.comments);
+	};
+
+	const populateComments = async (comments) => {
+		if (typeof comments == 'undefined' || comments == false) return;
+		comments = Object.entries(comments);
+
+		if (comments.length > 1) {
+			comments.sort((a, b) => {
+				return b[1] - a[1];
+			});
+		}
+
+		let commentList = [];
+		for (let comment of comments) {
+			let data =
+				(await readData(`prayer_circle/comments/${comment[0]}`)) || {};
+			commentList.push([comment[0], data]);
+		}
+		await setCommentData(commentList);
+	};
+
+	const postComment = async () => {
+		if (newComment.length > 0) {
+			//get current comments
+			let currentComments =
+				(await readData(`prayer_circle/posts/${post.id}/comments`)) ||
+				{};
+
+			//prep data
+			let commentId = generateId();
+			let timestamp = Date.now();
+			let displayName = await AsyncStorage.getItem('name');
+			let comment = {
+				content: newComment,
+				edited: false,
+				timestamp: timestamp,
+				user: me,
+				username: displayName
+			};
+
+			//write data
+			await writeData(
+				`prayer_circle/posts/${post.id}/comments/${commentId}`,
+				timestamp,
+				true
+			);
+			await writeData(
+				`prayer_circle/users/${me}/private/comments/${commentId}`,
+				true,
+				true
+			);
+			await writeData(
+				`prayer_circle/comments/${commentId}`,
+				comment,
+				true
+			);
+			//clear input
+			setNewComment('');
+			newCommentRef.current.clear();
+
+			currentComments[commentId] = timestamp;
+			//render new comment
+			await populateComments(currentComments);
+		}
 	};
 
 	useEffect(() => {
 		setUp();
-	});
-
-	const dummyData = [
-		{ user: 'alex', content: 'Why is it this post', edited: false, timestamp: 1623777600000},
-		{ user: 'aidan', content: 'Instead of', edited: false, timestamp: 1623777600000},
-		{ user: 'nason', content: 'Praying for my dog', edited: false, timestamp: 1623777600000},
-		{ user: 'Roberti', content: 'He is very sick', edited: true, timestamp: 1623777600000}
-	];
+	}, []);
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
@@ -418,7 +497,7 @@ export const Post = (post) => {
 			<BottomSheetModal
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
-				index={1}
+				index={0}
 				snapPoints={snapPoints}
 				onChange={handleSheetChanges}
 				handleComponent={handle}
@@ -426,17 +505,61 @@ export const Post = (post) => {
 				keyboardBehavior='extend'
 			>
 				<StyledView className='flex-1 bg-grey'>
+					<StyledView className='w-full h-auto flex items-center my-3'>
+						<StyledInput
+							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+							placeholder='Write a comment...'
+							placeholderTextColor='#ffffff66'
+							multiline={true}
+							scrollEnabled={false}
+							ref={newCommentRef}
+							onBlur={(e) => {
+								onCommentChange(e);
+							}}
+						/>
+						<StyledOpacity
+							className='absolute top-[10px] right-[30px]'
+							onPress={async () => {
+								Keyboard.dismiss();
+								await postComment();
+							}}
+						>
+							<StyledText className='text-green font-[500] text-[18px]'>
+								Post
+							</StyledText>
+						</StyledOpacity>
+					</StyledView>
 					<BottomSheetFlatList
-						data={dummyData}
+						data={commentData}
+						contentContainerStyle={{
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'center',
+							alignItems: 'center',
+							width: '100%'
+						}}
+						refreshControl={
+							<RefreshControl
+								onRefresh={() => {
+									console.log('getting comments');
+									{
+										/* TODO: add refresh button that will pull new comments from db */
+									}
+								}}
+								refreshing={false}
+								tintColor='#ebebeb'
+							/>
+						}
 						renderItem={({ item }) => {
-							console.log(item);
 							return (
 								<Comment
-									user={item.user}
-									content={item.content}
-									edited={item.edited}
-									timestamp={timeSince(item.timestamp)}
-									img={item.img}
+									id={item[0]}
+									user={item[1].user}
+									username={item[1].username}
+									content={item[1].content}
+									edited={item[1].edited}
+									timestamp={item[1].timestamp}
+									img={item[1].img}
 								/>
 							);
 						}}

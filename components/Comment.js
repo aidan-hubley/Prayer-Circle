@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Text, View, Image } from 'react-native';
 import { styled } from 'nativewind';
-//import Ionicons from '@expo/vector-icons/Ionicons'; placeholder for profile pic
+import { timeSince } from '../backend/functions';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -9,40 +9,39 @@ const StyledImage = styled(Image);
 
 export const Comment = (comment) => {
 	return (
-		<StyledView className='flex flex-col w-full justify-start items-center rounded-b-[20px] pt-[4px] pb-[10px]'>
-			<StyledView className='w-[90%] flex flex-row justify-between'>
-				<StyledView className=' flex flex-row'>
-					<StyledView className=' items-center justify-center'>
-					{/* <Ionicons name={'hand-left'} size={24} color='white' /> */}
-						<StyledImage
-							style={{ width: 24, height: 24 }}
-							source={{
-								uri: comment.img
-							}}
-						/>
-					</StyledView>
-					<StyledView className='ml-[8px]'>
-						<StyledView className=' flex flex-row'>
-							<StyledText className='font-bold text-[18px] text-white'>
-								{comment.content} 
-							</StyledText>
-							<StyledText className='font-bold text-[18px] text-outline'>
-								{`${comment.edited ? ' edited' : ''}`}
-							</StyledText>
-						</StyledView>
-						<StyledText className='text-white text-[12px]'>
-							{comment.user}
-						</StyledText>
-					</StyledView>
-				</StyledView>
-				<StyledView className=' flex flex-col items-end justify-center'>
-					<StyledText className='text-[13px] text-white'>
-						{comment.timestamp}
+		<StyledView className='flex flex-row w-[90%] items-start pt-[4px] pb-[10px] px-1 my-1'>
+			<StyledView className='w-[35px] aspect-square pt-[4px] items-center justify-center self-start'>
+				<StyledImage
+					className='rounded-[5px]'
+					width={35}
+					height={35}
+					source={{
+						uri:
+							comment.img ||
+							`https://picsum.photos/${Math.round(
+								Math.random() * 1000
+							)}`
+					}}
+				/>
+			</StyledView>
+			<StyledView className='flex-1 ml-[8px]'>
+				<StyledView className=' flex flex-row items-center'>
+					<StyledText className='font-bold text-[18px] text-white'>
+						{comment.username}
+					</StyledText>
+					<StyledText className='text-[14px] text-outline'>
+						{`${comment.edited ? ' (edited)' : ''}`}
 					</StyledText>
 				</StyledView>
+				<StyledText className='text-white text-[16px]'>
+					{comment.content}
+				</StyledText>
 			</StyledView>
-
-			<StyledView className='w-[90%] border-t border-outline mt-[5px] mb-[3px]'></StyledView>
+			<StyledView className='w-[35px] flex flex-col items-end justify-center'>
+				<StyledText className='text-[13px] text-white'>
+					{timeSince(comment.timestamp)}
+				</StyledText>
+			</StyledView>
 		</StyledView>
 	);
 };

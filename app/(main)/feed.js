@@ -150,6 +150,7 @@ export default function FeedPage() {
 							refresh={() => setUpFeed()}
 							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
+							comments={item[1].comments}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
