@@ -25,7 +25,7 @@ export const Comment = (comment) => {
 				</StyledView>
 				<StyledView className=' flex flex-col items-end justify-center'>
 					<StyledText className='text-[13px] text-white'>
-						{comment.timestamp}
+						{comment.timestamp}h
 					</StyledText>
 				</StyledView>
 			</StyledView>
