@@ -15,9 +15,14 @@ export const Comment = (comment) => {
 						<Ionicons name={'hand-left'} size={24} color='white' />
 					</StyledView>
 					<StyledView className='ml-[8px]'>
-						<StyledText className='font-bold text-[18px] text-white'>
-							{comment.content}
-						</StyledText>
+						<StyledView className=' flex flex-row'>
+							<StyledText className='font-bold text-[18px] text-white'>
+								{comment.content} 
+							</StyledText>
+							<StyledText className='font-bold text-[18px] text-outline'>
+								{`${comment.edited ? ' edited' : ''}`}
+							</StyledText>
+						</StyledView>
 						<StyledText className='text-white text-[12px]'>
 							{comment.user}
 						</StyledText>
