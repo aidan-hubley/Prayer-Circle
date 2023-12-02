@@ -106,7 +106,7 @@ export const Post = (post) => {
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] py-3 border-b border-[#ffffff33]'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
 				<StyledText className='text-white font-[500] text-[20px]'>
-					Support
+					Comments
 				</StyledText>
 			</StyledView>
 		);
