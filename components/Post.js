@@ -208,9 +208,10 @@ export const Post = (post) => {
 	});
 
 	const dummyData = [
-		{ user: 'alex', content: 'comment 1', edited: false },
-		{ user: 'aidan', content: 'comment 2', edited: false },
-		{ user: 'nason', content: 'comment 3', edited: false }
+		{ user: 'alex', content: 'Why is it this post', edited: false },
+		{ user: 'aidan', content: 'Instead of', edited: false },
+		{ user: 'nason', content: 'Praying for my dog', edited: false },
+		{ user: 'Roberti', content: 'He is very sick', edited: true }
 	];
 
 	return (
