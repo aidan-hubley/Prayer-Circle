@@ -208,10 +208,10 @@ export const Post = (post) => {
 	});
 
 	const dummyData = [
-		{ user: 'alex', content: 'Why is it this post', edited: false, timestamp: '15'},
-		{ user: 'aidan', content: 'Instead of', edited: false, timestamp: '16'},
-		{ user: 'nason', content: 'Praying for my dog', edited: false, timestamp: '15'},
-		{ user: 'Roberti', content: 'He is very sick', edited: true, timestamp: '17'}
+		{ user: 'alex', content: 'Why is it this post', edited: false, timestamp: 1623777600000},
+		{ user: 'aidan', content: 'Instead of', edited: false, timestamp: 1623777600000},
+		{ user: 'nason', content: 'Praying for my dog', edited: false, timestamp: 1623777600000},
+		{ user: 'Roberti', content: 'He is very sick', edited: true, timestamp: 1623777600000}
 	];
 
 	return (
@@ -435,7 +435,7 @@ export const Post = (post) => {
 									user={item.user}
 									content={item.content}
 									edited={item.edited}
-									timestamp={item.timestamp}
+									timestamp={timeSince(item.timestamp)}
 								/>
 							);
 						}}
