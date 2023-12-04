@@ -513,12 +513,12 @@ export const Post = (post) => {
 							multiline={true}
 							scrollEnabled={false}
 							ref={newCommentRef}
-							onBlur={(e) => {
-								onCommentChange(e);
+							onChangeText={(text) => {
+								setNewComment(text);
 							}}
 						/>
 						<StyledOpacity
-							className='absolute top-[10px] right-[30px]'
+							className='absolute top-[10px] right-[8%]'
 							onPress={async () => {
 								Keyboard.dismiss();
 								await postComment();
