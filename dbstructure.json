@@ -65,7 +65,7 @@
 		"comments": {
 			"_pushId_": {
 				"user": "_uid_",
-				"text": "Comment text",
+				"content": "Comment text",
 				"timestamp": 1234567890
 			}
 		},

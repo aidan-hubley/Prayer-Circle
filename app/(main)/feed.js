@@ -64,8 +64,8 @@ export default function FeedPage() {
 	let insets = useSafeAreaInsets();
 
 	return (
-		<StyledView className='flex-1 bg-offblack'>
-			<StyledView className='flex-1'>
+		<StyledView className='w-screen flex-1 bg-offblack'>
+			<StyledView className='w-screen flex-1'>
 				<FlatList
 					data={posts}
 					onEndReachedThreshold={0.4}
@@ -150,6 +150,7 @@ export default function FeedPage() {
 							refresh={() => setUpFeed()}
 							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
+							comments={item[1].comments}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
