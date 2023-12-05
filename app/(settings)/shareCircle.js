@@ -32,7 +32,6 @@ import QRCode from 'react-qr-code';
 		const [isCodeVisible, setIsCodeVisible] = useState(false);
 
 		const toggleVisibleCode = () => {
-			console.log("Toggling visibility of code");
 			setIsCodeVisible(!isCodeVisible);
 		};
 
