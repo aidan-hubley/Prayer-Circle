@@ -65,29 +65,52 @@ import QRCode from 'react-qr-code';
 									1234567890
 								</StyledText>
 							</StyledView>	
-							<StyledPressable className='border-[4px] border-purple bg-white mt-7 p-[10px] rounded-xl flex flex-row items-center align-center'
+							<StyledView className='flex-row justify-center items-baseline'>
+								<StyledIcon 
+									name='shield' 
+									size={30} 
+									color='#FFFBFC'									
+								/>
+								<StyledText className="text-white pl-3 mt-10 mb-2 text-center font-bold text-3xl">
+									Private Code								
+								</StyledText>								
+							</StyledView>							
+							<StyledPressable className='border-[4px] border-offwhite bg-offblack p-[10px] rounded-xl flex-row justify-center relative h-100 w-100'
 								onPress={toggleVisibleCode}
 							>
 								{isCodeVisible ? (
 									<>
-										<StyledIcon 
-											name='shield' 
-											size={30} 
-											color='#121212'
-											onPress={toggleVisibleCode}
-										/>
 										<StyledText
-											className='px-[5px] font-bold text-3xl text-offblack text-center'
+											className='font-bold text-3xl text-offwhite'
 											onPress={() => shareCircle()}
 										>
 											0987654321
 										</StyledText>
+										<StyledView className='absolute right-2 top-3'>
+											<StyledIcon 
+												className=''
+												name='eye' 
+												size={30} 
+												color='#FFFBFC'									
+											/>
+										</StyledView>
 									</>
 								) : (
-									<StyledImg
-										source={require('../../assets/Private_Code.png')}
-										className='m-[-10px]'
-									/>
+									<>
+										<StyledText
+											className='font-bold text-3xl text-offwhite'
+										>
+											Tap to View
+										</StyledText>
+										<StyledView className='absolute right-2 top-3'>
+											<StyledIcon 
+												className=''
+												name='eye-off' 
+												size={30} 
+												color='#FFFBFC'									
+											/>
+										</StyledView>
+									</>
 								)}
 							</StyledPressable>
 						</StyledView>
