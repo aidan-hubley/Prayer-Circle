@@ -66,12 +66,7 @@ import QRCode from 'react-qr-code';
 								</StyledText>
 							</StyledView>	
 							<StyledView className='flex-row justify-center items-baseline'>
-								<StyledIcon 
-									name='shield' 
-									size={30} 
-									color='#FFFBFC'									
-								/>
-								<StyledText className="text-white pl-3 mt-10 mb-2 text-center font-bold text-3xl">
+								<StyledText className="text-white mt-10 mb-2 text-center font-bold text-3xl">
 									Private Code								
 								</StyledText>								
 							</StyledView>							
@@ -86,7 +81,7 @@ import QRCode from 'react-qr-code';
 										>
 											0987654321
 										</StyledText>
-										<StyledView className='absolute right-2 top-3'>
+										<StyledView className='absolute right-3 top-3'>
 											<StyledIcon 
 												className=''
 												name='eye' 
@@ -102,7 +97,7 @@ import QRCode from 'react-qr-code';
 										>
 											Tap to View
 										</StyledText>
-										<StyledView className='absolute right-2 top-3'>
+										<StyledView className='absolute right-3 top-3'>
 											<StyledIcon 
 												className=''
 												name='eye-off' 
