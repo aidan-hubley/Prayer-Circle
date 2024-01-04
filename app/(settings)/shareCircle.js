@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, Image, Share, Pressable, Platform, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
+import Modal from 'react-native-modal';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -10,6 +11,7 @@ import QRCode from 'react-qr-code';
 	const StyledText = styled(Text);
 	const StyledIcon = styled(Ionicons);
 	const StyledImg = styled(Image);
+	const StyledModal = styled(Modal);
 	const StyledPressable = styled(Pressable);
 
 	const shareCircle = async () => {
@@ -28,6 +30,11 @@ import QRCode from 'react-qr-code';
 	export default function Page() {
 		let insets = useSafeAreaInsets();
 		let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
+
+		const [isModalVisible1, setModalVisible1] = useState(false);
+		const toggleModal1 = () => {
+			setModalVisible1(!isModalVisible1);
+		};
 
 		const [isCodeVisible, setIsCodeVisible] = useState(false);
 
@@ -112,6 +119,19 @@ import QRCode from 'react-qr-code';
 					</StyledView>
 				</ScrollView>
 			<StyledView
+				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
+				className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
+			>				
+				<StyledView></StyledView>
+				<Button
+					height={'h-[50px]'}
+					width={'w-[50px]'}
+					iconSize={30}
+					icon='help'
+					press={toggleModal1}
+				/>
+			</StyledView>
+			<StyledView
 				className='absolute flex flex-row w-screen px-[15px] justify-between'
 				style={{ bottom: insets.bottom }}
 			>
@@ -130,6 +150,76 @@ import QRCode from 'react-qr-code';
 					press={() => shareCircle()}
 				/>
 			</StyledView>
+
+			<StyledModal
+				className='w-[80%] self-center'
+				isVisible={isModalVisible1}
+				onBackdropPress={toggleModal1}
+			>
+				<StyledView className='bg-offblack border-[5px] border-purple rounded-2xl h-[55%] px-2 py-3'>
+					<StyledView className='items-center'>
+						<StyledText className='top-[6%] text-3xl text-offwhite'>
+							How to share circles:
+						</StyledText>		
+					</StyledView>
+					<StyledView className='flex-1 mx-2 gap-y-8'>
+						<StyledView className='flex-row items-center pt-6'>
+							<StyledIcon 
+								className=''
+								name='qr-code-outline' 
+								size={30} 
+								color='#FFFBFC'									
+							/>
+							<StyledText className='ml-3 text-2xl text-offwhite'>
+								Scan this QR code
+							</StyledText>
+						</StyledView>
+						<StyledView className='flex-row items-center'>
+							<StyledIcon 
+								className=''
+								name='text' 
+								size={30} 
+								color='#FFFBFC'									
+							/>
+							<StyledText className='ml-3 text-2xl text-offwhite'>
+								Share this code
+							</StyledText>
+						</StyledView>						
+						<StyledView className='flex-row items-center'>
+							<StyledIcon 
+								className=''
+								name='share-outline' 
+								size={30} 
+								color='#FFFBFC'									
+							/>
+							<StyledText className='ml-3 text-2xl text-offwhite'>
+								Share on other apps
+							</StyledText>
+						</StyledView>						
+						<StyledView className='flex-row items-center'>
+							<StyledIcon 
+								className=''
+								name='shield' 
+								size={30} 
+								color='#FFFBFC'									
+							/>
+							<StyledText className='ml-3 text-2xl text-offwhite'>
+								Share the private code
+							</StyledText>
+							<StyledText className='absolute top-10 left-10 text-l text-offwhite'>
+								Only share with trusted people!
+							</StyledText>
+						</StyledView>					
+					</StyledView>
+					<StyledView className='items-center'>
+						<Button
+							title='Got it!'							
+							width='w-[70%]'
+							press={toggleModal1}
+						/>					
+					</StyledView>
+				</StyledView>
+			</StyledModal>
 		</StyledView>
 	);
 }
