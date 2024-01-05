@@ -46,24 +46,14 @@ function Member({ img, name, username, role, last }) {
 
 	useEffect(() => {
 		let animation;
-		if (isRolePickerOpen) {
-			console.log('animation: opening role picker');
-			animation = Animated.timing(selectorVal, {
-				toValue: 1,
-				// toValue: 0,
-				duration: 500,
-				useNativeDriver: false,
-			});
-		} else {
-			console.log('animation: closing role picker');
-			animation = Animated.timing(selectorVal, {
-				toValue: 0,
-				duration: 500,
-				useNativeDriver: false,
-			});
-		}
-
-		animation.start();
+		console.log('animation: opening role picker');
+		animation = Animated.timing(selectorVal, {
+			toValue: (isRolePickerOpen ? 1 : 0),
+			duration: 500,
+			useNativeDriver: false,
+		});
+		
+		animation.start(() => console.log('Animation finished'));
 	}, [isRolePickerOpen, selectorVal]);
 
 	const roleSelectorStyle = {
