@@ -110,8 +110,10 @@ function Member({ img, name, username, role, last }) {
 							<StyledIcon name='chevron-forward' size={30} color='#FFFBFC' />
 						</StyledPressable>
 					</StyledAnimatedView>
-				) :	 (
-					<StyledPressable className='pr-[10px]' onPress={() => openRoleSelector(username)}>
+				) : (
+					<></>
+				)}
+				<StyledPressable className='pr-[10px]' onPress={() => openRoleSelector(username)}>
 					{role === 'own' ? (
 						<StyledIcon name='key' size={30} color='#5946B2' />
 					) : role === 'mod' ? (
@@ -124,7 +126,6 @@ function Member({ img, name, username, role, last }) {
 						<StyledIcon name='close-circle' size={30} color='#CC2500' />
 					) : null}
 					</StyledPressable>
-				)}
 			</StyledView>
 		</StyledView>
 	);
