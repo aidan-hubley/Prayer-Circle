@@ -20,19 +20,25 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 
 function Member({ img, name, username, role, last }) {
 	const [openRolePicker, setOpenRolePicker] = useState(null);
+	const [newrole, setNewRole] = useState(null);
 
 	const openRoleSelector = () => {
-		console.log('opening role picker');
 		setOpenRolePicker(true);
 	};
 
 	const closeRoleSelector = () => {	
-		console.log('closing role picker');
 		setOpenRolePicker(false);
 	};
 
-	const toggleRole = (role) => {
-		console.log('changing role of ' + username + ' to ' + role);		
+	const toggleRole = (selectedRole) => {
+		if (role === selectedRole) {
+			closeRoleSelector();
+			return;
+		} else {
+			setNewRole(selectedRole);
+			closeRoleSelector();
+			return;
+		}
 	}
 
 	const selectorVal = useRef(new Animated.Value(0)).current;
@@ -43,14 +49,13 @@ function Member({ img, name, username, role, last }) {
 
 	useEffect(() => {
 		let animation;
-		console.log('animation: opening role picker');
 		animation = Animated.timing(selectorVal, {
 			toValue: (openRolePicker ? 1 : 0),
 			duration: 500,
 			useNativeDriver: false,
 		});
 
-		animation.start(() => console.log('Animation finished'));
+		animation.start();
 	}, [openRolePicker, selectorVal]);
 
 	const roleSelectorStyle = {
@@ -111,17 +116,17 @@ function Member({ img, name, username, role, last }) {
 						<StyledIcon name='chevron-forward' size={30} color='#FFFBFC' />
 					</StyledPressable>
 				</StyledAnimatedView>
-				<StyledPressable style={roleIconStyle} className='absolute' onPress={() => openRoleSelector(username)}>
-					{role === 'own' ? (
-						<StyledIcon name='key' size={30} color='#5946B2' />
-					) : role === 'mod' ? (
-						<StyledIcon name='shield' size={30} color='#FFFBFC' />
-					) : role === 'mem' ? (
-						<StyledIcon name='checkmark-circle' size={30} color='#00A55E' />
-					) : role === 'sus' ? (
-						<StyledIcon name='remove-circle' size={30} color='#F9A826' />
-					) : role === 'ban' ? (
-						<StyledIcon name='close-circle' size={30} color='#CC2500' />
+				<StyledPressable style={roleIconStyle} className='absolute h-100' onPress={() => openRoleSelector(username)}>
+					{role === 'own' || newrole === 'own' ? (
+							<StyledIcon name='key' size={30} color='#5946B2' />
+					) : role === 'mod' || newrole === 'mod' ? (
+							<StyledIcon name='shield' size={30} color='#FFFBFC' />
+					) : role === 'mem' || newrole === 'mem' ? (
+							<StyledIcon name='checkmark-circle' size={30} color='#00A55E' />
+					) : role === 'sus' || newrole === 'sus' ? (
+							<StyledIcon name='remove-circle' size={30} color='#F9A826' />
+					) : role === 'ban' || newrole === 'ban' ? (
+							<StyledIcon name='close-circle' size={30} color='#CC2500' />
 					) : null}
 				</StyledPressable>
 			</StyledView>
