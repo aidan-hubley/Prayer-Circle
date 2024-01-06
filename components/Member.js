@@ -49,12 +49,17 @@ function Member({ img, name, username, role, last }) {
 			duration: 500,
 			useNativeDriver: false,
 		});
-		
+
 		animation.start(() => console.log('Animation finished'));
 	}, [openRolePicker, selectorVal]);
 
 	const roleSelectorStyle = {
 		width: selectorWidthInter,
+		opacity: openRolePicker ? 1 : 0,
+	};
+
+	const roleIconStyle = {
+		opacity: openRolePicker ? 0 : 1,
 	};
 
 	return (
@@ -79,7 +84,7 @@ function Member({ img, name, username, role, last }) {
 				</StyledView>
 			</StyledView>
 			<StyledView className='absolute right-0'>
-				<StyledAnimatedView style={roleSelectorStyle} className='flex-row bg-grey border-outline border-2 rounded-3xl mr-[8px] py-1 gap-x-2 z-20'>					
+				<StyledAnimatedView style={roleSelectorStyle} className='flex-row bg-grey border-outline border-2 rounded-3xl mr-[8px] py-1 gap-x-2 bottom-2'>					
 					<StyledPressable onPress={() => toggleRole("own")}>
 						<StyledIcon name='key' size={30} color='#5946B2'/>
 						{role === 'own' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
@@ -106,7 +111,7 @@ function Member({ img, name, username, role, last }) {
 						<StyledIcon name='chevron-forward' size={30} color='#FFFBFC' />
 					</StyledPressable>
 				</StyledAnimatedView>
-				<StyledPressable className='pr-[10px] z-10' onPress={() => openRoleSelector(username)}>
+				<StyledPressable style={roleIconStyle} className='absolute' onPress={() => openRoleSelector(username)}>
 					{role === 'own' ? (
 						<StyledIcon name='key' size={30} color='#5946B2' />
 					) : role === 'mod' ? (
@@ -118,7 +123,7 @@ function Member({ img, name, username, role, last }) {
 					) : role === 'ban' ? (
 						<StyledIcon name='close-circle' size={30} color='#CC2500' />
 					) : null}
-					</StyledPressable>
+				</StyledPressable>
 			</StyledView>
 		</StyledView>
 	);
