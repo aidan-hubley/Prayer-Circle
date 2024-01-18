@@ -6,7 +6,7 @@ import React, {
 	useCallback,
 	useImperativeHandle
 } from 'react';
-import { View, Text, TouchableHighlight, Pressable, Dimensions, Image } from 'react-native';
+import { View, Text, TouchableHighlight, Pressable, Image } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from '../backend/config';
@@ -18,9 +18,9 @@ import Animated, {
 import {
 	BottomSheetModalProvider,
 	BottomSheetModal,
-	BottomSheetFlatList,
-	BottomSheetBackdrop,
+	BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
+import { useStore } from '../app/global.js';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -32,7 +32,12 @@ const StyledAnimatedHighlight = styled(
 );
 
 const FilterItem = forwardRef(
-	({ data, index, contentOffset, itemSize, itemMargin }, ref) => {
+	(
+		{ data, index, contentOffset, itemSize, itemMargin, toggleShown },
+		ref
+	) => {
+		const updateFilter = useStore((state) => state.updateFilter);
+		const updateFilterName = useStore((state) => state.updateFilterName);
 		const itemStyle = useAnimatedStyle(() => {
 			const inputRange = [
 				(index - 3) * (itemSize + itemMargin),
@@ -53,9 +58,7 @@ const FilterItem = forwardRef(
 			const fadeOutputRange = [
 				0.6, 0.6, 0.6, 0.6, 0.6, 1, 0.6, 0.6, 0.6, 0.6, 0.6
 			];
-			const xOutputRange = [
-				-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70
-			];
+			const xOutputRange = [-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70];
 			const yOutputRange = [
 				300, 150, 75, 50, 20, 0, 20, 50, 75, 150, 300
 			];
@@ -136,13 +139,19 @@ const FilterItem = forwardRef(
 							borderColor: data.color,
 							width: itemSize,
 							height: itemSize,
-							marginHorizontal: itemMargin / 2
+							marginHorizontal: itemMargin / 2,
+							top: 60
 						},
 						itemStyle
 					]}
 					className='justify-center'
 				>
-					<StyledPressable className='flex items-center justify-center' onPress={async () => {router.push('findCircles')}}>
+					<StyledPressable
+						className='flex items-center justify-center'
+						onPress={async () => {
+							router.push('findCircles');
+						}}
+					>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
@@ -158,72 +167,84 @@ const FilterItem = forwardRef(
 			);
 		} else if (data.id == 'Gridview') {
 			return (
-				<>
-					<StyledAnimatedHighlight
-						style={[
-							{
-								borderColor: data.color,
-								width: itemSize,
-								height: itemSize,
-								marginHorizontal: itemMargin / 2
-							},
-							itemStyle
-						]}
-						className='justify-center'
-					>
-						<StyledPressable 
-							className='flex items-center justify-center' 
-							onPress={() => {handlePresentModalPress()}}
-						>
-							<StyledImage
-								source={require('../assets/spiral/thin.png')}
-								style={{ width: 80, height: 80 }}
-							/>
-							<StyledIcon
-								name={'apps-outline'}
-								size={35}
-								color={'#FFFBFC'}
-								style={{ position: 'absolute' }}
-							/>
-							<BottomSheetModalProvider>
-								<BottomSheetModal
-									enableDismissOnClose={true}
-									ref={bottomSheetModalRef}
-									index={1}
-									snapPoints={snapPoints}
-									onChange={handleSheetChanges}
-									handleComponent={handle}
-									backdropComponent={(backdropProps) => backdrop(backdropProps)}
-									keyboardBehavior='extend'
-								>
-									<StyledView className='flex-1 bg-grey'>
-
-									</StyledView>
-								</BottomSheetModal>		
-							</BottomSheetModalProvider>
-						</StyledPressable>							
-					</StyledAnimatedHighlight>
-				</>
-			)
-		} else {
-			return (			
 				<StyledAnimatedHighlight
 					style={[
 						{
 							borderColor: data.color,
 							width: itemSize,
 							height: itemSize,
-							marginHorizontal: itemMargin / 2
+							marginHorizontal: itemMargin / 2,
+							top: 60
+						},
+						itemStyle
+					]}
+					className='justify-center'
+				>
+					<StyledPressable
+						className='flex items-center justify-center'
+						onPress={() => {
+							handlePresentModalPress();
+						}}
+					>
+						<StyledImage
+							source={require('../assets/spiral/thin.png')}
+							style={{ width: 80, height: 80 }}
+						/>
+						<StyledIcon
+							name={'apps-outline'}
+							size={35}
+							color={'#FFFBFC'}
+							style={{ position: 'absolute' }}
+						/>
+						<BottomSheetModalProvider>
+							<BottomSheetModal
+								enableDismissOnClose={true}
+								ref={bottomSheetModalRef}
+								index={1}
+								snapPoints={snapPoints}
+								onChange={handleSheetChanges}
+								handleComponent={handle}
+								backdropComponent={(backdropProps) =>
+									backdrop(backdropProps)
+								}
+								keyboardBehavior='extend'
+							>
+								<StyledView className='flex-1 bg-grey'></StyledView>
+							</BottomSheetModal>
+						</BottomSheetModalProvider>
+					</StyledPressable>
+				</StyledAnimatedHighlight>
+			);
+		} else {
+			return (
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: data.color,
+							width: itemSize,
+							height: itemSize,
+							marginHorizontal: itemMargin / 2,
+							top: 60
 						},
 						itemStyle
 					]}
 					className='flex border-[6px] items-center justify-center rounded-full'
+					onPress={() => {
+						toggleShown();
+						updateFilter(data.id);
+						updateFilterName(data.title);
+					}}
 				>
-					<StyledIcon
-						name={data.icon}
-						size={35}
-						color={data.iconColor || data.color}
-					/>
+					<>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							{data.title}
+						</StyledText>
+						<StyledIcon
+							name={data.icon}
+							size={35}
+							color={data.iconColor || data.color}
+						/>
+					</>
 				</StyledAnimatedHighlight>
 			);
 		}
