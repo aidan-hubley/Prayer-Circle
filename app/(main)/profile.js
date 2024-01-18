@@ -16,10 +16,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signOut } from 'firebase/auth';
 import { router, auth } from '../../backend/config';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledImage = styled(Image);
+const StyledImage = styled(CachedImage);
 const StyledGradient = styled(LinearGradient);
 
 export default function ProfilePage() {
@@ -31,6 +33,8 @@ export default function ProfilePage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
+	const [user, setUser] = useState('');
+	const [profileImg, setProfileImg] = useState('');
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -42,6 +46,10 @@ export default function ProfilePage() {
 		setName(gn);
 		let ge = await AsyncStorage.getItem('email');
 		setEmail(ge);
+		let gi = await AsyncStorage.getItem('profile_img');
+		setProfileImg(gi);
+		let gu = await AsyncStorage.getItem('user');
+		setUser(gu);
 		setInitialLoad('loaded');
 	};
 
@@ -104,7 +112,8 @@ export default function ProfilePage() {
 						<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
 							<StyledImage
 								className='w-full h-full rounded-[18px]'
-								source={{ uri: 'https://picsum.photos/1223' }}
+								source={{ uri: profileImg }}
+								cacheKey={`${shorthash.unique(user)}`}
 							/>
 						</StyledView>
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>

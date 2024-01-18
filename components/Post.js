@@ -8,14 +8,13 @@ import React, {
 import {
 	Text,
 	View,
-	Image,
 	Pressable,
 	TouchableOpacity,
 	Animated,
 	RefreshControl,
 	TextInput,
 	Keyboard,
-	KeyboardAvoidingView
+	Image
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -35,8 +34,10 @@ import {
 } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
 
-const StyledImage = styled(Image);
+const StyledImage = styled(CachedImage);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
@@ -314,7 +315,7 @@ export const Post = (post) => {
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
+								{/* <StyledImage
 									className={`${
 										post.owned ? 'hidden' : 'flex'
 									} rounded-lg`}
@@ -322,7 +323,8 @@ export const Post = (post) => {
 									source={{
 										uri: post.img
 									}}
-								/>
+									cacheKey={shorthash.unique(post.img)}
+								/> */}
 								<StyledView
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>

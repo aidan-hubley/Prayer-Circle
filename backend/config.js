@@ -4,6 +4,7 @@ import { getDatabase } from 'firebase/database';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
 	apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -22,5 +23,6 @@ export const database = getDatabase(app);
 export const auth = initializeAuth(app, {
 	persistence: getReactNativePersistence(AsyncStorage)
 });
+export const storage = getStorage(app);
 
 export let router = useRouter();

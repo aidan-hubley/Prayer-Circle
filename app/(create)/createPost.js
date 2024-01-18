@@ -102,12 +102,13 @@ export default function Page() {
 
 						let uid = await AsyncStorage.getItem('user');
 						let name = await AsyncStorage.getItem('name');
+						let profileImg = await AsyncStorage.getItem(
+							'profile_img'
+						);
 
 						let newPost = {
 							user: uid,
-							profile_img: `https://picsum.photos/${Math.round(
-								Math.random() * 1000
-							)}`,
+							profile_img: profileImg,
 							name: name,
 							title: title,
 							text: body,
