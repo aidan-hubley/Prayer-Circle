@@ -120,9 +120,7 @@ export default function ProfilePage() {
 							{(!profileImg || profileImg == 'false') && (
 								<StyledImage
 									className='w-full h-full rounded-[18px]'
-									source={{
-										uri: `https://picsum.photos/1334`
-									}}
+									source={require('../../assets/no_profile.jpg')}
 								/>
 							)}
 						</StyledView>
