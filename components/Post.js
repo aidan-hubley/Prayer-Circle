@@ -35,6 +35,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useStore } from '../app/global';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -193,12 +194,12 @@ export const Post = (post) => {
 	// db related functions
 	async function deletePost() {
 		const me = await AsyncStorage.getItem('user');
-		writeData(
+		await writeData(
 			`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${post.id}`,
 			null,
 			true
 		);
-		writeData(
+		await writeData(
 			`prayer_circle/users/${me}/private/posts/${post.id}`,
 			null,
 			true

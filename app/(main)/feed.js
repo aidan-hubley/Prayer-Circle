@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStore } from '../global';
+import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -28,6 +29,21 @@ export default function FeedPage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
 	const filterTarget = useStore((state) => state.filter);
+	const [globalReload, setGlobalReload] = useStore((state) => [
+		state.globalReload,
+		state.setGlobalReload
+	]);
+
+	const setUpFeed = async () => {
+		setRenderIndex(0);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
+		let gp = await getPosts(filterTarget);
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 12);
+		setPosts(pl);
+		setInitialLoad('loaded');
+	};
 
 	async function populateList(list, start, numOfItems) {
 		let me = await AsyncStorage.getItem('user');
@@ -48,17 +64,15 @@ export default function FeedPage() {
 		return renderedList;
 	}
 	useEffect(() => {
-		(async () => {
-			setRenderIndex(0);
-			let gm = await AsyncStorage.getItem('user');
-			setMe(gm);
-			let gp = await getPosts(filterTarget);
-			setPostList(gp);
-			let pl = await populateList(gp, 0, 12);
-			setPosts(pl);
-			setInitialLoad('loaded');
-		})();
+		setRefreshing(true);
+		setUpFeed();
 	}, [filterTarget]);
+	useEffect(() => {
+		if (globalReload) {
+			setUpFeed();
+			setGlobalReload(false);
+		}
+	}, [globalReload]);
 
 	let insets = useSafeAreaInsets();
 
@@ -146,7 +160,7 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon={item[1].type}
 							id={item[0]}
-							refresh={() => setUpFeed()}
+							refresh={() => setGlobalReload(true)}
 							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
 							comments={item[1].comments}
