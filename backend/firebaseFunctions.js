@@ -150,7 +150,7 @@ export async function loginUser(email, password) {
 				['user', user.uid],
 				['name', `${userData.public.fname} ${userData.public.lname}`],
 				['email', user.email],
-				['profile_img', userData.public.profile_img]
+				['profile_img', JSON.stringify(userData.public.profile_img)]
 			]);
 
 			router.replace('/mainViewLayout');

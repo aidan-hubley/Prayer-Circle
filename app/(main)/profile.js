@@ -17,11 +17,11 @@ import { signOut } from 'firebase/auth';
 import { router, auth } from '../../backend/config';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledImage = styled(CachedImage);
+const StyledImage = styled(Image);
+const StyledCachedImage = styled(CachedImage);
 const StyledGradient = styled(LinearGradient);
 
 export default function ProfilePage() {
@@ -34,7 +34,7 @@ export default function ProfilePage() {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [user, setUser] = useState('');
-	const [profileImg, setProfileImg] = useState('');
+	const [profileImg, setProfileImg] = useState(false);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -110,11 +110,21 @@ export default function ProfilePage() {
 						className='flex items-center w-full mb-10'
 					>
 						<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
-							<StyledImage
-								className='w-full h-full rounded-[18px]'
-								source={{ uri: profileImg }}
-								cacheKey={`${shorthash.unique(user)}`}
-							/>
+							{profileImg && profileImg != 'false' && (
+								<StyledCachedImage
+									className='w-full h-full rounded-[18px]'
+									source={{ uri: profileImg }}
+									cacheKey={`profile-${user}`}
+								/>
+							)}
+							{(!profileImg || profileImg == 'false') && (
+								<StyledImage
+									className='w-full h-full rounded-[18px]'
+									source={{
+										uri: `https://picsum.photos/1334`
+									}}
+								/>
+							)}
 						</StyledView>
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 							{name}

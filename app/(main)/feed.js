@@ -26,7 +26,6 @@ export default function FeedPage() {
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
-	const [circles, setCircles] = useState([]);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -47,7 +46,7 @@ export default function FeedPage() {
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i[0];
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-
+			console.log('data', data);
 			if (data.hidden && data.hidden[`${me}`] == true) {
 				continue;
 			}
@@ -140,7 +139,8 @@ export default function FeedPage() {
 					}
 					renderItem={({ item }) => (
 						<Post
-							user={item[1].name}
+							user={item[1].user}
+							name={item[1].name}
 							img={item[1].profile_img}
 							title={item[1].title}
 							timestamp={`${item[1].timestamp}`}

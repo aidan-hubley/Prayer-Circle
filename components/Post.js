@@ -37,7 +37,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 
-const StyledImage = styled(CachedImage);
+const StyledCachedImage = styled(CachedImage);
+const StyledImage = styled(Image);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
@@ -115,12 +116,6 @@ export const Post = (post) => {
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
 	};
-
-	const onCommentChange = (e) => {
-		setNewComment(e.nativeEvent.text);
-	};
-
-	let insets = useSafeAreaInsets();
 
 	const handle = () => {
 		return (
@@ -315,7 +310,7 @@ export const Post = (post) => {
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
-								{/* <StyledImage
+								<StyledCachedImage
 									className={`${
 										post.owned ? 'hidden' : 'flex'
 									} rounded-lg`}
@@ -323,8 +318,8 @@ export const Post = (post) => {
 									source={{
 										uri: post.img
 									}}
-									cacheKey={shorthash.unique(post.img)}
-								/> */}
+									cacheKey={post.user}
+								/>
 								<StyledView
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
@@ -340,7 +335,7 @@ export const Post = (post) => {
 												post.owned ? 'hidden' : ''
 											} text-white`}
 										>
-											{post.user} •{' '}
+											{post.name} •{' '}
 										</StyledText>
 										<StyledText className={`text-white`}>
 											{tS}{' '}
