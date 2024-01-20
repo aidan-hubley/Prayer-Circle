@@ -218,8 +218,8 @@ export const Post = (post) => {
 	const editView = () => {
 		return (
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-				<StyledView className='flex-1 bg-grey pt-2'>
-					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]  border-t border-t-[#ffffff20]'>
+				<StyledView className='flex-1 bg-grey'>
+					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
 						<StyledInput
 							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 							placeholder={'Title'}
