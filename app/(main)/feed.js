@@ -29,6 +29,16 @@ export default function FeedPage() {
 	const [me, setMe] = useState('');
 	const filterTarget = useStore((state) => state.filter);
 
+	async function setUpFeed() {
+		setRenderIndex(0);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
+		let gp = await getPosts(filterTarget);
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 12);
+		setPosts(pl);
+		setInitialLoad('loaded');
+	}
 	async function populateList(list, start, numOfItems) {
 		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
@@ -48,16 +58,7 @@ export default function FeedPage() {
 		return renderedList;
 	}
 	useEffect(() => {
-		(async () => {
-			setRenderIndex(0);
-			let gm = await AsyncStorage.getItem('user');
-			setMe(gm);
-			let gp = await getPosts(filterTarget);
-			setPostList(gp);
-			let pl = await populateList(gp, 0, 12);
-			setPosts(pl);
-			setInitialLoad('loaded');
-		})();
+		setUpFeed();
 	}, [filterTarget]);
 
 	let insets = useSafeAreaInsets();
