@@ -120,7 +120,52 @@ export default function Page() {
                     <StyledText className='text-3xl text-offwhite text-center tracking-widest leading-10'>
                         Change Password
                     </StyledText>
-                    {/* ... Input fields and buttons for password reset ... */}
+                    <StyledInput
+                                className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
+                                placeholder="Current Password"
+                                secureTextEntry={true}
+                                value={currentPassword}
+                                onChangeText={setCurrentPassword}
+                            />
+                            <StyledInput
+                                className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
+                                placeholder="New Password"
+                                secureTextEntry={true}
+                                value={newPassword}
+                                onChangeText={setNewPassword}
+                            />
+                            <StyledInput
+                                className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
+                                placeholder="Confirm New Password"
+                                secureTextEntry={true}
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                            />
+
+
+                            <Button
+                                title='Confirm'
+                                btnStyles='mt-5 border-2 border-yellow'
+                                bgColor='bg-offblack'
+                                textStyles='text-yellow'
+                                width='w-[70%]'
+                                press={() => bottomSheetModalRef.current?.dismiss()}
+                            />
+
+                            <Button
+                                title='Change With Email'
+                                btnStyles='mt-5 border-2 border-yellow'
+                                bgColor='bg-offblack'
+                                textStyles='text-yellow'
+                                width='w-[70%]'
+                                press={handlePasswordReset}
+                            />
+                            <Button
+                                title='Cancel'
+                                btnStyles='mt-5'
+                                width='w-[70%]'
+                                press={() => bottomSheetModalRef.current?.dismiss()}
+                            />
                 </StyledView>
             </BottomSheetModal>
         </StyledSafeArea>
