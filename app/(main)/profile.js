@@ -151,7 +151,6 @@ export default function ProfilePage() {
 						content={item[1].text}
 						icon={item[1].type}
 						id={item[0]}
-						refresh={() => setUpFeed()}
 						owned={true}
 						edited={item[1].edited}
 					/>

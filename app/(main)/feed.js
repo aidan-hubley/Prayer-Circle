@@ -14,7 +14,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStore } from '../global';
-import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -160,7 +159,6 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon={item[1].type}
 							id={item[0]}
-							refresh={() => setGlobalReload(true)}
 							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
 							comments={item[1].comments}

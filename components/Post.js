@@ -58,6 +58,7 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
+	const setGlobalReload = useStore((state) => state.setGlobalReload);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -206,7 +207,7 @@ export const Post = (post) => {
 		);
 		writeData(`prayer_circle/posts/${post.id}`, null, true).then(() => {
 			setTimeout(() => {
-				post.refresh();
+				setGlobalReload(true);
 			}, 100);
 		});
 	}
@@ -215,7 +216,7 @@ export const Post = (post) => {
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
 		toggleToolbar();
 
-		post.refresh();
+		setGlobalReload(true);
 	}
 
 	// post setup
