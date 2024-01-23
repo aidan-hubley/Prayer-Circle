@@ -13,6 +13,7 @@ import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useStore } from '../global';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -26,19 +27,18 @@ export default function FeedPage() {
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
-	const [circles, setCircles] = useState([]);
+	const filterTarget = useStore((state) => state.filter);
 
-	const setUpFeed = async () => {
+	async function setUpFeed() {
 		setRenderIndex(0);
 		let gm = await AsyncStorage.getItem('user');
 		setMe(gm);
-		let gp = await getPosts();
+		let gp = await getPosts(filterTarget);
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 12);
 		setPosts(pl);
 		setInitialLoad('loaded');
-	};
-
+	}
 	async function populateList(list, start, numOfItems) {
 		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
@@ -48,7 +48,7 @@ export default function FeedPage() {
 			let id = i[0];
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
 
-			if (data.hidden && data.hidden[`${me}`] == true) {
+			if (data.hidden && data.hidden[`${me}`]) {
 				continue;
 			}
 			renderedList.push([id, data]);
@@ -59,7 +59,7 @@ export default function FeedPage() {
 	}
 	useEffect(() => {
 		setUpFeed();
-	}, []);
+	}, [filterTarget]);
 
 	let insets = useSafeAreaInsets();
 

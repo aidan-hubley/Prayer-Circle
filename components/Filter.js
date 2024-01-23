@@ -1,4 +1,9 @@
-import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+	useRef,
+	useState,
+	forwardRef,
+	useImperativeHandle
+} from 'react';
 import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
@@ -55,7 +60,7 @@ const Filter = forwardRef((props, ref) => {
 	}));
 
 	return (
-		<>				
+		<>
 			<AnimatedPressable
 				style={backdropOpacityStyle}
 				pointerEvents={props.touchEvents ? 'none' : 'auto'}
@@ -67,7 +72,7 @@ const Filter = forwardRef((props, ref) => {
 			/>
 			<AnimatedView
 				style={opacityStyle}
-				className='absolute w-screen h-[200px] max-w-[500px] flex items-start justify-center overflow-visible'
+				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center'
 			>
 				<FlatList
 					data={props.data}
@@ -88,6 +93,7 @@ const Filter = forwardRef((props, ref) => {
 								contentOffset={contentOffset}
 								itemSize={itemSize}
 								itemMargin={itemMargin}
+								toggleShown={toggleShown}
 							/>
 						);
 					}}
