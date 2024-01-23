@@ -88,7 +88,7 @@ import QRCode from 'react-qr-code';
 										>
 											0987654321
 										</StyledText>
-										<StyledView className='absolute right-3 top-3'>
+										<StyledView className='absolute left-3 top-3'>
 											<StyledIcon 
 												className=''
 												name='eye' 
@@ -104,7 +104,7 @@ import QRCode from 'react-qr-code';
 										>
 											Tap to View
 										</StyledText>
-										<StyledView className='absolute right-3 top-3'>
+										<StyledView className='absolute left-3 top-3'>
 											<StyledIcon 
 												className=''
 												name='eye-off' 
@@ -120,10 +120,10 @@ import QRCode from 'react-qr-code';
 				</ScrollView>
 			<StyledView
 				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
-				className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
+				className='absolute w-screen px-[15px] flex flex-row justify-end'
 			>				
-				<StyledView></StyledView>
 				<Button
+					btnStyle=''					
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
@@ -211,7 +211,7 @@ import QRCode from 'react-qr-code';
 							</StyledText>
 						</StyledView>					
 					</StyledView>
-					<StyledView className='items-center'>
+					<StyledView className='items-center py-3'>
 						<Button
 							title='Got it!'							
 							width='w-[70%]'
