@@ -44,6 +44,16 @@ export default function FeedPage() {
 		setInitialLoad('loaded');
 	};
 
+	async function setUpFeed() {
+		setRenderIndex(0);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
+		let gp = await getPosts(filterTarget);
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 12);
+		setPosts(pl);
+		setInitialLoad('loaded');
+	}
 	async function populateList(list, start, numOfItems) {
 		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
@@ -161,6 +171,7 @@ export default function FeedPage() {
 							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
 							comments={item[1].comments}
+							data={item[1]}
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
