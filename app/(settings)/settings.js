@@ -154,53 +154,55 @@ export default function Page() {
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}
                     keyboardBehavior='extend'
                 >
-                    <StyledView className='flex-1 bg-grey p-4 items-center'>
+                    <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
                         <StyledInput
-                                    className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
-                                    placeholder="Current Password"
-                                    secureTextEntry={true}
-                                    value={currentPassword}
-                                    onChangeText={setCurrentPassword}
-                                />
-                                <StyledInput
-                                    className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
-                                    placeholder="New Password"
-                                    secureTextEntry={true}
-                                    value={newPassword}
-                                    onChangeText={setNewPassword}
-                                />
-                                <StyledInput
-                                    className='mt-5 p-2 w-[80%] border-[1px] border-outline rounded-xl'
-                                    placeholder="Confirm New Password"
-                                    secureTextEntry={true}
-                                    value={confirmPassword}
-                                    onChangeText={setConfirmPassword}
-                                />
+                            className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                            placeholder="Current Password"
+                            placeholderTextColor={'#fff'}
+                            secureTextEntry={true}
+                            value={currentPassword}
+                            onChangeText={setCurrentPassword}
+                        />
+                        <StyledInput
+                            className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                            placeholder="New Password"
+                            placeholderTextColor={'#fff'}
+                            secureTextEntry={true}
+                            value={newPassword}
+                            onChangeText={setNewPassword}
+                        />
+                        <StyledInput
+                            className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                            placeholder="Confirm New Password"
+                            placeholderTextColor={'#fff'}
+                            secureTextEntry={true}
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                        />
 
+                        <Button
+                            title='Confirm'
+                            btnStyles='mt-5 border-2 border-yellow'
+                            bgColor='bg-offblack'
+                            textStyles='text-yellow'
+                            width='w-[70%]'
+                            press={() => bottomSheetModalRef.current?.dismiss()}
+                        />
 
-                                <Button
-                                    title='Confirm'
-                                    btnStyles='mt-5 border-2 border-yellow'
-                                    bgColor='bg-offblack'
-                                    textStyles='text-yellow'
-                                    width='w-[70%]'
-                                    press={() => bottomSheetModalRef.current?.dismiss()}
-                                />
-
-                                <Button
-                                    title='Change With Email'
-                                    btnStyles='mt-5 border-2 border-yellow'
-                                    bgColor='bg-offblack'
-                                    textStyles='text-yellow'
-                                    width='w-[70%]'
-                                    press={handlePasswordReset}
-                                />
-                                <Button
-                                    title='Cancel'
-                                    btnStyles='mt-5'
-                                    width='w-[70%]'
-                                    press={() => bottomSheetModalRef.current?.dismiss()}
-                                />
+                        <Button
+                            title='Change With Email'
+                            btnStyles='mt-5 border-2 border-yellow'
+                            bgColor='bg-offblack'
+                            textStyles='text-yellow'
+                            width='w-[70%]'
+                            press={handlePasswordReset}
+                        />
+                        <Button
+                            title='Cancel'
+                            btnStyles='mt-5'
+                            width='w-[70%]'
+                            press={() => bottomSheetModalRef.current?.dismiss()}
+                        />
                     </StyledView>
                 </BottomSheetModal>
                 <StyledView style={{bottom: insets.bottom}} className='absolute w-screen px-[15px]'>
