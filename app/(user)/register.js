@@ -211,10 +211,22 @@ export default function Register() {
 								/>
 							</StyledView>
 						</StyledView>
+						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
+							Read the{' '}
+							<TouchableWithoutFeedback
+								onPress={() => {
+									router.replace('/login');
+								}}
+							>
+								<StyledText className='text-yellow font-bold'>
+									Terms of Service
+								</StyledText>
+							</TouchableWithoutFeedback>
+						</StyledText>
 						<StyledView className='flex flex-col items-center'>
 							<Button
 								width='w-[85%]'
-								title='Register'
+								title='Agree & Register'
 								textColor='#F7F1E3'
 								backgroundColor='#121212'
 								borderColor='#F9A826'
@@ -229,7 +241,7 @@ export default function Register() {
 									);
 								}}
 							/>
-							<StyledText className='text-offwhite text-center text-[18px] mt-5'>
+							<StyledText className='text-offwhite text-center text-[18px] mt-3'>
 								Already have an account?{' '}
 								<TouchableWithoutFeedback
 									onPress={() => {
