@@ -123,16 +123,6 @@ export default function ProfilePage() {
 								height: insets.top + 60
 							}}
 						>
-							<Button
-								title='Sign Out'
-								width='w-[50%]'
-								press={() => {
-									signOut(auth);
-									AsyncStorage.removeItem('user');
-									AsyncStorage.removeItem('name');
-									router.replace('/login');
-								}}
-							/>
 						</StyledView>
 					) : (
 						<></>
