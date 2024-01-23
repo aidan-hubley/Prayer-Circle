@@ -35,9 +35,10 @@ import {
 	BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useStore } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
-import { set } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -59,6 +60,7 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
+	const setGlobalReload = useStore((state) => state.setGlobalReload);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [editContent, setEditContent] = useState(post.content);
@@ -320,28 +322,27 @@ export const Post = (post) => {
 	// db related functions
 	async function deletePost() {
 		const me = await AsyncStorage.getItem('user');
-		writeData(
+		await writeData(
 			`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${post.id}`,
 			null,
 			true
 		);
-		writeData(
+		await writeData(
 			`prayer_circle/users/${me}/private/posts/${post.id}`,
 			null,
 			true
 		);
-		writeData(`prayer_circle/posts/${post.id}`, null, true).then(() => {
-			setTimeout(() => {
-				post.refresh();
-			}, 100);
-		});
+		await writeData(`prayer_circle/posts/${post.id}`, null, true);
+		setTimeout(() => {
+			setGlobalReload(true);
+		}, 1000);
 	}
 
 	async function hidePost(postId) {
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
 		toggleToolbar();
 
-		post.refresh();
+		setGlobalReload(true);
 	}
 
 	async function editPost() {

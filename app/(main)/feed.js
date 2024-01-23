@@ -28,6 +28,21 @@ export default function FeedPage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
 	const filterTarget = useStore((state) => state.filter);
+	const [globalReload, setGlobalReload] = useStore((state) => [
+		state.globalReload,
+		state.setGlobalReload
+	]);
+
+	const setUpFeed = async () => {
+		setRenderIndex(0);
+		let gm = await AsyncStorage.getItem('user');
+		setMe(gm);
+		let gp = await getPosts(filterTarget);
+		setPostList(gp);
+		let pl = await populateList(gp, 0, 12);
+		setPosts(pl);
+		setInitialLoad('loaded');
+	};
 
 	async function setUpFeed() {
 		setRenderIndex(0);
@@ -58,8 +73,14 @@ export default function FeedPage() {
 		return renderedList;
 	}
 	useEffect(() => {
+		setRefreshing(true);
 		setUpFeed();
 	}, [filterTarget]);
+	useEffect(() => {
+		if (globalReload) {
+			setUpFeed();
+		}
+	}, [globalReload]);
 
 	let insets = useSafeAreaInsets();
 
@@ -147,7 +168,6 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon={item[1].type}
 							id={item[0]}
-							refresh={() => setUpFeed()}
 							ownedToolBar={item[1].user == me}
 							edited={item[1].edited}
 							comments={item[1].comments}

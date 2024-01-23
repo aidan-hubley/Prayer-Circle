@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from '../../backend/config';
 import { readData } from '../../backend/firebaseFunctions';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from '../global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -19,6 +20,7 @@ export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
 	const [time, setTime] = useState('');
+	const setGlobalReload = useStore((state) => state.setGlobalReload);
 
 	const typeRef = useRef();
 
@@ -136,11 +138,13 @@ export default function Page() {
 							now,
 							true
 						);
-						await writeData(
+						writeData(
 							`prayer_circle/users/${uid}/private/posts/${newPostId}`,
 							true,
 							true
-						);
+						).then(() => {
+							setGlobalReload(true);
+						});
 
 						this.postTitle.clear();
 						this.postDescription.clear();

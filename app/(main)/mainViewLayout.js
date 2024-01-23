@@ -24,6 +24,10 @@ export default function Layout() {
 	const [swipingEnabled, setSwipingEnabled] = useState(true);
 	const filterRef = useRef();
 	const filterName = useStore((state) => state.currentFilterName);
+	const [globalReload, setGlobalReload] = useStore((state) => [
+		state.globalReload,
+		state.setGlobalReload
+	]);
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
@@ -37,6 +41,10 @@ export default function Layout() {
 	useEffect(() => {
 		setUp();
 	}, []);
+
+	useEffect(() => {
+		setGlobalReload(false);
+	}, [globalReload]);
 
 	return (
 		<BottomSheetModalProvider>
