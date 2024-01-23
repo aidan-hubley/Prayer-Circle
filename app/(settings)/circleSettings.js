@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
 	Text,
 	View,
@@ -13,6 +13,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
 import { LinearGradient } from 'expo-linear-gradient';
+import {
+	BottomSheetModal,
+	BottomSheetFlatList,
+	BottomSheetBackdrop
+} from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -33,6 +38,13 @@ export default function Page() {
 	const toggleModal2 = () => {
 		setModalVisible2(!isModalVisible2);
 	};
+
+	// bottom sheet modal
+	const snapPoints = useMemo(() => ['85%'], []);
+	const handlePresentModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.present();
+	}, []);
+	const handleSheetChanges = useCallback((index) => {}, []);
 
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -110,7 +122,7 @@ export default function Page() {
 
 	return (
 		<StyledView
-			className='bg-offblack flex-1'
+			className="bg-offblack flex-1"
 			style={{ paddingTop: Platform.OS == 'android' ? insets.top : 0 }}
 		>
 			<FlatList
@@ -121,28 +133,28 @@ export default function Page() {
 				ListHeaderComponent={
 					<>
 						<StyledView
-							className='w-full flex items-center mb-[10px]'
+							className="w-full flex items-center mb-[10px]"
 							style={{
 								height: 80
 							}}
 						/>
-						<StyledView className='w-full flex items-center justify-center'>
+						<StyledView className="w-full flex items-center justify-center">
 							<Button
-								btnStyles='bg-offblack border-[8px] border-purple'
+								btnStyles="bg-offblack border-[8px] border-purple"
 								height={'h-[120px]'}
 								width={'w-[120px]'}
 								iconSize={70}
-								icon='musical-notes'
-								iconColor='white'
-								href='/mainViewLayout'
+								icon="musical-notes"
+								iconColor="white"
+								href="/mainViewLayout"
 							/>
 						</StyledView>
 
-						<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
+						<StyledText className="w-full text-center text-[30px] text-offwhite my-2">
 							Circle Name
 						</StyledText>
-						<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-							<StyledText className='text-white text-[14px]'>
+						<StyledView className="w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2">
+							<StyledText className="text-white text-[14px]">
 								This is where the description of the circle will
 								go. It will be a short description of the circle
 								that will be displayed to users who are
@@ -150,8 +162,8 @@ export default function Page() {
 								description by clicking into the box and typing.
 							</StyledText>
 						</StyledView>
-						<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
-							<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
+						<StyledView className="border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center">
+							<StyledText className="w-full text-center text-[28px] text-white font-[600]">
 								Members
 							</StyledText>
 						</StyledView>
@@ -172,7 +184,7 @@ export default function Page() {
 				ListFooterComponent={
 					<>
 						<StyledView
-							className='w-full flex items-center mb-[10px]'
+							className="w-full flex items-center mb-[10px]"
 							style={{
 								height: insets.bottom + 55
 							}}
@@ -181,99 +193,105 @@ export default function Page() {
 				}
 			/>
 			<StyledGradient
-				pointerEvents='none'
+				pointerEvents="none"
 				start={{ x: 0, y: 0.1 }}
 				end={{ x: 0, y: 1 }}
 				style={{ height: 120 }}
-				className='absolute w-screen'
+				className="absolute w-screen"
 				colors={['#121212ee', 'transparent']}
 			/>
 			<StyledView
 				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
-				className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
+				className="absolute w-screen flex flex-row items-center justify-between px-[15px]"
 			>
 				<Button
-					btnStyles='rotate-180'
-					bgColor='bg-offblack'
-					borderColor='border-yellow'
+					btnStyles="rotate-180"
+					bgColor="bg-offblack"
+					borderColor="border-yellow"
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon='log-out-outline'
-					iconColor='#F9A826'
+					icon="log-out-outline"
+					iconColor="#F9A826"
 					press={toggleModal1}
 				/>
-				<StyledText className='text-4xl font-bold text-offwhite'>
+				<StyledText className="text-4xl font-bold text-offwhite">
 					Settings
 				</StyledText>
 				<Button
-					bgColor='bg-offblack'
-					borderColor='border-red'
+					bgColor="bg-offblack"
+					borderColor="border-red"
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon='trash-outline'
-					iconColor='#CC2500'
+					icon="trash-outline"
+					iconColor="#CC2500"
 					press={toggleModal2}
 				/>
 			</StyledView>
 
 			<StyledView
-				className='absolute flex flex-row w-screen px-[15px] justify-between'
+				className="absolute flex flex-row w-screen px-[15px] justify-between"
 				style={{ bottom: insets.bottom }}
 			>
 				<Button // Back to Feed Page
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon='arrow-back'
-					href='/mainViewLayout'
+					icon="arrow-back"
+					href="/mainViewLayout"
+				/>
+				<Button // Queue
+					title="Queue"
+					height={'h-[50px]'}
+					width={'w-[200px]'}
+					href="/mainViewLayout"
 				/>
 				<Button // to Share Page
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon='qr-code'
-					href='shareCircle'
+					icon="qr-code"
+					href="shareCircle"
 				/>
 			</StyledView>
 
 			<StyledModal
-				className='w-[80%] self-center'
+				className="w-[80%] self-center"
 				isVisible={isModalVisible1}
 			>
-				<StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
-					<StyledView className='flex-1 items-center h-[60%]'>
-						<StyledText className='top-[6%] text-3xl text-offwhite'>
+				<StyledView className="bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]">
+					<StyledView className="flex-1 items-center h-[60%]">
+						<StyledText className="top-[6%] text-3xl text-offwhite">
 							Leave this circle?
 						</StyledText>
 
 						<Button
-							btnStyles='top-[15%] bg-grey border-4 border-purple'
+							btnStyles="top-[15%] bg-grey border-4 border-purple"
 							height={'h-[90px]'}
 							width={'w-[90px]'}
 							iconSize={60}
-							icon='musical-notes'
-							iconColor='white'
-							href='/mainViewLayout'
+							icon="musical-notes"
+							iconColor="white"
+							href="/mainViewLayout"
 						/>
 
-						<StyledText className='top-[20%] text-3xl text-offwhite'>
+						<StyledText className="top-[20%] text-3xl text-offwhite">
 							Circle Name
 						</StyledText>
 						{/* Database call to remove from Circle  */}
 						<Button
-							title='Leave'
+							title="Leave"
 							btnStyles={'top-[31%] border-2 border-yellow'}
 							bgColor={'bg-offblack'}
 							textStyles={'text-yellow'}
-							width='w-[70%]'
+							width="w-[70%]"
 							press={toggleModal1}
 						/>
 						<Button
-							title='Cancel'
+							title="Cancel"
 							btnStyles={'top-[37%]'}
-							width='w-[70%]'
+							width="w-[70%]"
 							press={toggleModal1}
 						/>
 					</StyledView>
@@ -281,41 +299,41 @@ export default function Page() {
 			</StyledModal>
 
 			<StyledModal
-				className='w-[80%] self-center'
+				className="w-[80%] self-center"
 				isVisible={isModalVisible2}
 			>
-				<StyledView className='bg-offblack border-[5px] border-red rounded-2xl h-[60%]'>
-					<StyledView className='flex-1 items-center h-[60%]'>
-						<StyledText className='top-[6%] text-3xl text-offwhite'>
+				<StyledView className="bg-offblack border-[5px] border-red rounded-2xl h-[60%]">
+					<StyledView className="flex-1 items-center h-[60%]">
+						<StyledText className="top-[6%] text-3xl text-offwhite">
 							Delete this circle?
 						</StyledText>
 
 						<Button
-							btnStyles='top-[15%] bg-grey border-4 border-purple'
+							btnStyles="top-[15%] bg-grey border-4 border-purple"
 							height={'h-[90px]'}
 							width={'w-[90px]'}
 							iconSize={60}
-							icon='musical-notes'
-							iconColor='white'
-							href='/mainViewLayout'
+							icon="musical-notes"
+							iconColor="white"
+							href="/mainViewLayout"
 						/>
 
-						<StyledText className='top-[20%] text-3xl text-offwhite'>
+						<StyledText className="top-[20%] text-3xl text-offwhite">
 							Circle Name
 						</StyledText>
 						{/* Database call to remove from Circle  */}
 						<Button
-							title='Delete'
+							title="Delete"
 							btnStyles={'top-[31%] border-2 border-red'}
 							bgColor={'bg-offblack'}
 							textStyles={'text-red'}
-							width='w-[70%]'
+							width="w-[70%]"
 							press={toggleModal2}
 						/>
 						<Button
-							title='Cancel'
+							title="Cancel"
 							btnStyles={'top-[37%]'}
-							width='w-[70%]'
+							width="w-[70%]"
 							press={toggleModal2}
 						/>
 					</StyledView>

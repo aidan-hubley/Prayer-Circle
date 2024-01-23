@@ -5,6 +5,8 @@ import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
+console.log(process.env.EXPO_PUBLIC_FIREBASE_DB_URL);
+
 const firebaseConfig = {
 	apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
 	authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,

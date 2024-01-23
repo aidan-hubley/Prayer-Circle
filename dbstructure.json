@@ -87,6 +87,9 @@
 				"admin": {
 					"_uid_": true
 				},
+				"usersAwaitingEntry": {
+					"_uid_": true
+				},
 				"owner": "_uid_",
 				"codes": {
 					"admin": 12345678,
