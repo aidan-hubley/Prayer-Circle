@@ -15,7 +15,7 @@ import {
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
 import { Button } from '../../components/Buttons';
-import { auth } from '../../backend/config';
+import { router, auth } from '../../backend/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sendPasswordResetEmail } from 'firebase/auth';
