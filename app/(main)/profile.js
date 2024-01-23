@@ -68,7 +68,6 @@ export default function ProfilePage() {
 	useEffect(() => {
 		if (globalReload) {
 			setUpFeed();
-			setGlobalReload(false);
 		}
 	}, [globalReload]);
 

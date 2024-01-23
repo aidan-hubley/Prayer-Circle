@@ -205,11 +205,10 @@ export const Post = (post) => {
 			null,
 			true
 		);
-		writeData(`prayer_circle/posts/${post.id}`, null, true).then(() => {
-			setTimeout(() => {
-				setGlobalReload(true);
-			}, 100);
-		});
+		await writeData(`prayer_circle/posts/${post.id}`, null, true);
+		setTimeout(() => {
+			setGlobalReload(true);
+		}, 1000);
 	}
 
 	async function hidePost(postId) {

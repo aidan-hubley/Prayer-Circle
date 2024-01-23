@@ -69,7 +69,6 @@ export default function FeedPage() {
 	useEffect(() => {
 		if (globalReload) {
 			setUpFeed();
-			setGlobalReload(false);
 		}
 	}, [globalReload]);
 
