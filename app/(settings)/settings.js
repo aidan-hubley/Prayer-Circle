@@ -133,13 +133,12 @@ export default function Page() {
                     />
                     <Button
                         title='Sign Out'
-                        width='w-[70%]'
-                        btnStyles='mt-5'
+                        width='w-[50%]'
                         press={() => {
                             signOut(auth);
                             AsyncStorage.removeItem('user');
                             AsyncStorage.removeItem('name');
-                            // Navigate to login screen or reset navigation state
+                            router.replace('/login');
                         }}
                     />
                 </StyledView>
