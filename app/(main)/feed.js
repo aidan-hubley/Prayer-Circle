@@ -33,17 +33,6 @@ export default function FeedPage() {
 		state.setGlobalReload
 	]);
 
-	const setUpFeed = async () => {
-		setRenderIndex(0);
-		let gm = await AsyncStorage.getItem('user');
-		setMe(gm);
-		let gp = await getPosts(filterTarget);
-		setPostList(gp);
-		let pl = await populateList(gp, 0, 12);
-		setPosts(pl);
-		setInitialLoad('loaded');
-	};
-
 	async function setUpFeed() {
 		setRenderIndex(0);
 		let gm = await AsyncStorage.getItem('user');
