@@ -95,7 +95,7 @@ export default function Page() {
     return (
          <BottomSheetModalProvider>
             <StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
-                <StyledView className='flex-1 items-center mt-45 pt-10'>
+                <StyledView className='flex-1 items-center mt-45 pt-10 py-5'>
                     <StyledText className='text-3xl text-offwhite text-center tracking-widest leading-10'>
                         Settings
                     </StyledText>
@@ -106,7 +106,7 @@ export default function Page() {
                                 </Text>
                             <TouchableOpacity onPress={toggleSwitch}>
                                 <StyledView
-                                    className='pt-9 w-[80px] h-[30px] rounded-full'
+                                    className='pt-9 w-[80px] h-[30px] rounded-full '
                                     style={{
                                         backgroundColor: isEnabled
                                             ? '#00A55E'
@@ -202,6 +202,16 @@ export default function Page() {
                                 />
                     </StyledView>
                 </BottomSheetModal>
+                <StyledView style={{bottom: insets.bottom}} className='absolute w-screen px-[15px]'>
+                    <Button 
+                        icon='person-circle-outline'
+                        href='/mainViewLayout'
+                        width={'w-[50px]'}
+                        height={'h-[50px]'}
+                        iconSize={30}
+                    >
+                    </Button>
+                </StyledView>
             </StyledSafeArea>
         </BottomSheetModalProvider>
     );
