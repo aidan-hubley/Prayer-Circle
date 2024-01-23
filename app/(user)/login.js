@@ -177,7 +177,7 @@ export default function Login() {
 							</StyledText>
 							<StyledView className='absolute top-[5%] w-[85%]'>
 								<StyledInput
-									className='text-[18px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px]'
+									className='text-[18px] text-offwhite border border-offwhite rounded-lg px-3 py-10'
 									placeholder='Email'
 									value={resetEmail}
 									onChangeText={setResetEmail}
