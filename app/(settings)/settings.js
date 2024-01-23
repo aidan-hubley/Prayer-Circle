@@ -128,12 +128,13 @@ export default function Page() {
                         btnStyles='border-2 border-yellow mt-5'
                         bgColor='offblack'
                         textStyles='text-yellow'
-                        width='w-[70%]'
+                        width='w-[50%]'
                         press={handlePresentModalPress}
                     />
                     <Button
                         title='Sign Out'
                         width='w-[50%]'
+                        btnStyles='mt-5'
                         press={() => {
                             signOut(auth);
                             AsyncStorage.removeItem('user');
