@@ -28,10 +28,7 @@ export default function FeedPage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [me, setMe] = useState('');
 	const filterTarget = useStore((state) => state.filter);
-	const [globalReload, setGlobalReload] = useStore((state) => [
-		state.globalReload,
-		state.setGlobalReload
-	]);
+	const globalReload = useStore((state) => state.globalReload);
 
 	async function setUpFeed() {
 		setRenderIndex(0);
@@ -51,7 +48,6 @@ export default function FeedPage() {
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i[0];
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-
 			if (data.hidden && data.hidden[`${me}`]) {
 				continue;
 			}
@@ -164,6 +160,7 @@ export default function FeedPage() {
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
+					extraData={refreshing}
 				/>
 			</StyledView>
 

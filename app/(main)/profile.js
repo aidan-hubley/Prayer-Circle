@@ -152,6 +152,7 @@ export default function ProfilePage() {
 						id={item[0]}
 						owned={true}
 						edited={item[1].edited}
+						data={item[1]}
 					/>
 				)}
 				keyExtractor={(item) => item[0]}

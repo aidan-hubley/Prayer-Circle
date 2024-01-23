@@ -15,7 +15,6 @@ import {
 	RefreshControl,
 	TextInput,
 	Keyboard,
-	KeyboardAvoidingView,
 	TouchableWithoutFeedback
 } from 'react-native';
 import { styled } from 'nativewind';
@@ -335,7 +334,7 @@ export const Post = (post) => {
 		await writeData(`prayer_circle/posts/${post.id}`, null, true);
 		setTimeout(() => {
 			setGlobalReload(true);
-		}, 1000);
+		}, 100);
 	}
 
 	async function hidePost(postId) {
@@ -355,6 +354,9 @@ export const Post = (post) => {
 		setEdited(true);
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
 		bottomSheetModalRef.current?.dismiss();
+		setTimeout(() => {
+			setGlobalReload(true);
+		}, 100);
 	}
 
 	// post setup
