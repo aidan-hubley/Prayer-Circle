@@ -123,6 +123,19 @@ export default function ProfilePage() {
 						</StyledText>
 					</StyledView>
 				}
+				ListFooterComponent={
+					posts && posts.length > 0 ? (
+						<StyledView
+							className='w-full flex items-center mb-[10px]'
+							style={{
+								height: insets.top + 60
+							}}
+						>
+						</StyledView>
+					) : (
+						<></>
+					)
+				}
 				ListEmptyComponent={
 					<StyledView className='w-full h-[250px] flex items-center justify-center'>
 						<StyledView
