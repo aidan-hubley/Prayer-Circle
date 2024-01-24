@@ -402,18 +402,26 @@ export const Post = (post) => {
 	}
 
 	// post setup
-	const setUp = async () => {
+	const setUp = async (postId) => {
 		let uid = await AsyncStorage.getItem('user');
 		setMe(uid);
 
-		let bookmarkedPosts = await AsyncStorage.getItem('bookmarkedPosts');
-		bookmarkedPosts = JSON.parse(bookmarkedPosts);
-		if (bookmarkedPosts) {
-			console.log(bookmarkedPosts);
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
 
-			bookmarkedPosts.forEach((post) => {
-				console.log(post);
+			let keys = [];
+
+			existingPosts.forEach((post) => {
+				keys.push(post.id);
 			});
+
+			if (keys.includes(postId)) {
+				setBookmarked(true);
+			}
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
 		}
 
 		await populateComments(post.comments);
@@ -486,7 +494,7 @@ export const Post = (post) => {
 	};
 
 	useEffect(() => {
-		setUp();
+		setUp(post.id);
 	}, []);
 
 	return (
