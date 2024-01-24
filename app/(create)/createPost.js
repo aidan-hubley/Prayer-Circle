@@ -7,8 +7,8 @@ import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from '../../backend/config';
-import { readData } from '../../backend/firebaseFunctions';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from '../global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -19,6 +19,11 @@ export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
 	const [time, setTime] = useState('');
+	const [uid, name] = useStore((state) => [state.uid, state.name]);
+	const [setGlobalReload, pfp] = useStore((state) => [
+		state.setGlobalReload,
+		state.pfp
+	]);
 
 	const typeRef = useRef();
 
@@ -105,20 +110,12 @@ export default function Page() {
 
 						let newPost = {
 							user: uid,
-							profile_img: `https://picsum.photos/${Math.round(
-								Math.random() * 1000
-							)}`,
+							profile_img: pfp,
 							name: name,
 							title: title,
 							text: body,
 							type: typeSelected,
 							timestamp: now,
-							comments: {
-								empty: true
-							},
-							reactions: {
-								empty: true
-							},
 							circles: {
 								'-NhXfdEbrH1yxRqiajYm': true
 							},
@@ -136,11 +133,13 @@ export default function Page() {
 							now,
 							true
 						);
-						await writeData(
+						writeData(
 							`prayer_circle/users/${uid}/private/posts/${newPostId}`,
 							true,
 							true
-						);
+						).then(() => {
+							setGlobalReload(true);
+						});
 
 						this.postTitle.clear();
 						this.postDescription.clear();
