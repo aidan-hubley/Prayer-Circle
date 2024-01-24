@@ -13,7 +13,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
-import { checkUsername, registerUser } from '../../backend/firebaseFunctions';
+import {
+	checkUsername,
+	registerUser,
+	uploadImage
+} from '../../backend/firebaseFunctions';
 import { passwordValidation } from '../../backend/functions';
 import Modal from 'react-native-modal';
 import { Camera, CameraType } from 'expo-camera';
@@ -78,7 +82,7 @@ export default function Register() {
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
 			aspect: [1, 1],
-			quality: 1
+			quality: 0.2
 		});
 
 		if (result.canceled === false && result.assets.length > 0) {
@@ -225,7 +229,8 @@ export default function Register() {
 										fname,
 										lname,
 										email,
-										pass
+										pass,
+										profileImage
 									);
 								}}
 							/>
@@ -322,7 +327,7 @@ export default function Register() {
 	);
 }
 
-async function createUserData(username, fname, lname, email, password) {
+async function createUserData(username, fname, lname, email, password, image) {
 	if (username.length < 1) return alert('Invalid Username'); // check username length
 
 	let taken = await checkUsername(username); // check if username is taken
@@ -348,6 +353,10 @@ async function createUserData(username, fname, lname, email, password) {
 			'Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
 		);
 	}
+
+	if (!image) return alert('You need to upload a profile picture');
+	let imgURL = await uploadImage(`prayer_circle/users/${username}`, image);
+
 	//clear all fields
 	this.usernameInput.clear();
 	this.fNameInput.clear();
@@ -359,7 +368,7 @@ async function createUserData(username, fname, lname, email, password) {
 		public: {
 			fname: fname,
 			lname: lname,
-			profile_img: false
+			profile_img: imgURL
 		},
 		private: {
 			email: email,

@@ -18,6 +18,7 @@
     "eas-cli": "^5.2.0",
     "expo": "~49.0.8",
     "expo-barcode-scanner": "~12.5.3",
+    "expo-cached-image": "^49.0.2",
     "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
     "expo-haptics": "~12.4.0",
@@ -46,6 +47,7 @@
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
     "react-qr-code": "^2.0.12",
+    "shorthash": "^0.0.2",
     "zustand": "^4.4.7"
   },
   "devDependencies": {

@@ -15,6 +15,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -30,10 +32,8 @@ export default function ProfilePage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
-	const [globalReload, setGlobalReload] = useStore((state) => [
-		state.globalReload,
-		state.setGlobalReload
-	]);
+	const [profileImage, setProfileImage] = useState(false);
+	const globalReload = useStore((state) => state.globalReload);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -45,6 +45,8 @@ export default function ProfilePage() {
 		setName(gn);
 		let ge = await AsyncStorage.getItem('email');
 		setEmail(ge);
+		let pfp = await AsyncStorage.getItem('profile_img');
+		setProfileImage(pfp);
 		setInitialLoad('loaded');
 	};
 
@@ -110,10 +112,40 @@ export default function ProfilePage() {
 						className='flex items-center w-full mb-10'
 					>
 						<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
-							<StyledImage
-								className='w-full h-full rounded-[18px]'
-								source={{ uri: 'https://picsum.photos/1223' }}
-							/>
+							{/* <CachedImage
+									className='w-full h-full rounded-[18px]'
+									style={{
+										width: '100%',
+										height: '100%',
+										borderRadius: 18,
+										backgroundColor: 'red',
+										display: profileImage ? 'flex' : 'none'
+									}}
+									cacheKey={shorthash.unique(
+										'https://firebasestorage.googleapis.com/v0/b/prayer-circle-8c3ff.appspot.com/o/prayer_circle%2Fusers%2Fvaleria%2F-NoiCzWV4KEc6aUP_2zN?alt=media&token=46d3c970-07ec-4187-95d9-4ea4543ed484'
+									)}
+									source={{
+										uri: 'https://firebasestorage.googleapis.com/v0/b/prayer-circle-8c3ff.appspot.com/o/prayer_circle%2Fusers%2Fvaleria%2F-NoiCzWV4KEc6aUP_2zN?alt=media&token=46d3c970-07ec-4187-95d9-4ea4543ed484',
+										expiresIn: 2_628_288
+									}}
+								/> */}
+							{profileImage ? (
+								/* TODO: Make this image cached. currently the cached implementation(above) does not refresh when the profileImage state is changed */
+								<Image
+									style={{
+										width: '100%',
+										height: '100%',
+										borderRadius: 18,
+										backgroundColor: 'red',
+										display: profileImage ? 'flex' : 'none'
+									}}
+									source={{
+										uri: profileImage
+									}}
+								/>
+							) : (
+								<></>
+							)}
 						</StyledView>
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 							{name}
@@ -130,8 +162,7 @@ export default function ProfilePage() {
 							style={{
 								height: insets.top + 60
 							}}
-						>
-						</StyledView>
+						/>
 					) : (
 						<></>
 					)
