@@ -200,26 +200,15 @@ export const Post = (post) => {
 					}
 					renderItem={({ item }) => {
 						return (
-							<>
-								<Comment
-									id={item[0]}
-									user={item[1].user}
-									username={item[1].username}
-									content={item[1].content}
-									edited={item[1].edited}
-									timestamp={item[1].timestamp}
-									img={item[1].profile_img}
-								/>
-								<View
-									style={{
-										width: 10,
-										height: 10,
-										backgroundColor: 'red'
-									}}
-								>
-									<Text>{commentData.length}</Text>
-								</View>
-							</>
+							<Comment
+								id={item[0]}
+								user={item[1].user}
+								username={item[1].username}
+								content={item[1].content}
+								edited={item[1].edited}
+								timestamp={item[1].timestamp}
+								img={item[1].profile_img}
+							/>
 						);
 					}}
 					keyExtractor={(item) => item[0]}
