@@ -12,6 +12,7 @@ import {
     BottomSheetBackdrop,
     BottomSheetModalProvider
 } from '@gorhom/bottom-sheet';
+import { passwordValidation } from '../../backend/functions';
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
 import { Button } from '../../components/Buttons';
@@ -20,6 +21,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { updatePassword } from 'firebase/auth';
+import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -61,19 +64,31 @@ export default function Page() {
         Alert.alert('Error', 'The new passwords do not match.');
         return;
     }
-
-    const user = auth.currentUser;
+    if (!passwordValidation(newPassword)) {
+        Alert.alert(
+            'Invalid Password',
+            'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
+        );
+        return;
+    }
+    
+   const user = auth.currentUser;
     if (user) {
+        const credential = EmailAuthProvider.credential(
+            user.email,
+            currentPassword
+        );
+
         try {
+            await reauthenticateWithCredential(user, credential);
+
             await updatePassword(user, newPassword);
             Alert.alert('Success', 'Password has been updated successfully.');
-            // Dismiss the modal and clear the state
             bottomSheetModalRef.current?.dismiss();
             setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
         } catch (error) {
-            // Handle error, such as reauthentication required
             Alert.alert('Error', error.message);
         }
     } else {
