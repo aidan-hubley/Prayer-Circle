@@ -13,7 +13,7 @@ const StyledImg = styled(Image);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.View);
 
-const PostTypeSelector = forwardRef(({ onSelect }, ref) => {
+const PostTypeSelector = forwardRef((props, ref) => {
 	const [selected, setSelected] = useState(new Animated.Value(1));
 
 	const selectedInter = selected.interpolate({
@@ -28,12 +28,12 @@ const PostTypeSelector = forwardRef(({ onSelect }, ref) => {
 			useNativeDriver: false
 		}).start();
 
-		onSelect(index);
+		if (props.onSelect) props.onSelect(index);
 	};
 
 	useEffect(() => {
-        onSelect(1);
-    }, []);
+		if (props.onSelect) props.onSelect(1);
+	}, []);
 
 	const highlightPosition = {
 		left: selectedInter

@@ -40,6 +40,7 @@ import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
+import { set } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -61,7 +62,10 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const setGlobalReload = useStore((state) => state.setGlobalReload);
+	const [setGlobalReload, setJournalReload] = useStore((state) => [
+		state.setGlobalReload,
+		state.setJournalReload
+	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [editContent, setEditContent] = useState(post.content);
@@ -69,6 +73,7 @@ export const Post = (post) => {
 	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
 	const [type, setType] = useState(post.type);
+	const [bookmarked, setBookmarked] = useState(false);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -338,12 +343,48 @@ export const Post = (post) => {
 		}, 100);
 	}
 
-	async function hidePost(postId) {
-		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
+	async function hidePost() {
+		writeData(`prayer_circle/posts/${post.id}/hidden/${me}`, true, true);
 		toggleToolbar();
 
 		setGlobalReload(true);
 	}
+
+	const toggleBookmark = async (postId, postData) => {
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+			const postIndex = existingPosts.findIndex(
+				(post) => post.id === postId
+			);
+
+			if (postIndex !== -1) {
+				// Post exists, remove it
+				existingPosts.splice(postIndex, 1);
+				await AsyncStorage.setItem(
+					'bookmarkedPosts',
+					JSON.stringify(existingPosts)
+				);
+				setBookmarked(false);
+				console.log(`Removed post with ID ${postId} from bookmarks.`);
+			} else {
+				// Post doesn't exist, add it
+				const newPost = { id: postId, data: postData };
+				existingPosts.push(newPost);
+				await AsyncStorage.setItem(
+					'bookmarkedPosts',
+					JSON.stringify(existingPosts)
+				);
+				setBookmarked(true);
+				console.log(`Added post with ID ${postId} to bookmarks.`);
+			}
+			setJournalReload(true);
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
+		}
+	};
 
 	async function editPost() {
 		let updatedData = post.data;
@@ -364,6 +405,17 @@ export const Post = (post) => {
 	const setUp = async () => {
 		let uid = await AsyncStorage.getItem('user');
 		setMe(uid);
+
+		let bookmarkedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+		bookmarkedPosts = JSON.parse(bookmarkedPosts);
+		if (bookmarkedPosts) {
+			const postIndex = bookmarkedPosts.findIndex(
+				(post) => post.id === post.id
+			);
+			if (postIndex !== -1) {
+				setBookmarked(true);
+			}
+		}
 
 		await populateComments(post.comments);
 	};
@@ -605,7 +657,7 @@ export const Post = (post) => {
 									<StyledOpacity
 										className='flex items-center justify-center w-[30px] h-[30px]'
 										activeOpacity={0.4}
-										onPressOut={() => hidePost(post.id)}
+										onPressOut={() => hidePost()}
 									>
 										<StyledIcon
 											name={'eye-off-outline'}
@@ -616,9 +668,16 @@ export const Post = (post) => {
 									<StyledOpacity
 										className='flex items-center justify-center w-[30px] h-[30px]'
 										activeOpacity={0.4}
+										onPressOut={() =>
+											toggleBookmark(post.id, post.data)
+										}
 									>
 										<StyledIcon
-											name={'bookmark-outline'}
+											name={
+												bookmarked
+													? 'bookmark'
+													: 'bookmark-outline'
+											}
 											size={29}
 											color='#00A55E'
 										/>
@@ -645,7 +704,6 @@ export const Post = (post) => {
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
-								onPress={() => {}}
 							/>
 						</StyledView>
 					</StyledView>
