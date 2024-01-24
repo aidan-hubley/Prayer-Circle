@@ -1,5 +1,4 @@
 import React, {
-	useState,
 	useRef,
 	forwardRef,
 	useImperativeHandle,
@@ -14,7 +13,7 @@ const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.View);
 
 const PostTypeSelector = forwardRef((props, ref) => {
-	const [selected, setSelected] = useState(new Animated.Value(1));
+	const selected = useRef(new Animated.Value(1)).current;
 
 	const selectedInter = selected.interpolate({
 		inputRange: [0, 1, 2],
