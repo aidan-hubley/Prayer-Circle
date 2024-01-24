@@ -14,6 +14,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
+import { Toggle } from '../../components/Toggle';
 import { Button } from '../../components/Buttons';
 import { router, auth } from '../../backend/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,7 +23,6 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledSafeArea = styled(SafeAreaView);
 const StyledInput = styled(TextInput);
 
@@ -32,12 +32,6 @@ export default function Page() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [isEnabled, setIsEnabled] = useState(false);
-    const [isEnabled1, setIsEnabled1] = useState(false);
-    const [isEnabled2, setIsEnabled2] = useState(false);
-    const toggleNotificationSwitch = () => setIsEnabled1(previousState1 => !previousState1);
-    const toggleTimerSwitch = () => setIsEnabled2(previousState2 => !previousState2);
-    const toggleNotificationPosition = useRef(new Animated.Value(1)).current;
-    const toggleTimerPosition = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
     const bottomSheetModalRef = useRef(null);
 
@@ -87,22 +81,6 @@ export default function Page() {
 			</StyledView>
 		);
 	};
-
-    React.useEffect(() => {
-        Animated.timing(toggleNotificationPosition, {
-            toValue: isEnabled1 ? 32 : 5,
-            duration: 200,
-            useNativeDriver: false
-        }).start();
-    }, [isEnabled1]);
-
-    React.useEffect(() => {
-        Animated.timing(toggleTimerPosition, {
-            toValue: isEnabled2 ? 32 : 5,
-            duration: 200,
-            useNativeDriver: false
-        }).start();
-    }, [isEnabled2]);
 
     return (
          <BottomSheetModalProvider>
@@ -173,28 +151,13 @@ export default function Page() {
                             </View>
                         </View>   
                         <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-                                                <View className="flex-row items-center mt-5 px-5">
+                        <View className="flex-row items-center mt-5 px-5">
                             <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
                                     All Notifications
                                 </Text>
-                            <TouchableOpacity onPress={toggleNotificationSwitch}> 
-                                <StyledView
-                                    className='w-[60px] h-[30px] rounded-full border-2 border-offwhite'
-                                    style={{
-                                        backgroundColor: isEnabled1
-                                            ? '#00A55E'
-                                            : '#1D1D1D'
-                                    }}
-                                >
-                                    <StyledAnimatedView
-                                        className='absolute top-1 w-[18px] h-[18px] rounded-full bg-white'
-                                        style={{
-                                            left: toggleNotificationPosition
-                                        }}
-                                    />
-                                </StyledView>
-                            </TouchableOpacity>
+                            <Toggle onColor={'purple'}/>
+
                             </View>
                         </View>
                         <View className="flex-row items-center mt-5 px-5">
@@ -202,23 +165,7 @@ export default function Page() {
                                 <Text className="mr-3 text-lg text-offwhite">
                                     Timer
                                 </Text>
-                            <TouchableOpacity onPress={toggleTimerSwitch}> 
-                                <StyledView
-                                    className='w-[60px] h-[30px] rounded-full border-2 border-offwhite'
-                                    style={{
-                                        backgroundColor: isEnabled2
-                                            ? '#00A55E'
-                                            : '#1D1D1D'
-                                    }}
-                                >
-                                    <StyledAnimatedView
-                                        className='absolute top-1 w-[18px] h-[18px] rounded-full bg-white	'
-                                        style={{
-                                            left: toggleTimerPosition
-                                        }}
-                                    />
-                                </StyledView>
-                            </TouchableOpacity>
+                            <Toggle />
                             </View>
                         </View>                     
                 </StyledView>
@@ -273,6 +220,7 @@ export default function Page() {
                         width={'w-[50px]'}
                         height={'h-[50px]'}
                         iconSize={30}
+                        bgColor={'bg-offblack'}
                     >
                     </Button>
                     <Button
