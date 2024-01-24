@@ -189,7 +189,7 @@ export default function Login() {
 							className='absolute top-[14px] right-[8%]'
 							onPress={handlePasswordReset}
 						>
-							<StyledText className='text-green font-[500] text-[16px]'>
+							<StyledText className='text-green'>
 								<StyledIcon name='send' size={24} />
 							</StyledText>
 						</StyledOpacity>

@@ -172,7 +172,9 @@ export const Post = (post) => {
 						}}
 					>
 						<StyledText className='text-green font-[500] text-[18px]'>
-							Post
+							<StyledText className='text-green font-[500] text-[16px]'>
+								<StyledIcon name='send' size={24} />
+							</StyledText>
 						</StyledText>
 					</StyledOpacity>
 				</StyledView>
