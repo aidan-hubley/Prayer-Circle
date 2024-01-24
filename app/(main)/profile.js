@@ -130,6 +130,7 @@ export default function ProfilePage() {
 									}}
 								/> */}
 							{profileImage ? (
+								/* TODO: Make this image cached. currently the cached implementation(above) does not refresh when the profileImage state is changed */
 								<Image
 									style={{
 										width: '100%',
