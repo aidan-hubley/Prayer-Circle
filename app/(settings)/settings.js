@@ -32,8 +32,12 @@ export default function Page() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-    const togglePosition = useRef(new Animated.Value(1)).current;
+    const [isEnabled1, setIsEnabled1] = useState(false);
+    const [isEnabled2, setIsEnabled2] = useState(false);
+    const toggleNotificationSwitch = () => setIsEnabled1(previousState1 => !previousState1);
+    const toggleTimerSwitch = () => setIsEnabled2(previousState2 => !previousState2);
+    const toggleNotificationPosition = useRef(new Animated.Value(1)).current;
+    const toggleTimerPosition = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
     const bottomSheetModalRef = useRef(null);
 
@@ -73,7 +77,7 @@ export default function Page() {
         );
     };
 
-    	const handle = () => {
+    const handle = () => {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
@@ -85,12 +89,20 @@ export default function Page() {
 	};
 
     React.useEffect(() => {
-        Animated.timing(togglePosition, {
-            toValue: isEnabled ? 45 : 5,
+        Animated.timing(toggleNotificationPosition, {
+            toValue: isEnabled1 ? 45 : 5,
             duration: 200,
             useNativeDriver: false
         }).start();
-    }, [isEnabled]);
+    }, [isEnabled1]);
+
+    React.useEffect(() => {
+        Animated.timing(toggleTimerPosition, {
+            toValue: isEnabled2 ? 45 : 5,
+            duration: 200,
+            useNativeDriver: false
+        }).start();
+    }, [isEnabled2]);
 
     return (
          <BottomSheetModalProvider>
@@ -102,21 +114,36 @@ export default function Page() {
                         <View className="flex-row items-center mt-5 px-5">
                             <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
-                                    Notifications
+                                    Terms of Service
                                 </Text>
-                            <TouchableOpacity onPress={toggleSwitch}>
+                                <StyledView className='flex flex-row'>
+                                    <Button // TODO: use component
+                                        title='View'                                        
+                                        width={'w-[80px]'}
+                                        height={'h-[35px]'}
+                                        iconSize={28}
+                                    ></Button>
+                                </StyledView>
+                            </View>
+                        </View>
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    All Notifications
+                                </Text>
+                            <TouchableOpacity onPress={toggleNotificationSwitch}> 
                                 <StyledView
-                                    className='pt-9 w-[80px] h-[30px] rounded-full '
+                                    className='pt-9 w-[80px] h-[30px] rounded-full border-2 border-offwhite'
                                     style={{
-                                        backgroundColor: isEnabled
+                                        backgroundColor: isEnabled1
                                             ? '#00A55E'
-                                            : '#F9A826'
+                                            : '#1D1D1D'
                                     }}
                                 >
                                     <StyledAnimatedView
                                         className='absolute top-1 w-[28px] h-[28px] rounded-full bg-white	'
                                         style={{
-                                            left: togglePosition
+                                            left: toggleNotificationPosition
                                         }}
                                     />
                                 </StyledView>
@@ -129,16 +156,16 @@ export default function Page() {
                                     Update Account
                                 </Text>
                                 <StyledView className='flex flex-row'>
-                                    <Button
+                                    <Button // TODO: add modal + backend
                                         title='Name'
                                         width={'w-[80px]'}
                                         height={'h-[35px]'}
                                         iconSize={28}
                                         btnStyles='mr-3'
                                     ></Button>
-                                    <Button
+                                    <Button // TODO: add modal + backend
                                         icon='camera'
-                                        width={'w-[70px]'}
+                                        width={'w-[80px]'}
                                         height={'h-[35px]'}
                                         iconSize={28}
                                     ></Button>
@@ -148,13 +175,12 @@ export default function Page() {
                         <View className="flex-row items-center mt-5 px-5">
                             <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
-                                    Change Password
+                                    Password
                                 </Text>
                                 <StyledView className='flex flex-row'>
                                     <Button
                                         icon='text'
-                                        title='Title'
-                                        width={'w-[70px]'}
+                                        width={'w-[80px]'}
                                         height={'h-[35px]'}
                                         iconSize={28}
                                         press={handlePresentModalPress}
@@ -163,14 +189,38 @@ export default function Page() {
                                     <Button
                                         icon='mail'
                                         title='Title'
-                                        width={'w-[70px]'}
+                                        width={'w-[80px]'}
                                         height={'h-[35px]'}
                                         iconSize={28}
                                         press={handlePasswordReset}
                                     ></Button>
                                 </StyledView>
                             </View>
-                        </View>
+                        </View>   
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    Timer
+                                </Text>
+                            <TouchableOpacity onPress={toggleTimerSwitch}> 
+                                <StyledView
+                                    className='pt-9 w-[80px] h-[30px] rounded-full border-2 border-offwhite'
+                                    style={{
+                                        backgroundColor: isEnabled2
+                                            ? '#00A55E'
+                                            : '#1D1D1D'
+                                    }}
+                                >
+                                    <StyledAnimatedView
+                                        className='absolute top-1 w-[28px] h-[28px] rounded-full bg-white	'
+                                        style={{
+                                            left: toggleTimerPosition
+                                        }}
+                                    />
+                                </StyledView>
+                            </TouchableOpacity>
+                            </View>
+                        </View>                     
                 </StyledView>
 
                 <BottomSheetModal
@@ -244,7 +294,6 @@ export default function Page() {
                         height={'h-[50px]'}
                         iconSize={30}
                     >
-
                     </Button>
                 </StyledView>
             </StyledSafeArea>
