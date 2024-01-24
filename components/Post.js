@@ -409,12 +409,11 @@ export const Post = (post) => {
 		let bookmarkedPosts = await AsyncStorage.getItem('bookmarkedPosts');
 		bookmarkedPosts = JSON.parse(bookmarkedPosts);
 		if (bookmarkedPosts) {
-			const postIndex = bookmarkedPosts.findIndex(
-				(post) => post.id === post.id
-			);
-			if (postIndex !== -1) {
-				setBookmarked(true);
-			}
+			console.log(bookmarkedPosts);
+
+			bookmarkedPosts.forEach((post) => {
+				console.log(post);
+			});
 		}
 
 		await populateComments(post.comments);

@@ -21,7 +21,10 @@ const StyledView = styled(View);
 export default function JournalPage() {
 	const typeRef = useRef();
 	const [posts, setPosts] = useState([]);
-	const journalReload = useStore((state) => state.journalReload);
+	const [journalReload, setJournalReload] = useStore((state) => [
+		state.journalReload,
+		state.setJournalReload
+	]);
 
 	let insets = useSafeAreaInsets();
 
@@ -36,6 +39,7 @@ export default function JournalPage() {
 	useEffect(() => {
 		if (journalReload) {
 			setUp();
+			setJournalReload(false);
 		}
 	}, [journalReload]);
 
