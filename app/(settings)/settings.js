@@ -262,7 +262,6 @@ export default function Page() {
                         width={'w-[50px]'}
                         height={'h-[50px]'}
                         iconSize={30}
-                        bgColor={'bg-offblack'}
                     >
                     </Button>
                     <Button
