@@ -130,7 +130,7 @@ export const Post = (post) => {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px]'>
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
 					{title}
 				</StyledText>
 			</StyledView>
@@ -171,9 +171,7 @@ export const Post = (post) => {
 							await postComment();
 						}}
 					>
-						<StyledText className='text-green font-[500] text-[18px]'>
-							Post
-						</StyledText>
+						<StyledIcon name='send' size={30} className='text-green' />
 					</StyledOpacity>
 				</StyledView>
 				<BottomSheetFlatList

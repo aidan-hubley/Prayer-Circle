@@ -12,21 +12,20 @@ import {
     BottomSheetBackdrop,
     BottomSheetModalProvider
 } from '@gorhom/bottom-sheet';
-import { passwordValidation } from '../../backend/functions';
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
+import { Toggle } from '../../components/Toggle';
 import { Button } from '../../components/Buttons';
 import { router, auth } from '../../backend/config';
+import { passwordValidation } from '../../backend/functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
-
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledSafeArea = styled(SafeAreaView);
 const StyledInput = styled(TextInput);
 
@@ -36,8 +35,6 @@ export default function Page() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-    const togglePosition = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
     const bottomSheetModalRef = useRef(null);
 
@@ -60,44 +57,45 @@ export default function Page() {
     };
 
     const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword) {
-        Alert.alert('Error', 'The new passwords do not match.');
-        return;
-    }
-    if (!passwordValidation(newPassword)) {
-        Alert.alert(
-            'Invalid Password',
-            'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
-        );
-        return;
-    }
-    
-   const user = auth.currentUser;
-    if (user) {
-        const credential = EmailAuthProvider.credential(
-            user.email,
-            currentPassword
-        );
-
-        try {
-            await reauthenticateWithCredential(user, credential);
-
-            await updatePassword(user, newPassword);
-            Alert.alert('Success', 'Password has been updated successfully.');
-            bottomSheetModalRef.current?.dismiss();
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-        } catch (error) {
-            Alert.alert('Error', error.message);
+        if (newPassword !== confirmPassword) {
+            Alert.alert('Error', 'The new passwords do not match.');
+            return;
         }
-    } else {
-        Alert.alert('Error', 'No user is currently signed in.');
-    }
-};
 
+        if (!passwordValidation(newPassword)) {
+            Alert.alert(
+                'Invalid Password',
+                'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
+            );
+            return;
+        }
+        
+        const user = auth.currentUser;
+        if (user) {
+            const credential = EmailAuthProvider.credential(
+                user.email,
+                currentPassword
+            );
 
-    const snapPoints = useMemo(() => ['85%'], []);
+            try {
+                await reauthenticateWithCredential(user, credential);
+
+                await updatePassword(user, newPassword);
+                Alert.alert('Success', 'Password has been updated successfully.');
+                bottomSheetModalRef.current?.dismiss();
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+            } catch (error) {
+                Alert.alert('Error', error.message);
+            }
+        } else {
+            Alert.alert('Error', 'No user is currently signed in.');
+        }
+    };
+
+    const snapPoints = useMemo(() => ['65%', '85%']);
+
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
@@ -115,24 +113,16 @@ export default function Page() {
         );
     };
 
-    	const handle = () => {
+    const handle = () => {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px]'>
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
 					Change Password
 				</StyledText>
 			</StyledView>
 		);
 	};
-
-    React.useEffect(() => {
-        Animated.timing(togglePosition, {
-            toValue: isEnabled ? 45 : 5,
-            duration: 200,
-            useNativeDriver: false
-        }).start();
-    }, [isEnabled]);
 
     return (
          <BottomSheetModalProvider>
@@ -144,46 +134,82 @@ export default function Page() {
                         <View className="flex-row items-center mt-5 px-5">
                             <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
-                                    Notifications
+                                    Terms of Service
                                 </Text>
-                            <TouchableOpacity onPress={toggleSwitch}>
-                                <StyledView
-                                    className='pt-9 w-[80px] h-[30px] rounded-full '
-                                    style={{
-                                        backgroundColor: isEnabled
-                                            ? '#00A55E'
-                                            : '#F9A826'
-                                    }}
-                                >
-                                    <StyledAnimatedView
-                                        className='absolute top-1 w-[28px] h-[28px] rounded-full bg-white	'
-                                        style={{
-                                            left: togglePosition
-                                        }}
-                                    />
+                                <StyledView className='flex flex-row'>
+                                    <Button // TODO: use component
+                                        title='View'                                        
+                                        width={'w-[80px]'}
+                                        height={'h-[30px]'}
+                                    ></Button>
                                 </StyledView>
-                            </TouchableOpacity>
                             </View>
                         </View>
-                    <Button
-                        title='Change Password'
-                        btnStyles='border-2 border-yellow mt-5'
-                        bgColor='offblack'
-                        textStyles='text-yellow'
-                        width='w-[50%]'
-                        press={handlePresentModalPress}
-                    />
-                    <Button
-                        title='Sign Out'
-                        width='w-[50%]'
-                        btnStyles='mt-5'
-                        press={() => {
-                            signOut(auth);
-                            AsyncStorage.removeItem('user');
-                            AsyncStorage.removeItem('name');
-                            router.replace('/login');
-                        }}
-                    />
+                        <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    Update Account
+                                </Text>
+                                <StyledView className='flex flex-row'>
+                                    <Button // TODO: add modal + backend
+                                        title='Name'
+                                        width={'w-[80px]'}
+                                        height={'h-[30px]'}
+                                        btnStyles='mr-3'
+                                    ></Button>
+                                    <Button // TODO: add modal + backend
+                                        icon='camera'
+                                        width={'w-[80px]'}
+                                        height={'h-[30px]'}
+                                        iconSize={26}
+                                    ></Button>
+                                </StyledView>
+                            </View>
+                        </View>
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    Change Password
+                                </Text>
+                                <StyledView className='flex flex-row'>
+                                    <Button
+                                        icon='text'
+                                        width={'w-[80px]'}
+                                        height={'h-[30px]'}
+                                        iconSize={26}
+                                        press={handlePresentModalPress}
+                                        btnStyles='mr-3'
+                                    ></Button>
+                                    <Button
+                                        icon='mail'
+                                        title='Title'
+                                        width={'w-[80px]'}
+                                        height={'h-[30px]'}
+                                        iconSize={26}
+                                        press={handlePasswordReset}
+                                    ></Button>
+                                </StyledView>
+                            </View>
+                        </View>   
+                        <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    All Notifications
+                                </Text>
+                            <Toggle onColor={'purple'}/>
+
+                            </View>
+                        </View>
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    Timer
+                                </Text>
+                            <Toggle />
+                            </View>
+                        </View>                     
                 </StyledView>
 
                 <BottomSheetModal
@@ -221,35 +247,36 @@ export default function Page() {
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                         />
-
                         <Button
                             title='Confirm'
-                            btnStyles='mt-5 border-2 border-yellow'
-                            bgColor='bg-offblack'
-                            textStyles='text-yellow'
+                            btnStyles='mt-5'
                             width='w-[70%]'
                             press={handleChangePassword}
                         />
-
-                        <Button
-                            title='Change With Email'
-                            btnStyles='mt-5 border-2 border-yellow'
-                            bgColor='bg-offblack'
-                            textStyles='text-yellow'
-                            width='w-[70%]'
-                            press={handlePasswordReset}
-                        />
-                        <Button
-                            title='Cancel'
-                            btnStyles='mt-5'
-                            width='w-[70%]'
-                            press={() => bottomSheetModalRef.current?.dismiss()}
-                        />
                     </StyledView>
                 </BottomSheetModal>
-                <StyledView style={{bottom: insets.bottom}} className='absolute w-screen px-[15px]'>
+                <StyledView style={{bottom: insets.bottom}} className='absolute w-screen flex flex-row px-[15px] justify-between'>
                     <Button 
                         icon='person-circle-outline'
+                        href='/mainViewLayout'
+                        width={'w-[50px]'}
+                        height={'h-[50px]'}
+                        iconSize={30}
+                        bgColor={'bg-offblack'}
+                    >
+                    </Button>
+                    <Button
+                        title='Sign Out'
+                        width='w-[50%]'
+                        press={() => {
+                            signOut(auth);
+                            AsyncStorage.removeItem('user');
+                            AsyncStorage.removeItem('name');
+                            router.replace('/login');
+                        }}
+                    />
+                    <Button // TODO: Delete User modal + backend
+                        icon='trash-outline'
                         href='/mainViewLayout'
                         width={'w-[50px]'}
                         height={'h-[50px]'}

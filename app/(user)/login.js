@@ -22,12 +22,15 @@ import { Button } from '../../components/Buttons';
 import { router } from '../../backend/config';
 import { loginUser } from '../../backend/firebaseFunctions';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const StyledImage = styled(Image);
+const StyledOpacity = styled(TouchableOpacity);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
+const StyledIcon = styled(Ionicons);
 const auth = getAuth();
 
 export default function Login() {
@@ -52,7 +55,7 @@ export default function Login() {
 		}
 	};
 
-	const snapPoints = useMemo(() => ['85%'], []);
+	const snapPoints = useMemo(() => ['40%'], []);
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
@@ -74,8 +77,8 @@ export default function Login() {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px]'>
-					Forgot Password
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
+					Reset Password
 				</StyledText>
 			</StyledView>
 		);
@@ -150,7 +153,8 @@ export default function Login() {
 										</StyledText>
 									</TouchableWithoutFeedback>
 								</StyledText>
-								<TouchableOpacity onPress={handlePresentModalPress}>
+								<TouchableOpacity onPress={handlePresentModalPress} className="flex flex-row">
+									<StyledIcon name='mail' size={20} color='#F9A826' className='pr-1 pt-[2px]' />
 									<StyledText className='text-yellow text-center text-[18px] mb-4'>
 										Forgot Password?
 									</StyledText>
@@ -171,26 +175,22 @@ export default function Login() {
                     keyboardBehavior='extend'
                 >
 					<StyledView className='flex-1 bg-grey p-4 items-center'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<StyledText className='absolute text-xl text-offwhite'>
-								Enter your email here:
-							</StyledText>
-							<StyledView className='absolute top-[5%] w-[85%]'>
-								<StyledInput
-									className='text-[18px] text-offwhite border border-offwhite rounded-lg px-3 py-10'
-									placeholder='Email'
-									value={resetEmail}
-									onChangeText={setResetEmail}
-									autoCapitalize='none'
-									keyboardType='email-address'
-								/>
-							</StyledView>
-							<Button
-								title='Submit'
-								btnStyles={'absolute bottom-[10%]'}
-								width='w-[70%]'
-								press={handlePasswordReset}
+						<StyledView className='w-full h-auto flex items-center my-3'>
+							<StyledInput
+								className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+								placeholder='What is your email?'
+								placeholderTextColor='#ffffff66'
+								multiline={false}
+								onChangeText={setResetEmail}
+								autoCapitalize='none'
+								keyboardType='email-address'
 							/>
+							<StyledOpacity
+								className='absolute top-[10px] right-[8%]'
+								onPress={handlePasswordReset}
+							>
+								<StyledIcon name='send' size={30} className='text-green' />
+							</StyledOpacity>
 						</StyledView>
 					</StyledView>
 				</BottomSheetModal>
