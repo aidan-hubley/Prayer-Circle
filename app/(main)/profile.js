@@ -13,9 +13,8 @@ import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signOut } from 'firebase/auth';
-import { router, auth } from '../../backend/config';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
+import { useStore } from '../global';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -31,6 +30,10 @@ export default function ProfilePage() {
 	const [scrolling, setScrolling] = useState(false);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
+	const [globalReload, setGlobalReload] = useStore((state) => [
+		state.globalReload,
+		state.setGlobalReload
+	]);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -62,6 +65,11 @@ export default function ProfilePage() {
 	useEffect(() => {
 		setUpFeed();
 	}, []);
+	useEffect(() => {
+		if (globalReload) {
+			setUpFeed();
+		}
+	}, [globalReload]);
 
 	let insets = useSafeAreaInsets();
 	return (
@@ -123,16 +131,6 @@ export default function ProfilePage() {
 								height: insets.top + 60
 							}}
 						>
-							<Button
-								title='Sign Out'
-								width='w-[50%]'
-								press={() => {
-									signOut(auth);
-									AsyncStorage.removeItem('user');
-									AsyncStorage.removeItem('name');
-									router.replace('/login');
-								}}
-							/>
 						</StyledView>
 					) : (
 						<></>
@@ -165,9 +163,9 @@ export default function ProfilePage() {
 						content={item[1].text}
 						icon={item[1].type}
 						id={item[0]}
-						refresh={() => setUpFeed()}
 						owned={true}
 						edited={item[1].edited}
+						data={item[1]}
 					/>
 				)}
 				keyExtractor={(item) => item[0]}

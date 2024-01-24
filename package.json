@@ -46,7 +46,8 @@
     "react-native-svg": "13.9.0",
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
-    "react-qr-code": "^2.0.12"
+    "react-qr-code": "^2.0.12",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
