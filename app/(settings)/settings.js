@@ -77,7 +77,7 @@ export default function Page() {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px]'>
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
 					Change Password
 				</StyledText>
 			</StyledView>
@@ -123,25 +123,31 @@ export default function Page() {
                             </TouchableOpacity>
                             </View>
                         </View>
-                    <Button
-                        title='Change Password'
-                        btnStyles='border-2 border-yellow mt-5'
-                        bgColor='offblack'
-                        textStyles='text-yellow'
-                        width='w-[50%]'
-                        press={handlePresentModalPress}
-                    />
-                    <Button
-                        title='Sign Out'
-                        width='w-[50%]'
-                        btnStyles='mt-5'
-                        press={() => {
-                            signOut(auth);
-                            AsyncStorage.removeItem('user');
-                            AsyncStorage.removeItem('name');
-                            router.replace('/login');
-                        }}
-                    />
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
+                                    Change Password
+                                </Text>
+                                <StyledView className='flex flex-row'>
+                                    <Button
+                                        icon='text'
+                                        title='Title'
+                                        width={'w-[60px]'}
+                                        height={'h-[35px]'}
+                                        iconSize={28}
+                                        press={handlePresentModalPress}
+                                        btnStyles='mr-3'
+                                    ></Button>
+                                    <Button
+                                        icon='mail'
+                                        title='Title'
+                                        width={'w-[60px]'}
+                                        height={'h-[35px]'}
+                                        iconSize={28}
+                                    ></Button>
+                                </StyledView>
+                            </View>
+                        </View>
                 </StyledView>
 
                 <BottomSheetModal
@@ -179,7 +185,6 @@ export default function Page() {
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                         />
-
                         <Button
                             title='Confirm'
                             btnStyles='mt-5 border-2 border-yellow'
@@ -188,7 +193,6 @@ export default function Page() {
                             width='w-[70%]'
                             press={() => bottomSheetModalRef.current?.dismiss()}
                         />
-
                         <Button
                             title='Change With Email'
                             btnStyles='mt-5 border-2 border-yellow'
@@ -205,7 +209,7 @@ export default function Page() {
                         />
                     </StyledView>
                 </BottomSheetModal>
-                <StyledView style={{bottom: insets.bottom}} className='absolute w-screen px-[15px]'>
+                <StyledView style={{bottom: insets.bottom}} className='absolute w-screen flex flex-row px-[15px] justify-between'>
                     <Button 
                         icon='person-circle-outline'
                         href='/mainViewLayout'
@@ -213,6 +217,25 @@ export default function Page() {
                         height={'h-[50px]'}
                         iconSize={30}
                     >
+                    </Button>
+                    <Button
+                        title='Sign Out'
+                        width='w-[50%]'
+                        press={() => {
+                            signOut(auth);
+                            AsyncStorage.removeItem('user');
+                            AsyncStorage.removeItem('name');
+                            router.replace('/login');
+                        }}
+                    />
+                    <Button 
+                        icon='trash-outline'
+                        href='/mainViewLayout'
+                        width={'w-[50px]'}
+                        height={'h-[50px]'}
+                        iconSize={30}
+                    >
+
                     </Button>
                 </StyledView>
             </StyledSafeArea>
