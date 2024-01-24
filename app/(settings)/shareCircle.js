@@ -10,7 +10,6 @@ import QRCode from 'react-qr-code';
 	const StyledView = styled(View);
 	const StyledText = styled(Text);
 	const StyledIcon = styled(Ionicons);
-	const StyledImg = styled(Image);
 	const StyledModal = styled(Modal);
 	const StyledPressable = styled(Pressable);
 
@@ -117,20 +116,7 @@ import QRCode from 'react-qr-code';
 							</StyledPressable>
 						</StyledView>
 					</StyledView>
-				</ScrollView>
-			<StyledView
-				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
-				className='absolute w-screen px-[15px] flex flex-row justify-end'
-			>				
-				<Button
-					btnStyle=''					
-					height={'h-[50px]'}
-					width={'w-[50px]'}
-					iconSize={30}
-					icon='help'
-					press={toggleModal1}
-				/>
-			</StyledView>
+				</ScrollView>			
 			<StyledView
 				className='absolute flex flex-row w-screen px-[15px] justify-between'
 				style={{ bottom: insets.bottom }}
@@ -141,6 +127,12 @@ import QRCode from 'react-qr-code';
 					iconSize={30}
 					icon='cog'
 					href='circleSettings'
+				/>
+				<Button
+					title="How to share?"					
+					height={'h-[50px]'}
+					width={'w-[200px]'}					
+					press={toggleModal1}
 				/>
 				<Button // Share Circle
 					height={'h-[50px]'}
