@@ -232,7 +232,7 @@ export default function Register() {
 						<StyledView className='flex flex-col items-center'>
 							<Button
 								width='w-[85%]'
-								title='Agree & Register'
+								title='Register'
 								textColor='#F7F1E3'
 								backgroundColor='#121212'
 								borderColor='#F9A826'
@@ -348,7 +348,7 @@ export default function Register() {
 						<StyledText className='top-[1%] pb-[20px] text-offwhite'>
 						Last updated January 20, 2024
 						</StyledText>
-						<ScrollView className='top-[3%] text-offwhite'>
+						<ScrollView className='top-[3%] text-offwhite mb-[10%]'>
 						<StyledText className='pt-[1%] pb-[30%] pr-[5%] pl-[5%] text-offwhite'>
 
 
@@ -638,17 +638,20 @@ __________
 __________
 devs.prayercircle@gmail.com
 These terms of use were created using Termly's Terms and Conditions Generator.
+
 						</StyledText>
-						</ScrollView>
-						<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
+						<StyledView className='w-full flex absolute bottom-5 mb-[5%] items-center'>
 							<Button
-								icon='arrow-back-outline'
-								btnStyles={'left-10'}
-								width='w-[50px]'
+								textColor='black'
+								backgroundColor='white'
+								borderColor='#F9A826'
+								title='I agree'
+								width='w-[50%]'
 								height='h-[50px]'
 								press={toggleTOSModal}
 							/>
 						</StyledView>
+						</ScrollView>
 					</StyledView>
 				</StyledSafeArea>
 			</StyledModal>
