@@ -16,7 +16,7 @@ const StyledText = styled(Text);
 export default function Page() {
 	userLoggedIn(
 		() => {
-			router.push('/mainViewLayout');
+			router.push(`/mainViewLayout`);
 		},
 		() => {
 			router.push('/login');
