@@ -278,6 +278,25 @@ export const Post = (post) => {
 		);
 	};
 
+	const ToolbarButton = (props) => {
+		return (
+			<StyledOpacity
+				className='flex items-center justify-center w-[30px] h-[30px]'
+				activeOpacity={0.4}
+				onPress={() => {
+					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (props.onPress) props.onPress();
+				}}
+			>
+				<StyledIcon
+					name={props.icon}
+					size={props.size}
+					color={props.color}
+				/>
+			</StyledOpacity>
+		);
+	};
+
 	//functions
 	function getTypeSource(iconType, isOutline) {
 		const iconKey = iconType.replace('_outline', '');
@@ -609,108 +628,78 @@ export const Post = (post) => {
 						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
 							{post.owned || post.ownedToolBar ? (
 								<>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPress={deletePost}
-									>
-										<StyledIcon
-											name={'trash-outline'}
-											size={29}
-											color='#CC2500'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'cog-outline'}
-											size={29}
-											color='#F9A826'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
+									<ToolbarButton
+										icon={'trash-outline'}
+										color={'#CC2500'}
+										size={29}
+										onPress={() => {
+											deletePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={'cog-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {}}
+									/>
+									<ToolbarButton
+										icon={'create-outline'}
+										size={29}
+										color='#00A55E'
 										onPress={() => {
 											setBottomSheetType('Edit');
-											Haptics.impactAsync(
-												Haptics.ImpactFeedbackStyle
-													.Light
-											);
 											handlePresentModalPress();
 										}}
-									>
-										<StyledIcon
-											name={'create-outline'}
-											size={29}
-											color='#00A55E'
-										/>
-									</StyledOpacity>
+									/>
 								</>
 							) : (
 								<>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'flag-outline'}
-											size={29}
-											color='#CC2500'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPressOut={() => hidePost()}
-									>
-										<StyledIcon
-											name={'eye-off-outline'}
-											size={29}
-											color='#F9A826'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPressOut={() =>
-											toggleBookmark(post.id, post.data)
+									<ToolbarButton
+										icon={'flag-outline'}
+										size={29}
+										color='#CC2500'
+										onPress={() => {}}
+									/>
+									<ToolbarButton
+										icon={'eye-off-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {
+											hidePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={
+											bookmarked
+												? 'bookmark'
+												: 'bookmark-outline'
 										}
-									>
-										<StyledIcon
-											name={
-												bookmarked
-													? 'bookmark'
-													: 'bookmark-outline'
-											}
-											size={29}
-											color='#00A55E'
-										/>
-									</StyledOpacity>
+										size={29}
+										color='#00A55E'
+										onPress={() => {
+											toggleBookmark(post.id, post.data);
+										}}
+									/>
 								</>
 							)}
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
+							<ToolbarButton
+								icon={'chatbubble-outline'}
+								size={29}
+								color='#5946B2'
 								onPress={() => {
 									setBottomSheetType('Comments');
-									Haptics.impactAsync(
-										Haptics.ImpactFeedbackStyle.Light
-									);
 									handlePresentModalPress();
 								}}
-							>
-								<StyledIcon
-									name={'chatbubble-outline'}
-									size={29}
-									color='#5946B2'
-								/>
-							</StyledOpacity>
+							/>
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
+								onPress={() => {
+									Haptics.impactAsync(
+										Haptics.ImpactFeedbackStyle.Light
+									);
+									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
+								}}
 							/>
 						</StyledView>
 					</StyledView>
