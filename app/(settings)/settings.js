@@ -19,6 +19,7 @@ import { router, auth } from '../../backend/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sendPasswordResetEmail } from 'firebase/auth';
+import { updatePassword } from 'firebase/auth';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -54,6 +55,32 @@ export default function Page() {
             Alert.alert("Error", "No user is currently signed in.");
         }
     };
+
+    const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+        Alert.alert('Error', 'The new passwords do not match.');
+        return;
+    }
+
+    const user = auth.currentUser;
+    if (user) {
+        try {
+            await updatePassword(user, newPassword);
+            Alert.alert('Success', 'Password has been updated successfully.');
+            // Dismiss the modal and clear the state
+            bottomSheetModalRef.current?.dismiss();
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+        } catch (error) {
+            // Handle error, such as reauthentication required
+            Alert.alert('Error', error.message);
+        }
+    } else {
+        Alert.alert('Error', 'No user is currently signed in.');
+    }
+};
+
 
     const snapPoints = useMemo(() => ['85%'], []);
     const handlePresentModalPress = useCallback(() => {
@@ -186,7 +213,7 @@ export default function Page() {
                             bgColor='bg-offblack'
                             textStyles='text-yellow'
                             width='w-[70%]'
-                            press={() => bottomSheetModalRef.current?.dismiss()}
+                            press={handleChangePassword}
                         />
 
                         <Button
