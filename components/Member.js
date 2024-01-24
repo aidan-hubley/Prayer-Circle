@@ -91,7 +91,7 @@ function Member({ img, name, username, role, last }) {
 				</StyledView>
 			</StyledView>
 			<StyledView className='absolute right-0'>
-				<StyledAnimatedView style={roleSelectorStyle} className='flex-row bg-grey border-outline border-2 rounded-3xl mr-[8px] py-1 gap-x-2 bottom-2'>					
+				<StyledAnimatedView style={roleSelectorStyle} className='flex-row bg-grey border-outline border-2 rounded-3xl mr-[8px] py-1 gap-x-2 bottom-1'>					
 					<StyledPressable onPress={() => toggleRole("own")}>
 						<StyledIcon name='key' size={30} color='#5946B2'/>
 						{role === 'own' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
