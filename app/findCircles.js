@@ -15,7 +15,12 @@ import {
 } from 'react-native-safe-area-context';
 import { Button } from '../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { readData, addUserToCircle } from '../backend/firebaseFunctions';
+import {
+	getUIDFromStorage,
+	writeData,
+	readData,
+	addUserToCircle
+} from '../backend/firebaseFunctions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -153,7 +158,12 @@ export default function Page() {
 								if (adminCode) {
 									addUserToCircle(circle);
 								} else {
-									alert('Public Code');
+									//Move to firebaseFunctions
+									writeData(
+										`prayer_circle/circles/${circle}/usersAwaitingEntry/${UID}`,
+										true,
+										true
+									);
 								}
 							}
 						}
