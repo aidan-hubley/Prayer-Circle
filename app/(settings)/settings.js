@@ -261,8 +261,6 @@ export default function Page() {
                         <Button
                             title='Confirm'
                             btnStyles='mt-5'
-                            // bgColor='bg-offblack'
-                            // textStyles='text-green'
                             width='w-[70%]'
                             press={() => bottomSheetModalRef.current?.dismiss()}
                         />
@@ -287,7 +285,7 @@ export default function Page() {
                             router.replace('/login');
                         }}
                     />
-                    <Button 
+                    <Button // TODO: Delete User modal + backend
                         icon='trash-outline'
                         href='/mainViewLayout'
                         width={'w-[50px]'}
