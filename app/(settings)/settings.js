@@ -17,9 +17,11 @@ import { signOut } from 'firebase/auth';
 import { Toggle } from '../../components/Toggle';
 import { Button } from '../../components/Buttons';
 import { router, auth } from '../../backend/config';
+import { passwordValidation } from '../../backend/functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { updatePassword } from 'firebase/auth';
+import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -50,6 +52,44 @@ export default function Page() {
             }
         } else {
             Alert.alert("Error", "No user is currently signed in.");
+        }
+    };
+
+    const handleChangePassword = async () => {
+        if (newPassword !== confirmPassword) {
+            Alert.alert('Error', 'The new passwords do not match.');
+            return;
+        }
+
+        if (!passwordValidation(newPassword)) {
+            Alert.alert(
+                'Invalid Password',
+                'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
+            );
+            return;
+        }
+        
+        const user = auth.currentUser;
+        if (user) {
+            const credential = EmailAuthProvider.credential(
+                user.email,
+                currentPassword
+            );
+
+            try {
+                await reauthenticateWithCredential(user, credential);
+
+                await updatePassword(user, newPassword);
+                Alert.alert('Success', 'Password has been updated successfully.');
+                bottomSheetModalRef.current?.dismiss();
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+            } catch (error) {
+                Alert.alert('Error', error.message);
+            }
+        } else {
+            Alert.alert('Error', 'No user is currently signed in.');
         }
     };
 
@@ -209,7 +249,7 @@ export default function Page() {
                             title='Confirm'
                             btnStyles='mt-5'
                             width='w-[70%]'
-                            press={() => bottomSheetModalRef.current?.dismiss()}
+                            press={handleChangePassword}
                         />
                     </StyledView>
                 </BottomSheetModal>
