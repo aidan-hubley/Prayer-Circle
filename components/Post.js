@@ -38,6 +38,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -188,7 +190,6 @@ export const Post = (post) => {
 					refreshControl={
 						<RefreshControl
 							onRefresh={() => {
-								console.log('getting comments');
 								{
 									/* TODO: add refresh button that will pull new comments from db */
 								}
@@ -199,15 +200,26 @@ export const Post = (post) => {
 					}
 					renderItem={({ item }) => {
 						return (
-							<Comment
-								id={item[0]}
-								user={item[1].user}
-								username={item[1].username}
-								content={item[1].content}
-								edited={item[1].edited}
-								timestamp={item[1].timestamp}
-								img={item[1].img}
-							/>
+							<>
+								<Comment
+									id={item[0]}
+									user={item[1].user}
+									username={item[1].username}
+									content={item[1].content}
+									edited={item[1].edited}
+									timestamp={item[1].timestamp}
+									img={item[1].profile_img}
+								/>
+								<View
+									style={{
+										width: 10,
+										height: 10,
+										backgroundColor: 'red'
+									}}
+								>
+									<Text>{commentData.length}</Text>
+								</View>
+							</>
 						);
 					}}
 					keyExtractor={(item) => item[0]}
@@ -397,12 +409,14 @@ export const Post = (post) => {
 			let commentId = generateId();
 			let timestamp = Date.now();
 			let displayName = await AsyncStorage.getItem('name');
+			let pfp = await AsyncStorage.getItem('profile_img');
 			let comment = {
 				content: newComment,
 				edited: false,
 				timestamp: timestamp,
 				user: me,
-				username: displayName
+				username: displayName,
+				profile_img: pfp
 			};
 
 			//write data
@@ -456,13 +470,17 @@ export const Post = (post) => {
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
-									className={`${
-										post.owned ? 'hidden' : 'flex'
-									} rounded-lg`}
-									style={{ width: 44, height: 44 }}
+								<CachedImage
+									cacheKey={shorthash.unique(post.img)}
+									style={{
+										width: 44,
+										height: 44,
+										borderRadius: 8,
+										display: post.owned ? 'none' : 'flex'
+									}}
 									source={{
-										uri: post.img
+										uri: post.img,
+										expiresIn: 2_628_288
 									}}
 								/>
 								<StyledView
