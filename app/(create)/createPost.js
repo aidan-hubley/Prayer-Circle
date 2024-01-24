@@ -25,6 +25,8 @@ export default function Page() {
 		state.pfp
 	]);
 
+	const handleSelect = (index) => {};
+
 	const typeRef = useRef();
 
 	return (
@@ -67,7 +69,7 @@ export default function Page() {
 								setBody(text);
 							}}
 						/>
-						<PostTypeSelector ref={typeRef} />
+						<PostTypeSelector ref={typeRef} onSelect={handleSelect} />
 					</StyledView>
 				</>
 			</KeyboardAwareScrollView>
