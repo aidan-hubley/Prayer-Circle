@@ -15,12 +15,7 @@ import {
 } from 'react-native-safe-area-context';
 import { Button } from '../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import {
-	writeData,
-	readData,
-	getUIDFromStorage
-} from '../backend/firebaseFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { readData, addUserToCircle } from '../backend/firebaseFunctions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -155,25 +150,8 @@ export default function Page() {
 							if (!(adminCode || publicCode)) {
 								alert('No circles have this code.');
 							} else {
-								let uid = await AsyncStorage.getItem('user');
 								if (adminCode) {
-									circle.members[`${uid}`] = true;
-									writeData(
-										`prayer_circle/circles/${circle}/members`,
-										uid,
-										false
-									);
-									let circlePermissions = {
-										admin: false,
-										read: true,
-										write: true,
-										owner: false
-									};
-									writeData(
-										`prayer_circle/users/${uid}/private/circles/${circle}/permissions`,
-										circlePermissions,
-										false
-									);
+									addUserToCircle(circle);
 								} else {
 									alert('Public Code');
 								}

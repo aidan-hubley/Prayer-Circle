@@ -156,6 +156,22 @@ export async function loginUser(email, password) {
 		});
 }
 
+export async function addUserToCircle(circle) {
+	const UID = await getUIDFromStorage();
+	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
+	let circlePermissions = {
+		admin: false,
+		read: true,
+		write: true,
+		owner: false
+	};
+	writeData(
+		`prayer_circle/users/${UID}/private/circles/${circle}/permissions`,
+		circlePermissions,
+		true
+	);
+}
+
 export async function checkUsername(username) {
 	let usernames = (await readData(`usernames`)) || {};
 	let taken = false;

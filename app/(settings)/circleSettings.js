@@ -241,12 +241,6 @@ export default function Page() {
 					icon="arrow-back"
 					href="/mainViewLayout"
 				/>
-				<Button // Queue
-					title="Queue"
-					height={'h-[50px]'}
-					width={'w-[200px]'}
-					href="/mainViewLayout"
-				/>
 				<Button // to Share Page
 					height={'h-[50px]'}
 					width={'w-[50px]'}
