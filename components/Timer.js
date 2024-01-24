@@ -31,7 +31,7 @@ export const Timer = () => {
         <StyledView className='bg-offblack border-2 border-outline rounded-3xl text-offwhite px-10 py-2 justify-center'>
             <StyledView className='flex flex-row'>
                 <StyledImage source={require('../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] top-[1px]"/>
-                <StyledText className='text-[25px] font-mono font-bold text-center text-offwhite'>&nbsp;{formatTime(seconds)}</StyledText>
+                <StyledText className='text-[25px] font-bold text-center text-offwhite'>&nbsp;{formatTime(seconds)}</StyledText>
             </StyledView>
             <StyledView className='flex flex-row'>
                 <StyledImage source={require('../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] top-[1px]"/>

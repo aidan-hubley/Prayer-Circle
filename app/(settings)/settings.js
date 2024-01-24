@@ -16,6 +16,7 @@ import {
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
 import { Toggle } from '../../components/Toggle';
+import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, auth } from '../../backend/config';
@@ -39,6 +40,7 @@ export default function Page() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [isEnabled, setIsEnabled] = useState(false);
+    const [modalContent, setModalContent] = useState(null);
     const insets = useSafeAreaInsets();
     const bottomSheetModalRef = useRef(null);
 
@@ -98,11 +100,22 @@ export default function Page() {
         }
     };
 
-    const snapPoints = useMemo(() => ['65%', '85%']);
+    const snapPoints = useMemo(() => ['35%', '65%', '85%']);
 
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
+
+    const handlePasswordModalPress = () => {
+        setModalContent('password');
+        handlePresentModalPress();
+    };
+
+    const handleTimerButtonPress = () => {
+        setModalContent('timer');
+        handlePresentModalPress();
+    };
+
     const handleSheetChanges = useCallback((index) => {}, []);
 
     const backdrop = (backdropProps) => {
@@ -118,15 +131,77 @@ export default function Page() {
     };
 
     const handle = () => {
-		return (
-			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px] pb-2'>
-					Change Password
-				</StyledText>
-			</StyledView>
-		);
+        switch (modalContent) {
+        case 'password':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Change Password
+                    </StyledText>
+                </StyledView>
+            );
+        case 'timer':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Usage Timers
+                    </StyledText>
+                </StyledView>
+            );
+        default:
+            return null;
+        }
 	};
+
+    const renderContent = () => {
+        switch (modalContent) {
+        case 'password':
+            return (
+                <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+                    <StyledInput
+                        className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                        placeholder="Current Password"
+                        placeholderTextColor={'#FFFBFC'}
+                        secureTextEntry={true}
+                        value={currentPassword}
+                        onChangeText={setCurrentPassword}
+                    />
+                    <StyledInput
+                        className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                        placeholder="New Password"
+                        placeholderTextColor={'#FFFBFC'}
+                        secureTextEntry={true}
+                        value={newPassword}
+                        onChangeText={setNewPassword}
+                    />
+                    <StyledInput
+                        className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                        placeholder="Confirm New Password"
+                        placeholderTextColor={'#FFFBFC'}
+                        secureTextEntry={true}
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                    />
+                    <Button
+                        title='Confirm'
+                        btnStyles='mt-5'
+                        width='w-[70%]'
+                        press={handleChangePassword}
+                    />
+                </StyledView>
+            );
+        case 'timer':
+            return (
+                <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+                    <Timer></Timer>
+                </StyledView>
+            );
+        default:
+            return null;
+        }
+    };
 
     return (
          <BottomSheetModalProvider>
@@ -191,7 +266,7 @@ export default function Page() {
                                         width={'w-[80px]'}
                                         height={'h-[30px]'}
                                         iconSize={26}
-                                        press={handlePresentModalPress}
+                                        press={handlePasswordModalPress}
                                         bgColor={'bg-transparent'}
                                         borderColor={'border-offwhite'}
                                         iconColor={'#FFFBFC'}
@@ -199,7 +274,6 @@ export default function Page() {
                                     ></Button>
                                     <Button
                                         icon='mail'
-                                        title='Title'
                                         width={'w-[80px]'}
                                         height={'h-[30px]'}
                                         bgColor={'bg-transparent'}
@@ -228,7 +302,16 @@ export default function Page() {
                                     <Text className="text-lg text-offwhite pr-1">
                                         Usage Timers
                                     </Text>
-                                    <StyledIcon name="stats-chart" size={25} color="#FFFBFC" className="absolute right-1"/>
+                                    <Button
+                                        icon='stats-chart'
+                                        width={'w-[30px]'}
+                                        height={'h-[30px]'}
+                                        bgColor={'bg-transparent'}
+                                        iconSize={26}
+                                        iconColor={'#FFFBFC'}
+                                        btnStyles="absolute right-1"
+                                        press={handleTimerButtonPress}
+                                    ></Button>
                                     {/* TODO: add modal to display screen time stats */}
                                 </StyledView>
                                 <StyledView className="w-full flex-row justify-center">
@@ -248,50 +331,7 @@ export default function Page() {
                             </View>
                         </View>                     
                 </StyledView>
-
-                <BottomSheetModal
-                    enableDismissOnClose={true}
-                    ref={bottomSheetModalRef}
-                    index={0}
-                    snapPoints={snapPoints}
-                    onChange={handleSheetChanges}
-                    handleComponent={handle}
-                    backdropComponent={(backdropProps) => backdrop(backdropProps)}
-                    keyboardBehavior='extend'
-                >
-                    <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
-                        <StyledInput
-                            className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-                            placeholder="Current Password"
-                            placeholderTextColor={'#FFFBFC'}
-                            secureTextEntry={true}
-                            value={currentPassword}
-                            onChangeText={setCurrentPassword}
-                        />
-                        <StyledInput
-                            className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-                            placeholder="New Password"
-                            placeholderTextColor={'#FFFBFC'}
-                            secureTextEntry={true}
-                            value={newPassword}
-                            onChangeText={setNewPassword}
-                        />
-                        <StyledInput
-                            className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-                            placeholder="Confirm New Password"
-                            placeholderTextColor={'#FFFBFC'}
-                            secureTextEntry={true}
-                            value={confirmPassword}
-                            onChangeText={setConfirmPassword}
-                        />
-                        <Button
-                            title='Confirm'
-                            btnStyles='mt-5'
-                            width='w-[70%]'
-                            press={handleChangePassword}
-                        />
-                    </StyledView>
-                </BottomSheetModal>
+                
                 <StyledView style={{bottom: insets.bottom}} className='absolute w-screen flex flex-row px-[15px] justify-between'>
                     <Button 
                         icon='person-circle-outline'
@@ -320,6 +360,22 @@ export default function Page() {
                     >
                     </Button>
                 </StyledView>
+
+                <BottomSheetModal
+                    enableDismissOnClose={true}
+                    ref={bottomSheetModalRef}
+                    index={0}
+                    snapPoints={snapPoints}
+                    onChange={handleSheetChanges}
+                    handleComponent={handle}
+                    backdropComponent={(backdropProps) => backdrop(backdropProps)}
+                    keyboardBehavior='extend'
+                >
+                    <StyledView className='flex-1 bg-offblack'>
+                        {renderContent()}
+                    </StyledView>
+                </BottomSheetModal>
+
             </StyledSafeArea>
         </BottomSheetModalProvider>
     );
