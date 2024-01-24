@@ -55,7 +55,7 @@ export default function Page() {
         }
     };
 
-    const snapPoints = useMemo(() => ['85%'], []);
+    const snapPoints = useMemo(() => ['65%', '85%']);
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
@@ -126,13 +126,35 @@ export default function Page() {
                         <View className="flex-row items-center mt-5 px-5">
                             <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
+                                    Update Account
+                                </Text>
+                                <StyledView className='flex flex-row'>
+                                    <Button
+                                        title='Name'
+                                        width={'w-[80px]'}
+                                        height={'h-[35px]'}
+                                        iconSize={28}
+                                        btnStyles='mr-3'
+                                    ></Button>
+                                    <Button
+                                        icon='camera'
+                                        width={'w-[70px]'}
+                                        height={'h-[35px]'}
+                                        iconSize={28}
+                                    ></Button>
+                                </StyledView>
+                            </View>
+                        </View>
+                        <View className="flex-row items-center mt-5 px-5">
+                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                                <Text className="mr-3 text-lg text-offwhite">
                                     Change Password
                                 </Text>
                                 <StyledView className='flex flex-row'>
                                     <Button
                                         icon='text'
                                         title='Title'
-                                        width={'w-[60px]'}
+                                        width={'w-[70px]'}
                                         height={'h-[35px]'}
                                         iconSize={28}
                                         press={handlePresentModalPress}
@@ -141,9 +163,10 @@ export default function Page() {
                                     <Button
                                         icon='mail'
                                         title='Title'
-                                        width={'w-[60px]'}
+                                        width={'w-[70px]'}
                                         height={'h-[35px]'}
                                         iconSize={28}
+                                        press={handlePasswordReset}
                                     ></Button>
                                 </StyledView>
                             </View>
@@ -187,23 +210,9 @@ export default function Page() {
                         />
                         <Button
                             title='Confirm'
-                            btnStyles='mt-5 border-2 border-yellow'
-                            bgColor='bg-offblack'
-                            textStyles='text-yellow'
-                            width='w-[70%]'
-                            press={() => bottomSheetModalRef.current?.dismiss()}
-                        />
-                        <Button
-                            title='Change With Email'
-                            btnStyles='mt-5 border-2 border-yellow'
-                            bgColor='bg-offblack'
-                            textStyles='text-yellow'
-                            width='w-[70%]'
-                            press={handlePasswordReset}
-                        />
-                        <Button
-                            title='Cancel'
                             btnStyles='mt-5'
+                            // bgColor='bg-offblack'
+                            // textStyles='text-green'
                             width='w-[70%]'
                             press={() => bottomSheetModalRef.current?.dismiss()}
                         />
