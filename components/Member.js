@@ -8,7 +8,6 @@ import {
 	Dimensions
 } from 'react-native';
 import { styled } from 'nativewind';
-import { router } from '../backend/config';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const StyledText = styled(Text);
@@ -32,10 +31,13 @@ function Member({ img, name, username, role, last }) {
 
 	const toggleRole = (selectedRole) => {
 		if (role === selectedRole) {
+			setNewRole(selectedRole);
 			closeRoleSelector();
+			console.log("same role");
 			return;
 		} else {
 			setNewRole(selectedRole);
+			console.log("new role " + selectedRole);
 			closeRoleSelector();
 			return;
 		}
@@ -73,13 +75,13 @@ function Member({ img, name, username, role, last }) {
 			className={`h-[50px] flex flex-row justify-between items-center bg-grey pl-[10px] py-[10px] border-x border-[#6666660d]
 			${last ? 'rounded-b-[20px] h-[60px]' : ''}`}
 		>
-			<StyledView className='flex flex-row z-0'>
+			<StyledView className='flex flex-row'>
 				<StyledImage
 					className='rounded-xl'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
 				/>
-				<StyledView className='pl-2'>
+				<StyledView className='pl-2 bottom-[3px]'>
 					<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 						{name}
 					</StyledText>
