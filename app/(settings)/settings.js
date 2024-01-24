@@ -218,9 +218,10 @@ export default function Page() {
                                     All Notifications
                                 </Text>
                             <Toggle onColor={'purple'}/>
-
+                            {/* TODO: More notification settings options */}
                             </View>
                         </View>
+                        <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                         <View className="flex-row mt-5 px-5">
                             <View className="justify-between bg-grey p-3 w-full rounded-xl">
                                 <StyledView className="flex-row pb-3 w-full">
