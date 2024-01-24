@@ -176,24 +176,22 @@ export default function Login() {
                 >
 					<StyledView className='flex-1 bg-grey p-4 items-center'>
 						<StyledView className='w-full h-auto flex items-center my-3'>
-						<StyledInput
-							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
-							placeholder='What is your email?'
-							placeholderTextColor='#ffffff66'
-							multiline={false}
-							onChangeText={setResetEmail}
-							autoCapitalize='none'
-							keyboardType='email-address'
-						/>
-						<StyledOpacity
-							className='absolute top-[14px] right-[8%]'
-							onPress={handlePasswordReset}
-						>
-							<StyledText className='text-green'>
-								<StyledIcon name='send' size={24} />
-							</StyledText>
-						</StyledOpacity>
-				</StyledView>
+							<StyledInput
+								className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+								placeholder='What is your email?'
+								placeholderTextColor='#ffffff66'
+								multiline={false}
+								onChangeText={setResetEmail}
+								autoCapitalize='none'
+								keyboardType='email-address'
+							/>
+							<StyledOpacity
+								className='absolute top-[10px] right-[8%]'
+								onPress={handlePasswordReset}
+							>
+								<StyledIcon name='send' size={30} className='text-green' />
+							</StyledOpacity>
+						</StyledView>
 					</StyledView>
 				</BottomSheetModal>
 			</StyledSafeArea>

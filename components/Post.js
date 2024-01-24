@@ -171,11 +171,7 @@ export const Post = (post) => {
 							await postComment();
 						}}
 					>
-						<StyledText className='text-green font-[500] text-[18px]'>
-							<StyledText className='text-green font-[500] text-[16px]'>
-								<StyledIcon name='send' size={24} />
-							</StyledText>
-						</StyledText>
+						<StyledIcon name='send' size={30} className='text-green' />
 					</StyledOpacity>
 				</StyledView>
 				<BottomSheetFlatList
