@@ -4,6 +4,7 @@ import {
     View,
     TouchableOpacity,
     Animated,
+    Image,
     Alert,
     TextInput
 } from 'react-native';
@@ -16,6 +17,7 @@ import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
 import { Toggle } from '../../components/Toggle';
 import { Button } from '../../components/Buttons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, auth } from '../../backend/config';
 import { passwordValidation } from '../../backend/functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,7 +27,9 @@ import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 const StyledView = styled(View);
+const StyledIcon = styled(Ionicons);
 const StyledText = styled(Text);
+const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledInput = styled(TextInput);
 
@@ -141,6 +145,9 @@ export default function Page() {
                                         title='View'                                        
                                         width={'w-[80px]'}
                                         height={'h-[30px]'}
+                                        bgColor={'bg-transparent'}
+                                        textColor={'text-offwhite'}
+                                        borderColor={'border-offwhite'}
                                     ></Button>
                                 </StyledView>
                             </View>
@@ -156,13 +163,19 @@ export default function Page() {
                                         title='Name'
                                         width={'w-[80px]'}
                                         height={'h-[30px]'}
+                                        bgColor={'bg-transparent'}
+                                        textColor={'text-offwhite'}
+                                        borderColor={'border-offwhite'}
                                         btnStyles='mr-3'
                                     ></Button>
                                     <Button // TODO: add modal + backend
                                         icon='camera'
                                         width={'w-[80px]'}
                                         height={'h-[30px]'}
+                                        bgColor={'bg-transparent'}
+                                        borderColor={'border-offwhite'}
                                         iconSize={26}
+                                        iconColor={'#FFFBFC'}
                                     ></Button>
                                 </StyledView>
                             </View>
@@ -179,6 +192,9 @@ export default function Page() {
                                         height={'h-[30px]'}
                                         iconSize={26}
                                         press={handlePresentModalPress}
+                                        bgColor={'bg-transparent'}
+                                        borderColor={'border-offwhite'}
+                                        iconColor={'#FFFBFC'}
                                         btnStyles='mr-3'
                                     ></Button>
                                     <Button
@@ -186,7 +202,10 @@ export default function Page() {
                                         title='Title'
                                         width={'w-[80px]'}
                                         height={'h-[30px]'}
+                                        bgColor={'bg-transparent'}
+                                        borderColor={'border-offwhite'}
                                         iconSize={26}
+                                        iconColor={'#FFFBFC'}
                                         press={handlePasswordReset}
                                     ></Button>
                                 </StyledView>
@@ -202,12 +221,29 @@ export default function Page() {
 
                             </View>
                         </View>
-                        <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
-                                <Text className="mr-3 text-lg text-offwhite">
-                                    Timer
-                                </Text>
-                            <Toggle />
+                        <View className="flex-row mt-5 px-5">
+                            <View className="justify-between bg-grey p-3 w-full rounded-xl">
+                                <StyledView className="flex-row pb-3 w-full">
+                                    <Text className="text-lg text-offwhite pr-1">
+                                        Usage Timers
+                                    </Text>
+                                    <StyledIcon name="stats-chart" size={25} color="#FFFBFC" className="absolute right-1"/>
+                                    {/* TODO: add modal to display screen time stats */}
+                                </StyledView>
+                                <StyledView className="w-full flex-row justify-center">
+                                    <StyledView className="flex-row">
+                                        <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
+                                        <Toggle />
+                                    </StyledView>
+                                    <StyledView className="flex-row px-6">
+                                        <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
+                                        <Toggle />
+                                    </StyledView>
+                                    <StyledView className="flex-row">
+                                        <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
+                                        <Toggle onColor={'#F9A826'}/>
+                                    </StyledView>
+                                </StyledView>
                             </View>
                         </View>                     
                 </StyledView>
@@ -226,7 +262,7 @@ export default function Page() {
                         <StyledInput
                             className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
                             placeholder="Current Password"
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#FFFBFC'}
                             secureTextEntry={true}
                             value={currentPassword}
                             onChangeText={setCurrentPassword}
@@ -234,7 +270,7 @@ export default function Page() {
                         <StyledInput
                             className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
                             placeholder="New Password"
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#FFFBFC'}
                             secureTextEntry={true}
                             value={newPassword}
                             onChangeText={setNewPassword}
@@ -242,7 +278,7 @@ export default function Page() {
                         <StyledInput
                             className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
                             placeholder="Confirm New Password"
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#FFFBFC'}
                             secureTextEntry={true}
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
