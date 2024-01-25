@@ -120,98 +120,98 @@ export default function Page() {
 			key: '9',
 			name: 'Another Account',
 			username: 'ExampleAccount4',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '10',
 			name: 'Another Account',
 			username: 'ExampleAccount5',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '11',
 			name: 'Another Account',
 			username: 'ExampleAccount6',
-			role: 'sus',
+			role: 'restricted',
 			img: Trevor
 		},
 		{
 			key: '12',
 			name: 'Another Account',
 			username: 'ExampleAccount7',
-			role: 'ban',
+			role: 'banned',
 			img: Trevor
 		},
 		{
 			key: '13',
 			name: 'Nason Allen',
 			username: 'AllenNasin0987654',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '14',
 			name: 'Aidan Hubley',
 			username: 'HubleyPraying',
-			role: 'ban',
+			role: 'banned',
 			img: Trevor
 		},
 		{
 			key: '15',
 			name: 'Trevor Bunch',
 			username: 'BunchTrevoraccount',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '16',
 			name: 'Another Account',
 			username: 'ExampleAccount1',
-			role: 'sus',
+			role: 'restricted',
 			img: Trevor
 		},
 		{
 			key: '17',
 			name: 'Another Account',
 			username: 'ExampleAccount2',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '18',
 			name: 'Another Account',
 			username: 'ExampleAccount3',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '19',
 			name: 'Another Account',
 			username: 'ExampleAccount4',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '20',
 			name: 'Another Account',
 			username: 'ExampleAccount5',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '21',
 			name: 'Another Account',
 			username: 'ExampleAccount6',
-			role: 'sus',
+			role: 'restricted',
 			img: Trevor
 		},
 		{
 			key: '22',
 			name: 'Another Account',
 			username: 'ExampleAccount7',
-			role: 'ban',
+			role: 'banned',
 			img: Trevor
 		}
 	];
@@ -220,10 +220,13 @@ export default function Page() {
 	const [isSorted, setIsSorted] = useState(false);
 
 	const toggleSortOrder = () => {
-		const roleOrder = ['own', 'mod', 'mem', 'sus', 'ban'];
+		const roleOrder = ['owner', 'admin', 'member', 'restricted', 'banned'];
 		const sortedData = isSorted
-		? [...originalOrder]
-		: [...dummyData].sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role));
+			? [...originalOrder]
+			: [...dummyData].sort(
+					(a, b) =>
+						roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role)
+			  );
 
 		setDummyData(sortedData);
 		setIsSorted((prev) => !prev); // Toggle the sorting order
@@ -271,10 +274,10 @@ export default function Page() {
 								description by clicking into the box and typing.
 							</StyledText>
 						</StyledView>
-						<StyledView className='border-x border-t border-[#6666660d] mt-2 h-[50px] py-2 px-[10px] bg-grey rounded-t-[20px] flex-row items-center justify-between'>							
+						<StyledView className='border-x border-t border-[#6666660d] mt-2 h-[50px] py-2 px-[10px] bg-grey rounded-t-[20px] flex-row items-center justify-between'>
 							{/* TODO: functioning refresh button */}
 							<Button
-								bgColor='bg-transparent'									
+								bgColor='bg-transparent'
 								height={'h-[30px]'}
 								width={'w-[30px]'}
 								iconSize={30}
@@ -286,7 +289,7 @@ export default function Page() {
 							</StyledText>
 							{/* TODO: Create deeper filtering system, search for specific roles? */}
 							<Button
-								bgColor='bg-transparent'									
+								bgColor='bg-transparent'
 								height={'h-[30px]'}
 								width={'w-[30px]'}
 								iconSize={30}

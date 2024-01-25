@@ -1,9 +1,4 @@
-import React, {
-	useState,
-	forwardRef,
-	useImperativeHandle,
-	useRef
-} from 'react';
+import React, { useRef } from 'react';
 import {
 	Text,
 	View,
@@ -23,58 +18,6 @@ const StyledPressable = styled(Pressable);
 const StyledIcon = styled(Ionicons);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 
-function Member({ img, name, username, role, last }) {
-	const [openRolePicker, setOpenRolePicker] = useState(null);
-	const [newrole, setNewRole] = useState(null);
-
-	const openRoleSelector = () => {
-		setOpenRolePicker(true);
-	};
-
-	const closeRoleSelector = () => {	
-		setOpenRolePicker(false);
-	};
-
-	const toggleRole = (selectedRole) => {
-		if (role === selectedRole) {
-			setNewRole(selectedRole);
-			closeRoleSelector();
-			console.log("same role");
-			return;
-		} else {
-			setNewRole(selectedRole);
-			console.log("new role " + selectedRole);
-			closeRoleSelector();
-			return;
-		}
-	}
-
-	const selectorVal = useRef(new Animated.Value(0)).current;
-	const selectorWidthInter = selectorVal.interpolate({
-		inputRange: [0, 1],
-	    outputRange: [40, 245],
-	});
-
-	useEffect(() => {
-		let animation;
-		animation = Animated.timing(selectorVal, {
-			toValue: (openRolePicker ? 1 : 0),
-			duration: 500,
-			useNativeDriver: false,
-		});
-
-		animation.start();
-	}, [openRolePicker, selectorVal]);
-
-	const roleSelectorStyle = {
-		width: selectorWidthInter,
-		opacity: openRolePicker ? 1 : 0,
-	};
-
-	const roleIconStyle = {
-		opacity: openRolePicker ? 0 : 1,
-	};
-
 function Member({ img, name, username, role, press, last }) {
 	permissionRef = useRef(null);
 	return (
@@ -90,7 +33,9 @@ function Member({ img, name, username, role, press, last }) {
 					source={{ uri: img }}
 				/>
 				<StyledView className='pl-2 bottom-[3px]'>
-					<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+					<StyledText
+						className={`font-[600] text-offwhite text-[20px]`}
+					>
 						{name}
 					</StyledText>
 					<StyledText className={`text-offwhite text-[14px]`}>
