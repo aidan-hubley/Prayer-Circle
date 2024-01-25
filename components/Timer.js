@@ -69,7 +69,7 @@ export const Timer = () => {
                         <StyledImage source={require('../assets/timers/calendar-day.png')} className="w-[40px] h-[40px] absolute top-[4px]"/>
                         <StyledView className='flex-row h-[40px]'>
                             {isAlternateText ?
-                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
+                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5 top-[2px]'>
                                     Daily Presence
                                 </StyledText>
                             : 
@@ -85,7 +85,7 @@ export const Timer = () => {
                         <StyledImage source={require('../assets/timers/calendar-week.png')} className="w-[40px] h-[40px] absolute top-[4px]"/>
                         <StyledView className='flex-row h-[40px]'>
                             {isAlternateText ?
-                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
+                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5 top-[2px]'>
                                     Weekly Presence
                                 </StyledText>
                             : 
@@ -101,7 +101,7 @@ export const Timer = () => {
                         <StyledIcon name="infinite" size={40} color="#FFFBFC" className="w-[40px] h-[40px] absolute top-[4px]"/>
                         <StyledView className='flex-row h-[40px]'>
                             {isAlternateText ?
-                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
+                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5 top-[2px]'>
                                     Total Presence
                                 </StyledText>
                             : 

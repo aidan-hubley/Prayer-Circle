@@ -133,7 +133,7 @@ export default function Page() {
         case 'password':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
                     <StyledText className='text-white font-[600] text-[24px] pb-2'>
                         Change Password
                     </StyledText>
@@ -142,9 +142,9 @@ export default function Page() {
         case 'timer':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
                     <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                        Usage Timers
+                        Presence Timers
                     </StyledText>
                 </StyledView>
             );
@@ -192,22 +192,9 @@ export default function Page() {
             );
         case 'timer':
             return (
-                <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
                     <Timer></Timer>
-                    {/* <StyledView className='mt-5'>
-                        <StyledView className="flex-row">   
-                            <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px]"/>
-                            <StyledText className='text-[20px] font-bold text-center text-offwhite'> Daily Screen Time</StyledText>
-                        </StyledView>
-                        <StyledView className="flex-row my-4">
-                            <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px]"/>
-                            <StyledText className='text-[20px] font-bold text-center text-offwhite'> Weekly Screen Time</StyledText>
-                        </StyledView>
-                        <StyledView className="flex-row">
-                            <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px]"/>
-                            <StyledText className='text-[20px] font-bold text-center text-offwhite'> All Screen Time</StyledText>
-                        </StyledView>
-                    </StyledView> */}
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Keep track of your time spent on Prayer Circle</StyledText>
                 </StyledView>
             );
         default:
@@ -312,18 +299,19 @@ export default function Page() {
                             <View className="justify-between bg-grey p-3 w-full rounded-xl">
                                 <StyledView className="flex-row pb-3 w-full">
                                     <Text className="text-lg text-offwhite pr-1">
-                                        Usage Timers
+                                        Presence Timers
                                     </Text>
-                                    <Button
-                                        icon='stats-chart'
-                                        width={'w-[30px]'}
-                                        height={'h-[30px]'}
-                                        bgColor={'bg-transparent'}
-                                        iconSize={26}
-                                        iconColor={'#FFFBFC'}
-                                        btnStyles="absolute right-1"
-                                        press={handleTimerButtonPress}
-                                    ></Button>
+                                    <StyledView className="absolute right-1">
+                                        <Button
+                                            icon='list'
+                                            width={'w-[30px]'}
+                                            height={'h-[30px]'}
+                                            bgColor={'bg-transparent'}
+                                            iconSize={30}
+                                            iconColor={'#FFFBFC'}                                        
+                                            press={handleTimerButtonPress}
+                                        ></Button>
+                                    </StyledView>
                                     {/* TODO: add modal to display screen time stats */}
                                 </StyledView>
                                 <StyledView className="w-full flex-row justify-center">
