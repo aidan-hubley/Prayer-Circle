@@ -81,7 +81,7 @@ const Button = forwardRef(
 				<>
 					<StyledText
 						className={`font-bold ${textColor || 'text-offblack'} ${
-							textSize ? textSize : 'text-[20px]'
+							textSize || 'text-[20px]'
 						} ${textStyles} ${icon ? 'hidden' : ''}`}
 					>
 						{title}

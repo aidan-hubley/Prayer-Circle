@@ -250,10 +250,11 @@ const IconSelector = forwardRef((props, ref) => {
 				key={`icon${index}`}
 				onPress={() => {
 					toggleSelector(false);
-					props.onIconSelected(
-						item,
-						fromHsv(iconColorRef.current.state.color)
-					);
+					if (props.IconSelected)
+						props.onIconSelected(
+							item,
+							fromHsv(iconColorRef.current.state.color)
+						);
 				}}
 				className='w-[25%] aspect-square items-center justify-center mb-1'
 			>

@@ -15,7 +15,7 @@ import {
 	RefreshControl,
 	TextInput,
 	Keyboard,
-	KeyboardAvoidingView
+	TouchableWithoutFeedback
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -35,6 +35,12 @@ import {
 } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useStore } from '../app/global';
+import { PostTypeSelector } from './PostTypeSelector';
+import { Button } from './Buttons';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
+import { set } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -50,16 +56,28 @@ export const Post = (post) => {
 	// variables
 	const tS = timeSince(post.timestamp);
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
-	const [commentIcon, setCommentIcon] = useState(post.icon);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
 	const [me, setMe] = useState('');
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
+	const [setGlobalReload, setJournalReload] = useStore((state) => [
+		state.setGlobalReload,
+		state.setJournalReload
+	]);
+	const [bottomSheetType, setBottomSheetType] = useState('');
+	const [editTitle, setEditTitle] = useState(post.title);
+	const [editContent, setEditContent] = useState(post.content);
+	const [title, setTitle] = useState(post.title);
+	const [content, setContent] = useState(post.content);
+	const [edited, setEdited] = useState(post.edited);
+	const [type, setType] = useState(post.type);
+	const [bookmarked, setBookmarked] = useState(false);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
+	const typeRef = useRef(null);
 	const images = {
 		praise: {
 			outline: require('../assets/post/praise_outline.png'),
@@ -115,18 +133,12 @@ export const Post = (post) => {
 		transform: [{ rotate: spinInter }]
 	};
 
-	const onCommentChange = (e) => {
-		setNewComment(e.nativeEvent.text);
-	};
-
-	let insets = useSafeAreaInsets();
-
-	const handle = () => {
+	const handle = (title) => {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px]'>
-					Comments
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
+					{title}
 				</StyledText>
 			</StyledView>
 		);
@@ -141,6 +153,145 @@ export const Post = (post) => {
 				disappearsOnIndex={-1}
 				enableTouchThrough={true}
 			/>
+		);
+	};
+
+	const commentsView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<StyledView className='w-full h-auto flex items-center my-3'>
+					<StyledInput
+						className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+						placeholder='Write a comment...'
+						placeholderTextColor='#ffffff66'
+						multiline={true}
+						scrollEnabled={false}
+						ref={newCommentRef}
+						onChangeText={(text) => {
+							setNewComment(text);
+						}}
+					/>
+					<StyledOpacity
+						className='absolute top-[10px] right-[8%]'
+						onPress={async () => {
+							Keyboard.dismiss();
+							await postComment();
+						}}
+					>
+						<StyledIcon name='send' size={30} className='text-green' />
+					</StyledOpacity>
+				</StyledView>
+				<BottomSheetFlatList
+					data={commentData}
+					contentContainerStyle={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+						width: '100%'
+					}}
+					refreshControl={
+						<RefreshControl
+							onRefresh={() => {
+								{
+									/* TODO: add refresh button that will pull new comments from db */
+								}
+							}}
+							refreshing={false}
+							tintColor='#ebebeb'
+						/>
+					}
+					renderItem={({ item }) => {
+						return (
+							<Comment
+								id={item[0]}
+								user={item[1].user}
+								username={item[1].username}
+								content={item[1].content}
+								edited={item[1].edited}
+								timestamp={item[1].timestamp}
+								img={item[1].profile_img}
+							/>
+						);
+					}}
+					keyExtractor={(item) => item[0]}
+				/>
+			</StyledView>
+		);
+	};
+
+	const editView = () => {
+		return (
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+				<StyledView className='flex-1 bg-grey'>
+					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
+						<StyledInput
+							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+							placeholder={'Title'}
+							placeholderTextColor={'#ffffff40'}
+							inputMode='text'
+							autoCorrect
+							maxLength={39}
+							defaultValue={editTitle}
+							onChangeText={(text) => {
+								setEditTitle(text);
+							}}
+						/>
+						<StyledInput
+							className='bg-offblack text-[18px] w-full min-h-[100px] h-[200px] max-h-[400px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+							placeholder={'Write a Post'}
+							multiline
+							autoCorrect
+							autoCapitalize='sentences'
+							placeholderTextColor={'#ffffff40'}
+							inputMode='text'
+							maxLength={500}
+							defaultValue={editContent}
+							onChangeText={(text) => {
+								setEditContent(text);
+							}}
+						/>
+						{/* <PostTypeSelector ref={typeRef} /> TODO: add functionality */}
+						<StyledView className='w-full flex flex-row justify-between'>
+							<Button
+								title='Cancel'
+								btnStyles={'bg-grey border-2 border-offwhite'}
+								textStyles={'text-offwhite'}
+								width={'w-[48%]'}
+								press={() => {
+									bottomSheetModalRef.current?.dismiss();
+									setEditTitle(post.title);
+									setEditContent(post.content);
+								}}
+							/>
+							<Button
+								title='Save'
+								width={'w-[48%]'}
+								press={editPost}
+							/>
+						</StyledView>
+					</StyledView>
+				</StyledView>
+			</TouchableWithoutFeedback>
+		);
+	};
+
+	const ToolbarButton = (props) => {
+		return (
+			<StyledOpacity
+				className='flex items-center justify-center w-[30px] h-[30px]'
+				activeOpacity={0.4}
+				onPress={() => {
+					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (props.onPress) props.onPress();
+				}}
+			>
+				<StyledIcon
+					name={props.icon}
+					size={props.size}
+					color={props.color}
+				/>
+			</StyledOpacity>
 		);
 	};
 
@@ -193,34 +344,102 @@ export const Post = (post) => {
 	// db related functions
 	async function deletePost() {
 		const me = await AsyncStorage.getItem('user');
-		writeData(
+		await writeData(
 			`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${post.id}`,
 			null,
 			true
 		);
-		writeData(
+		await writeData(
 			`prayer_circle/users/${me}/private/posts/${post.id}`,
 			null,
 			true
 		);
-		writeData(`prayer_circle/posts/${post.id}`, null, true).then(() => {
-			setTimeout(() => {
-				post.refresh();
-			}, 100);
-		});
+		await writeData(`prayer_circle/posts/${post.id}`, null, true);
+		setTimeout(() => {
+			setGlobalReload(true);
+		}, 100);
 	}
 
-	async function hidePost(postId) {
-		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
+	async function hidePost() {
+		writeData(`prayer_circle/posts/${post.id}/hidden/${me}`, true, true);
 		toggleToolbar();
 
-		post.refresh();
+		setGlobalReload(true);
+	}
+
+	const toggleBookmark = async (postId, postData) => {
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+			const postIndex = existingPosts.findIndex(
+				(post) => post.id === postId
+			);
+
+			if (postIndex !== -1) {
+				// Post exists, remove it
+				existingPosts.splice(postIndex, 1);
+				await AsyncStorage.setItem(
+					'bookmarkedPosts',
+					JSON.stringify(existingPosts)
+				);
+				setBookmarked(false);
+				console.log(`Removed post with ID ${postId} from bookmarks.`);
+			} else {
+				// Post doesn't exist, add it
+				const newPost = { id: postId, data: postData };
+				existingPosts.push(newPost);
+				await AsyncStorage.setItem(
+					'bookmarkedPosts',
+					JSON.stringify(existingPosts)
+				);
+				setBookmarked(true);
+				console.log(`Added post with ID ${postId} to bookmarks.`);
+			}
+			setJournalReload(true);
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
+		}
+	};
+
+	async function editPost() {
+		let updatedData = post.data;
+		updatedData.title = editTitle;
+		setTitle(editTitle);
+		updatedData.text = editContent;
+		setContent(editContent);
+		updatedData.edited = true;
+		setEdited(true);
+		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
+		bottomSheetModalRef.current?.dismiss();
+		setTimeout(() => {
+			setGlobalReload(true);
+		}, 100);
 	}
 
 	// post setup
-	const setUp = async () => {
+	const setUp = async (postId) => {
 		let uid = await AsyncStorage.getItem('user');
 		setMe(uid);
+
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+			let keys = [];
+
+			existingPosts.forEach((post) => {
+				keys.push(post.id);
+			});
+
+			if (keys.includes(postId)) {
+				setBookmarked(true);
+			}
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
+		}
 
 		await populateComments(post.comments);
 	};
@@ -255,12 +474,14 @@ export const Post = (post) => {
 			let commentId = generateId();
 			let timestamp = Date.now();
 			let displayName = await AsyncStorage.getItem('name');
+			let pfp = await AsyncStorage.getItem('profile_img');
 			let comment = {
 				content: newComment,
 				edited: false,
 				timestamp: timestamp,
 				user: me,
-				username: displayName
+				username: displayName,
+				profile_img: pfp
 			};
 
 			//write data
@@ -290,7 +511,7 @@ export const Post = (post) => {
 	};
 
 	useEffect(() => {
-		setUp();
+		setUp(post.id);
 	}, []);
 
 	return (
@@ -314,23 +535,26 @@ export const Post = (post) => {
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
-									className={`${
-										post.owned ? 'hidden' : 'flex'
-									} rounded-lg`}
-									style={{ width: 44, height: 44 }}
+								<CachedImage
+									cacheKey={shorthash.unique(post.img)}
+									style={{
+										width: 44,
+										height: 44,
+										borderRadius: 8,
+										display: post.owned ? 'none' : 'flex'
+									}}
 									source={{
-										uri: post.img
+										uri: post.img,
+										expiresIn: 2_628_288
 									}}
 								/>
 								<StyledView
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{post.title?.length > 21
-											? post.title.substring(0, 21) +
-											  '...'
-											: post.title}
+										{title?.length > 21
+											? title.substring(0, 21) + '...'
+											: title}
 									</StyledText>
 									<StyledView className='flex flex-row'>
 										<StyledText
@@ -345,19 +569,19 @@ export const Post = (post) => {
 										</StyledText>
 										<StyledText
 											className={`${
-												post.edited ? 'flex' : 'hidden'
+												edited ? '' : 'hidden'
 											} text-white`}
 										>
-											(edited){post.edited}
+											(edited)
 										</StyledText>
 									</StyledView>
 								</StyledView>
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] pb-[10px]'>
-									{post.content?.length > 300
-										? post.content.substring(0, 297) + '...'
-										: post.content}
+									{content?.length > 300
+										? content.substring(0, 297) + '...'
+										: content}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -402,93 +626,78 @@ export const Post = (post) => {
 						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
 							{post.owned || post.ownedToolBar ? (
 								<>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPress={deletePost}
-									>
-										<StyledIcon
-											name={'trash-outline'}
-											size={29}
-											color='#CC2500'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'cog-outline'}
-											size={29}
-											color='#F9A826'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'create-outline'}
-											size={29}
-											color='#00A55E'
-										/>
-									</StyledOpacity>
+									<ToolbarButton
+										icon={'trash-outline'}
+										color={'#CC2500'}
+										size={29}
+										onPress={() => {
+											deletePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={'cog-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {}}
+									/>
+									<ToolbarButton
+										icon={'create-outline'}
+										size={29}
+										color='#00A55E'
+										onPress={() => {
+											setBottomSheetType('Edit');
+											handlePresentModalPress();
+										}}
+									/>
 								</>
 							) : (
 								<>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'flag-outline'}
-											size={29}
-											color='#CC2500'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPressOut={() => hidePost(post.id)}
-									>
-										<StyledIcon
-											name={'eye-off-outline'}
-											size={29}
-											color='#F9A826'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'bookmark-outline'}
-											size={29}
-											color='#00A55E'
-										/>
-									</StyledOpacity>
+									<ToolbarButton
+										icon={'flag-outline'}
+										size={29}
+										color='#CC2500'
+										onPress={() => {}}
+									/>
+									<ToolbarButton
+										icon={'eye-off-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {
+											hidePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={
+											bookmarked
+												? 'bookmark'
+												: 'bookmark-outline'
+										}
+										size={29}
+										color='#00A55E'
+										onPress={() => {
+											toggleBookmark(post.id, post.data);
+										}}
+									/>
 								</>
 							)}
+							<ToolbarButton
+								icon={'chatbubble-outline'}
+								size={29}
+								color='#5946B2'
+								onPress={() => {
+									setBottomSheetType('Comments');
+									handlePresentModalPress();
+								}}
+							/>
 							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
+								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
 								onPress={() => {
 									Haptics.impactAsync(
 										Haptics.ImpactFeedbackStyle.Light
 									);
-									handlePresentModalPress();
+									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
 								}}
-							>
-								<StyledIcon
-									name={'chatbubble-outline'}
-									size={29}
-									color='#5946B2'
-								/>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
-								activeOpacity={0.4}
-								onPress={() => {}}
 							/>
 						</StyledView>
 					</StyledView>
@@ -500,72 +709,12 @@ export const Post = (post) => {
 				index={0}
 				snapPoints={snapPoints}
 				onChange={handleSheetChanges}
-				handleComponent={handle}
+				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
-				<StyledView className='flex-1 bg-grey'>
-					<StyledView className='w-full h-auto flex items-center my-3'>
-						<StyledInput
-							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
-							placeholder='Write a comment...'
-							placeholderTextColor='#ffffff66'
-							multiline={true}
-							scrollEnabled={false}
-							ref={newCommentRef}
-							onChangeText={(text) => {
-								setNewComment(text);
-							}}
-						/>
-						<StyledOpacity
-							className='absolute top-[10px] right-[8%]'
-							onPress={async () => {
-								Keyboard.dismiss();
-								await postComment();
-							}}
-						>
-							<StyledText className='text-green font-[500] text-[18px]'>
-								Post
-							</StyledText>
-						</StyledOpacity>
-					</StyledView>
-					<BottomSheetFlatList
-						data={commentData}
-						contentContainerStyle={{
-							display: 'flex',
-							flexDirection: 'column',
-							justifyContent: 'center',
-							alignItems: 'center',
-							width: '100%'
-						}}
-						refreshControl={
-							<RefreshControl
-								onRefresh={() => {
-									console.log('getting comments');
-									{
-										/* TODO: add refresh button that will pull new comments from db */
-									}
-								}}
-								refreshing={false}
-								tintColor='#ebebeb'
-							/>
-						}
-						renderItem={({ item }) => {
-							return (
-								<Comment
-									id={item[0]}
-									user={item[1].user}
-									username={item[1].username}
-									content={item[1].content}
-									edited={item[1].edited}
-									timestamp={item[1].timestamp}
-									img={item[1].img}
-								/>
-							);
-						}}
-						keyExtractor={(item) => item[0]}
-					/>
-				</StyledView>
+				{bottomSheetType == 'Comments' && commentsView()}
+				{bottomSheetType == 'Edit' && editView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);

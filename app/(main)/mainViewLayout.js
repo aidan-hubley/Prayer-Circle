@@ -1,10 +1,4 @@
-import React, {
-	useEffect,
-	useRef,
-	useState,
-	useMemo,
-	useCallback
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Dimensions, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
@@ -17,6 +11,8 @@ import PagerView from 'react-native-pager-view';
 import { getFilterCircles } from '../../backend/firebaseFunctions.js';
 import { Filter } from '../../components/Filter.js';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useStore } from '../global.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StyledView = styled(View);
 
@@ -28,6 +24,16 @@ export default function Layout() {
 	const [circles, setCircles] = useState([]);
 	const [swipingEnabled, setSwipingEnabled] = useState(true);
 	const filterRef = useRef();
+	const filterName = useStore((state) => state.currentFilterName);
+	const [globalReload, setGlobalReload, setUid, setName, setPfp] = useStore(
+		(state) => [
+			state.globalReload,
+			state.setGlobalReload,
+			state.setUid,
+			state.setName,
+			state.setPfp
+		]
+	);
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
@@ -36,11 +42,21 @@ export default function Layout() {
 	const setUp = async () => {
 		let gc = await getFilterCircles();
 		setCircles(gc);
+		let uid = await AsyncStorage.getItem('user');
+		setUid(uid);
+		let name = await AsyncStorage.getItem('name');
+		setName(name);
+		let pfp = await AsyncStorage.getItem('profile_img');
+		setPfp(pfp);
 	};
 
 	useEffect(() => {
 		setUp();
 	}, []);
+
+	useEffect(() => {
+		setGlobalReload(false);
+	}, [globalReload]);
 
 	return (
 		<BottomSheetModalProvider>
@@ -100,7 +116,7 @@ export default function Layout() {
 				className='absolute mx-[85px]'
 			>
 				<Button
-					title='Prayer Circle'
+					title={filterName}
 					height='h-[50]'
 					width='w-full'
 					href='/circleSettings'
