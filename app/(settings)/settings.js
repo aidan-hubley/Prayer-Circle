@@ -109,6 +109,11 @@ export default function Page() {
         bottomSheetModalRef.current?.present();
     }, []);
 
+    const handleTOSModalPress = () => {
+        setModalContent('tos');
+        handlePresentModalPress();
+    };
+
     const handlePasswordModalPress = () => {
         setModalContent('password');
         handlePresentModalPress();
@@ -157,6 +162,15 @@ export default function Page() {
 
     const handle = () => {
         switch (modalContent) {
+        case 'tos':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Terms of Service
+                    </StyledText>
+                </StyledView>
+            );            
         case 'password':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
@@ -191,6 +205,12 @@ export default function Page() {
 
     const renderContent = () => {
         switch (modalContent) {
+        case 'tos':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Terms of Service</StyledText>
+                </StyledView>
+            );
         case 'password':
             return (
                 <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
@@ -281,6 +301,7 @@ export default function Page() {
                                                 textColor={'text-offwhite'}
                                                 borderColor={'border-offwhite'}
                                                 btnStyles='border-2'
+                                                press={handleTOSModalPress}
                                             ></Button>
                                         </View>
                                     </View>
@@ -573,7 +594,7 @@ export default function Page() {
                     enableDismissOnClose={true}
                     ref={bottomSheetModalRef}
                     index={0}
-                    snapPoints={modalContent === 'timer' ? ['35%'] : modalContent === 'password' ['65%', '85%'] ? modalContent === 'reminder' ? ['35%'] : ['65%', '85%'] : ['65%', '85%']}
+                    snapPoints={modalContent === 'tos' ? ['85%'] : 'timer' ? ['35%'] : modalContent === 'password' ['65%', '85%'] ? modalContent === 'reminder' ? ['35%'] : ['65%', '85%'] : ['65%', '85%']}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}
