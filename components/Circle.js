@@ -98,8 +98,8 @@ export function Circle({ filter, press, toggleSwiping }) {
 				className='flex flex-col items-center absolute w-screen'
 			>
 				<StyledView
-					style={{ top: topButtonInset - 550 }}
-					className='absolute border border-offwhite rounded-3xl'
+					style={{ top: topButtonInset - 500 }}
+					className='absolute border border-outline rounded-3xl'
 				>
 					<Timer></Timer>
 				</StyledView>

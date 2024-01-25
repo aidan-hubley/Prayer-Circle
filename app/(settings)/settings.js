@@ -119,6 +119,11 @@ export default function Page() {
         handlePresentModalPress();
     };
 
+    const handleReminderButtonPress = () => {
+        setModalContent('reminder');
+        handlePresentModalPress();
+    };
+
 	const selectedReminderInter = selectedReminder.interpolate({
 		inputRange: [0, 1, 2, 3, 4, 5],
 		outputRange: ['-3.5%', '15%', '35.5%', '54%', '72%', '90%']
@@ -170,6 +175,15 @@ export default function Page() {
                     </StyledText>
                 </StyledView>
             );
+        case 'reminder':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Presence Reminder
+                    </StyledText>
+                </StyledView>
+            );
         default:
             return null;
         }
@@ -217,6 +231,12 @@ export default function Page() {
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
                     <Timer></Timer>
                     <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Keep track of your time spent on Prayer Circle</StyledText>
+                </StyledView>
+            );
+        case 'reminder':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Notify you when you have spend too much time on Prayer Cirlce</StyledText>
                 </StyledView>
             );
         default:
@@ -385,7 +405,7 @@ export default function Page() {
                                                         bgColor={'bg-transparent'}
                                                         iconSize={30}
                                                         iconColor={'#FFFBFC'}                                        
-                                                        press={handleTimerButtonPress}
+                                                        press={handleReminderButtonPress}
                                                     ></Button>
                                                 </StyledView>
                                             </StyledView>                                
@@ -540,7 +560,7 @@ export default function Page() {
                     enableDismissOnClose={true}
                     ref={bottomSheetModalRef}
                     index={0}
-                    snapPoints={modalContent === 'timer' ? ['35%'] : ['65%', '85%']}
+                    snapPoints={modalContent === 'timer' ? ['35%'] : modalContent === 'password' ['65%', '85%'] ? modalContent === 'reminder' ? ['35%'] : ['65%', '85%'] : ['65%', '85%']}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}
