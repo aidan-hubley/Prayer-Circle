@@ -127,7 +127,7 @@ export default function Page() {
 	const handleReminderPress = (index) => {
 		Animated.spring(selectedReminder, {
 			toValue: index,
-			duration: 200,
+			duration: 150,
 			useNativeDriver: false
 		}).start();
 	};
@@ -244,7 +244,8 @@ export default function Page() {
                         ListHeaderComponent={
                             <>
                                 <StyledView className='w-full flex items-center'>
-                                    <View className="relative pt-[100px]"></View>                                
+                                    <View className="relative pt-[100px]"></View> 
+
                                     <View className="flex-row items-center mt-5 px-5">
                                         <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                             <Text className="mr-3 text-lg text-offwhite">
@@ -329,8 +330,8 @@ export default function Page() {
                                         <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                             <Text className="mr-3 text-lg text-offwhite">
                                                 All Notifications
-                                            </Text>
-                                        <Toggle onColor={'purple'} />
+                                            </Text>                                            
+                                        <Toggle />
                                         {/* TODO: More notification settings options */}
                                         </View>
                                     </View>
@@ -374,7 +375,7 @@ export default function Page() {
                                         <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
                                             <StyledView className="flex-row pb-5 w-full">
                                                 <Text className="text-lg text-offwhite pr-1">
-                                                    Presence Time Reminder
+                                                    Presence Reminder                                                    
                                                 </Text>
                                                 <StyledView className="absolute right-0">
                                                     <Button
@@ -391,11 +392,11 @@ export default function Page() {
                                             <StyledView className="w-[98%] flex-row justify-between">
                                                 <StyledAnimatedView
                                                     style={highlightPosition}
-                                                    className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[45px] h-[30px]'
+                                                    className='absolute flex items-center justify-center rounded-full border border-offwhite w-[45px] h-[30px]'
                                                 ></StyledAnimatedView>
                                                 <StyledOpacity className='' onPress={() => handleReminderPress(0)}>
                                                     <StyledText className="text-lg text-offwhite top-[1px]">
-                                                        <StyledIcon name="remove-circle-outline" size={22} color="#FFFBFC"/>
+                                                        <StyledIcon name="notifications-off-outline" size={22} color="#FFFBFC"/>
                                                     </StyledText>
                                                 </StyledOpacity>                            
                                                 <StyledOpacity className='' onPress={() => handleReminderPress(1)}>
@@ -418,23 +419,68 @@ export default function Page() {
                                     </View>
                                     <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                                     <View className="flex-row items-center mt-5 px-5">
-                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                            <Text className="mr-3 text-lg text-offwhite">
-                                                Clear Cache
-                                            </Text>
-                                        <Button // TODO: add modal + backend
-                                            title='Name'
-                                            width={'w-[80px]'}
+                                        <View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+                                            <StyledView className='flex-row'>
+                                                <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+                                                <Text className="mr-3 text-lg text-offwhite">
+                                                    Clear Cache
+                                                </Text>
+                                            </StyledView>
+                                        <Button
+                                            icon='trash-outline'
+                                            iconColor={'#FFFBFC'}
+                                            iconSize={26}
+                                            width={'w-[65px]'}
                                             height={'h-[35px]'}
                                             bgColor={'bg-transparent'}
-                                            textColor={'text-offwhite'}
-                                            borderColor={'border-offwhite'}
-                                            btnStyles='mr-3 border-2'
+                                            borderColor={'border-white'}
+                                            btnStyles='border-2'
                                         ></Button>
                                         </View>
                                     </View>
-                                    <View className="relative pb-[75px]">
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+                                            <StyledView className='flex-row'>
+                                                <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+                                                <Text className="mr-3 text-lg text-offwhite">
+                                                    Change Email
+                                                </Text>
+                                            </StyledView>
+                                        <Button
+                                            icon='trash-outline'
+                                            iconColor={'#FFFBFC'}
+                                            iconSize={26}
+                                            width={'w-[65px]'}
+                                            height={'h-[35px]'}
+                                            bgColor={'bg-transparent'}
+                                            borderColor={'border-white'}
+                                            btnStyles='border-2'
+                                        ></Button>
+                                        </View>
                                     </View>
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl">
+                                            <StyledView className='flex-row'>
+                                                <StyledIcon name='skull-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
+                                                <Text className="mr-3 text-lg text-offwhite">
+                                                    Delete Profile
+                                                </Text>
+                                            </StyledView>
+                                        <Button
+                                            icon='trash-outline'
+                                            iconColor={'#FFFBFC'}
+                                            iconSize={26}
+                                            width={'w-[65px]'}
+                                            height={'h-[35px]'}
+                                            bgColor={'bg-transparent'}
+                                            borderColor={'border-white'}
+                                            btnStyles='border-2'
+                                        ></Button>
+                                        </View>
+                                    </View>
+
+                                    <View className="relative pb-[75px]"></View>
                                 </StyledView>
                             </>
                         }
@@ -452,13 +498,11 @@ export default function Page() {
                         style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
                         className='absolute w-screen flex items-center justify-between px-[15px]'
                     >
-                        
                         <StyledText className='text-4xl font-bold text-offwhite'>
                             Settings
                         </StyledText>
-                        
                     </StyledView>
-                    <StyledGradient // I want this to be at the bottom of the screen
+                    <StyledGradient
                         pointerEvents='none'
                         start={{ x: 0, y: 0.1 }}
                         end={{ x: 0, y: 1 }}
@@ -478,21 +522,16 @@ export default function Page() {
                     >
                     </Button>
                     <Button
-                        title='Sign Out'
-                        width='w-[50%]'
+                        icon='log-out-outline'
+                        width={'w-[50px]'}
+                        height={'h-[50px]'}
+                        iconSize={30}
                         press={() => {
                             signOut(auth);
                             AsyncStorage.removeItem('user');
                             AsyncStorage.removeItem('name');
                             router.replace('/login');
                         }}
-                    />
-                    <Button // TODO: Delete User modal + backend
-                        icon='trash-outline'
-                        href='/mainViewLayout'
-                        width={'w-[50px]'}
-                        height={'h-[50px]'}
-                        iconSize={30}
                     >
                     </Button>
                 </StyledView>
