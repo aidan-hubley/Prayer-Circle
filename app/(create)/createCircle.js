@@ -4,20 +4,22 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Keyboard,
-	Pressable,
-	Alert
+	Keyboard
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import { IconSelector } from '../../components/iconSelector';
-import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import {
+	useSafeAreaInsets,
+	SafeAreaView
+} from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
 import { ColorPicker, fromHsv } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
 import { router } from '../../backend/config';
+import { useStore } from '../global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -35,6 +37,8 @@ export default function Page() {
 
 	const [icon, setIcon] = useState(null);
 	const [iconColor, setIconColor] = useState(null);
+
+	const setFilterReload = useStore((state) => state.setFilterReload);
 
 	const iconSelectorRef = useRef();
 	const circleColorRef = useRef();
@@ -161,10 +165,12 @@ export default function Page() {
 							admin: {},
 							owner: false
 						};
-						createCircle(data);
+						await createCircle(data);
 						this.circleTitle.clear();
 						this.circleDescription.clear();
 						alert('Circle Successfully Created');
+						setFilterReload(true);
+
 						router.push('/mainViewLayout');
 					}}
 				/>
