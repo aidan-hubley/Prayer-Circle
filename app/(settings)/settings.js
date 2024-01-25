@@ -221,6 +221,11 @@ export default function Page() {
         }
     };
 
+    const handleToggleChange = (newState) => {
+        console.log('Toggle state is now: ', newState);
+        // Here you can add the code to perform actions based on the new state
+    };
+
     return (
          <BottomSheetModalProvider>
             <StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
@@ -339,7 +344,8 @@ export default function Page() {
                                 <StyledView className="w-full flex-row justify-between">
                                     <StyledView className="flex-row">
                                         <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
-                                        <Toggle toggle={true}/>
+                                        <Toggle onToggleStateChange={handleToggleChange} /> 
+                                        {/* toggle={true} if local storage is true */}
                                     </StyledView>
                                     <StyledView className="flex-row">
                                         <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
