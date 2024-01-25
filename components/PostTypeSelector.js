@@ -1,8 +1,8 @@
 import React, {
-	useState,
 	useRef,
 	forwardRef,
-	useImperativeHandle
+	useImperativeHandle,
+	useEffect
 } from 'react';
 import { View, Text, Image, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
@@ -12,8 +12,8 @@ const StyledImg = styled(Image);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.View);
 
-const PostTypeSelector = forwardRef(({}, ref) => {
-	const [selected, setSelected] = useState(new Animated.Value(0));
+const PostTypeSelector = forwardRef((props, ref) => {
+	const selected = useRef(new Animated.Value(1)).current;
 
 	const selectedInter = selected.interpolate({
 		inputRange: [0, 1, 2],
@@ -26,7 +26,13 @@ const PostTypeSelector = forwardRef(({}, ref) => {
 			duration: 200,
 			useNativeDriver: false
 		}).start();
+
+		if (props.onSelect) props.onSelect(index);
 	};
+
+	useEffect(() => {
+		if (props.onSelect) props.onSelect(1);
+	}, []);
 
 	const highlightPosition = {
 		left: selectedInter

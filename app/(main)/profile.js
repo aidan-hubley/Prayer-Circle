@@ -158,7 +158,7 @@ export default function ProfilePage() {
 				ListFooterComponent={
 					posts && posts.length > 0 ? (
 						<StyledView
-							className='w-full flex items-center mb-[10px]'
+							className='w-full bg-purple flex items-center mb-[10px]'
 							style={{
 								height: insets.top + 60
 							}}
