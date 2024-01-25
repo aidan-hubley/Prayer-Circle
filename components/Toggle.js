@@ -5,8 +5,9 @@ import { styled } from 'nativewind';
 const StyledView = styled(View);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 
-export const Toggle = forwardRef(({ width, height, offColor, onColor }, ref) => {
-    const [isEnabled, setIsEnabled] = useState(false);
+export const Toggle = forwardRef(({ width, height, offColor, onColor, toggle }, ref) => {
+    const [isEnabled, setIsEnabled] = useState(toggle || false);
+
     const togglePosition = useRef(new Animated.Value(isEnabled ? 32 : 5)).current;
 
     useEffect(() => {

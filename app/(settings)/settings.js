@@ -118,7 +118,7 @@ export default function Page() {
 
 	const selectedReminderInter = selectedReminder.interpolate({
 		inputRange: [0, 1, 2, 3, 4, 5],
-		outputRange: ['-3.5%', '15%', '36%', '54%', '72%', '90%']
+		outputRange: ['-3.5%', '15%', '35.5%', '54%', '72%', '90%']
 	});
 
 	const handleReminderPress = (index) => {
@@ -339,7 +339,7 @@ export default function Page() {
                                 <StyledView className="w-full flex-row justify-between">
                                     <StyledView className="flex-row">
                                         <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
-                                        <Toggle />
+                                        <Toggle toggle={true}/>
                                     </StyledView>
                                     <StyledView className="flex-row">
                                         <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
@@ -347,7 +347,7 @@ export default function Page() {
                                     </StyledView>
                                     <StyledView className="flex-row">
                                         <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
-                                        <Toggle onColor={'#F9A826'}/>
+                                        <Toggle />
                                     </StyledView>
                                 </StyledView>
                             </View>
@@ -370,14 +370,14 @@ export default function Page() {
                                         ></Button>
                                     </StyledView>
                                 </StyledView>                                
-                                <StyledView className="w-full flex-row justify-between">
+                                <StyledView className="w-[98%] flex-row justify-between">
                                     <StyledAnimatedView
                                         style={highlightPosition}
                                         className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[45px] h-[30px]'
                                     ></StyledAnimatedView>
                                     <StyledOpacity className='' onPress={() => handleReminderPress(0)}>
-                                        <StyledText className="text-lg text-offwhite">
-                                            <StyledIcon name="power" size={22} color="#FFFBFC"/>
+                                        <StyledText className="text-lg text-offwhite top-[1px]">
+                                            <StyledIcon name="remove-circle-outline" size={22} color="#FFFBFC"/>
                                         </StyledText>
                                     </StyledOpacity>                            
                                     <StyledOpacity className='' onPress={() => handleReminderPress(1)}>
