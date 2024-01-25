@@ -62,11 +62,11 @@ export const Timer = () => {
 
 
     return (
-        <StyledTouchableHighlight className='bg-offblack rounded-3xl text-offwhite px-5 py-2 justify-center w-[300px]' onPress={handlePress}>
+        <StyledTouchableHighlight className='bg-offblack rounded-3xl text-offwhite px-5 py-3 justify-center w-[300px]' onPress={handlePress}>
             <>
                 {dailyCount ?
                     <StyledView className='flex-row py-1'>
-                        <StyledImage source={require('../assets/timers/calendar-day.png')} className="w-[40px] h-[40px] absolute top-[1px]"/>
+                        <StyledImage source={require('../assets/timers/calendar-day.png')} className="w-[40px] h-[40px] absolute top-[4px]"/>
                         <StyledView className='flex-row h-[40px]'>
                             {isAlternateText ?
                                 <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
@@ -82,7 +82,7 @@ export const Timer = () => {
                 : null}
                 {weeklyCount ?
                     <StyledView className='flex-row py-1'>
-                        <StyledImage source={require('../assets/timers/calendar-week.png')} className="w-[40px] h-[40px] absolute top-[1px]"/>
+                        <StyledImage source={require('../assets/timers/calendar-week.png')} className="w-[40px] h-[40px] absolute top-[4px]"/>
                         <StyledView className='flex-row h-[40px]'>
                             {isAlternateText ?
                                 <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
@@ -98,7 +98,7 @@ export const Timer = () => {
                 : null}
                 {allTimeCount ?                    
                     <StyledView className='flex-row py-1'>
-                        <StyledIcon name="infinite" size={40} color="#FFFBFC" className="w-[40px] h-[40px] absolute top-[1px]"/>
+                        <StyledIcon name="infinite" size={40} color="#FFFBFC" className="w-[40px] h-[40px] absolute top-[4px]"/>
                         <StyledView className='flex-row h-[40px]'>
                             {isAlternateText ?
                                 <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
