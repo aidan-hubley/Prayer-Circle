@@ -116,8 +116,8 @@ export default function Page() {
     };
 
 	const selectedReminderInter = selectedReminder.interpolate({
-		inputRange: [0, 1, 2, 3, 4, 5, 6],
-		outputRange: ['0%', '14.28%', '28.56%', '42.84%', '57.12%', '71.4%', '85.68%']
+		inputRange: [0, 1, 2, 3, 4, 5],
+		outputRange: ['12.5%', '28.5%', '44.5%', '60.5%', '76.5%', '92.5%']
 	});
 
 	const handleReminderPress = (index) => {
@@ -228,7 +228,7 @@ export default function Page() {
                         Settings
                     </StyledText>
                         <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
                                     Terms of Service
                                 </Text>
@@ -248,7 +248,7 @@ export default function Page() {
                         </View>
                         <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                         <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
                                     Update Account
                                 </Text>
@@ -276,7 +276,7 @@ export default function Page() {
                             </View>
                         </View>
                         <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
                                     Change Password
                                 </Text>
@@ -308,7 +308,7 @@ export default function Page() {
                         </View>   
                         <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                         <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey p-3 w-full rounded-xl">
+                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                 <Text className="mr-3 text-lg text-offwhite">
                                     All Notifications
                                 </Text>
@@ -318,7 +318,7 @@ export default function Page() {
                         </View>
                         <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                         <View className="flex-row mt-5 px-5">
-                            <View className="justify-between bg-grey p-3 w-full rounded-xl">
+                            <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
                                 <StyledView className="flex-row pb-5 w-full">
                                     <Text className="text-lg text-offwhite pr-1">
                                         Presence Timers
@@ -335,12 +335,12 @@ export default function Page() {
                                         ></Button>
                                     </StyledView>
                                 </StyledView>
-                                <StyledView className="w-full flex-row justify-center">
+                                <StyledView className="w-full flex-row justify-between">
                                     <StyledView className="flex-row">
                                         <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
                                         <Toggle />
                                     </StyledView>
-                                    <StyledView className="flex-row px-6">
+                                    <StyledView className="flex-row">
                                         <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
                                         <Toggle />
                                     </StyledView>
@@ -352,12 +352,12 @@ export default function Page() {
                             </View>
                         </View>      
                         <View className="flex-row mt-5 px-5">
-                            <View className="justify-between bg-grey p-3 w-full rounded-xl">
+                            <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
                                 <StyledView className="flex-row pb-5 w-full">
                                     <Text className="text-lg text-offwhite pr-1">
                                         Presence Time Reminder
                                     </Text>
-                                    <StyledView className="absolute right-1">
+                                    <StyledView className="absolute right-0">
                                         <Button
                                             icon='information-circle-outline'
                                             width={'w-[30px]'}
@@ -369,7 +369,7 @@ export default function Page() {
                                         ></Button>
                                     </StyledView>
                                 </StyledView>
-                                <StyledView className="w-full flex-row justify-between pr-1">
+                                <StyledView className="w-full flex-row justify-between">
                                     <StyledOpacity className='' onPress={() => handlePress(0)}>
                                         <StyledText className="text-lg text-offwhite">
                                             <StyledIcon name="power" size={22} color="#FFFBFC"/>
@@ -389,11 +389,6 @@ export default function Page() {
                                     </StyledOpacity>                                    
                                     <StyledOpacity className='' onPress={() => handlePress(5)}>
                                         <StyledText className="text-lg text-offwhite">2 h</StyledText>
-                                    </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handlePress(6)}>
-                                        <StyledText className="text-lg text-offwhite">
-                                            <StyledIcon name="add-circle-outline" size={24} color="#FFFBFC"/>
-                                        </StyledText>
                                     </StyledOpacity>                                    
                                 </StyledView>
                             </View>
