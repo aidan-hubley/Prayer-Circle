@@ -1,10 +1,15 @@
-import { database, auth, router } from './config.js';
+import { database, auth, router, storage } from './config.js';
 import { ref, child, get, push, set } from 'firebase/database';
 import {
 	createUserWithEmailAndPassword,
 	onAuthStateChanged,
 	signInWithEmailAndPassword
 } from 'firebase/auth';
+import {
+	ref as sRef,
+	getDownloadURL,
+	uploadBytesResumable
+} from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 async function getUIDFromStorage() {
@@ -138,13 +143,14 @@ export async function loginUser(email, password) {
 		.then(async (userCredential) => {
 			// Signed in
 			const user = userCredential.user;
-			await AsyncStorage.setItem('user', user.uid);
-
-			let name = await readData(`prayer_circle/users/${user.uid}`);
-			name = name.public.fname + ' ' + name.public.lname;
-			await AsyncStorage.setItem('name', name);
-
-			await AsyncStorage.setItem('email', user.email);
+			let userData = await readData(`prayer_circle/users/${user.uid}`);
+			console.log('login', userData.public.profile_img);
+			await AsyncStorage.multiSet([
+				['user', user.uid],
+				['name', `${userData.public.fname} ${userData.public.lname}`],
+				['email', user.email],
+				['profile_img', userData.public.profile_img]
+			]);
 
 			router.replace('/mainViewLayout');
 		})
@@ -254,4 +260,16 @@ export async function getPosts(circleId) {
 		return b[1] - a[1];
 	});
 	return posts;
+}
+
+export async function uploadImage(path, uri) {
+	let id = generateId();
+	const img = await fetch(uri);
+	const blob = await img.blob();
+
+	const storageRef = sRef(storage, path + '/' + id);
+	await uploadBytesResumable(storageRef, blob);
+
+	const downloadURL = await getDownloadURL(storageRef);
+	return downloadURL;
 }

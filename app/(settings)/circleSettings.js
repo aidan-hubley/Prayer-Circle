@@ -193,7 +193,7 @@ export default function Page() {
 				className="absolute w-screen flex flex-row items-center justify-between px-[15px]"
 			>
 				<Button
-					btnStyles="rotate-180"
+					btnStyles="rotate-180 border-2"
 					bgColor="bg-offblack"
 					borderColor="border-yellow"
 					height={'h-[50px]'}
@@ -207,6 +207,7 @@ export default function Page() {
 					Settings
 				</StyledText>
 				<Button
+					btnStyles="border-2"
 					bgColor="bg-offblack"
 					borderColor="border-red"
 					height={'h-[50px]'}
