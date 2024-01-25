@@ -32,13 +32,14 @@ const StyledIcon = styled(Ionicons);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
+const StyledOpacity = styled(TouchableOpacity);
 const StyledInput = styled(TextInput);
 
 export default function Page() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-
+    const [selectedReminder, setSelectedReminder] = useState(new Animated.Value(0));
     const [isEnabled, setIsEnabled] = useState(false);
     const [modalContent, setModalContent] = useState(null);
     const insets = useSafeAreaInsets();
@@ -113,6 +114,23 @@ export default function Page() {
         setModalContent('timer');
         handlePresentModalPress();
     };
+
+	const selectedReminderInter = selectedReminder.interpolate({
+		inputRange: [0, 1, 2, 3, 4, 5, 6],
+		outputRange: ['0%', '14.28%', '28.56%', '42.84%', '57.12%', '71.4%', '85.68%']
+	});
+
+	const handleReminderPress = (index) => {
+		Animated.spring(selectedReminder, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+	};
+
+	const highlightPosition = {
+		left: selectedReminderInter
+	};
 
     const handleSheetChanges = useCallback((index) => {}, []);
 
@@ -216,12 +234,14 @@ export default function Page() {
                                 </Text>
                                 <StyledView className='flex flex-row'>
                                     <Button // TODO: use component
-                                        title='View'                                        
-                                        width={'w-[80px]'}
-                                        height={'h-[30px]'}
+                                        icon='eye'
+                                        iconColor={'#FFFBFC'}                                        
+                                        width={'w-[65px]'}
+                                        height={'h-[35px]'}
                                         bgColor={'bg-transparent'}
                                         textColor={'text-offwhite'}
                                         borderColor={'border-offwhite'}
+                                        btnStyles='border-2'
                                     ></Button>
                                 </StyledView>
                             </View>
@@ -236,18 +256,19 @@ export default function Page() {
                                     <Button // TODO: add modal + backend
                                         title='Name'
                                         width={'w-[80px]'}
-                                        height={'h-[30px]'}
+                                        height={'h-[35px]'}
                                         bgColor={'bg-transparent'}
                                         textColor={'text-offwhite'}
                                         borderColor={'border-offwhite'}
-                                        btnStyles='mr-3'
+                                        btnStyles='mr-3 border-2'
                                     ></Button>
                                     <Button // TODO: add modal + backend
                                         icon='camera'
-                                        width={'w-[80px]'}
-                                        height={'h-[30px]'}
+                                        width={'w-[65px]'}
+                                        height={'h-[35px]'}
                                         bgColor={'bg-transparent'}
                                         borderColor={'border-offwhite'}
+                                        btnStyles='border-2'
                                         iconSize={26}
                                         iconColor={'#FFFBFC'}
                                     ></Button>
@@ -263,22 +284,23 @@ export default function Page() {
                                     <Button
                                         icon='text'
                                         width={'w-[80px]'}
-                                        height={'h-[30px]'}
+                                        height={'h-[35px]'}
                                         iconSize={26}
                                         press={handlePasswordModalPress}
                                         bgColor={'bg-transparent'}
                                         borderColor={'border-offwhite'}
                                         iconColor={'#FFFBFC'}
-                                        btnStyles='mr-3'
+                                        btnStyles='mr-3 border-2'
                                     ></Button>
                                     <Button
                                         icon='mail'
-                                        width={'w-[80px]'}
-                                        height={'h-[30px]'}
+                                        width={'w-[65px]'}
+                                        height={'h-[35px]'}
                                         bgColor={'bg-transparent'}
                                         borderColor={'border-offwhite'}
                                         iconSize={26}
                                         iconColor={'#FFFBFC'}
+                                        btnStyles='border-2'
                                         press={handlePasswordReset}
                                     ></Button>
                                 </StyledView>
@@ -290,14 +312,14 @@ export default function Page() {
                                 <Text className="mr-3 text-lg text-offwhite">
                                     All Notifications
                                 </Text>
-                            <Toggle onColor={'purple'}/>
+                            <Toggle onColor={'purple'} />
                             {/* TODO: More notification settings options */}
                             </View>
                         </View>
                         <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                         <View className="flex-row mt-5 px-5">
                             <View className="justify-between bg-grey p-3 w-full rounded-xl">
-                                <StyledView className="flex-row pb-3 w-full">
+                                <StyledView className="flex-row pb-5 w-full">
                                     <Text className="text-lg text-offwhite pr-1">
                                         Presence Timers
                                     </Text>
@@ -312,7 +334,6 @@ export default function Page() {
                                             press={handleTimerButtonPress}
                                         ></Button>
                                     </StyledView>
-                                    {/* TODO: add modal to display screen time stats */}
                                 </StyledView>
                                 <StyledView className="w-full flex-row justify-center">
                                     <StyledView className="flex-row">
@@ -329,7 +350,54 @@ export default function Page() {
                                     </StyledView>
                                 </StyledView>
                             </View>
-                        </View>                     
+                        </View>      
+                        <View className="flex-row mt-5 px-5">
+                            <View className="justify-between bg-grey p-3 w-full rounded-xl">
+                                <StyledView className="flex-row pb-5 w-full">
+                                    <Text className="text-lg text-offwhite pr-1">
+                                        Presence Time Reminder
+                                    </Text>
+                                    <StyledView className="absolute right-1">
+                                        <Button
+                                            icon='information-circle-outline'
+                                            width={'w-[30px]'}
+                                            height={'h-[30px]'}
+                                            bgColor={'bg-transparent'}
+                                            iconSize={30}
+                                            iconColor={'#FFFBFC'}                                        
+                                            press={handleTimerButtonPress}
+                                        ></Button>
+                                    </StyledView>
+                                </StyledView>
+                                <StyledView className="w-full flex-row justify-between pr-1">
+                                    <StyledOpacity className='' onPress={() => handlePress(0)}>
+                                        <StyledText className="text-lg text-offwhite">
+                                            <StyledIcon name="power" size={22} color="#FFFBFC"/>
+                                        </StyledText>
+                                    </StyledOpacity>                            
+                                    <StyledOpacity className='' onPress={() => handlePress(1)}>
+                                        <StyledText className="text-lg text-offwhite">15 m</StyledText>
+                                    </StyledOpacity>
+                                    <StyledOpacity className='' onPress={() => handlePress(2)}>
+                                        <StyledText className="text-lg text-offwhite">30 m</StyledText>
+                                    </StyledOpacity>                                    
+                                    <StyledOpacity className='' onPress={() => handlePress(3)}>
+                                        <StyledText className="text-lg text-offwhite">1 h</StyledText>
+                                    </StyledOpacity>                                    
+                                    <StyledOpacity className='' onPress={() => handlePress(4)}>
+                                        <StyledText className="text-lg text-offwhite">1.5 h</StyledText>
+                                    </StyledOpacity>                                    
+                                    <StyledOpacity className='' onPress={() => handlePress(5)}>
+                                        <StyledText className="text-lg text-offwhite">2 h</StyledText>
+                                    </StyledOpacity>                                    
+                                    <StyledOpacity className='' onPress={() => handlePress(6)}>
+                                        <StyledText className="text-lg text-offwhite">
+                                            <StyledIcon name="add-circle-outline" size={24} color="#FFFBFC"/>
+                                        </StyledText>
+                                    </StyledOpacity>                                    
+                                </StyledView>
+                            </View>
+                        </View>
                 </StyledView>
                 
                 <StyledView style={{bottom: insets.bottom}} className='absolute w-screen flex flex-row px-[15px] justify-between'>
