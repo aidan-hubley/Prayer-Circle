@@ -100,8 +100,6 @@ export default function Page() {
         }
     };
 
-    const snapPoints = useMemo(() => ['35%', '65%', '85%']);
-
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
@@ -196,6 +194,20 @@ export default function Page() {
             return (
                 <StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
                     <Timer></Timer>
+                    {/* <StyledView className='mt-5'>
+                        <StyledView className="flex-row">   
+                            <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px]"/>
+                            <StyledText className='text-[20px] font-bold text-center text-offwhite'> Daily Screen Time</StyledText>
+                        </StyledView>
+                        <StyledView className="flex-row my-4">
+                            <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px]"/>
+                            <StyledText className='text-[20px] font-bold text-center text-offwhite'> Weekly Screen Time</StyledText>
+                        </StyledView>
+                        <StyledView className="flex-row">
+                            <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px]"/>
+                            <StyledText className='text-[20px] font-bold text-center text-offwhite'> All Screen Time</StyledText>
+                        </StyledView>
+                    </StyledView> */}
                 </StyledView>
             );
         default:
@@ -365,7 +377,7 @@ export default function Page() {
                     enableDismissOnClose={true}
                     ref={bottomSheetModalRef}
                     index={0}
-                    snapPoints={snapPoints}
+                    snapPoints={modalContent === 'timer' ? ['35%'] : ['65%', '85%']}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}
