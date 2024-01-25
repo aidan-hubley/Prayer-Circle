@@ -65,27 +65,51 @@ export const Timer = () => {
         <StyledTouchableHighlight className='bg-offblack rounded-3xl text-offwhite px-5 py-2 justify-center w-[300px]' onPress={handlePress}>
             <>
                 {dailyCount ?
-                    <StyledView className='flex flex-row py-1'>
+                    <StyledView className='flex-row py-1'>
                         <StyledImage source={require('../assets/timers/calendar-day.png')} className="w-[40px] h-[40px] absolute top-[1px]"/>
-                        <StyledText className='text-[30px] font-bold text-center text-offwhite w-full left-5'>
-                            {isAlternateText ? 'Daily Usage' : daily}
-                        </StyledText>
+                        <StyledView className='flex-row h-[40px]'>
+                            {isAlternateText ?
+                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
+                                    Daily Presence
+                                </StyledText>
+                            : 
+                                <StyledText className='text-[30px] font-bold text-center text-offwhite w-full left-5'>
+                                    {daily}
+                                </StyledText>
+                            }
+                        </StyledView>
                     </StyledView>
                 : null}
                 {weeklyCount ?
-                    <StyledView className='flex flex-row py-1'>
+                    <StyledView className='flex-row py-1'>
                         <StyledImage source={require('../assets/timers/calendar-week.png')} className="w-[40px] h-[40px] absolute top-[1px]"/>
-                        <StyledText className='text-[30px] font-bold text-center text-offwhite w-full left-5'>
-                            {isAlternateText ? 'Weekly Usage' : weekly}
-                            </StyledText>
+                        <StyledView className='flex-row h-[40px]'>
+                            {isAlternateText ?
+                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
+                                    Weekly Presence
+                                </StyledText>
+                            : 
+                                <StyledText className='text-[30px] font-bold text-center text-offwhite w-full left-5'>
+                                    {weekly}
+                                </StyledText>
+                            }
+                        </StyledView>
                     </StyledView>
                 : null}
                 {allTimeCount ?                    
-                    <StyledView className='flex flex-row py-1'>
+                    <StyledView className='flex-row py-1'>
                         <StyledIcon name="infinite" size={40} color="#FFFBFC" className="w-[40px] h-[40px] absolute top-[1px]"/>
-                        <StyledText className='text-[30px] font-bold text-center text-offwhite w-full left-5'>
-                            {isAlternateText ? 'All Usage' : allTime}
-                        </StyledText>
+                        <StyledView className='flex-row h-[40px]'>
+                            {isAlternateText ?
+                                <StyledText className='text-[25px] font-bold text-center text-offwhite w-full left-5'>
+                                    Total Presence
+                                </StyledText>
+                            : 
+                                <StyledText className='text-[30px] font-bold text-center text-offwhite w-full left-5'>
+                                    {allTime}
+                                </StyledText>
+                            }
+                        </StyledView>
                     </StyledView>
                 : null}
             </>

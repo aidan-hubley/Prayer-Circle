@@ -99,7 +99,7 @@ export function Circle({ filter, press, toggleSwiping }) {
 			>
 				<StyledView
 					style={{ top: topButtonInset - 550 }}
-					className='absolute'
+					className='absolute border border-offwhite rounded-3xl'
 				>
 					<Timer></Timer>
 				</StyledView>
