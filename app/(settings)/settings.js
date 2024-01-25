@@ -34,6 +34,7 @@ const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledInput = styled(TextInput);
+const StyledAnimatedView = styled(Animated.View);
 
 export default function Page() {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -117,7 +118,7 @@ export default function Page() {
 
 	const selectedReminderInter = selectedReminder.interpolate({
 		inputRange: [0, 1, 2, 3, 4, 5],
-		outputRange: ['12.5%', '28.5%', '44.5%', '60.5%', '76.5%', '92.5%']
+		outputRange: ['-3.5%', '15%', '36%', '54%', '72%', '90%']
 	});
 
 	const handleReminderPress = (index) => {
@@ -368,27 +369,31 @@ export default function Page() {
                                             press={handleTimerButtonPress}
                                         ></Button>
                                     </StyledView>
-                                </StyledView>
+                                </StyledView>                                
                                 <StyledView className="w-full flex-row justify-between">
-                                    <StyledOpacity className='' onPress={() => handlePress(0)}>
+                                    <StyledAnimatedView
+                                        style={highlightPosition}
+                                        className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[45px] h-[30px]'
+                                    ></StyledAnimatedView>
+                                    <StyledOpacity className='' onPress={() => handleReminderPress(0)}>
                                         <StyledText className="text-lg text-offwhite">
                                             <StyledIcon name="power" size={22} color="#FFFBFC"/>
                                         </StyledText>
                                     </StyledOpacity>                            
-                                    <StyledOpacity className='' onPress={() => handlePress(1)}>
-                                        <StyledText className="text-lg text-offwhite">15 m</StyledText>
+                                    <StyledOpacity className='' onPress={() => handleReminderPress(1)}>
+                                        <StyledText className="text-lg text-offwhite">15m</StyledText>
                                     </StyledOpacity>
-                                    <StyledOpacity className='' onPress={() => handlePress(2)}>
-                                        <StyledText className="text-lg text-offwhite">30 m</StyledText>
+                                    <StyledOpacity className='' onPress={() => handleReminderPress(2)}>
+                                        <StyledText className="text-lg text-offwhite">30m</StyledText>
                                     </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handlePress(3)}>
-                                        <StyledText className="text-lg text-offwhite">1 h</StyledText>
+                                    <StyledOpacity className='' onPress={() => handleReminderPress(3)}>
+                                        <StyledText className="text-lg text-offwhite">1h</StyledText>
                                     </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handlePress(4)}>
-                                        <StyledText className="text-lg text-offwhite">1.5 h</StyledText>
+                                    <StyledOpacity className='' onPress={() => handleReminderPress(4)}>
+                                        <StyledText className="text-lg text-offwhite">1.5h</StyledText>
                                     </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handlePress(5)}>
-                                        <StyledText className="text-lg text-offwhite">2 h</StyledText>
+                                    <StyledOpacity className='' onPress={() => handleReminderPress(5)}>
+                                        <StyledText className="text-lg text-offwhite">2h</StyledText>
                                     </StyledOpacity>                                    
                                 </StyledView>
                             </View>
