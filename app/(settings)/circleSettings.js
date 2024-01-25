@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
 	Text,
 	View,
@@ -13,11 +13,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-	BottomSheetModal,
-	BottomSheetFlatList,
-	BottomSheetBackdrop
-} from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -38,13 +33,6 @@ export default function Page() {
 	const toggleModal2 = () => {
 		setModalVisible2(!isModalVisible2);
 	};
-
-	// bottom sheet modal
-	const snapPoints = useMemo(() => ['85%'], []);
-	const handlePresentModalPress = useCallback(() => {
-		bottomSheetModalRef.current?.present();
-	}, []);
-	const handleSheetChanges = useCallback((index) => {}, []);
 
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
