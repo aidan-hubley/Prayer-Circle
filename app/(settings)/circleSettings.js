@@ -195,7 +195,7 @@ export default function Page() {
 				<Button
 					btnStyles='rotate-180 border-2'
 					bgColor='bg-offblack'
-					borderColor='border-yellow'					
+					borderColor='border-yellow'
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
