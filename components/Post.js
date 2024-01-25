@@ -38,6 +38,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
+import { set } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -59,7 +62,10 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const setGlobalReload = useStore((state) => state.setGlobalReload);
+	const [setGlobalReload, setJournalReload] = useStore((state) => [
+		state.setGlobalReload,
+		state.setJournalReload
+	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [editContent, setEditContent] = useState(post.content);
@@ -67,6 +73,7 @@ export const Post = (post) => {
 	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
 	const [type, setType] = useState(post.type);
+	const [bookmarked, setBookmarked] = useState(false);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -130,7 +137,7 @@ export const Post = (post) => {
 		return (
 			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
 				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px]'>
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
 					{title}
 				</StyledText>
 			</StyledView>
@@ -171,9 +178,7 @@ export const Post = (post) => {
 							await postComment();
 						}}
 					>
-						<StyledText className='text-green font-[500] text-[18px]'>
-							Post
-						</StyledText>
+						<StyledIcon name='send' size={30} className='text-green' />
 					</StyledOpacity>
 				</StyledView>
 				<BottomSheetFlatList
@@ -188,7 +193,6 @@ export const Post = (post) => {
 					refreshControl={
 						<RefreshControl
 							onRefresh={() => {
-								console.log('getting comments');
 								{
 									/* TODO: add refresh button that will pull new comments from db */
 								}
@@ -206,7 +210,7 @@ export const Post = (post) => {
 								content={item[1].content}
 								edited={item[1].edited}
 								timestamp={item[1].timestamp}
-								img={item[1].img}
+								img={item[1].profile_img}
 							/>
 						);
 					}}
@@ -269,6 +273,25 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledView>
 			</TouchableWithoutFeedback>
+		);
+	};
+
+	const ToolbarButton = (props) => {
+		return (
+			<StyledOpacity
+				className='flex items-center justify-center w-[30px] h-[30px]'
+				activeOpacity={0.4}
+				onPress={() => {
+					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (props.onPress) props.onPress();
+				}}
+			>
+				<StyledIcon
+					name={props.icon}
+					size={props.size}
+					color={props.color}
+				/>
+			</StyledOpacity>
 		);
 	};
 
@@ -337,12 +360,48 @@ export const Post = (post) => {
 		}, 100);
 	}
 
-	async function hidePost(postId) {
-		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, true, true);
+	async function hidePost() {
+		writeData(`prayer_circle/posts/${post.id}/hidden/${me}`, true, true);
 		toggleToolbar();
 
 		setGlobalReload(true);
 	}
+
+	const toggleBookmark = async (postId, postData) => {
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+			const postIndex = existingPosts.findIndex(
+				(post) => post.id === postId
+			);
+
+			if (postIndex !== -1) {
+				// Post exists, remove it
+				existingPosts.splice(postIndex, 1);
+				await AsyncStorage.setItem(
+					'bookmarkedPosts',
+					JSON.stringify(existingPosts)
+				);
+				setBookmarked(false);
+				console.log(`Removed post with ID ${postId} from bookmarks.`);
+			} else {
+				// Post doesn't exist, add it
+				const newPost = { id: postId, data: postData };
+				existingPosts.push(newPost);
+				await AsyncStorage.setItem(
+					'bookmarkedPosts',
+					JSON.stringify(existingPosts)
+				);
+				setBookmarked(true);
+				console.log(`Added post with ID ${postId} to bookmarks.`);
+			}
+			setJournalReload(true);
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
+		}
+	};
 
 	async function editPost() {
 		let updatedData = post.data;
@@ -360,9 +419,27 @@ export const Post = (post) => {
 	}
 
 	// post setup
-	const setUp = async () => {
+	const setUp = async (postId) => {
 		let uid = await AsyncStorage.getItem('user');
 		setMe(uid);
+
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+			let keys = [];
+
+			existingPosts.forEach((post) => {
+				keys.push(post.id);
+			});
+
+			if (keys.includes(postId)) {
+				setBookmarked(true);
+			}
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
+		}
 
 		await populateComments(post.comments);
 	};
@@ -397,12 +474,14 @@ export const Post = (post) => {
 			let commentId = generateId();
 			let timestamp = Date.now();
 			let displayName = await AsyncStorage.getItem('name');
+			let pfp = await AsyncStorage.getItem('profile_img');
 			let comment = {
 				content: newComment,
 				edited: false,
 				timestamp: timestamp,
 				user: me,
-				username: displayName
+				username: displayName,
+				profile_img: pfp
 			};
 
 			//write data
@@ -432,7 +511,7 @@ export const Post = (post) => {
 	};
 
 	useEffect(() => {
-		setUp();
+		setUp(post.id);
 	}, []);
 
 	return (
@@ -456,13 +535,17 @@ export const Post = (post) => {
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
-								<StyledImage
-									className={`${
-										post.owned ? 'hidden' : 'flex'
-									} rounded-lg`}
-									style={{ width: 44, height: 44 }}
+								<CachedImage
+									cacheKey={shorthash.unique(post.img)}
+									style={{
+										width: 44,
+										height: 44,
+										borderRadius: 8,
+										display: post.owned ? 'none' : 'flex'
+									}}
 									source={{
-										uri: post.img
+										uri: post.img,
+										expiresIn: 2_628_288
 									}}
 								/>
 								<StyledView
@@ -543,102 +626,78 @@ export const Post = (post) => {
 						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
 							{post.owned || post.ownedToolBar ? (
 								<>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPress={deletePost}
-									>
-										<StyledIcon
-											name={'trash-outline'}
-											size={29}
-											color='#CC2500'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'cog-outline'}
-											size={29}
-											color='#F9A826'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
+									<ToolbarButton
+										icon={'trash-outline'}
+										color={'#CC2500'}
+										size={29}
+										onPress={() => {
+											deletePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={'cog-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {}}
+									/>
+									<ToolbarButton
+										icon={'create-outline'}
+										size={29}
+										color='#00A55E'
 										onPress={() => {
 											setBottomSheetType('Edit');
-											Haptics.impactAsync(
-												Haptics.ImpactFeedbackStyle
-													.Light
-											);
 											handlePresentModalPress();
 										}}
-									>
-										<StyledIcon
-											name={'create-outline'}
-											size={29}
-											color='#00A55E'
-										/>
-									</StyledOpacity>
+									/>
 								</>
 							) : (
 								<>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'flag-outline'}
-											size={29}
-											color='#CC2500'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-										onPressOut={() => hidePost(post.id)}
-									>
-										<StyledIcon
-											name={'eye-off-outline'}
-											size={29}
-											color='#F9A826'
-										/>
-									</StyledOpacity>
-									<StyledOpacity
-										className='flex items-center justify-center w-[30px] h-[30px]'
-										activeOpacity={0.4}
-									>
-										<StyledIcon
-											name={'bookmark-outline'}
-											size={29}
-											color='#00A55E'
-										/>
-									</StyledOpacity>
+									<ToolbarButton
+										icon={'flag-outline'}
+										size={29}
+										color='#CC2500'
+										onPress={() => {}}
+									/>
+									<ToolbarButton
+										icon={'eye-off-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {
+											hidePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={
+											bookmarked
+												? 'bookmark'
+												: 'bookmark-outline'
+										}
+										size={29}
+										color='#00A55E'
+										onPress={() => {
+											toggleBookmark(post.id, post.data);
+										}}
+									/>
 								</>
 							)}
-							<StyledOpacity
-								className='flex items-center justify-center w-[30px] h-[30px]'
-								activeOpacity={0.4}
+							<ToolbarButton
+								icon={'chatbubble-outline'}
+								size={29}
+								color='#5946B2'
 								onPress={() => {
 									setBottomSheetType('Comments');
-									Haptics.impactAsync(
-										Haptics.ImpactFeedbackStyle.Light
-									);
 									handlePresentModalPress();
 								}}
-							>
-								<StyledIcon
-									name={'chatbubble-outline'}
-									size={29}
-									color='#5946B2'
-								/>
-							</StyledOpacity>
+							/>
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
-								onPress={() => {}}
+								onPress={() => {
+									Haptics.impactAsync(
+										Haptics.ImpactFeedbackStyle.Light
+									);
+									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
+								}}
 							/>
 						</StyledView>
 					</StyledView>

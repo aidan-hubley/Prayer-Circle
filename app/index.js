@@ -6,7 +6,6 @@ import { Button } from '../components/Buttons';
 import { signOut } from 'firebase/auth';
 import { auth, router } from '../backend/config';
 import { userLoggedIn } from '../backend/firebaseFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const StyledSafeArea = styled(SafeAreaView);

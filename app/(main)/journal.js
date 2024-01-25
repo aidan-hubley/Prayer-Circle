@@ -1,266 +1,205 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Stack } from 'expo-router';
 import {
 	Text,
 	View,
 	StatusBar,
 	ScrollView,
-	TouchableOpacity
+	TouchableOpacity,
+	FlatList,
+	Dimensions
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from '../../backend/config';
+import { PostTypeSelector } from '../../components/PostTypeSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Post } from '../../components/Post';
+import { useStore } from '../global';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledScrollView = styled(ScrollView);
-const StyledOpacity = styled(TouchableOpacity);
 
 export default function JournalPage() {
+	const typeRef = useRef();
+	const [prayers, setPrayers] = useState([]);
+	const [praises, setPraises] = useState([]);
+	const [events, setEvents] = useState([]);
+	const [page, setPage] = useState('prayers');
+	const [journalReload, setJournalReload] = useStore((state) => [
+		state.journalReload,
+		state.setJournalReload
+	]);
+
 	let insets = useSafeAreaInsets();
+	const vh = Dimensions.get('window').height;
+
+	const setUp = async () => {
+		setPrayers([]);
+		setPraises([]);
+		setEvents([]);
+		const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+		const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+		existingPosts.forEach((post) => {
+			if (post.data.type === 'request') {
+				setPrayers((prev) => [...prev, post]);
+			}
+			if (post.data.type === 'praise') {
+				setPraises((prev) => [...prev, post]);
+			}
+			if (post.data.type === 'event') {
+				setEvents((prev) => [...prev, post]);
+			}
+		});
+	};
+
+	useEffect(() => {
+		setUp();
+	}, []);
+	useEffect(() => {
+		if (journalReload) {
+			setUp();
+			setJournalReload(false);
+		}
+	}, [journalReload]);
+
 	return (
-		<StyledView className='bg-offblack h-screen w-screen'>
-			<StyledScrollView className='px-[15px]'>
-				<StyledView
-					className='w-screen'
-					style={{ height: insets.top + 100 }}
-				></StyledView>
-				<StyledOpacity
-					className='w-full max-w-[500px] items-center rounded-[20px] bg-grey mb-[20px]'
-					onPress={() => {
-						router.push({
-							pathname: `/detailedJournal`,
-							params: { title: 'Events' }
-						});
+		<StyledView className='bg-offblack h-screen w-screen flex-1'>
+			<StyledView
+				className='w-screen'
+				style={{ height: insets.top + 60 }}
+			></StyledView>
+			<StyledView
+				// style={{bottom:	insets.bottom < 10 ? insets.bottom + 75 : insets.bottom + 95}}
+				className='px-[20px]'
+			>
+				<PostTypeSelector
+					ref={typeRef}
+					onSelect={(index) => {
+						if (index === 0) setPage('praises');
+						if (index === 1) setPage('prayers');
+						if (index === 2) setPage('events');
 					}}
-				>
-					<StyledText className='w-full text-3xl font-bold text-center text-offwhite pt-1'>
-						Events
-					</StyledText>
-					<StyledView className='flex flex-col w-full justify-start items-center rounded-b-[20px] pt-[4px] pb-[10px]'>
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'calendar'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Event Title
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='font-[600] text-[18px] text-white'>
-									Date
-								</StyledText>
-								<StyledText className='text-white text-right'>
-									Time
-								</StyledText>
-							</StyledView>
-						</StyledView>
-
-						<StyledView className='w-[90%] border-t border-outline mt-[5px] mb-[3px]'></StyledView>
-
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'calendar'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Event Title
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='font-[600] text-[18px] text-white'>
-									Date
-								</StyledText>
-								<StyledText className='text-white text-right'>
-									Time
-								</StyledText>
-							</StyledView>
-						</StyledView>
-					</StyledView>
-
-					{/* Copy lines 83-112 for every event saved to journal, either manually or with a repeating backend element*/}
-				</StyledOpacity>
-				<StyledOpacity
-					className='w-full max-w-[500px] items-center rounded-[20px] bg-grey mb-[20px]'
-					onPress={() => {
-						router.push({
-							pathname: `/detailedJournal`,
-							params: { title: 'Prayer Requests' }
-						});
+				/>
+			</StyledView>
+			<StyledView className='flex-1'>
+				<FlatList
+					data={prayers}
+					style={{
+						display: page === 'prayers' ? 'flex' : 'none',
+						paddingHorizontal: 15,
+						flexGrow: 1
 					}}
-				>
-					<StyledText className='w-full text-3xl font-bold text-center text-offwhite pt-1'>
-						Prayer Requests
-					</StyledText>
-					<StyledView className='flex flex-col w-full justify-start items-center rounded-b-[20px] pt-[4px] pb-[10px]'>
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'hand-left'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Prayer #1
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='text-[13px] text-white'>
-									17h
-								</StyledText>
-							</StyledView>
+					renderItem={({ item }) => (
+						<Post
+							user={item.data.name}
+							img={item.data.profile_img}
+							title={item.data.title}
+							timestamp={`${item.data.timestamp}`}
+							content={item.data.text}
+							icon={item.data.type}
+							id={item.id}
+							edited={item.data.edited}
+							comments={item.data.comments}
+							data={item.data}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+					ListEmptyComponent={() => (
+						<StyledView
+							className='w-full justify-center items-center text-center'
+							style={{
+								height: vh - (insets.top + insets.bottom + 200)
+							}}
+						>
+							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
+								No Prayer Requests Saved!
+							</StyledText>
+							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
+								Save prayer requests on your feed to view them
+								here!
+							</StyledText>
 						</StyledView>
-
-						<StyledView className='w-[90%] border-t border-outline mt-[5px] mb-[3px]'></StyledView>
-
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'hand-left'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Request #2
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='text-[13px] text-white'>
-									17h
-								</StyledText>
-							</StyledView>
-						</StyledView>
-					</StyledView>
-				</StyledOpacity>
-
-				<StyledOpacity
-					className='w-full max-w-[500px] items-center rounded-[20px] bg-grey mb-[20px]'
-					onPress={() => {
-						router.push({
-							pathname: `/detailedJournal`,
-							params: { title: 'Praise' }
-						});
+					)}
+				/>
+				<FlatList
+					data={praises}
+					style={{
+						display: page === 'praises' ? 'flex' : 'none',
+						paddingHorizontal: 15,
+						flexGrow: 1
 					}}
-				>
-					<StyledText className='w-full text-3xl font-bold text-center text-offwhite pt-1'>
-						Praise
-					</StyledText>
-					<StyledView className='flex flex-col w-full justify-start items-center rounded-b-[20px] pt-[4px] pb-[10px]'>
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'megaphone'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Praise #1
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='text-[13px] text-white'>
-									17h
-								</StyledText>
-							</StyledView>
+					renderItem={({ item }) => (
+						<Post
+							user={item.data.name}
+							img={item.data.profile_img}
+							title={item.data.title}
+							timestamp={`${item.data.timestamp}`}
+							content={item.data.text}
+							icon={item.data.type}
+							id={item.id}
+							edited={item.data.edited}
+							comments={item.data.comments}
+							data={item.data}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+					ListEmptyComponent={() => (
+						<StyledView
+							className='w-full justify-center items-center text-center'
+							style={{
+								height: vh - (insets.top + insets.bottom + 200)
+							}}
+						>
+							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
+								No Praises Saved!
+							</StyledText>
+							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
+								Save praises on your feed to view them here!
+							</StyledText>
 						</StyledView>
-
-						<StyledView className='w-[90%] border-t border-outline mt-[5px] mb-[3px]'></StyledView>
-
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'megaphone'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Praise #2
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='text-[13px] text-white'>
-									17h
-								</StyledText>
-							</StyledView>
+					)}
+				/>
+				<FlatList
+					data={events}
+					style={{
+						display: page === 'events' ? 'flex' : 'none',
+						paddingHorizontal: 15,
+						flexGrow: 1
+					}}
+					renderItem={({ item }) => (
+						<Post
+							user={item.data.name}
+							img={item.data.profile_img}
+							title={item.data.title}
+							timestamp={`${item.data.timestamp}`}
+							content={item.data.text}
+							icon={item.data.type}
+							id={item.id}
+							edited={item.data.edited}
+							comments={item.data.comments}
+							data={item.data}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+					ListEmptyComponent={() => (
+						<StyledView
+							className='w-full justify-center items-center text-center'
+							style={{
+								height: vh - (insets.top + insets.bottom + 200)
+							}}
+						>
+							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
+								No Events Saved!
+							</StyledText>
+							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
+								Save events on your feed to view them here!
+							</StyledText>
 						</StyledView>
-
-						<StyledView className='w-[90%] border-t border-outline mt-[5px] mb-[3px]'></StyledView>
-
-						<StyledView className='w-[90%] flex flex-row justify-between'>
-							<StyledView className=' flex flex-row'>
-								<StyledView className=' items-center justify-center'>
-									<Ionicons
-										name={'megaphone'}
-										size={24}
-										color='white'
-									/>
-								</StyledView>
-								<StyledView className='ml-[8px]'>
-									<StyledText className='font-bold text-[18px] text-white'>
-										Praise #3
-									</StyledText>
-									<StyledText className='text-white text-[12px]'>
-										Person who posted
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className=' flex flex-col items-end justify-center'>
-								<StyledText className='text-[13px] text-white'>
-									17h
-								</StyledText>
-							</StyledView>
-						</StyledView>
-					</StyledView>
-				</StyledOpacity>
-			</StyledScrollView>
+					)}
+				/>
+			</StyledView>
 		</StyledView>
 	);
 }
