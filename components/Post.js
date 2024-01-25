@@ -178,7 +178,11 @@ export const Post = (post) => {
 							await postComment();
 						}}
 					>
-						<StyledIcon name='send' size={30} className='text-green' />
+						<StyledIcon
+							name='send'
+							size={30}
+							className='text-green'
+						/>
 					</StyledOpacity>
 				</StyledView>
 				<BottomSheetFlatList
@@ -385,7 +389,6 @@ export const Post = (post) => {
 					JSON.stringify(existingPosts)
 				);
 				setBookmarked(false);
-				console.log(`Removed post with ID ${postId} from bookmarks.`);
 			} else {
 				// Post doesn't exist, add it
 				const newPost = { id: postId, data: postData };
@@ -395,7 +398,6 @@ export const Post = (post) => {
 					JSON.stringify(existingPosts)
 				);
 				setBookmarked(true);
-				console.log(`Added post with ID ${postId} to bookmarks.`);
 			}
 			setJournalReload(true);
 		} catch (error) {

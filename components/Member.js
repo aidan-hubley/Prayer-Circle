@@ -1,4 +1,9 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, {
+	useState,
+	forwardRef,
+	useImperativeHandle,
+	useRef
+} from 'react';
 import {
 	Text,
 	View,
@@ -22,6 +27,7 @@ const StyledIcon = styled(Ionicons);
 // );
 
 function Member({ img, name, username, role, press, last }) {
+	permissionRef = useRef(null);
 	return (
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
@@ -46,7 +52,7 @@ function Member({ img, name, username, role, press, last }) {
 				</StyledView>
 			</StyledView>
 			<StyledView className='absolute right-2'>
-				<MemberPermissionSelector />
+				<MemberPermissionSelector role={role} ref={permissionRef} />
 			</StyledView>
 		</StyledView>
 	);

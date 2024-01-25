@@ -54,56 +54,56 @@ export default function Page() {
 			key: '1',
 			name: 'Josh Philips',
 			username: 'JoshuaP.149134',
-			role: 'own',
+			role: 'owner',
 			img: Trevor
 		},
 		{
 			key: '2',
 			name: 'Alex Muresan',
 			username: 'muresanCoder.20',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '3',
 			name: 'Nason Allen',
 			username: 'AllenNasin0987654',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '4',
 			name: 'Aidan Hubley',
 			username: 'HubleyPraying',
-			role: 'ban',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '5',
 			name: 'Trevor Bunch',
 			username: 'BunchTrevoraccount',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '6',
 			name: 'Another Account',
 			username: 'ExampleAccount1',
-			role: 'sus',
+			role: 'restricted',
 			img: Trevor
 		},
 		{
 			key: '7',
 			name: 'Another Account',
 			username: 'ExampleAccount2',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '8',
 			name: 'Another Account',
 			username: 'ExampleAccount3',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		}
 	];

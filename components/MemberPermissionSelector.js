@@ -2,7 +2,8 @@ import React, {
 	useState,
 	useRef,
 	forwardRef,
-	useImperativeHandle
+	useImperativeHandle,
+	useEffect
 } from 'react';
 import {
 	View,
@@ -23,7 +24,9 @@ const StyledText = styled(Text);
 const MemberPermissionSelector = forwardRef((props, ref) => {
 	const animationValue = useRef(new Animated.Value(0)).current;
 	const [open, setOpen] = useState(false);
-	const [permission, setPermission] = useState('member');
+	const [permission, setPermission] = useState('');
+
+	/* TODO: Implement DB update on permission change */
 
 	const widthInterpolation = animationValue.interpolate({
 		inputRange: [0, 1],
@@ -31,7 +34,7 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	});
 	const opacityInterpolation = animationValue.interpolate({
 		inputRange: [0, 0.2, 1],
-		outputRange: [0, 0.5, 1]
+		outputRange: [0, 0.8, 1]
 	});
 	const iconOpacityInterpolation = animationValue.interpolate({
 		inputRange: [0, 0.8, 1],
@@ -44,10 +47,11 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 
 	const iconContainerStyle = {
 		width: 38,
-		height: 38,
+		height: 31,
 		opacity: 1,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginVertical: 3.5
 	};
 
 	const toggleOpen = () => {
@@ -56,18 +60,16 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 			duration: 350,
 			useNativeDriver: false
 		}).start();
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		setOpen(!open);
 	};
 
-	const handlePress = (permission) => {
-		/*  setPermission(permission); */
-		Animated.timing(animationValue, {
-			toValue: permission === 'member' ? 0 : 1,
-			duration: 200,
-			useNativeDriver: false
-		}).start();
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-	};
+	useImperativeHandle(ref, () => ({
+		role: permission
+	}));
+	useEffect(() => {
+		setPermission(props.role);
+	}, []);
 
 	return (
 		<StyledView className={'justify-center'}>
@@ -77,7 +79,33 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 					'w-[38px] h-[38px] absolute right-0 justify-center items-center '
 				}
 			>
-				<Ionicons name='key' size={30} color={'#fff'} />
+				{permission === 'owner' && (
+					<Ionicons name={'key'} size={30} color={'#5946B2'} />
+				)}
+				{permission === 'admin' && (
+					<Ionicons name={'shield'} size={30} color={'#fff'} />
+				)}
+				{permission === 'member' && (
+					<Ionicons
+						name={'checkmark-circle'}
+						size={30}
+						color={'#00A55E'}
+					/>
+				)}
+				{permission === 'restricted' && (
+					<Ionicons
+						name={'remove-circle'}
+						size={30}
+						color={'#F9A826'}
+					/>
+				)}
+				{permission === 'banned' && (
+					<Ionicons
+						name={'close-circle'}
+						size={30}
+						color={'#CC2500'}
+					/>
+				)}
 			</Animated.View>
 			<Animated.View
 				style={[
@@ -94,29 +122,38 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 						backgroundColor: '#1D1D1D',
 						borderRadius: 50,
 						borderWidth: 1,
-						borderColor: '#FFFBFC'
+						borderColor: '#3D3D3D'
 					}
 				]}
 			>
 				<TouchableOpacity
 					onPress={() => {
+						/* setPermission('owner'); */
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
 				>
 					<Ionicons name='key' size={30} color='#5946B2' />
+					{permission === 'owner' && (
+						<StyledView className='w-[24px] h-[1px] bg-offwhite' />
+					)}
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
+						setPermission('admin');
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
 				>
 					<Ionicons name='shield' size={30} color='white' />
+					{permission === 'admin' && (
+						<StyledView className='w-[24px] h-[1px] bg-offwhite' />
+					)}
 				</TouchableOpacity>
-				<StyledView className='h-[70%] mx-[3px] border-r border-r-offwhite' />
+				<StyledView className='h-[70%] mx-[3px] border-r border-r-outline' />
 				<TouchableOpacity
 					onPress={() => {
+						setPermission('member');
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
@@ -126,24 +163,35 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 						size={30}
 						color='#00A55E'
 					/>
+					{permission === 'member' && (
+						<StyledView className='w-[24px] h-[1px] bg-offwhite' />
+					)}
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
 						toggleOpen();
+						setPermission('restricted');
 					}}
 					style={iconContainerStyle}
 				>
 					<Ionicons name='remove-circle' size={30} color='#F9A826' />
+					{permission === 'restricted' && (
+						<StyledView className='w-[24px] h-[1px] bg-offwhite' />
+					)}
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
+						setPermission('banned');
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
 				>
 					<Ionicons name='close-circle' size={30} color='#CC2500' />
+					{permission === 'banned' && (
+						<StyledView className='w-[24px] h-[1px] bg-offwhite' />
+					)}
 				</TouchableOpacity>
-				<StyledView className='h-[70%] w-[1px] mx-[3px] border-l border-l-offwhite' />
+				<StyledView className='h-[70%] w-[1px] mx-[3px] border-l border-l-outline' />
 				<TouchableOpacity
 					onPress={() => {
 						toggleOpen();
