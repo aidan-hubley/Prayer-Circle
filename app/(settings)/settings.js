@@ -271,18 +271,17 @@ export default function Page() {
                                             <Text className="mr-3 text-lg text-offwhite">
                                                 Terms of Service
                                             </Text>
-                                            <StyledView className='flex flex-row'>
-                                                <Button // TODO: use component
-                                                    icon='eye'
-                                                    iconColor={'#FFFBFC'}                                        
-                                                    width={'w-[65px]'}
-                                                    height={'h-[35px]'}
-                                                    bgColor={'bg-transparent'}
-                                                    textColor={'text-offwhite'}
-                                                    borderColor={'border-offwhite'}
-                                                    btnStyles='border-2'
-                                                ></Button>
-                                            </StyledView>
+                                            <Button // TODO: use component
+                                                icon='document'
+                                                iconColor={'#FFFBFC'}
+                                                iconSize={26}                                        
+                                                width={'w-[65px]'}
+                                                height={'h-[35px]'}
+                                                bgColor={'bg-transparent'}
+                                                textColor={'text-offwhite'}
+                                                borderColor={'border-offwhite'}
+                                                btnStyles='border-2'
+                                            ></Button>
                                         </View>
                                     </View>
                                     <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
@@ -350,9 +349,22 @@ export default function Page() {
                                         <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                             <Text className="mr-3 text-lg text-offwhite">
                                                 All Notifications
-                                            </Text>                                            
-                                        <Toggle />
-                                        {/* TODO: More notification settings options */}
+                                            </Text>
+                                             <StyledView className='flex-row'>
+                                                <StyledIcon name="notifications-outline" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>                                         
+                                                <Toggle />                       
+                                            </StyledView>
+                                        </View>
+                                    </View>
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+                                            <Text className="mr-3 text-lg text-offwhite">
+                                                Haptics
+                                            </Text>   
+                                            <StyledView className='flex-row'>
+                                                <StyledIcon name="radio-outline" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>                                         
+                                                <Toggle />                       
+                                            </StyledView>
                                         </View>
                                     </View>
                                     <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
@@ -362,17 +374,16 @@ export default function Page() {
                                                 <Text className="text-lg text-offwhite pr-1">
                                                     Presence Timers
                                                 </Text>
-                                                <StyledView className="absolute right-1">
-                                                    <Button
-                                                        icon='list'
-                                                        width={'w-[30px]'}
-                                                        height={'h-[30px]'}
-                                                        bgColor={'bg-transparent'}
-                                                        iconSize={30}
-                                                        iconColor={'#FFFBFC'}                                        
-                                                        press={handleTimerButtonPress}
-                                                    ></Button>
-                                                </StyledView>
+                                                <Button
+                                                    icon='list'
+                                                    width={'w-[30px]'}
+                                                    height={'h-[30px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    iconSize={30}
+                                                    iconColor={'#FFFBFC'}              
+                                                    btnStyles='absolute right-0'                          
+                                                    press={handleTimerButtonPress}
+                                                ></Button>
                                             </StyledView>
                                             <StyledView className="w-full flex-row justify-between">
                                                 <StyledView className="flex-row">
@@ -383,10 +394,12 @@ export default function Page() {
                                                 <StyledView className="flex-row">
                                                     <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
                                                     <Toggle onToggleStateChange={handleToggleWeekly} />
+                                                    {/* toggle={true} if local storage is true */}
                                                 </StyledView>
                                                 <StyledView className="flex-row">
                                                     <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
                                                     <Toggle onToggleStateChange={handleToggleInfinite} />
+                                                    {/* toggle={true} if local storage is true */}
                                                 </StyledView>
                                             </StyledView>
                                         </View>
