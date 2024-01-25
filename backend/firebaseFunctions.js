@@ -273,3 +273,12 @@ export async function uploadImage(path, uri) {
 	const downloadURL = await getDownloadURL(storageRef);
 	return downloadURL;
 }
+
+export async function addUserToQueue(circle) {
+	const UID = await getUIDFromStorage();
+	writeData(
+		`prayer_circle/circles/${circle}/usersAwaitingEntry/${UID}`,
+		true,
+		true
+	);
+}
