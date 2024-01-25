@@ -1,4 +1,9 @@
-import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, {
+	useState,
+	forwardRef,
+	useImperativeHandle,
+	useRef
+} from 'react';
 import {
 	Text,
 	View,
@@ -9,6 +14,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { MemberPermissionSelector } from './MemberPermissionSelector';
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -69,6 +75,8 @@ function Member({ img, name, username, role, last }) {
 		opacity: openRolePicker ? 0 : 1,
 	};
 
+function Member({ img, name, username, role, press, last }) {
+	permissionRef = useRef(null);
 	return (
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
@@ -90,47 +98,8 @@ function Member({ img, name, username, role, last }) {
 					</StyledText>
 				</StyledView>
 			</StyledView>
-			<StyledView className='absolute right-0'>
-				<StyledAnimatedView style={roleSelectorStyle} className='flex-row bg-grey border-outline border-2 rounded-3xl mr-[8px] py-1 gap-x-2 bottom-1'>					
-					<StyledPressable onPress={() => toggleRole("own")}>
-						<StyledIcon name='key' size={30} color='#5946B2'/>
-						{role === 'own' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
-					</StyledPressable>
-					<StyledPressable onPress={() => toggleRole("mod")}>
-						<StyledIcon name='shield' size={30} color='#FFFBFC'/>
-						{role === 'mod' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
-					</StyledPressable>
-					<StyledView className='w-[2px] h-8 bg-outline rounded-full'></StyledView>
-					<StyledPressable onPress={() => toggleRole("mem")}>
-						<StyledIcon name='checkmark-circle' size={30} color='#00A55E' />
-						{role === 'mem' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
-					</StyledPressable>
-					<StyledPressable onPress={() => toggleRole("sus")}>
-						<StyledIcon name='remove-circle' size={30} color='#F9A826' />
-						{role === 'sus' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
-					</StyledPressable>
-					<StyledPressable onPress={() => toggleRole("ban")}>
-						<StyledIcon name='close-circle' size={30} color='#CC2500' />
-						{role === 'ban' ? (<StyledView className='self-center w-[20px] h-[2px] bg-white rounded-full'></StyledView>) : null}
-					</StyledPressable>
-					<StyledView className='w-[2px] h-8 bg-outline rounded-full'></StyledView>
-					<StyledPressable className="relative right-2" onPress={() => closeRoleSelector()}>
-						<StyledIcon name='chevron-forward' size={30} color='#FFFBFC' />
-					</StyledPressable>
-				</StyledAnimatedView>
-				<StyledPressable style={roleIconStyle} className='absolute h-100' onPress={() => openRoleSelector(username)}>
-					{role === 'own' || newrole === 'own' ? (
-							<StyledIcon name='key' size={30} color='#5946B2' />
-					) : role === 'mod' || newrole === 'mod' ? (
-							<StyledIcon name='shield' size={30} color='#FFFBFC' />
-					) : role === 'mem' || newrole === 'mem' ? (
-							<StyledIcon name='checkmark-circle' size={30} color='#00A55E' />
-					) : role === 'sus' || newrole === 'sus' ? (
-							<StyledIcon name='remove-circle' size={30} color='#F9A826' />
-					) : role === 'ban' || newrole === 'ban' ? (
-							<StyledIcon name='close-circle' size={30} color='#CC2500' />
-					) : null}
-				</StyledPressable>
+			<StyledView className='absolute right-2'>
+				<MemberPermissionSelector role={role} ref={permissionRef} />
 			</StyledView>
 		</StyledView>
 	);
