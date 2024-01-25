@@ -244,8 +244,7 @@ export default function Page() {
                         ListHeaderComponent={
                             <>
                                 <StyledView className='w-full flex items-center'>
-                                    <View className="relative pt-[100px]">
-                                    </View>                                
+                                    <View className="relative pt-[100px]"></View>                                
                                     <View className="flex-row items-center mt-5 px-5">
                                         <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                             <Text className="mr-3 text-lg text-offwhite">
@@ -423,8 +422,15 @@ export default function Page() {
                                             <Text className="mr-3 text-lg text-offwhite">
                                                 Clear Cache
                                             </Text>
-                                        <Toggle onColor={'purple'} />
-                                        {/* TODO: More notification settings options */}
+                                        <Button // TODO: add modal + backend
+                                            title='Name'
+                                            width={'w-[80px]'}
+                                            height={'h-[35px]'}
+                                            bgColor={'bg-transparent'}
+                                            textColor={'text-offwhite'}
+                                            borderColor={'border-offwhite'}
+                                            btnStyles='mr-3 border-2'
+                                        ></Button>
                                         </View>
                                     </View>
                                     <View className="relative pb-[75px]">
@@ -452,6 +458,14 @@ export default function Page() {
                         </StyledText>
                         
                     </StyledView>
+                    <StyledGradient // I want this to be at the bottom of the screen
+                        pointerEvents='none'
+                        start={{ x: 0, y: 0.1 }}
+                        end={{ x: 0, y: 1 }}
+                        style={{ height: 100, bottom: 0 }}
+                        className='absolute w-screen rotate-180'
+                        colors={['#121212ee', 'transparent']}
+                    />
                 </StyledView>
                 
                 <StyledView style={{bottom: insets.bottom}} className='absolute w-screen flex flex-row px-[15px] justify-between'>
