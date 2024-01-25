@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
+    FlatList,
     Text,
     View,
     TouchableOpacity,
@@ -19,6 +20,7 @@ import { Toggle } from '../../components/Toggle';
 import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, auth } from '../../backend/config';
 import { passwordValidation } from '../../backend/functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,6 +37,7 @@ const StyledSafeArea = styled(SafeAreaView);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledInput = styled(TextInput);
 const StyledAnimatedView = styled(Animated.View);
+const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -221,189 +224,234 @@ export default function Page() {
         }
     };
 
-    const handleToggleChange = (newState) => {
-        console.log('Toggle state is now: ', newState);
-        // Here you can add the code to perform actions based on the new state
+    const handleToggleDaily = (newState) => {
+        console.log('Daily toggle state is now: ', newState);
+    };
+
+    const handleToggleWeekly = (newState) => {
+        console.log('Weekly toggle state is now: ', newState);
+    };
+
+    const handleToggleInfinite = (newState) => {
+        console.log('Infinite toggle state is now: ', newState);
     };
 
     return (
          <BottomSheetModalProvider>
             <StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
                 <StyledView className='flex-1 items-center mt-45 pt-10 py-5'>
-                    <StyledText className='text-3xl text-offwhite text-center tracking-widest leading-10'>
-                        Settings
-                    </StyledText>
-                        <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                <Text className="mr-3 text-lg text-offwhite">
-                                    Terms of Service
-                                </Text>
-                                <StyledView className='flex flex-row'>
-                                    <Button // TODO: use component
-                                        icon='eye'
-                                        iconColor={'#FFFBFC'}                                        
-                                        width={'w-[65px]'}
-                                        height={'h-[35px]'}
-                                        bgColor={'bg-transparent'}
-                                        textColor={'text-offwhite'}
-                                        borderColor={'border-offwhite'}
-                                        btnStyles='border-2'
-                                    ></Button>
+                    <FlatList
+                        ListHeaderComponent={
+                            <>
+                                <StyledView className='w-full flex items-center'>
+                                    <View className="relative pt-[100px]">
+                                    </View>                                
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+                                            <Text className="mr-3 text-lg text-offwhite">
+                                                Terms of Service
+                                            </Text>
+                                            <StyledView className='flex flex-row'>
+                                                <Button // TODO: use component
+                                                    icon='eye'
+                                                    iconColor={'#FFFBFC'}                                        
+                                                    width={'w-[65px]'}
+                                                    height={'h-[35px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    textColor={'text-offwhite'}
+                                                    borderColor={'border-offwhite'}
+                                                    btnStyles='border-2'
+                                                ></Button>
+                                            </StyledView>
+                                        </View>
+                                    </View>
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+                                            <Text className="mr-3 text-lg text-offwhite">
+                                                Update Account
+                                            </Text>
+                                            <StyledView className='flex flex-row'>
+                                                <Button // TODO: add modal + backend
+                                                    title='Name'
+                                                    width={'w-[80px]'}
+                                                    height={'h-[35px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    textColor={'text-offwhite'}
+                                                    borderColor={'border-offwhite'}
+                                                    btnStyles='mr-3 border-2'
+                                                ></Button>
+                                                <Button // TODO: add modal + backend
+                                                    icon='camera'
+                                                    width={'w-[65px]'}
+                                                    height={'h-[35px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    borderColor={'border-offwhite'}
+                                                    btnStyles='border-2'
+                                                    iconSize={26}
+                                                    iconColor={'#FFFBFC'}
+                                                ></Button>
+                                            </StyledView>
+                                        </View>
+                                    </View>
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+                                            <Text className="mr-3 text-lg text-offwhite">
+                                                Change Password
+                                            </Text>
+                                            <StyledView className='flex flex-row'>
+                                                <Button
+                                                    icon='text'
+                                                    width={'w-[80px]'}
+                                                    height={'h-[35px]'}
+                                                    iconSize={26}
+                                                    press={handlePasswordModalPress}
+                                                    bgColor={'bg-transparent'}
+                                                    borderColor={'border-offwhite'}
+                                                    iconColor={'#FFFBFC'}
+                                                    btnStyles='mr-3 border-2'
+                                                ></Button>
+                                                <Button
+                                                    icon='mail'
+                                                    width={'w-[65px]'}
+                                                    height={'h-[35px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    borderColor={'border-offwhite'}
+                                                    iconSize={26}
+                                                    iconColor={'#FFFBFC'}
+                                                    btnStyles='border-2'
+                                                    press={handlePasswordReset}
+                                                ></Button>
+                                            </StyledView>
+                                        </View>
+                                    </View>   
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+                                            <Text className="mr-3 text-lg text-offwhite">
+                                                All Notifications
+                                            </Text>
+                                        <Toggle onColor={'purple'} />
+                                        {/* TODO: More notification settings options */}
+                                        </View>
+                                    </View>
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                                    <View className="flex-row mt-5 px-5">
+                                        <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
+                                            <StyledView className="flex-row pb-5 w-full">
+                                                <Text className="text-lg text-offwhite pr-1">
+                                                    Presence Timers
+                                                </Text>
+                                                <StyledView className="absolute right-1">
+                                                    <Button
+                                                        icon='list'
+                                                        width={'w-[30px]'}
+                                                        height={'h-[30px]'}
+                                                        bgColor={'bg-transparent'}
+                                                        iconSize={30}
+                                                        iconColor={'#FFFBFC'}                                        
+                                                        press={handleTimerButtonPress}
+                                                    ></Button>
+                                                </StyledView>
+                                            </StyledView>
+                                            <StyledView className="w-full flex-row justify-between">
+                                                <StyledView className="flex-row">
+                                                    <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
+                                                    <Toggle onToggleStateChange={handleToggleDaily} /> 
+                                                    {/* toggle={true} if local storage is true */}
+                                                </StyledView>
+                                                <StyledView className="flex-row">
+                                                    <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
+                                                    <Toggle onToggleStateChange={handleToggleWeekly} />
+                                                </StyledView>
+                                                <StyledView className="flex-row">
+                                                    <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
+                                                    <Toggle onToggleStateChange={handleToggleInfinite} />
+                                                </StyledView>
+                                            </StyledView>
+                                        </View>
+                                    </View>      
+                                    <View className="flex-row mt-5 px-5">
+                                        <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
+                                            <StyledView className="flex-row pb-5 w-full">
+                                                <Text className="text-lg text-offwhite pr-1">
+                                                    Presence Time Reminder
+                                                </Text>
+                                                <StyledView className="absolute right-0">
+                                                    <Button
+                                                        icon='information-circle-outline'
+                                                        width={'w-[30px]'}
+                                                        height={'h-[30px]'}
+                                                        bgColor={'bg-transparent'}
+                                                        iconSize={30}
+                                                        iconColor={'#FFFBFC'}                                        
+                                                        press={handleTimerButtonPress}
+                                                    ></Button>
+                                                </StyledView>
+                                            </StyledView>                                
+                                            <StyledView className="w-[98%] flex-row justify-between">
+                                                <StyledAnimatedView
+                                                    style={highlightPosition}
+                                                    className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[45px] h-[30px]'
+                                                ></StyledAnimatedView>
+                                                <StyledOpacity className='' onPress={() => handleReminderPress(0)}>
+                                                    <StyledText className="text-lg text-offwhite top-[1px]">
+                                                        <StyledIcon name="remove-circle-outline" size={22} color="#FFFBFC"/>
+                                                    </StyledText>
+                                                </StyledOpacity>                            
+                                                <StyledOpacity className='' onPress={() => handleReminderPress(1)}>
+                                                    <StyledText className="text-lg text-offwhite">15m</StyledText>
+                                                </StyledOpacity>
+                                                <StyledOpacity className='' onPress={() => handleReminderPress(2)}>
+                                                    <StyledText className="text-lg text-offwhite">30m</StyledText>
+                                                </StyledOpacity>                                    
+                                                <StyledOpacity className='' onPress={() => handleReminderPress(3)}>
+                                                    <StyledText className="text-lg text-offwhite">1h</StyledText>
+                                                </StyledOpacity>                                    
+                                                <StyledOpacity className='' onPress={() => handleReminderPress(4)}>
+                                                    <StyledText className="text-lg text-offwhite">1.5h</StyledText>
+                                                </StyledOpacity>                                    
+                                                <StyledOpacity className='' onPress={() => handleReminderPress(5)}>
+                                                    <StyledText className="text-lg text-offwhite">2h</StyledText>
+                                                </StyledOpacity>                                    
+                                            </StyledView>
+                                        </View>
+                                    </View>
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+                                            <Text className="mr-3 text-lg text-offwhite">
+                                                Clear Cache
+                                            </Text>
+                                        <Toggle onColor={'purple'} />
+                                        {/* TODO: More notification settings options */}
+                                        </View>
+                                    </View>
+                                    <View className="relative pb-[75px]">
+                                    </View>
                                 </StyledView>
-                            </View>
-                        </View>
-                        <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-                        <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                <Text className="mr-3 text-lg text-offwhite">
-                                    Update Account
-                                </Text>
-                                <StyledView className='flex flex-row'>
-                                    <Button // TODO: add modal + backend
-                                        title='Name'
-                                        width={'w-[80px]'}
-                                        height={'h-[35px]'}
-                                        bgColor={'bg-transparent'}
-                                        textColor={'text-offwhite'}
-                                        borderColor={'border-offwhite'}
-                                        btnStyles='mr-3 border-2'
-                                    ></Button>
-                                    <Button // TODO: add modal + backend
-                                        icon='camera'
-                                        width={'w-[65px]'}
-                                        height={'h-[35px]'}
-                                        bgColor={'bg-transparent'}
-                                        borderColor={'border-offwhite'}
-                                        btnStyles='border-2'
-                                        iconSize={26}
-                                        iconColor={'#FFFBFC'}
-                                    ></Button>
-                                </StyledView>
-                            </View>
-                        </View>
-                        <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                <Text className="mr-3 text-lg text-offwhite">
-                                    Change Password
-                                </Text>
-                                <StyledView className='flex flex-row'>
-                                    <Button
-                                        icon='text'
-                                        width={'w-[80px]'}
-                                        height={'h-[35px]'}
-                                        iconSize={26}
-                                        press={handlePasswordModalPress}
-                                        bgColor={'bg-transparent'}
-                                        borderColor={'border-offwhite'}
-                                        iconColor={'#FFFBFC'}
-                                        btnStyles='mr-3 border-2'
-                                    ></Button>
-                                    <Button
-                                        icon='mail'
-                                        width={'w-[65px]'}
-                                        height={'h-[35px]'}
-                                        bgColor={'bg-transparent'}
-                                        borderColor={'border-offwhite'}
-                                        iconSize={26}
-                                        iconColor={'#FFFBFC'}
-                                        btnStyles='border-2'
-                                        press={handlePasswordReset}
-                                    ></Button>
-                                </StyledView>
-                            </View>
-                        </View>   
-                        <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-                        <View className="flex-row items-center mt-5 px-5">
-                            <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                <Text className="mr-3 text-lg text-offwhite">
-                                    All Notifications
-                                </Text>
-                            <Toggle onColor={'purple'} />
-                            {/* TODO: More notification settings options */}
-                            </View>
-                        </View>
-                        <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-                        <View className="flex-row mt-5 px-5">
-                            <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
-                                <StyledView className="flex-row pb-5 w-full">
-                                    <Text className="text-lg text-offwhite pr-1">
-                                        Presence Timers
-                                    </Text>
-                                    <StyledView className="absolute right-1">
-                                        <Button
-                                            icon='list'
-                                            width={'w-[30px]'}
-                                            height={'h-[30px]'}
-                                            bgColor={'bg-transparent'}
-                                            iconSize={30}
-                                            iconColor={'#FFFBFC'}                                        
-                                            press={handleTimerButtonPress}
-                                        ></Button>
-                                    </StyledView>
-                                </StyledView>
-                                <StyledView className="w-full flex-row justify-between">
-                                    <StyledView className="flex-row">
-                                        <StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
-                                        <Toggle onToggleStateChange={handleToggleChange} /> 
-                                        {/* toggle={true} if local storage is true */}
-                                    </StyledView>
-                                    <StyledView className="flex-row">
-                                        <StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
-                                        <Toggle />
-                                    </StyledView>
-                                    <StyledView className="flex-row">
-                                        <StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
-                                        <Toggle />
-                                    </StyledView>
-                                </StyledView>
-                            </View>
-                        </View>      
-                        <View className="flex-row mt-5 px-5">
-                            <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
-                                <StyledView className="flex-row pb-5 w-full">
-                                    <Text className="text-lg text-offwhite pr-1">
-                                        Presence Time Reminder
-                                    </Text>
-                                    <StyledView className="absolute right-0">
-                                        <Button
-                                            icon='information-circle-outline'
-                                            width={'w-[30px]'}
-                                            height={'h-[30px]'}
-                                            bgColor={'bg-transparent'}
-                                            iconSize={30}
-                                            iconColor={'#FFFBFC'}                                        
-                                            press={handleTimerButtonPress}
-                                        ></Button>
-                                    </StyledView>
-                                </StyledView>                                
-                                <StyledView className="w-[98%] flex-row justify-between">
-                                    <StyledAnimatedView
-                                        style={highlightPosition}
-                                        className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[45px] h-[30px]'
-                                    ></StyledAnimatedView>
-                                    <StyledOpacity className='' onPress={() => handleReminderPress(0)}>
-                                        <StyledText className="text-lg text-offwhite top-[1px]">
-                                            <StyledIcon name="remove-circle-outline" size={22} color="#FFFBFC"/>
-                                        </StyledText>
-                                    </StyledOpacity>                            
-                                    <StyledOpacity className='' onPress={() => handleReminderPress(1)}>
-                                        <StyledText className="text-lg text-offwhite">15m</StyledText>
-                                    </StyledOpacity>
-                                    <StyledOpacity className='' onPress={() => handleReminderPress(2)}>
-                                        <StyledText className="text-lg text-offwhite">30m</StyledText>
-                                    </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handleReminderPress(3)}>
-                                        <StyledText className="text-lg text-offwhite">1h</StyledText>
-                                    </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handleReminderPress(4)}>
-                                        <StyledText className="text-lg text-offwhite">1.5h</StyledText>
-                                    </StyledOpacity>                                    
-                                    <StyledOpacity className='' onPress={() => handleReminderPress(5)}>
-                                        <StyledText className="text-lg text-offwhite">2h</StyledText>
-                                    </StyledOpacity>                                    
-                                </StyledView>
-                            </View>
-                        </View>
+                            </>
+                        }
+                    />
+
+                    <StyledGradient
+                        pointerEvents='none'
+                        start={{ x: 0, y: 0.1 }}
+                        end={{ x: 0, y: 1 }}
+                        style={{ height: 120 }}
+                        className='absolute w-screen'
+                        colors={['#121212ee', 'transparent']}
+                    />
+                    <StyledView
+                        style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
+                        className='absolute w-screen flex items-center justify-between px-[15px]'
+                    >
+                        
+                        <StyledText className='text-4xl font-bold text-offwhite'>
+                            Settings
+                        </StyledText>
+                        
+                    </StyledView>
                 </StyledView>
                 
                 <StyledView style={{bottom: insets.bottom}} className='absolute w-screen flex flex-row px-[15px] justify-between'>
