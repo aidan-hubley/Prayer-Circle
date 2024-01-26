@@ -15,7 +15,11 @@ import {
 } from 'react-native-safe-area-context';
 import { Button } from '../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { readData, addUserToCircle } from '../backend/firebaseFunctions';
+import {
+	readData,
+	addUserToCircle,
+	checkIfUserIsInCircle
+} from '../backend/firebaseFunctions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -59,24 +63,24 @@ export default function Page() {
 
 	return (
 		<StyledSafeArea
-			className="bg-offblack flex-1 h-screen"
+			className='bg-offblack flex-1 h-screen'
 			style={{ paddingTop: topInset }}
 		>
 			<KeyboardAwareScrollView bounces={false}>
 				<ScrollView bounces={false}>
-					<StyledView className="flex-1 min-h-screen flex flex-col items-center">
-						<StyledView className="flex items-center justify-center text-center w-screen h-[90px]">
-							<StyledText className="text-offwhite font-bold text-4xl">
+					<StyledView className='flex-1 min-h-screen flex flex-col items-center'>
+						<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
+							<StyledText className='text-offwhite font-bold text-4xl'>
 								Join New Circle
 							</StyledText>
 						</StyledView>
-						<StyledView className="border-[6px] border-offwhite rounded-xl">
-							<StyledView className="w-[300px] h-[300px]">
+						<StyledView className='border-[6px] border-offwhite rounded-xl'>
+							<StyledView className='w-[300px] h-[300px]'>
 								<BarCodeScanner
 									mirrorImage={true}
 									fixOrientation={true}
-									className="w-full h-full"
-									ratio="1:1"
+									className='w-full h-full'
+									ratio='1:1'
 									onBarCodeScanned={
 										scanned
 											? undefined
@@ -85,12 +89,12 @@ export default function Page() {
 								/>
 							</StyledView>
 						</StyledView>
-						<StyledView className="w-[300px] border-[4px] border-offwhite mt-14 rounded-xl">
+						<StyledView className='w-[300px] border-[4px] border-offwhite mt-14 rounded-xl'>
 							<StyledInput
-								className="bg-offblack px-[10px] font-bold text-2xl flex-1 h-[42px] text-offwhite rounded-lg py-[5px] mr-1"
+								className='bg-offblack px-[10px] font-bold text-2xl flex-1 h-[42px] text-offwhite rounded-lg py-[5px] mr-1'
 								placeholder={'Code:'}
 								placeholderTextColor={'#FFFBFC'}
-								inputMode="numeric"
+								inputMode='numeric'
 								maxLength={8}
 								onChangeText={(text) => {
 									setCode(text);
@@ -104,15 +108,15 @@ export default function Page() {
 				</ScrollView>
 			</KeyboardAwareScrollView>
 			<StyledView
-				className="absolute flex flex-row w-screen px-[15px] justify-between"
+				className='absolute flex flex-row w-screen px-[15px] justify-between'
 				style={{ bottom: insets.bottom }}
 			>
 				<Button
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon="arrow-back-outline"
-					href="/mainViewLayout"
+					icon='arrow-back-outline'
+					href='/mainViewLayout'
 					press={() => {
 						this.searchCode.clear();
 					}}
@@ -121,7 +125,7 @@ export default function Page() {
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon="search-outline"
+					icon='search-outline'
 					press={async () => {
 						if (code.length < 8) {
 							alert('Please enter 8 digits');
@@ -147,14 +151,20 @@ export default function Page() {
 									break;
 								}
 							}
-							if (!(adminCode || publicCode)) {
-								alert('No circles have this code.');
-							} else {
-								if (adminCode) {
-									addUserToCircle(circle);
+							let inCircle = await checkIfUserIsInCircle(circle);
+							console.log(inCircle);
+							if (!inCircle) {
+								if (!(adminCode || publicCode)) {
+									alert('No circles have this code.');
 								} else {
-									alert('Public Code');
+									if (adminCode) {
+										addUserToCircle(circle);
+									} else {
+										alert('Public Code');
+									}
 								}
+							} else {
+								alert('Already in circle.');
 							}
 						}
 						this.searchCode.clear();

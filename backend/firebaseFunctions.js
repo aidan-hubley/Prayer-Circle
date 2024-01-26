@@ -273,3 +273,19 @@ export async function uploadImage(path, uri) {
 	const downloadURL = await getDownloadURL(storageRef);
 	return downloadURL;
 }
+
+export async function checkIfUserIsInCircle(circle) {
+	const UID = await getUIDFromStorage();
+	let withinPerimeter = await readData(
+		`prayer_circle/users/${UID}/private/circles`
+	);
+	let inCircle = false;
+	console.log(withinPerimeter.length);
+	for (let i = 0; i < withinPerimeter.length; i++) {
+		if (circle == withinPerimeter[i]) {
+			inCircle = true;
+			break;
+		}
+	}
+	return inCircle;
+}
