@@ -250,7 +250,7 @@ const IconSelector = forwardRef((props, ref) => {
 				key={`icon${index}`}
 				onPress={() => {
 					toggleSelector(false);
-					if (props.IconSelected)
+					if (props.onIconSelected)
 						props.onIconSelected(
 							item,
 							fromHsv(iconColorRef.current.state.color)

@@ -1,16 +1,21 @@
 import React, { useRef, useState } from 'react';
-import { Pressable, View, Animated, Text } from 'react-native';
+import { Pressable, View, Animated, Text, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
 import { Button } from './Buttons';
+import { Timer } from './Timer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledText = styled(Text);
+const StyledView = styled(View);
 
 export function Circle({ filter, press, toggleSwiping }) {
 	let insets = useSafeAreaInsets();
+	let screenWidth = Dimensions.get('window').width;
+	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
+
 	const scale = useRef(new Animated.Value(1)).current;
 	const [pressed, setPressed] = useState('none');
 	const longOpacity = useRef(new Animated.Value(0)).current;
@@ -92,6 +97,12 @@ export function Circle({ filter, press, toggleSwiping }) {
 				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
 				className='flex flex-col items-center absolute w-screen'
 			>
+				<StyledView
+					style={{ top: topButtonInset - 500 }}
+					className='absolute border border-outline rounded-3xl'
+				>
+					<Timer></Timer>
+				</StyledView>
 				<Button
 					title='Draw a Circle'
 					height='h-[65px]'

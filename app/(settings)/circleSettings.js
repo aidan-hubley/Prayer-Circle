@@ -3,6 +3,7 @@ import {
 	Text,
 	View,
 	Platform,
+	Pressable,
 	Animated,
 	ScrollView,
 	FlatList
@@ -18,6 +19,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledScrollView = styled(ScrollView);
+const StyledPressable = styled(Pressable);
 const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
@@ -38,6 +40,14 @@ export default function Page() {
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 	const togglePosition = React.useRef(new Animated.Value(1)).current;
 
+	const filtermembers = () => {
+		const roleOrder = ['own', 'mod', 'mem', 'sus', 'ban'];
+		const sortedData = dummyData.sort((a, b) => {
+			return roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role);
+		});
+		setDummyData([...sortedData]);
+	};
+
 	const Trevor =
 		'https://media.licdn.com/dms/image/C4E03AQEjKbD7qFuQJQ/profile-displayphoto-shrink_200_200/0/1574282480254?e=1701907200&v=beta&t=1BizKLULm5emiKX3xlsRq7twzFTqynOsfTlbRwqNuXI';
 
@@ -49,68 +59,182 @@ export default function Page() {
 		}).start();
 	}, [isEnabled]);
 
-	const dummyData = [
+	const originalOrder = [
 		{
 			key: '1',
 			name: 'Josh Philips',
 			username: 'JoshuaP.149134',
-			role: 'own',
+			role: 'owner',
 			img: Trevor
 		},
 		{
 			key: '2',
 			name: 'Alex Muresan',
 			username: 'muresanCoder.20',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '3',
 			name: 'Nason Allen',
 			username: 'AllenNasin0987654',
-			role: 'mod',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '4',
 			name: 'Aidan Hubley',
 			username: 'HubleyPraying',
-			role: 'ban',
+			role: 'admin',
 			img: Trevor
 		},
 		{
 			key: '5',
-			name: 'Trevor Bunch',
+			name: 'Trevor Bunch long name',
 			username: 'BunchTrevoraccount',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '6',
 			name: 'Another Account',
 			username: 'ExampleAccount1',
-			role: 'sus',
+			role: 'restricted',
 			img: Trevor
 		},
 		{
 			key: '7',
 			name: 'Another Account',
 			username: 'ExampleAccount2',
-			role: 'mem',
+			role: 'member',
 			img: Trevor
 		},
 		{
 			key: '8',
 			name: 'Another Account',
 			username: 'ExampleAccount3',
-			role: 'mem',
+			role: 'member',
+			img: Trevor
+		},
+		{
+			key: '9',
+			name: 'Another Account',
+			username: 'ExampleAccount4',
+			role: 'admin',
+			img: Trevor
+		},
+		{
+			key: '10',
+			name: 'Another Account',
+			username: 'ExampleAccount5',
+			role: 'member',
+			img: Trevor
+		},
+		{
+			key: '11',
+			name: 'Another Account',
+			username: 'ExampleAccount6',
+			role: 'restricted',
+			img: Trevor
+		},
+		{
+			key: '12',
+			name: 'Another Account',
+			username: 'ExampleAccount7',
+			role: 'banned',
+			img: Trevor
+		},
+		{
+			key: '13',
+			name: 'Nason Allen',
+			username: 'AllenNasin0987654',
+			role: 'admin',
+			img: Trevor
+		},
+		{
+			key: '14',
+			name: 'Aidan Hubley',
+			username: 'HubleyPraying',
+			role: 'banned',
+			img: Trevor
+		},
+		{
+			key: '15',
+			name: 'Trevor Bunch',
+			username: 'BunchTrevoraccount',
+			role: 'member',
+			img: Trevor
+		},
+		{
+			key: '16',
+			name: 'Another Account',
+			username: 'ExampleAccount1',
+			role: 'restricted',
+			img: Trevor
+		},
+		{
+			key: '17',
+			name: 'Another Account',
+			username: 'ExampleAccount2',
+			role: 'member',
+			img: Trevor
+		},
+		{
+			key: '18',
+			name: 'Another Account',
+			username: 'ExampleAccount3',
+			role: 'member',
+			img: Trevor
+		},
+		{
+			key: '19',
+			name: 'Another Account',
+			username: 'ExampleAccount4',
+			role: 'admin',
+			img: Trevor
+		},
+		{
+			key: '20',
+			name: 'Another Account',
+			username: 'ExampleAccount5',
+			role: 'member',
+			img: Trevor
+		},
+		{
+			key: '21',
+			name: 'Another Account',
+			username: 'ExampleAccount6',
+			role: 'restricted',
+			img: Trevor
+		},
+		{
+			key: '22',
+			name: 'Another Account',
+			username: 'ExampleAccount7',
+			role: 'banned',
 			img: Trevor
 		}
 	];
 
+	const [dummyData, setDummyData] = useState([...originalOrder]);
+	const [isSorted, setIsSorted] = useState(false);
+
+	const toggleSortOrder = () => {
+		const roleOrder = ['owner', 'admin', 'member', 'restricted', 'banned'];
+		const sortedData = isSorted
+			? [...originalOrder]
+			: [...dummyData].sort(
+					(a, b) =>
+						roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role)
+			  );
+
+		setDummyData(sortedData);
+		setIsSorted((prev) => !prev); // Toggle the sorting order
+	};
+
 	return (
 		<StyledView
-			className="bg-offblack flex-1"
+			className='bg-offblack flex-1'
 			style={{ paddingTop: Platform.OS == 'android' ? insets.top : 0 }}
 		>
 			<FlatList
@@ -121,28 +245,28 @@ export default function Page() {
 				ListHeaderComponent={
 					<>
 						<StyledView
-							className="w-full flex items-center mb-[10px]"
+							className='w-full flex items-center mb-[10px]'
 							style={{
 								height: 80
 							}}
 						/>
-						<StyledView className="w-full flex items-center justify-center">
+						<StyledView className='w-full flex items-center justify-center'>
 							<Button
-								btnStyles="bg-offblack border-[8px] border-purple"
+								btnStyles='bg-offblack border-[8px] border-purple'
 								height={'h-[120px]'}
 								width={'w-[120px]'}
 								iconSize={70}
-								icon="musical-notes"
-								iconColor="white"
-								href="/mainViewLayout"
+								icon='musical-notes'
+								iconColor='white'
+								href='/mainViewLayout'
 							/>
 						</StyledView>
 
-						<StyledText className="w-full text-center text-[30px] text-offwhite my-2">
+						<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
 							Circle Name
 						</StyledText>
-						<StyledView className="w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2">
-							<StyledText className="text-white text-[14px]">
+						<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledText className='text-white text-[14px]'>
 								This is where the description of the circle will
 								go. It will be a short description of the circle
 								that will be displayed to users who are
@@ -150,10 +274,29 @@ export default function Page() {
 								description by clicking into the box and typing.
 							</StyledText>
 						</StyledView>
-						<StyledView className="border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center">
-							<StyledText className="w-full text-center text-[28px] text-white font-[600]">
+						<StyledView className='border-x border-t border-[#6666660d] mt-2 h-[50px] py-2 px-[10px] bg-grey rounded-t-[20px] flex-row items-center justify-between'>
+							{/* TODO: functioning refresh button */}
+							<Button
+								bgColor='bg-transparent'
+								height={'h-[30px]'}
+								width={'w-[30px]'}
+								iconSize={30}
+								icon='reload'
+								iconColor='#FFFBFC'
+							/>
+							<StyledText className='text-center text-[28px] text-white font-[600]'>
 								Members
 							</StyledText>
+							{/* TODO: Create deeper filtering system, search for specific roles? */}
+							<Button
+								bgColor='bg-transparent'
+								height={'h-[30px]'}
+								width={'w-[30px]'}
+								iconSize={30}
+								icon={isSorted ? 'shuffle' : 'filter-outline'}
+								iconColor='#FFFBFC'
+								press={() => toggleSortOrder()}
+							/>
 						</StyledView>
 					</>
 				}
@@ -172,7 +315,7 @@ export default function Page() {
 				ListFooterComponent={
 					<>
 						<StyledView
-							className="w-full flex items-center mb-[10px]"
+							className='w-full flex items-center mb-[10px]'
 							style={{
 								height: insets.bottom + 55
 							}}
@@ -181,100 +324,100 @@ export default function Page() {
 				}
 			/>
 			<StyledGradient
-				pointerEvents="none"
+				pointerEvents='none'
 				start={{ x: 0, y: 0.1 }}
 				end={{ x: 0, y: 1 }}
 				style={{ height: 120 }}
-				className="absolute w-screen"
+				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
 			<StyledView
 				style={{ top: Platform.OS == 'android' ? insets.top + 15 : 15 }}
-				className="absolute w-screen flex flex-row items-center justify-between px-[15px]"
+				className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
 			>
 				<Button
-					btnStyles="rotate-180 border-2"
-					bgColor="bg-offblack"
-					borderColor="border-yellow"
+					btnStyles='rotate-180 border-2'
+					bgColor='bg-offblack'
+					borderColor='border-yellow'
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon="log-out-outline"
-					iconColor="#F9A826"
+					icon='log-out-outline'
+					iconColor='#F9A826'
 					press={toggleModal1}
 				/>
-				<StyledText className="text-4xl font-bold text-offwhite">
+				<StyledText className='text-4xl font-bold text-offwhite'>
 					Settings
 				</StyledText>
 				<Button
-					btnStyles="border-2"
-					bgColor="bg-offblack"
-					borderColor="border-red"
+					btnStyles='border-2'
+					bgColor='bg-offblack'
+					borderColor='border-red'
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon="trash-outline"
-					iconColor="#CC2500"
+					icon='trash-outline'
+					iconColor='#CC2500'
 					press={toggleModal2}
 				/>
 			</StyledView>
 
 			<StyledView
-				className="absolute flex flex-row w-screen px-[15px] justify-between"
+				className='absolute flex flex-row w-screen px-[15px] justify-between'
 				style={{ bottom: insets.bottom }}
 			>
 				<Button // Back to Feed Page
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon="arrow-back"
-					href="/mainViewLayout"
+					icon='arrow-back'
+					href='/mainViewLayout'
 				/>
 				<Button // to Share Page
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
-					icon="qr-code"
-					href="shareCircle"
+					icon='qr-code'
+					href='shareCircle'
 				/>
 			</StyledView>
 
 			<StyledModal
-				className="w-[80%] self-center"
+				className='w-[80%] self-center'
 				isVisible={isModalVisible1}
 			>
-				<StyledView className="bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]">
-					<StyledView className="flex-1 items-center h-[60%]">
-						<StyledText className="top-[6%] text-3xl text-offwhite">
+				<StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledText className='top-[6%] text-3xl text-offwhite'>
 							Leave this circle?
 						</StyledText>
 
 						<Button
-							btnStyles="top-[15%] bg-grey border-4 border-purple"
+							btnStyles='top-[15%] bg-grey border-4 border-purple'
 							height={'h-[90px]'}
 							width={'w-[90px]'}
 							iconSize={60}
-							icon="musical-notes"
-							iconColor="white"
-							href="/mainViewLayout"
+							icon='musical-notes'
+							iconColor='white'
+							href='/mainViewLayout'
 						/>
 
-						<StyledText className="top-[20%] text-3xl text-offwhite">
+						<StyledText className='top-[20%] text-3xl text-offwhite'>
 							Circle Name
 						</StyledText>
 						{/* Database call to remove from Circle  */}
 						<Button
-							title="Leave"
+							title='Leave'
 							btnStyles={'top-[31%] border-2 border-yellow'}
 							bgColor={'bg-offblack'}
 							textStyles={'text-yellow'}
-							width="w-[70%]"
+							width='w-[70%]'
 							press={toggleModal1}
 						/>
 						<Button
-							title="Cancel"
+							title='Cancel'
 							btnStyles={'top-[37%]'}
-							width="w-[70%]"
+							width='w-[70%]'
 							press={toggleModal1}
 						/>
 					</StyledView>
@@ -282,41 +425,41 @@ export default function Page() {
 			</StyledModal>
 
 			<StyledModal
-				className="w-[80%] self-center"
+				className='w-[80%] self-center'
 				isVisible={isModalVisible2}
 			>
-				<StyledView className="bg-offblack border-[5px] border-red rounded-2xl h-[60%]">
-					<StyledView className="flex-1 items-center h-[60%]">
-						<StyledText className="top-[6%] text-3xl text-offwhite">
+				<StyledView className='bg-offblack border-[5px] border-red rounded-2xl h-[60%]'>
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<StyledText className='top-[6%] text-3xl text-offwhite'>
 							Delete this circle?
 						</StyledText>
 
 						<Button
-							btnStyles="top-[15%] bg-grey border-4 border-purple"
+							btnStyles='top-[15%] bg-grey border-4 border-purple'
 							height={'h-[90px]'}
 							width={'w-[90px]'}
 							iconSize={60}
-							icon="musical-notes"
-							iconColor="white"
-							href="/mainViewLayout"
+							icon='musical-notes'
+							iconColor='white'
+							href='/mainViewLayout'
 						/>
 
-						<StyledText className="top-[20%] text-3xl text-offwhite">
+						<StyledText className='top-[20%] text-3xl text-offwhite'>
 							Circle Name
 						</StyledText>
 						{/* Database call to remove from Circle  */}
 						<Button
-							title="Delete"
+							title='Delete'
 							btnStyles={'top-[31%] border-2 border-red'}
 							bgColor={'bg-offblack'}
 							textStyles={'text-red'}
-							width="w-[70%]"
+							width='w-[70%]'
 							press={toggleModal2}
 						/>
 						<Button
-							title="Cancel"
+							title='Cancel'
 							btnStyles={'top-[37%]'}
-							width="w-[70%]"
+							width='w-[70%]'
 							press={toggleModal2}
 						/>
 					</StyledView>
