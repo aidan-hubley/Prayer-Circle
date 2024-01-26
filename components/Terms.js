@@ -4,7 +4,6 @@ import {
 	ScrollView
 } from 'react-native';
 import React, {
-	useState,
 	forwardRef,
 } from 'react';
 
@@ -20,18 +19,8 @@ const StyledModal = styled(Modal);
 
 const Terms = forwardRef(() => {
 
-    const [isTOSModalVisible, setTOSModalVisible] = useState(false);//NRA
-    const toggleTOSModal = () => {
-        setTOSModalVisible(!isTOSModalVisible);
-        console.log(isTOSModalVisible);
-        console.log("hello Nason)");
-    };
-
         return(
-            <StyledModal
-                className='w-[90%] self-center'
-                isVisible={isTOSModalVisible}
-            >
+
                 <StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px] h-[90%]'>
                     <StyledView className='flex-1 items-center h-[60%]'>
                         <StyledText className='top-[3%] pb-[20px] text-xl text-offwhite'>
@@ -41,6 +30,7 @@ const Terms = forwardRef(() => {
                         Last updated January 20, 2024
                         </StyledText>
                         <ScrollView className='top-[3%] text-offwhite mb-[10%]'>
+                            {/* Below is the TOS container (collapsed) */}
                         <StyledText className='pt-[1%] pb-[30%] pr-[5%] pl-[5%] text-offwhite'>
 
 
@@ -332,21 +322,9 @@ devs.prayercircle@gmail.com
 These terms of use were created using Termly's Terms and Conditions Generator.
 
                         </StyledText>
-                        <StyledView className='w-full flex absolute bottom-5 mb-[5%] items-center'>
-                            <Button
-                                textColor='black'
-                                backgroundColor='white'
-                                borderColor='#F9A826'
-                                title='I agree'
-                                width='w-[50%]'
-                                height='h-[50px]'
-                                press={toggleTOSModal}
-                            />
-                        </StyledView>
                         </ScrollView>
                     </StyledView>
                 </StyledSafeArea>
-            </StyledModal>
     );}
 );
 

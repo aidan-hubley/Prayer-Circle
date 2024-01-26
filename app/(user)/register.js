@@ -39,6 +39,11 @@ export default function Register() {
 		setModalVisible(!isModalVisible);
 	};
 
+	const [isTOSModalVisible, setTOSModalVisible] = useState(false);
+    const toggleTOSModal = () => {
+        setTOSModalVisible(!isTOSModalVisible);
+    };
+
 	const cameraRef = useRef(null);
 
 	function toggleCameraType() {
@@ -101,7 +106,7 @@ export default function Register() {
 			<KeyboardAwareScrollView bounces={false}>
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<>
-						<StyledView className='flex flex-col pb-5 px-[15px] w-screen'>
+						<StyledView className='flex flex-col pb-3 px-[15px] w-screen'>
 							<StyledView className='w-full flex flex-col items-center mb-2'>
 								<StyledView className='w-11/12 aspect-square mt-[20px] mb-[40px]'>
 									<TouchableOpacity onPress={toggleModal}>
@@ -216,18 +221,32 @@ export default function Register() {
 						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
 							Read the{' '}
 							<TouchableWithoutFeedback
-								// onPress={() => {}
+								onPress={toggleTOSModal}
 							>
 								<StyledText className='text-yellow font-bold'>
 									Terms and Conditions
 								</StyledText>
 							</TouchableWithoutFeedback>
 						</StyledText>
+						<StyledModal
+							className='w-[90%] self-center'
+							isVisible={isTOSModalVisible}
+						>
 						<Terms></Terms>
+						<StyledView className='w-full flex flex-row justify-between absolute bottom-[100px] items-center'>
+							<Button
+								icon='arrow-back-outline'
+								btnStyles={'left-10'}
+								width='w-[50px]'
+								height='h-[50px]'
+								press={toggleTOSModal}
+							/>
+						</StyledView>
+						</StyledModal>
 						<StyledView className='flex flex-col items-center'>
 							<Button
 								width='w-[85%]'
-								title='Register'
+								title='Agree & Register'
 								textColor='#F7F1E3'
 								backgroundColor='#121212'
 								borderColor='#F9A826'
@@ -389,7 +408,8 @@ async function createUserData(username, fname, lname, email, password) {
 			},
 			reactions: false,
 			comments: false,
-			posts: false
+			posts: false,
+			termsAgreed: true
 		}
 	};
 	registerUser(username, email, password, userData);
