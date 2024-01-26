@@ -20,6 +20,7 @@ import {
 	addUserToCircle,
 	checkIfUserIsInCircle
 } from '../backend/firebaseFunctions';
+import { useStore } from '../app/global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -33,6 +34,7 @@ export default function Page() {
 	const [code, setCode] = useState('');
 	const [hasPermission, setHasPermission] = useState(null);
 	const [scanned, setScanned] = useState(false);
+	const setFilterReload = useStore((state) => state.setFilterReload);
 
 	useEffect(() => {
 		const getBarCodeScannerPermissions = async () => {
@@ -158,6 +160,7 @@ export default function Page() {
 								} else {
 									if (adminCode) {
 										addUserToCircle(circle);
+										setFilterReload(true);
 									} else {
 										alert('Public Code');
 									}
