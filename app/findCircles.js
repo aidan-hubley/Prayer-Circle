@@ -152,7 +152,6 @@ export default function Page() {
 								}
 							}
 							let inCircle = await checkIfUserIsInCircle(circle);
-							console.log(inCircle);
 							if (!inCircle) {
 								if (!(adminCode || publicCode)) {
 									alert('No circles have this code.');
