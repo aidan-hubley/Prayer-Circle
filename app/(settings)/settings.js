@@ -618,7 +618,7 @@ export default function Page() {
                     enableDismissOnClose={true}
                     ref={bottomSheetModalRef}
                     index={0}
-                    snapPoints={modalContent == 'tos' ? ['85%'] : modalContent == 'timer' ? ['35%'] : modalContent == 'password' ['65%', '85%'] ? modalContent == 'reminder' ? ['35%'] : ['65%', '85%'] : ['65%', '85%']}
+                    snapPoints={modalContent == 'tos' ? ['85%'] : modalContent == 'timer' ? ['35%'] : modalContent == 'password' ? ['65%', '85%'] : modalContent == 'reminder' ? ['35%'] : ['65%', '85%'] }
                     // enableContentPanningGesture={true}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
