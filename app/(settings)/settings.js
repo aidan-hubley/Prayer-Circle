@@ -30,7 +30,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { getHiddenPosts } from '../../backend/functions';
+import { getHiddenPosts } from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -43,7 +43,6 @@ const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
-	const [me, setMe] = useState('');
     const [hiddenPosts, sethiddenPosts] = useState([]);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -55,9 +54,8 @@ export default function Page() {
     const bottomSheetModalRef = useRef(null);
 
     async function setUpHiddenPosts() {
-        let gm = await AsyncStorage.getItem('user');
-        setMe(gm);
-        console.log(gm);
+        let hp = await getHiddenPosts();
+        sethiddenPosts(hp);
     };
 
     const handlePasswordReset = async () => {
@@ -233,8 +231,8 @@ export default function Page() {
         switch (modalContent) {
         case 'tos':
             return (
-                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-                    <StyledView className="w-[90%]">
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite' style={{ height: '100%' }}>
+                    <StyledView className="flex-1 w-[90%]" style={{ height: '100%' }}>
                         <Terms></Terms>
                     </StyledView>
                 </StyledView>
@@ -290,31 +288,60 @@ export default function Page() {
         case 'hiddenPosts':
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-                    <FlatList
-					data={hiddenPosts}
-					renderItem={({ item }) => (
-						<Post
-							user={item.data.name}
-							img={item.data.profile_img}
-							title={item.data.title}
-							timestamp={`${item.data.timestamp}`}
-							content={item.data.text}
-							icon={item.data.type}
-							id={item.id}
-							edited={item.data.edited}
-							comments={item.data.comments}
-							data={item.data}
-						/>
-					)}
-					keyExtractor={(item) => item.id}
-					ListEmptyComponent={() => (
-						<StyledView className='w-full justify-center items-center text-center'>
-							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
-								No Posts Hidden!
-							</StyledText>
-						</StyledView>
-					)}
-				/>
+                    <StyledView className='w-[90%] flex-1'>
+                        <FlatList
+                            data={hiddenPosts}
+                            renderItem={({ item }) => (
+                                <>
+                                    <Post
+                                        user={item[1].name}
+                                        img={item[1].profile_img}
+                                        title={item[1].title}
+                                        timestamp={item[1].timestamp}
+                                        content={item[1].text}
+                                        icon={item[1].type}
+                                        id={item[0]}
+                                        edited={item[1].edited}
+                                        comments={item[1].comments}
+                                        data={item[1]}
+                                    />
+                                    <Post
+                                    user={item[1].name}
+                                    img={item[1].profile_img}
+                                    title={item[1].title}
+                                    timestamp={item[1].timestamp}
+                                    content={item[1].text}
+                                    icon={item[1].type}
+                                    id={item[0]}
+                                    edited={item[1].edited}
+                                    comments={item[1].comments}
+                                    data={item[1]}
+                                />
+                                <Post
+                                    user={item[1].name}
+                                    img={item[1].profile_img}
+                                    title={item[1].title}
+                                    timestamp={item[1].timestamp}
+                                    content={item[1].text}
+                                    icon={item[1].type}
+                                    id={item[0]}
+                                    edited={item[1].edited}
+                                    comments={item[1].comments}
+                                    data={item[1]}
+                                />
+                                </>
+                            )}
+                            keyExtractor={(item) => item[0]}
+                            showsVerticalScrollIndicator={false}
+                            ListEmptyComponent={() => (
+                                <StyledView className='w-full justify-center items-center text-center'>
+                                    <StyledText className='font-bold text-[20px] text-offwhite text-center'>
+                                        No Posts Hidden!
+                                    </StyledText>
+                                </StyledView>
+                            )}
+                        />
+                    </StyledView> 
                 </StyledView>
             );
         default:
@@ -674,8 +701,14 @@ export default function Page() {
                     enableDismissOnClose={true}
                     ref={bottomSheetModalRef}
                     index={0}
-                    snapPoints={modalContent == 'tos' ? ['85%'] : modalContent == 'timer' ? ['35%'] : modalContent == 'password' ? ['65%', '85%'] : modalContent == 'reminder' ? ['35%'] : ['65%', '85%'] }
-                    enablePanDownToClose={modalContent == 'tos' ? ['false'] : ['true']} // TODO: fix this
+                    snapPoints={
+                        modalContent == 'tos' ? ['85%'] 
+                        : modalContent == 'timer' ? ['35%'] 
+                        : modalContent == 'password' ? ['65%', '85%'] 
+                        : modalContent == 'reminder' ? ['35%'] 
+                        : modalContent == 'hiddenPosts' ? ['65%'] 
+                        : ['65%', '85%'] }
+                    enablePanDownToClose={modalContent == 'tos' || modalContent == 'hiddenPosts' ? false : true}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}
