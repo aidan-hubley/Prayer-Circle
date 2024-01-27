@@ -18,6 +18,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import {
 	readData,
 	addUserToCircle,
+	addUserToQueue,
 	checkIfUserIsInCircle
 } from '../backend/firebaseFunctions';
 import { useStore } from '../app/global';
@@ -162,7 +163,7 @@ export default function Page() {
 										addUserToCircle(circle);
 										setFilterReload(true);
 									} else {
-										alert('Public Code');
+										addUserToQueue(circle);
 									}
 								}
 							} else {

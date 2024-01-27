@@ -162,8 +162,11 @@ export async function loginUser(email, password) {
 		});
 }
 
-export async function addUserToCircle(circle) {
-	const UID = await getUIDFromStorage();
+export async function addUserToCircle(circle, uid) {
+	let UID = await getUIDFromStorage();
+	if (arguments.length >= 2) {
+		UID = uid;
+	}
 	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
 	let circlePermissions = {
 		admin: false,
@@ -174,6 +177,15 @@ export async function addUserToCircle(circle) {
 	writeData(
 		`prayer_circle/users/${UID}/private/circles/${circle}/permissions`,
 		circlePermissions,
+		true
+	);
+}
+
+export async function addUserToQueue(circle) {
+	const UID = await getUIDFromStorage();
+	writeData(
+		`prayer_circle/circles/${circle}/usersAwaitingEntry/${UID}`,
+		true,
 		true
 	);
 }
