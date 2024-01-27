@@ -30,7 +30,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { getHiddenPosts } from '../../backend/firebaseFunctions';
+import { getHiddenPosts, writeData } from '../../backend/firebaseFunctions';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -57,6 +57,14 @@ export default function Page() {
         let hp = await getHiddenPosts();
         sethiddenPosts(hp);
     };
+
+    async function unhidePost(postId) {
+        let me = await AsyncStorage.getItem('user');
+
+		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, null, true);
+		writeData(`prayer_circle/users/${me}/private/hiddenposts/${postId}`, null, true);
+		toggleToolbar();
+	}
 
     const handlePasswordReset = async () => {
         const user = auth.currentUser;
@@ -305,31 +313,12 @@ export default function Page() {
                                         comments={item[1].comments}
                                         data={item[1]}
                                     />
-                                    <Post
-                                    user={item[1].name}
-                                    img={item[1].profile_img}
-                                    title={item[1].title}
-                                    timestamp={item[1].timestamp}
-                                    content={item[1].text}
-                                    icon={item[1].type}
-                                    id={item[0]}
-                                    edited={item[1].edited}
-                                    comments={item[1].comments}
-                                    data={item[1]}
-                                />
-                                <Post
-                                    user={item[1].name}
-                                    img={item[1].profile_img}
-                                    title={item[1].title}
-                                    timestamp={item[1].timestamp}
-                                    content={item[1].text}
-                                    icon={item[1].type}
-                                    id={item[0]}
-                                    edited={item[1].edited}
-                                    comments={item[1].comments}
-                                    data={item[1]}
-                                />
-                                </>
+                                    <Button 
+                                        title='Unhide Post'
+                                        width='w-[70%]'
+                                        press={() => unhidePost(item[0])}
+                                    />
+                                </> 
                             )}
                             keyExtractor={(item) => item[0]}
                             showsVerticalScrollIndicator={false}
