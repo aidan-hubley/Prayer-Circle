@@ -178,6 +178,22 @@ export async function addUserToCircle(circle) {
 	);
 }
 
+export async function addUserToCircle(circle) {
+	const UID = await getUIDFromStorage();
+	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
+	let circlePermissions = {
+		admin: false,
+		read: true,
+		write: true,
+		owner: false
+	};
+	writeData(
+		`prayer_circle/users/${UID}/private/circles/${circle}/permissions`,
+		circlePermissions,
+		true
+	);
+}
+
 export async function checkUsername(username) {
 	let usernames = (await readData(`usernames`)) || {};
 	let taken = false;
@@ -274,11 +290,17 @@ export async function uploadImage(path, uri) {
 	return downloadURL;
 }
 
-export async function addUserToQueue(circle) {
+export async function checkIfUserIsInCircle(circle) {
 	const UID = await getUIDFromStorage();
-	writeData(
-		`prayer_circle/circles/${circle}/usersAwaitingEntry/${UID}`,
-		true,
-		true
+	let withinPerimeter = Object.keys(
+		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 	);
+	let inCircle = false;
+	for (let i = 0; i < withinPerimeter.length; i++) {
+		if (`${circle}` == withinPerimeter[i]) {
+			inCircle = true;
+			break;
+		}
+	}
+	return inCircle;
 }

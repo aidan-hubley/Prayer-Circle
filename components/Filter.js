@@ -8,6 +8,7 @@ import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
+import { Timer } from './Timer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -16,7 +17,7 @@ const AnimatedView = Animated.createAnimatedComponent(StyledView);
 const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
 
-const Filter = forwardRef((props, ref) => {
+const Filter = forwardRef((props, ref) => {	
 	const width = Dimensions.get('window').width;
 	const itemSize = 80;
 	const itemMargin = 10;
@@ -33,6 +34,7 @@ const Filter = forwardRef((props, ref) => {
 	});
 
 	let insets = useSafeAreaInsets();
+	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 
 	function toggleShown(toggle) {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -74,6 +76,12 @@ const Filter = forwardRef((props, ref) => {
 				style={opacityStyle}
 				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center'
 			>
+				<StyledView
+					style={{ top: topButtonInset - 500 }}
+					className='absolute border border-outline rounded-3xl self-center'
+				>
+					<Timer></Timer>
+				</StyledView>
 				<FlatList
 					data={props.data}
 					onScroll={(e) => {
