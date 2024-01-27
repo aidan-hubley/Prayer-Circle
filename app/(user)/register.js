@@ -7,9 +7,10 @@ import {
 	Image,
 	TouchableWithoutFeedback,
 	TouchableOpacity,
-	StatusBar
+	StatusBar,
+	ScrollView
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView, ScrollableComponent } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
@@ -23,6 +24,7 @@ import Modal from 'react-native-modal';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from '../../backend/config';
+import { Terms } from '../../components/Terms';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -40,6 +42,11 @@ export default function Register() {
 	const toggleModal = () => {
 		setModalVisible(!isModalVisible);
 	};
+
+	const [isTOSModalVisible, setTOSModalVisible] = useState(false);
+    const toggleTOSModal = () => {
+        setTOSModalVisible(!isTOSModalVisible);
+    };
 
 	const cameraRef = useRef(null);
 
@@ -103,7 +110,7 @@ export default function Register() {
 			<KeyboardAwareScrollView bounces={false}>
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<>
-						<StyledView className='flex flex-col pb-5 px-[15px] w-screen'>
+						<StyledView className='flex flex-col pb-3 px-[15px] w-screen'>
 							<StyledView className='w-full flex flex-col items-center mb-2'>
 								<StyledView className='w-11/12 aspect-square mt-[20px] mb-[40px]'>
 									<TouchableOpacity onPress={toggleModal}>
@@ -215,10 +222,35 @@ export default function Register() {
 								/>
 							</StyledView>
 						</StyledView>
+						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
+							Read the{' '}
+							<TouchableWithoutFeedback
+								onPress={toggleTOSModal}
+							>
+								<StyledText className='text-yellow font-bold'>
+									Terms and Conditions
+								</StyledText>
+							</TouchableWithoutFeedback>
+						</StyledText>
+						<StyledModal
+							className='w-[90%] self-center'
+							isVisible={isTOSModalVisible}
+						>
+						<Terms></Terms>
+						<StyledView className='w-full flex flex-row justify-between absolute bottom-[100px] items-center'>
+							<Button
+								icon='arrow-back-outline'
+								btnStyles={'left-10'}
+								width='w-[50px]'
+								height='h-[50px]'
+								press={toggleTOSModal}
+							/>
+						</StyledView>
+						</StyledModal>
 						<StyledView className='flex flex-col items-center'>
 							<Button
 								width='w-[85%]'
-								title='Register'
+								title='Agree & Register'
 								textColor='#F7F1E3'
 								backgroundColor='#121212'
 								borderColor='#F9A826'
@@ -234,7 +266,7 @@ export default function Register() {
 									);
 								}}
 							/>
-							<StyledText className='text-offwhite text-center text-[18px] mt-5'>
+							<StyledText className='text-offwhite text-center text-[18px] mt-3'>
 								Already have an account?{' '}
 								<TouchableWithoutFeedback
 									onPress={() => {
@@ -385,7 +417,8 @@ async function createUserData(username, fname, lname, email, password, image) {
 			},
 			reactions: false,
 			comments: false,
-			posts: false
+			posts: false,
+			termsAgreed: true
 		}
 	};
 	registerUser(username, email, password, userData);
