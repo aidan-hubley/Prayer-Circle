@@ -63,7 +63,7 @@ export default function Page() {
 
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, null, true);
 		writeData(`prayer_circle/users/${me}/private/hiddenposts/${postId}`, null, true);
-		toggleToolbar();
+		
 	}
 
     const handlePasswordReset = async () => {
@@ -316,6 +316,7 @@ export default function Page() {
                                     <Button 
                                         title='Unhide Post'
                                         width='w-[70%]'
+                                        btnStyles='mt-2 mb-5 self-center'
                                         press={() => unhidePost(item[0])}
                                     />
                                 </> 
