@@ -19,6 +19,7 @@ import { signOut } from 'firebase/auth';
 import { Toggle } from '../../components/Toggle';
 import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
+import { Terms } from '../../components/Terms';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, auth } from '../../backend/config';
@@ -208,7 +209,9 @@ export default function Page() {
         case 'tos':
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Terms of Service</StyledText>
+                    <StyledView className="w-[90%]">
+                        <Terms></Terms>
+                    </StyledView>
                 </StyledView>
             );
         case 'password':
@@ -615,7 +618,8 @@ export default function Page() {
                     enableDismissOnClose={true}
                     ref={bottomSheetModalRef}
                     index={0}
-                    snapPoints={modalContent === 'tos' ? ['85%'] : 'timer' ? ['35%'] : modalContent === 'password' ['65%', '85%'] ? modalContent === 'reminder' ? ['35%'] : ['65%', '85%'] : ['65%', '85%']}
+                    snapPoints={modalContent == 'tos' ? ['85%'] : modalContent == 'timer' ? ['35%'] : modalContent == 'password' ['65%', '85%'] ? modalContent == 'reminder' ? ['35%'] : ['65%', '85%'] : ['65%', '85%']}
+                    // enableContentPanningGesture={true}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}
