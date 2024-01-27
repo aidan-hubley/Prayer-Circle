@@ -471,17 +471,16 @@ export default function Page() {
                                             </StyledView>
                                         </View>
                                     </View>
-                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />                                    
                                     <View className="flex-row items-center mt-5 px-5">
-                                        <View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
                                             <StyledView className='flex-row'>
-                                                <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
                                                 <Text className="mr-3 text-lg text-offwhite">
-                                                    Clear Cache
+                                                    View Hidden Posts
                                                 </Text>
                                             </StyledView>
                                         <Button
-                                            icon='trash-outline'
+                                            icon='eye'
                                             iconColor={'#FFFBFC'}
                                             iconSize={26}
                                             width={'w-[65px]'}
@@ -492,6 +491,7 @@ export default function Page() {
                                         ></Button>
                                         </View>
                                     </View>
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />                                    
                                     <View className="flex-row items-center mt-5 px-5">
                                         <View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
                                             <StyledView className='flex-row'>
@@ -512,6 +512,27 @@ export default function Page() {
                                         ></Button>
                                         </View>
                                     </View>
+                                    <View className="flex-row items-center mt-5 px-5">
+                                        <View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+                                            <StyledView className='flex-row'>
+                                                <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+                                                <Text className="mr-3 text-lg text-offwhite">
+                                                    Clear Cache
+                                                </Text>
+                                            </StyledView>
+                                        <Button
+                                            icon='trash-outline'
+                                            iconColor={'#FFFBFC'}
+                                            iconSize={26}
+                                            width={'w-[65px]'}
+                                            height={'h-[35px]'}
+                                            bgColor={'bg-transparent'}
+                                            borderColor={'border-white'}
+                                            btnStyles='border-2'
+                                        ></Button>
+                                        </View>
+                                    </View>
+                                    
                                     <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                                     <View className="flex-row items-center mt-5 px-5">
                                         <View className="flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl">
