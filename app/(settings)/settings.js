@@ -20,6 +20,7 @@ import { Toggle } from '../../components/Toggle';
 import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
 import { Terms } from '../../components/Terms';
+import { Post } from '../../components/Post';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, auth } from '../../backend/config';
@@ -29,6 +30,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { getHiddenPosts } from '../../backend/functions';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -41,6 +43,8 @@ const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	const [me, setMe] = useState('');
+    const [hiddenPosts, sethiddenPosts] = useState([]);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -49,6 +53,12 @@ export default function Page() {
     const [modalContent, setModalContent] = useState(null);
     const insets = useSafeAreaInsets();
     const bottomSheetModalRef = useRef(null);
+
+    async function setUpHiddenPosts() {
+        let gm = await AsyncStorage.getItem('user');
+        setMe(gm);
+        console.log(gm);
+    };
 
     const handlePasswordReset = async () => {
         const user = auth.currentUser;
@@ -131,6 +141,7 @@ export default function Page() {
     };
 
     const handleHiddenPostsButtonPress = () => {
+        setUpHiddenPosts();
         setModalContent('hiddenPosts');
         handlePresentModalPress();
     };
@@ -279,7 +290,31 @@ export default function Page() {
         case 'hiddenPosts':
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*View all hidden posts</StyledText>
+                    <FlatList
+					data={hiddenPosts}
+					renderItem={({ item }) => (
+						<Post
+							user={item.data.name}
+							img={item.data.profile_img}
+							title={item.data.title}
+							timestamp={`${item.data.timestamp}`}
+							content={item.data.text}
+							icon={item.data.type}
+							id={item.id}
+							edited={item.data.edited}
+							comments={item.data.comments}
+							data={item.data}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+					ListEmptyComponent={() => (
+						<StyledView className='w-full justify-center items-center text-center'>
+							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
+								No Posts Hidden!
+							</StyledText>
+						</StyledView>
+					)}
+				/>
                 </StyledView>
             );
         default:

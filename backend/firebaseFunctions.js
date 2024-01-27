@@ -262,6 +262,9 @@ export async function getPosts(circleId) {
 	return posts;
 }
 
+export async function getHiddenPosts() {
+}
+
 export async function uploadImage(path, uri) {
 	let id = generateId();
 	const img = await fetch(uri);
