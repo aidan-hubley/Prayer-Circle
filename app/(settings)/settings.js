@@ -619,7 +619,7 @@ export default function Page() {
                     ref={bottomSheetModalRef}
                     index={0}
                     snapPoints={modalContent == 'tos' ? ['85%'] : modalContent == 'timer' ? ['35%'] : modalContent == 'password' ? ['65%', '85%'] : modalContent == 'reminder' ? ['35%'] : ['65%', '85%'] }
-                    // enableContentPanningGesture={true}
+                    enablePanDownToClose={false}
                     onChange={handleSheetChanges}
                     handleComponent={handle}
                     backdropComponent={(backdropProps) => backdrop(backdropProps)}

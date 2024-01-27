@@ -1,7 +1,7 @@
 import {
 	Text,
 	View,
-	ScrollView
+	FlatList
 } from 'react-native';
 import React, {
 	forwardRef,
@@ -10,32 +10,32 @@ import React, {
 import { styled } from 'nativewind';
 import { Button } from './Buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Modal from 'react-native-modal';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledModal = styled(Modal);
 
 const Terms = forwardRef(() => {
 
         return(
 
                 <StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px] h-[90%]'>
-                    <StyledView className='flex-1 items-center h-[60%]'>
-                        <StyledText className='top-[3%] pb-[20px] text-xl text-offwhite'>
-                        TERMS AND CONDITIONS
-                        </StyledText>
-                        <StyledText className='top-[1%] pb-[20px] text-offwhite'>
-                        Last updated January 20, 2024
-                        </StyledText>
-                        <ScrollView className='top-[3%] text-offwhite mb-[10%]'>
-                            {/* Below is the TOS container (collapsed) */}
-                        <StyledText className='pt-[1%] pb-[30%] pr-[5%] pl-[5%] text-offwhite'>
-
-
-
-
+                    <StyledView className='flex-1 items-center h-[60%]'>                        
+                        <StyledView className='top-[3%] text-offwhite mb-[10%]'>
+                            <FlatList
+                                ListHeaderComponent={
+                                    <>
+                                        <StyledText className='top-[3%] pb-[20px] text-xl text-offwhite text-center'>
+                                            TERMS AND CONDITIONS
+                                        </StyledText>
+                                        <StyledText className='top-[1%] pb-[20px] text-offwhite text-center'>
+                                            Last updated January 20, 2024
+                                        </StyledText>
+                                    </>
+                                }
+                                ListFooterComponent={
+                                    <>
+                                        <StyledText className='pt-[1%] pb-[30%] pr-[5%] pl-[5%] text-offwhite'>
 AGREEMENT TO OUR LEGAL TERMS
 
 We are __________ ("Company," "we," "us," "our").
@@ -321,8 +321,11 @@ __________
 devs.prayercircle@gmail.com
 These terms of use were created using Termly's Terms and Conditions Generator.
 
-                        </StyledText>
-                        </ScrollView>
+                                        </StyledText>
+                                    </>
+                                }
+                            />                        
+                        </StyledView>
                     </StyledView>
                 </StyledSafeArea>
     );}
