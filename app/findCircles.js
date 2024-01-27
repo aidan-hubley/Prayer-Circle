@@ -4,14 +4,23 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Image, 
+	Image,
 	ScrollView
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+	SafeAreaView,
+	useSafeAreaInsets
+} from 'react-native-safe-area-context';
 import { Button } from '../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import {
+	readData,
+	addUserToCircle,
+	checkIfUserIsInCircle
+} from '../backend/firebaseFunctions';
+import { useStore } from '../app/global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -25,6 +34,7 @@ export default function Page() {
 	const [code, setCode] = useState('');
 	const [hasPermission, setHasPermission] = useState(null);
 	const [scanned, setScanned] = useState(false);
+	const setFilterReload = useStore((state) => state.setFilterReload);
 
 	useEffect(() => {
 		const getBarCodeScannerPermissions = async () => {
@@ -74,7 +84,9 @@ export default function Page() {
 									className='w-full h-full'
 									ratio='1:1'
 									onBarCodeScanned={
-										scanned ? undefined : handleBarCodeScanned
+										scanned
+											? undefined
+											: handleBarCodeScanned
 									}
 								/>
 							</StyledView>
@@ -93,9 +105,9 @@ export default function Page() {
 									this.searchCode = input;
 								}}
 							/>
-						</StyledView>				
+						</StyledView>
 					</StyledView>
-				</ScrollView>				
+				</ScrollView>
 			</KeyboardAwareScrollView>
 			<StyledView
 				className='absolute flex flex-row w-screen px-[15px] justify-between'
@@ -121,7 +133,41 @@ export default function Page() {
 							alert('Please enter 8 digits');
 							return;
 						} else {
-							alert(code);
+							let publicCode,
+								adminCode = false;
+							let circles = Object.keys(
+								(await readData(`prayer_circle/circles`)) || {}
+							);
+							let circle = null;
+							for (let i = 0; i < circles.length; i++) {
+								circle = circles[i];
+								let circleData =
+									(await readData(
+										`prayer_circle/circles/${circle}/codes`
+									)) || {};
+								if (circleData.public == code) {
+									publicCode = true;
+									break;
+								} else if (circleData.admin == code) {
+									adminCode = true;
+									break;
+								}
+							}
+							let inCircle = await checkIfUserIsInCircle(circle);
+							if (!inCircle) {
+								if (!(adminCode || publicCode)) {
+									alert('No circles have this code.');
+								} else {
+									if (adminCode) {
+										addUserToCircle(circle);
+										setFilterReload(true);
+									} else {
+										alert('Public Code');
+									}
+								}
+							} else {
+								alert('Already in circle.');
+							}
 						}
 						this.searchCode.clear();
 					}}

@@ -6,6 +6,7 @@ export const useStore = create((set) => ({
 	currentFilterName: 'Prayer Circle',
 	globalReload: false,
 	journalReload: false,
+	filterReload: false,
 	uid: '',
 	name: '',
 	pfp: '',
@@ -13,6 +14,7 @@ export const useStore = create((set) => ({
 	updateFilterName: (newVal) => set(() => ({ currentFilterName: newVal })),
 	setGlobalReload: (newVal) => set(() => ({ globalReload: newVal })),
 	setJournalReload: (newVal) => set(() => ({ journalReload: newVal })),
+	setFilterReload: (newVal) => set(() => ({ filterReload: newVal })),
 	setUid: (newVal) => set(() => ({ uid: newVal })),
 	setName: (newVal) => set(() => ({ name: newVal })),
 	setPfp: (newVal) => set(() => ({ pfp: newVal }))

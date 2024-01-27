@@ -25,15 +25,23 @@ export default function Layout() {
 	const [swipingEnabled, setSwipingEnabled] = useState(true);
 	const filterRef = useRef();
 	const filterName = useStore((state) => state.currentFilterName);
-	const [globalReload, setGlobalReload, setUid, setName, setPfp] = useStore(
-		(state) => [
-			state.globalReload,
-			state.setGlobalReload,
-			state.setUid,
-			state.setName,
-			state.setPfp
-		]
-	);
+	const [
+		globalReload,
+		filterReload,
+		setGlobalReload,
+		setFilterReload,
+		setUid,
+		setName,
+		setPfp
+	] = useStore((state) => [
+		state.globalReload,
+		state.filterReload,
+		state.setGlobalReload,
+		state.setFilterReload,
+		state.setUid,
+		state.setName,
+		state.setPfp
+	]);
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	let screenWidth = Dimensions.get('window').width;
@@ -57,6 +65,15 @@ export default function Layout() {
 	useEffect(() => {
 		setGlobalReload(false);
 	}, [globalReload]);
+	useEffect(() => {
+		(async () => {
+			if (filterReload) {
+				let gc = await getFilterCircles();
+				setCircles(gc);
+				setFilterReload(false);
+			}
+		})();
+	}, [filterReload]);
 
 	return (
 		<BottomSheetModalProvider>
