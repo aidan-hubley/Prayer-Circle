@@ -7,17 +7,11 @@
 		"development": {
 			"channel": "development",
 			"developmentClient": true,
-			"distribution": "internal",
-			"env": {
-				"APP_VARIANT": "development"
-			}
+			"distribution": "internal"
 		},
 		"preview": {
 			"channel": "preview",
-			"distribution": "internal",
-			"env": {
-				"APP_VARIANT": "preview"
-			}
+			"distribution": "internal"
 		},
 		"production": {
 			"channel": "production"

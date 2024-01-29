@@ -1,56 +1,29 @@
 {
-	"name": "offcampus",
-	"version": "1.0.0",
-	"main": "expo-router/entry",
-	"scripts": {
-		"start": "expo start --tunnel",
-		"dev": "APP_VARIANT=development npx expo start --tunnel",
-		"develop": "npx expo start --dev-client",
-		"android": "expo run:android",
-		"ios": "expo run:ios",
-		"web": "expo start --web"
-	},
-	"dependencies": {
-		"@expo/vector-icons": "^13.0.0",
-		"@expo/webpack-config": "^19.0.0",
-		"@gorhom/bottom-sheet": "^4.5.1",
-		"@react-native-async-storage/async-storage": "1.18.2",
-		"@react-native-community/slider": "4.4.2",
-		"@react-navigation/stack": "^6.3.20",
-		"expo": "~49.0.15",
-		"expo-cached-image": "^49.0.2",
-		"expo-constants": "~14.4.2",
-		"expo-dev-client": "~2.4.12",
-		"expo-image-picker": "~14.3.2",
-		"expo-linking": "~5.0.2",
-		"expo-router": "^2.0.0",
-		"expo-splash-screen": "~0.20.5",
-		"expo-status-bar": "~1.6.0",
-		"expo-system-ui": "~2.4.0",
-		"expo-updates": "~0.18.19",
-		"firebase": "10.7.1",
-		"nativewind": "^2.0.11",
-		"react": "18.2.0",
-		"react-native": "0.72.6",
-		"react-native-animated-splash-screen": "^2.0.5",
-		"react-native-element-dropdown": "^2.10.1",
-		"react-native-gesture-handler": "~2.12.0",
-		"react-native-google-places-autocomplete": "^2.5.6",
-		"react-native-image-viewing": "github:marcelglaeser/react-native-image-viewing",
-		"react-native-keyboard-aware-scroll-view": "^0.9.5",
-		"react-native-maps": "1.7.1",
-		"react-native-pager-view": "6.2.0",
-		"react-native-progress": "^5.0.1",
-		"react-native-reanimated": "~3.3.0",
-		"react-native-safe-area-context": "4.6.3",
-		"react-native-screens": "~3.22.0",
-		"react-native-web": "~0.19.6",
-		"shorthash": "^0.0.2",
-		"tailwindcss": "3.3.2",
-		"zustand": "^4.4.7"
-	},
-	"devDependencies": {
-		"@babel/core": "^7.20.0"
-	},
-	"private": true
+  "name": "prayer-circle",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "expo": "~50.0.4",
+    "expo-status-bar": "~1.11.1",
+    "nativewind": "^2.0.11",
+    "react": "18.2.0",
+    "react-native": "0.73.2",
+    "tailwindcss": "3.3.2",
+    "expo-updates": "~0.24.9",
+    "expo-router": "~3.4.6",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "~3.29.0",
+    "expo-linking": "~6.2.2",
+    "expo-constants": "~15.4.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
 }
