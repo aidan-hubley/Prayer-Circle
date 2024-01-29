@@ -688,11 +688,11 @@ export default function Page() {
                                             <StyledView className='flex-row'>
                                                 <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
                                                 <Text className="mr-3 text-lg text-offwhite">
-                                                    Clear Cache
+                                                    Empty Cache
                                                 </Text>
                                             </StyledView>
                                         <Button
-                                            icon='trash-outline'
+                                            icon='sync'
                                             iconColor={'#FFFBFC'}
                                             iconSize={26}
                                             width={'w-[65px]'}
