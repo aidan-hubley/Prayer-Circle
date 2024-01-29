@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.0",
+    "@react-native-async-storage/async-storage": "1.18.2",
     "expo": "^49.0.15",
     "expo-barcode-scanner": "~12.5.3",
     "expo-cached-image": "^49.0.2",
     "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
+    "expo-dev-client": "~2.4.12",
     "expo-haptics": "~12.4.0",
     "expo-image-picker": "~14.3.2",
     "expo-linear-gradient": "~12.3.0",
@@ -28,6 +30,7 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.72.6",
+    "react-native-animated-splash-screen": "^2.0.5",
     "react-native-color-picker": "^0.6.0",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
@@ -39,8 +42,7 @@
     "react-qr-code": "^2.0.12",
     "shorthash": "^0.0.2",
     "tailwindcss": "3.3.2",
-    "zustand": "^4.5.0",
-    "expo-dev-client": "~2.4.12"
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
