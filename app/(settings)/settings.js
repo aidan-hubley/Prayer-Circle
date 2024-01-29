@@ -274,7 +274,7 @@ export default function Page() {
                             router.replace('/login');
                         }}
                     />
-                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign into Prayer Circle</StyledText>
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign back in next time</StyledText>
                 </StyledView>
             );
         case 'tos':
