@@ -24,10 +24,12 @@
 		"expo-image-picker": "~14.3.2",
 		"expo-linking": "~5.0.2",
 		"expo-router": "^2.0.0",
+		"expo-splash-screen": "~0.20.5",
 		"expo-status-bar": "~1.6.0",
 		"expo-system-ui": "~2.4.0",
 		"expo-updates": "~0.18.19",
 		"firebase": "10.7.1",
+		"nativewind": "^2.0.11",
 		"react": "18.2.0",
 		"react-native": "0.72.6",
 		"react-native-animated-splash-screen": "^2.0.5",
@@ -36,6 +38,7 @@
 		"react-native-google-places-autocomplete": "^2.5.6",
 		"react-native-image-viewing": "github:marcelglaeser/react-native-image-viewing",
 		"react-native-keyboard-aware-scroll-view": "^0.9.5",
+		"react-native-maps": "1.7.1",
 		"react-native-pager-view": "6.2.0",
 		"react-native-progress": "^5.0.1",
 		"react-native-reanimated": "~3.3.0",
@@ -43,9 +46,8 @@
 		"react-native-screens": "~3.22.0",
 		"react-native-web": "~0.19.6",
 		"shorthash": "^0.0.2",
-		"zustand": "^4.4.7",
-		"react-native-maps": "1.7.1",
-		"expo-splash-screen": "~0.20.5"
+		"tailwindcss": "3.3.2",
+		"zustand": "^4.4.7"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.20.0"
