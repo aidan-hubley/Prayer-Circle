@@ -1,18 +1,29 @@
 {
-  "cli": {
-    "version": ">= 5.2.0"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal"
-    },
-    "production": {}
-  },
-  "submit": {
-    "production": {}
-  }
+	"cli": {
+		"version": ">= 5.9.1",
+		"promptToConfigurePushNotifications": false
+	},
+	"build": {
+		"development": {
+			"channel": "development",
+			"developmentClient": true,
+			"distribution": "internal",
+			"env": {
+				"APP_VARIANT": "development"
+			}
+		},
+		"preview": {
+			"channel": "preview",
+			"distribution": "internal",
+			"env": {
+				"APP_VARIANT": "preview"
+			}
+		},
+		"production": {
+			"channel": "production"
+		}
+	},
+	"submit": {
+		"production": {}
+	}
 }

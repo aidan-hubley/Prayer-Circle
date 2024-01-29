@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useStore = create((set) => ({
 	filter: 'unfiltered',
