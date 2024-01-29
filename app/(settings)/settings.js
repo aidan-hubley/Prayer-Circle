@@ -63,7 +63,8 @@ export default function Page() {
 
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, null, true);
 		writeData(`prayer_circle/users/${me}/private/hiddenposts/${postId}`, null, true);
-		
+
+        bottomSheetModalRef.current?.dismiss();
 	}
 
     const handlePasswordReset = async () => {
@@ -188,7 +189,6 @@ export default function Page() {
         case 'tos':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
                     <StyledText className='text-white font-[600] text-[24px] pb-2'>
                         Terms of Service
                     </StyledText>
@@ -224,7 +224,6 @@ export default function Page() {
         case 'hiddenPosts':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
                     <StyledText className='text-white font-[600] text-[24px] pb-2'>
                         Hidden Posts
                     </StyledText>
