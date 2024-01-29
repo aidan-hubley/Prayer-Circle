@@ -150,9 +150,9 @@ export default function ProfilePage() {
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 							{name}
 						</StyledText>
-						<StyledText className=' text-offwhite text-[18px]'>
+						{/* <StyledText className=' text-offwhite text-[18px]'>
 							{email}
-						</StyledText>
+						</StyledText> */}
 					</StyledView>
 				}
 				ListFooterComponent={

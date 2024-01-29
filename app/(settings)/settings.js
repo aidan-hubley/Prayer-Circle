@@ -67,6 +67,11 @@ export default function Page() {
         bottomSheetModalRef.current?.dismiss();
 	}
 
+    const handleSignOutModalPress = () => {
+        setModalContent('signOut');
+        handlePresentModalPress();
+    };
+
     const handlePasswordReset = async () => {
         const user = auth.currentUser;
         if (user && user.email) {
@@ -153,6 +158,11 @@ export default function Page() {
         handlePresentModalPress();
     };
 
+    const handleEmailButtonPress = () => {
+        setModalContent('changeEmail');
+        handlePresentModalPress();
+    };
+
 	const selectedReminderInter = selectedReminder.interpolate({
 		inputRange: [0, 1, 2, 3, 4, 5],
 		outputRange: ['-3.5%', '15%', '35.5%', '54%', '72%', '90%']
@@ -186,6 +196,11 @@ export default function Page() {
 
     const handle = () => {
         switch (modalContent) {
+        case 'signOut':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px]'>
+                </StyledView>
+            );
         case 'tos':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
@@ -229,6 +244,15 @@ export default function Page() {
                     </StyledText>
                 </StyledView>
             );
+        case 'changeEmail':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Change Email
+                    </StyledText>
+                </StyledView>
+            );
         default:
             return null;
         }
@@ -236,6 +260,23 @@ export default function Page() {
 
     const renderContent = () => {
         switch (modalContent) {
+        case 'signOut':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <Button
+                        title='Sign Out'
+                        btnStyles='mt-3'
+                        width='w-[70%]'
+                        press={() => {
+                            signOut(auth);
+                            AsyncStorage.removeItem('user');
+                            AsyncStorage.removeItem('name');
+                            router.replace('/login');
+                        }}
+                    />
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign into Prayer Circle</StyledText>
+                </StyledView>
+            );
         case 'tos':
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite' style={{ height: '100%' }}>
@@ -333,6 +374,28 @@ export default function Page() {
                     </StyledView> 
                 </StyledView>
             );
+        case 'changeEmail':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your email address</StyledText>
+
+                    <StyledInput
+                        className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                        placeholder="New Email"
+                        placeholderTextColor={'#FFFBFC'}
+                    />
+                    <StyledInput
+                        className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+                        placeholder="Confirm New Email"
+                        placeholderTextColor={'#FFFBFC'}
+                    />
+                    <Button
+                        title='Confirm'
+                        btnStyles='mt-5'
+                        width='w-[70%]'
+                    />
+                </StyledView>
+            );
         default:
             return null;
         }
@@ -380,65 +443,50 @@ export default function Page() {
                                         </View>
                                     </View>
                                     <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-                                    <View className="flex-row items-center mt-5 px-5">
-                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                            <Text className="mr-3 text-lg text-offwhite">
-                                                Update Account
-                                            </Text>
-                                            <StyledView className='flex flex-row'>
-                                                <Button // TODO: add modal + backend
-                                                    title='Name'
-                                                    width={'w-[80px]'}
-                                                    height={'h-[35px]'}
+                                    <View className="flex-row mt-5 px-5">
+                                        <View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
+                                            <StyledView className="flex-row pb-5 w-full">
+                                                <Text className="text-lg text-offwhite">
+                                                    Update Profile
+                                                </Text>
+                                                <Button
+                                                    icon='information-circle-outline'
+                                                    width={'w-[30px]'}
+                                                    height={'h-[30px]'}
                                                     bgColor={'bg-transparent'}
-                                                    textColor={'text-offwhite'}
-                                                    borderColor={'border-offwhite'}
-                                                    btnStyles='mr-3 border-2'
+                                                    iconSize={30}
+                                                    iconColor={'#FFFBFC'}              
+                                                    btnStyles='absolute right-0'                          
+                                                    press={handleTimerButtonPress}
                                                 ></Button>
-                                                <Button // TODO: add modal + backend
-                                                    icon='camera'
-                                                    width={'w-[65px]'}
-                                                    height={'h-[35px]'}
-                                                    bgColor={'bg-transparent'}
-                                                    borderColor={'border-offwhite'}
-                                                    btnStyles='border-2'
-                                                    iconSize={26}
-                                                    iconColor={'#FFFBFC'}
-                                                ></Button>
+                                            </StyledView>
+                                            <StyledView className="flex-row justify-between">
+                                                <StyledView className="w-50 flex-row">
+                                                    <Button // TODO: add modal + backend                                                    
+                                                        title='Change Username'
+                                                        textColor={'text-offwhite'}
+                                                        textStyles='font-normal'
+                                                        width={'w-[250px]'}
+                                                        height={'h-[35px]'}
+                                                        bgColor={'bg-transparent'}
+                                                        borderColor={'border-offwhite'}
+                                                        btnStyles='border-2'
+                                                    ></Button>
+                                                </StyledView>
+                                                <StyledView className="w-50 flex-row">
+                                                    <Button // TODO: add modal + backend
+                                                        icon='camera'
+                                                        iconColor={'#FFFBFC'}
+                                                        width={'w-[65px]'}
+                                                        height={'h-[35px]'}
+                                                        bgColor={'bg-transparent'}
+                                                        borderColor={'border-offwhite'}
+                                                        btnStyles='border-2'
+                                                    ></Button>
+                                                </StyledView>
                                             </StyledView>
                                         </View>
                                     </View>
-                                    <View className="flex-row items-center mt-5 px-5">
-                                        <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
-                                            <Text className="mr-3 text-lg text-offwhite">
-                                                Change Password
-                                            </Text>
-                                            <StyledView className='flex flex-row'>
-                                                <Button
-                                                    icon='text'
-                                                    width={'w-[80px]'}
-                                                    height={'h-[35px]'}
-                                                    iconSize={26}
-                                                    press={handlePasswordModalPress}
-                                                    bgColor={'bg-transparent'}
-                                                    borderColor={'border-offwhite'}
-                                                    iconColor={'#FFFBFC'}
-                                                    btnStyles='mr-3 border-2'
-                                                ></Button>
-                                                <Button
-                                                    icon='mail'
-                                                    width={'w-[65px]'}
-                                                    height={'h-[35px]'}
-                                                    bgColor={'bg-transparent'}
-                                                    borderColor={'border-offwhite'}
-                                                    iconSize={26}
-                                                    iconColor={'#FFFBFC'}
-                                                    btnStyles='border-2'
-                                                    press={handlePasswordReset}
-                                                ></Button>
-                                            </StyledView>
-                                        </View>
-                                    </View>   
                                     <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
                                     <View className="flex-row items-center mt-5 px-5">
                                         <View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
@@ -470,7 +518,7 @@ export default function Page() {
                                                     Presence Timers
                                                 </Text>
                                                 <Button
-                                                    icon='list'
+                                                    icon='menu'
                                                     width={'w-[30px]'}
                                                     height={'h-[30px]'}
                                                     bgColor={'bg-transparent'}
@@ -505,17 +553,16 @@ export default function Page() {
                                                 <Text className="text-lg text-offwhite pr-1">
                                                     Presence Reminder                                                    
                                                 </Text>
-                                                <StyledView className="absolute right-0">
-                                                    <Button
-                                                        icon='information-circle-outline'
-                                                        width={'w-[30px]'}
-                                                        height={'h-[30px]'}
-                                                        bgColor={'bg-transparent'}
-                                                        iconSize={30}
-                                                        iconColor={'#FFFBFC'}                                        
-                                                        press={handleReminderButtonPress}
-                                                    ></Button>
-                                                </StyledView>
+                                                <Button
+                                                    icon='information-circle-outline'
+                                                    width={'w-[30px]'}
+                                                    height={'h-[30px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    iconSize={30}
+                                                    iconColor={'#FFFBFC'}              
+                                                    btnStyles='absolute right-0'                          
+                                                    press={handleTimerButtonPress}
+                                                ></Button>
                                             </StyledView>                                
                                             <StyledView className="w-[98%] flex-row justify-between">
                                                 <StyledAnimatedView
@@ -566,7 +613,55 @@ export default function Page() {
                                         ></Button>
                                         </View>
                                     </View>
-                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />                                    
+                                    <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />  
+                                    <View className="flex-row mt-5 px-5">
+                                        <View className="justify-between bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+                                            <StyledView className="flex-row pb-5 w-full">
+                                                <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+                                                <Text className="text-lg text-offwhite">
+                                                    Change Password
+                                                </Text>
+                                                <Button
+                                                    icon='information-circle-outline'
+                                                    width={'w-[30px]'}
+                                                    height={'h-[30px]'}
+                                                    bgColor={'bg-transparent'}
+                                                    iconSize={30}
+                                                    iconColor={'#FFFBFC'}              
+                                                    btnStyles='absolute right-0'                          
+                                                    press={handleTimerButtonPress}
+                                                ></Button>
+                                            </StyledView>                                            
+                                            <StyledView className='flex-row justify-between'>
+                                                <StyledView className="w-50">
+                                                    <Button
+                                                        title='Change Password'
+                                                        textColor={'text-offwhite'}
+                                                        textStyles='font-normal'
+                                                        width={'w-[250px]'}
+                                                        height={'h-[35px]'}
+                                                        bgColor={'bg-transparent'}
+                                                        borderColor={'border-offwhite'}
+                                                        btnStyles='mr-3 border-2'
+                                                        press={handlePasswordModalPress}
+                                                    ></Button>
+                                                </StyledView>
+                                                <StyledView className="w-50">
+                                                    <Button
+                                                        icon='mail'
+                                                        width={'w-[65px]'}
+                                                        height={'h-[35px]'}
+                                                        bgColor={'bg-transparent'}
+                                                        borderColor={'border-offwhite'}
+                                                        iconSize={26}
+                                                        iconColor={'#FFFBFC'}
+                                                        btnStyles='border-2'
+                                                        press={handlePasswordReset}
+                                                    ></Button>
+                                                </StyledView>
+                                            </StyledView>
+                                        </View>
+                                    </View>                                  
                                     <View className="flex-row items-center mt-5 px-5">
                                         <View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
                                             <StyledView className='flex-row'>
@@ -576,7 +671,7 @@ export default function Page() {
                                                 </Text>
                                             </StyledView>
                                         <Button
-                                            icon='trash-outline'
+                                            icon='create-outline'
                                             iconColor={'#FFFBFC'}
                                             iconSize={26}
                                             width={'w-[65px]'}
@@ -584,6 +679,7 @@ export default function Page() {
                                             bgColor={'bg-transparent'}
                                             borderColor={'border-white'}
                                             btnStyles='border-2'
+                                            press={handleEmailButtonPress}
                                         ></Button>
                                         </View>
                                     </View>
@@ -676,12 +772,7 @@ export default function Page() {
                         width={'w-[50px]'}
                         height={'h-[50px]'}
                         iconSize={30}
-                        press={() => {
-                            signOut(auth);
-                            AsyncStorage.removeItem('user');
-                            AsyncStorage.removeItem('name');
-                            router.replace('/login');
-                        }}
+                        press={handleSignOutModalPress}                        
                     >
                     </Button>
                 </StyledView>
@@ -691,7 +782,8 @@ export default function Page() {
                     ref={bottomSheetModalRef}
                     index={0}
                     snapPoints={
-                        modalContent == 'tos' ? ['85%'] 
+                        modalContent == 'signOut' ? ['15%']
+                        : modalContent == 'tos' ? ['85%'] 
                         : modalContent == 'timer' ? ['35%'] 
                         : modalContent == 'password' ? ['65%', '85%'] 
                         : modalContent == 'reminder' ? ['35%'] 
