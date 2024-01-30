@@ -74,6 +74,7 @@ export const Post = (post) => {
 	const [edited, setEdited] = useState(post.edited);
 	const [type, setType] = useState(post.type);
 	const [bookmarked, setBookmarked] = useState(false);
+	const [isExpanded, setIsExpanded] = useState(false);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -517,7 +518,9 @@ export const Post = (post) => {
 	}, []);
 
 	return (
-		<StyledPressable className='w-full max-w-[500px]'>
+		<StyledPressable 
+		onPress={() => setIsExpanded(!isExpanded)}
+		className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
@@ -554,9 +557,7 @@ export const Post = (post) => {
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{title?.length > 21
-											? title.substring(0, 21) + '...'
-											: title}
+										{isExpanded || title?.length <= 21 ? title : title.substring(0, 21) + '...'}
 									</StyledText>
 									<StyledView className='flex flex-row'>
 										<StyledText
