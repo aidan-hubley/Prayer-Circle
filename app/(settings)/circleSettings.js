@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import {
 	Text,
 	View,
@@ -41,10 +41,12 @@ export default function Page() {
 	};
 
 	// bottom sheet modal
+	const bottomSheetModalRef = useRef(null);
 	const snapPoints = useMemo(() => ['85%'], []);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
+	const [modalContent, setModalContent] = useState(null);
 	const handleSheetChanges = useCallback((index) => {}, []);
 
 	const [isEnabled, setIsEnabled] = useState(false);
@@ -121,28 +123,90 @@ export default function Page() {
 		}
 	];
 
-	const dummyData2 = [
-		{
-			name: 'Shiela Sunrise',
-			username: 'GotHops00',
-			img: Trevor
-		},
-		{
-			name: 'James Byrd',
-			username: 'NamesByrd...JamesByrd',
-			img: Trevor
-		},
-		{
-			name: 'Bentley LastName',
-			username: 'TotallyNotBartholomew',
-			img: Trevor
-		},
-		{
-			name: 'Agent 9',
-			username: 'MonkeyModeActivated',
-			img: Trevor
+	const backdrop = (backdropProps) => {
+		return (
+			<BottomSheetBackdrop
+				{...backdropProps}
+				opacity={0.5}
+				appearsOnIndex={0}
+				disappearsOnIndex={-1}
+				enableTouchThrough={true}
+			/>
+		);
+	};
+
+	const handleQueuePress = () => {
+		setModalContent('queue');
+		handlePresentModalPress();
+	};
+
+	const handle = () => {
+		switch (modalContent) {
+			case 'queue':
+				return (
+					<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+						<StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
+						<StyledText className='text-white font-[600] text-[24px] pb-2'>
+							User Queue
+						</StyledText>
+					</StyledView>
+				);
+			default:
+				return null;
 		}
-	];
+	};
+
+	const renderContent = () => {
+		switch (modalContent) {
+			case 'queue':
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledView className='flex-1 ml-[8px]'>
+							<StyledView className=' flex flex-row items-center'>
+								<StyledText className='font-bold text-[18px] text-white'>
+									Shiela Sunrise
+								</StyledText>
+							</StyledView>
+							<StyledText className='text-white text-[16px]'>
+								GotHops00
+							</StyledText>
+						</StyledView>
+						<StyledView className='flex-1 ml-[8px]'>
+							<StyledView className=' flex flex-row items-center'>
+								<StyledText className='font-bold text-[18px] text-white'>
+									James Byrd
+								</StyledText>
+							</StyledView>
+							<StyledText className='text-white text-[16px]'>
+								NamesByrd...JamesByrd
+							</StyledText>
+						</StyledView>
+						<StyledView className='flex-1 ml-[8px]'>
+							<StyledView className=' flex flex-row items-center'>
+								<StyledText className='font-bold text-[18px] text-white'>
+									Bentley Lastname
+								</StyledText>
+							</StyledView>
+							<StyledText className='text-white text-[16px]'>
+								TotallyNotBartholomew
+							</StyledText>
+						</StyledView>
+						<StyledView className='flex-1 ml-[8px]'>
+							<StyledView className=' flex flex-row items-center'>
+								<StyledText className='font-bold text-[18px] text-white'>
+									Agent 9
+								</StyledText>
+							</StyledView>
+							<StyledText className='text-white text-[16px]'>
+								MonkeyModeActivated
+							</StyledText>
+						</StyledView>
+					</StyledView>
+				);
+			default:
+				return null;
+		}
+	};
 
 	return (
 		<BottomSheetModalProvider>
@@ -273,10 +337,10 @@ export default function Page() {
 						href='/mainViewLayout'
 					/>
 					<Button // Queue
-						title='Queue'
+						title='Queue: 4'
 						height={'h-[50px]'}
 						width={'w-[200px]'}
-						//press=
+						press={handleQueuePress}
 					/>
 					<Button // to Share Page
 						height={'h-[50px]'}
@@ -370,6 +434,23 @@ export default function Page() {
 						</StyledView>
 					</StyledView>
 				</StyledModal>
+
+				<BottomSheetModal
+					enableDismissOnClose={true}
+					ref={bottomSheetModalRef}
+					index={0}
+					snapPoints={['65%']}
+					onChange={handleSheetChanges}
+					handleComponent={handle}
+					backdropComponent={(backdropProps) =>
+						backdrop(backdropProps)
+					}
+					keyboardBehavior='extend'
+				>
+					<StyledView className='flex-1 bg-offblack'>
+						{renderContent()}
+					</StyledView>
+				</BottomSheetModal>
 			</StyledView>
 		</BottomSheetModalProvider>
 	);
