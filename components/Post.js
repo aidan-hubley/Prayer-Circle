@@ -53,7 +53,7 @@ const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 
 
-export const Post = (post) => {
+export const Post = ({ post }) => {
 	// variables
 	const tS = timeSince(post.timestamp);
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
@@ -101,7 +101,7 @@ export const Post = (post) => {
 
 
 	const isTextTruncated = (text) => {
-    return text.length > 300; // Assuming 300 is the truncation limit
+     return text && text.length > 300;
 	};
 	// bottom sheet modal
 	const snapPoints = useMemo(() => ['85%'], []);
@@ -611,7 +611,7 @@ export const Post = (post) => {
 									)}
 								/>
 							</StyledPressable>
-							{isTextTruncated(content) && (
+							{isTextTruncated(post.content) && (
 								<StyledOpacity onPress={handleExpanded} className='flex items-center justify-center py-2'>
 									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
 								</StyledOpacity>
