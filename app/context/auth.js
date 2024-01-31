@@ -58,7 +58,7 @@ export function Provider(props) {
 				router.replace('/login');
 			} else if (user && inAuthGroup) {
 				SplashScreen.hideAsync();
-				router.replace('(auth)/login');
+				router.replace('/');
 			} else {
 				setTimeout(() => {
 					SplashScreen.hideAsync();
@@ -106,8 +106,7 @@ export function Provider(props) {
 					['email', user.email],
 					['profile_img', userData.public.profile_img]
 				]);
-
-				router.replace('/mainViewLayout');
+				setAuth(true);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -124,7 +123,7 @@ export function Provider(props) {
 				const user = userCredential.user;
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
 				writeData(`usernames/${username}`, user.uid, true);
-				loginUser(email, password);
+				login(email, password);
 			})
 			.catch((error) => {
 				const errorCode = error.code;

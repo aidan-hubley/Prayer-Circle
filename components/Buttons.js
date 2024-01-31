@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
-import { router } from '../backend/config';
+import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
 
@@ -82,108 +82,126 @@ const Button = forwardRef((props, ref) => {
 	);
 });
 
-const ExpandableButton = forwardRef((props, ref) => {
-	const [pressed, setPressed] = useState(props.expanded || false);
-	const [wi, setWi] = useState(new Animated.Value(props.expanded ? 1 : 0));
+const ExpandableButton = forwardRef(
+	(
+		{
+			title,
+			icon,
+			width,
+			height,
+			textSize,
+			iconSize,
+			textStyles,
+			btnStyles,
+			bgColor,
+			textColor,
+			iconColor,
+			borderColor,
+			press,
+			href,
+			expandedHref,
+			expanded,
+			collapsedWidth,
+			expandedWidth
+		},
+		ref
+	) => {
+		const [pressed, setPressed] = useState(expanded || false);
+		const [wi, setWi] = useState(new Animated.Value(expanded ? 1 : 0));
 
-	const deviceWidth = Dimensions.get('window').width;
+		const deviceWidth = Dimensions.get('window').width;
 
-	if (
-		typeof props.expandedWidth == 'string' &&
-		props.expandedWidth.includes('%')
-	) {
-		props.expandedWidth =
-			deviceWidth * (parseInt(props.expandedWidth) / 100);
-	}
-	if (
-		typeof props.collapsedWidth == 'string' &&
-		collapsedWidth.includes('%')
-	) {
-		props.collapsedWidth =
-			deviceWidth * (parseInt(props.collapsedWidth) / 100);
-	}
-
-	const wiInter = wi.interpolate({
-		inputRange: [0, 1],
-		outputRange: [
-			props.collapsedWidth || '13%',
-			props.expandedWidth || '100%'
-		]
-	});
-
-	const btnWidth = {
-		width: wiInter
-	};
-
-	function toggleButton(direction) {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-		if (direction == 'expand') {
-			setPressed(true);
-			Animated.spring(wi, {
-				toValue: 1,
-				duration: 400,
-				useNativeDriver: false
-			}).start();
-		} else if (direction == 'collapse') {
-			setPressed(false);
-			Animated.spring(wi, {
-				toValue: 0,
-				duration: 400,
-				useNativeDriver: false
-			}).start();
-		} else {
-			setPressed(!pressed);
-			Animated.spring(wi, {
-				toValue: pressed ? 0 : 1,
-				duration: 400,
-				useNativeDriver: false
-			}).start();
+		if (typeof expandedWidth == 'string' && expandedWidth.includes('%')) {
+			expandedWidth = deviceWidth * (parseInt(expandedWidth) / 100);
 		}
+		if (typeof collapsedWidth == 'string' && collapsedWidth.includes('%')) {
+			collapsedWidth = deviceWidth * (parseInt(collapsedWidth) / 100);
+		}
+
+		const wiInter = wi.interpolate({
+			inputRange: [0, 1],
+			outputRange: [collapsedWidth || '13%', expandedWidth || '100%']
+		});
+
+		const btnWidth = {
+			width: wiInter
+		};
+
+		const btnText = {
+			opacity: wi
+		};
+
+		function toggleButton(direction) {
+			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+			if (direction == 'expand') {
+				setPressed(true);
+				Animated.spring(wi, {
+					toValue: 1,
+					duration: 400,
+					useNativeDriver: false
+				}).start();
+			} else if (direction == 'collapse') {
+				setPressed(false);
+				Animated.spring(wi, {
+					toValue: 0,
+					duration: 400,
+					useNativeDriver: false
+				}).start();
+			} else {
+				setPressed(!pressed);
+				Animated.spring(wi, {
+					toValue: pressed ? 0 : 1,
+					duration: 400,
+					useNativeDriver: false
+				}).start();
+			}
+		}
+
+		useImperativeHandle(ref, () => ({
+			toggleButton,
+			pressed
+		}));
+
+		return (
+			<AnimatedHighlight
+				style={btnWidth}
+				activeOpacity={0.6}
+				underlayColor={bgColor || '#DDD'}
+				className={`flex items-center justify-center rounded-full ${
+					bgColor || 'bg-offwhite'
+				} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
+					borderColor ? `border ${borderColor}` : 'border-none'
+				} ${btnStyles || ''} ${pressed ? 'z-10' : 'z-0'}`}
+				onPressOut={() => {
+					toggleButton();
+				}}
+				onPress={() => {
+					if (press) press();
+					if (expandedHref && pressed) router.push(expandedHref);
+					else if (href) router.push(href);
+				}}
+			>
+				<>
+					<StyledText
+						/* style={{ opacity: wi }} */
+						className={`${
+							!pressed ? 'hidden' : 'flex'
+						} font-bold  ${textColor || 'text-offblack'} ${
+							textSize ? textSize : 'text-[20px]'
+						} ${textStyles}`}
+					>
+						{title}
+					</StyledText>
+					<StyledIcon
+						name={`${icon || 'md-checkmark-circle'}`}
+						size={iconSize || 30}
+						color={`${iconColor || '#121212'}`}
+						className={`${pressed ? 'hidden' : 'flex'}`}
+					/>
+				</>
+			</AnimatedHighlight>
+		);
 	}
-
-	useImperativeHandle(ref, () => ({
-		toggleButton,
-		pressed
-	}));
-
-	return (
-		<AnimatedHighlight
-			style={btnWidth}
-			activeOpacity={0.6}
-			underlayColor={props.bgColor || '#DDD'}
-			className={`flex items-center justify-center rounded-full ${
-				props.bgColor || 'bg-offwhite'
-			} ${props.width || 'w-11/12'} ${props.height || 'h-[50px]'} ${
-				props.borderColor
-					? `border ${props.borderColor}`
-					: 'border-none'
-			} ${props.btnStyles || ''} ${pressed ? 'z-10' : 'z-0'}`}
-			onPressOut={toggleButton}
-			onPress={() => {
-				if (props.press) props.press();
-				if (props.expandedHref && pressed)
-					router.push(props.expandedHref);
-				else if (props.href) router.push(props.href);
-			}}
-		>
-			<>
-				<StyledText
-					/* style={{ opacity: wi }} */
-					className={`${!pressed ? 'hidden' : 'flex'} font-bold  ${
-						props.textColor || 'text-offblack'
-					} ${props.textSize || 'text-[20px]'} ${props.textStyles}`}
-				>
-					{props.title}
-				</StyledText>
-				<StyledIcon
-					name={`${props.icon || 'md-checkmark-circle'}`}
-					size={props.iconSize || 30}
-					color={`${props.iconColor || '#121212'}`}
-					className={`${pressed ? 'hidden' : 'flex'}`}
-				/>
-			</>
-		</AnimatedHighlight>
-	);
-});
+);
 
 export { Button, ExpandableButton };

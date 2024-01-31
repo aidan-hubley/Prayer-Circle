@@ -103,8 +103,6 @@ export default function Login() {
 											'Please fill out all fields'
 										);
 									authContext.signIn(email, pass);
-									setEmail('');
-									setPass('');
 								}}
 							/>
 							<StyledText className='text-offwhite text-center text-[18px] my-2'>
@@ -145,7 +143,7 @@ export default function Login() {
 				ref={bottomSheetModalRef}
 				index={0}
 				snapPoints={snapPoints}
-				handleComponent={handle}
+				handleComponent={() => handle('Reset Password')}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
