@@ -67,6 +67,26 @@ export default function Page() {
         bottomSheetModalRef.current?.dismiss();
 	}
 
+    const handleTOSModalPress = () => {
+        setModalContent('tos');
+        handlePresentModalPress();
+    };
+
+    const handleUpdProfileInfoModalPress = () => {
+        setModalContent('updProfileInfo');
+        handlePresentModalPress();
+    };
+
+    const handleChangeUsernameModalPress = () => {
+        setModalContent('changeUsername');
+        handlePresentModalPress();
+    };
+
+    const handleUpdateProfilePicModalPress = () => {
+        setModalContent('updateProfilePic');
+        handlePresentModalPress();
+    };
+
     const handleSignOutModalPress = () => {
         setModalContent('signOut');
         handlePresentModalPress();
@@ -132,11 +152,6 @@ export default function Page() {
         bottomSheetModalRef.current?.present();
     }, []);
 
-    const handleTOSModalPress = () => {
-        setModalContent('tos');
-        handlePresentModalPress();
-    };
-
     const handlePasswordModalPress = () => {
         setModalContent('password');
         handlePresentModalPress();
@@ -160,6 +175,16 @@ export default function Page() {
 
     const handleEmailButtonPress = () => {
         setModalContent('changeEmail');
+        handlePresentModalPress();
+    };
+
+    const handleEmptyCacheModalPress = () => {
+        setModalContent('emptyCache');
+        handlePresentModalPress();
+    };
+
+    const handleDeleteProfileModalPress = () => {
+        setModalContent('deleteProfile');
         handlePresentModalPress();
     };
 
@@ -212,8 +237,8 @@ export default function Page() {
         case 'password':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
-                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
+                    <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
                         Change Password
                     </StyledText>
                 </StyledView>
@@ -247,9 +272,27 @@ export default function Page() {
         case 'changeEmail':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
+                    <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
+                        Change Email
+                    </StyledText>
+                </StyledView>
+            );
+        case 'emptyCache':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
+                    <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
+                        Empty Cache
+                    </StyledText>
+                </StyledView>
+            );
+        case 'deleteProfile':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
                     <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
                     <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                        Change Email
+                        Delete Profile
                     </StyledText>
                 </StyledView>
             );
@@ -377,8 +420,6 @@ export default function Page() {
         case 'changeEmail':
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your email address</StyledText>
-
                     <StyledInput
                         className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
                         placeholder="New Email"
@@ -391,9 +432,23 @@ export default function Page() {
                     />
                     <Button
                         title='Confirm'
+                        textColor={'text-offwhite'}
                         btnStyles='mt-5'
                         width='w-[70%]'
+                        
                     />
+                </StyledView>
+            );
+        case 'emptyCache':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Clear all cached data</StyledText>
+                </StyledView>
+            );
+        case 'deleteProfile':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This action cannot be undone</StyledText>
                 </StyledView>
             );
         default:
