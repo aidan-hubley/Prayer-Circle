@@ -136,7 +136,6 @@ export default function ProfilePage() {
 										width: '100%',
 										height: '100%',
 										borderRadius: 18,
-										backgroundColor: 'red',
 										display: profileImage ? 'flex' : 'none'
 									}}
 									source={{
