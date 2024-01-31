@@ -67,31 +67,7 @@ export default function Page() {
         bottomSheetModalRef.current?.dismiss();
 	}
 
-    const handleTOSModalPress = () => {
-        setModalContent('tos');
-        handlePresentModalPress();
-    };
-
-    const handleUpdProfileInfoModalPress = () => {
-        setModalContent('updProfileInfo');
-        handlePresentModalPress();
-    };
-
-    const handleChangeUsernameModalPress = () => {
-        setModalContent('changeUsername');
-        handlePresentModalPress();
-    };
-
-    const handleUpdateProfilePicModalPress = () => {
-        setModalContent('updateProfilePic');
-        handlePresentModalPress();
-    };
-
-    const handleSignOutModalPress = () => {
-        setModalContent('signOut');
-        handlePresentModalPress();
-    };
-
+    
     const handlePasswordReset = async () => {
         const user = auth.currentUser;
         if (user && user.email) {
@@ -151,13 +127,28 @@ export default function Page() {
     const handlePresentModalPress = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
-
-    const handlePasswordModalPress = () => {
-        setModalContent('password');
+    
+    const handleTOSModalPress = () => {
+        setModalContent('tos');
         handlePresentModalPress();
     };
 
-    const handleTimerButtonPress = () => {
+    const handleUpdProfileInfoModalPress = () => {
+        setModalContent('updProfileInfo');
+        handlePresentModalPress();
+    };
+
+    const handleChangeUsernameModalPress = () => {
+        setModalContent('changeUsername');
+        handlePresentModalPress();
+    };
+
+    const handleUpdateProfilePicModalPress = () => {
+        setModalContent('updateProfilePic');
+        handlePresentModalPress();
+    };
+
+    const handleTimerModalPress = () => {
         setModalContent('timer');
         handlePresentModalPress();
     };
@@ -173,6 +164,16 @@ export default function Page() {
         handlePresentModalPress();
     };
 
+    const handlePasswordInfoModalPress = () => {
+        setModalContent('passwordInfo');
+        handlePresentModalPress();
+    };
+
+    const handleChangePasswordModalPress = () => {
+        setModalContent('password');
+        handlePresentModalPress();
+    };
+
     const handleEmailButtonPress = () => {
         setModalContent('changeEmail');
         handlePresentModalPress();
@@ -185,6 +186,11 @@ export default function Page() {
 
     const handleDeleteProfileModalPress = () => {
         setModalContent('deleteProfile');
+        handlePresentModalPress();
+    };
+
+    const handleSignOutModalPress = () => {
+        setModalContent('signOut');
         handlePresentModalPress();
     };
 
@@ -512,7 +518,7 @@ export default function Page() {
                                                     iconSize={30}
                                                     iconColor={'#FFFBFC'}              
                                                     btnStyles='absolute right-0'                          
-                                                    press={handleTimerButtonPress}
+                                                    press={handleTimerModalPress}
                                                 ></Button>
                                             </StyledView>
                                             <StyledView className="flex-row justify-between">
@@ -580,7 +586,7 @@ export default function Page() {
                                                     iconSize={30}
                                                     iconColor={'#FFFBFC'}              
                                                     btnStyles='absolute right-0'                          
-                                                    press={handleTimerButtonPress}
+                                                    press={handleTimerModalPress}
                                                 ></Button>
                                             </StyledView>
                                             <StyledView className="w-full flex-row justify-between">
@@ -616,7 +622,7 @@ export default function Page() {
                                                     iconSize={30}
                                                     iconColor={'#FFFBFC'}              
                                                     btnStyles='absolute right-0'                          
-                                                    press={handleTimerButtonPress}
+                                                    press={handleTimerModalPress}
                                                 ></Button>
                                             </StyledView>                                
                                             <StyledView className="w-[98%] flex-row justify-between">
@@ -684,7 +690,7 @@ export default function Page() {
                                                     iconSize={30}
                                                     iconColor={'#FFFBFC'}              
                                                     btnStyles='absolute right-0'                          
-                                                    press={handleTimerButtonPress}
+                                                    press={handleTimerModalPress}
                                                 ></Button>
                                             </StyledView>                                            
                                             <StyledView className='flex-row justify-between'>
@@ -698,7 +704,7 @@ export default function Page() {
                                                         bgColor={'bg-transparent'}
                                                         borderColor={'border-offwhite'}
                                                         btnStyles='mr-3 border-2'
-                                                        press={handlePasswordModalPress}
+                                                        press={handleChangePasswordModalPress}
                                                     ></Button>
                                                 </StyledView>
                                                 <StyledView className="w-50">
