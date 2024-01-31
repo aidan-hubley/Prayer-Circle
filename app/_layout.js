@@ -47,7 +47,16 @@ function RootLayoutNavigation() {
 
 	return (
 		<BottomSheetModalProvider>
-			<Stack screenOptions={{ headerShown: false }}></Stack>
+			<Stack screenOptions={{ headerShown: false }}>
+				<Stack.Screen
+					name='(aux)/circleSettings'
+					options={{ presentation: 'modal' }}
+				/>
+				<Stack.Screen
+					name='(aux)/shareCircle'
+					options={{ presentation: 'modal' }}
+				/>
+			</Stack>
 		</BottomSheetModalProvider>
 	);
 }

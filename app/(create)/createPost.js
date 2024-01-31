@@ -94,10 +94,12 @@ export default function Page() {
 					title='Erase'
 					width='w-[125px]'
 					height='h-[60px]'
-					href='/index'
 					bgColor={'bg-offblack'}
 					borderColor={'border-offwhite border-2'}
 					textColor={'text-offwhite'}
+					press={() => {
+						router.push('/');
+					}}
 				/>
 				<Button
 					title='Draw'

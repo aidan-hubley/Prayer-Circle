@@ -15,7 +15,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { styled } from 'nativewind';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { Button } from '../../components/Buttons';
-import { loginUser } from '../../backend/firebaseFunctions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '../context/auth';

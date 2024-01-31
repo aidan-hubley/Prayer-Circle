@@ -98,7 +98,7 @@ export default function FeedPage() {
 								setRefreshing(true);
 								setUpFeed();
 							}}
-							refreshing={refreshing && !initialLoad == 'loading'}
+							refreshing={refreshing}
 							tintColor='#ebebeb'
 						/>
 					}
@@ -160,7 +160,6 @@ export default function FeedPage() {
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
-					extraData={refreshing}
 				/>
 			</StyledView>
 
