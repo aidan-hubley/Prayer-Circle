@@ -221,9 +221,6 @@ export default function ProfilePage() {
 					icon='settings'
 					iconSize={30}
 					href='/settings'
-					press={() => {
-						console.log('press');
-					}}
 				/>
 			</StyledView>
 			<StyledGradient

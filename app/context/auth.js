@@ -52,29 +52,23 @@ export function Provider(props) {
 			if (!isNavigationReady) return;
 
 			const inAuthGroup = segments[0] === '(auth)';
-			console.log('segments', segments);
-			console.log('user', user, 'authGroup', inAuthGroup);
 			if (!user && !inAuthGroup) {
-				console.log('not logged in and send to auth');
 				setTimeout(() => {
 					SplashScreen.hideAsync();
 				}, 500);
 				router.replace('/login');
 			} else if (user && inAuthGroup) {
-				console.log('log in and send to main');
 				SplashScreen.hideAsync();
 				router.push(
 					'/'
 				); /* TODO: fix this to replace the current screen */
 			} else {
-				console.log('else');
 				SplashScreen.hideAsync();
 			}
 		}, [user, segments, authInitialized, isNavigationReady]);
 	};
 	useEffect(() => {
 		onAuthStateChanged(auth, (token) => {
-			console.log('token', token);
 			if (token) {
 				setAuth(true);
 			} else {
