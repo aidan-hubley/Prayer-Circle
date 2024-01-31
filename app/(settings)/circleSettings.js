@@ -12,6 +12,7 @@ import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
+import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
 	BottomSheetModal,
@@ -123,6 +124,33 @@ export default function Page() {
 		}
 	];
 
+	const dummyData2 = [
+		{
+			key: '1',
+			name: 'Shiela Sunrise',
+			username: 'GotHops00',
+			img: Trevor
+		},
+		{
+			key: '2',
+			name: 'James Byrd',
+			username: 'NamesByrd...JamesByrd',
+			img: Trevor
+		},
+		{
+			key: '3',
+			name: 'Bentley Lastname',
+			username: 'TotallyNotBartholomew',
+			img: Trevor
+		},
+		{
+			key: '4',
+			name: 'Agent 9',
+			username: 'MonkeyModeActivated',
+			img: Trevor
+		}
+	];
+
 	const backdrop = (backdropProps) => {
 		return (
 			<BottomSheetBackdrop
@@ -161,46 +189,19 @@ export default function Page() {
 			case 'queue':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='flex-1 ml-[8px]'>
-							<StyledView className=' flex flex-row items-center'>
-								<StyledText className='font-bold text-[18px] text-white'>
-									Shiela Sunrise
-								</StyledText>
-							</StyledView>
-							<StyledText className='text-white text-[16px]'>
-								GotHops00
-							</StyledText>
-						</StyledView>
-						<StyledView className='flex-1 ml-[8px]'>
-							<StyledView className=' flex flex-row items-center'>
-								<StyledText className='font-bold text-[18px] text-white'>
-									James Byrd
-								</StyledText>
-							</StyledView>
-							<StyledText className='text-white text-[16px]'>
-								NamesByrd...JamesByrd
-							</StyledText>
-						</StyledView>
-						<StyledView className='flex-1 ml-[8px]'>
-							<StyledView className=' flex flex-row items-center'>
-								<StyledText className='font-bold text-[18px] text-white'>
-									Bentley Lastname
-								</StyledText>
-							</StyledView>
-							<StyledText className='text-white text-[16px]'>
-								TotallyNotBartholomew
-							</StyledText>
-						</StyledView>
-						<StyledView className='flex-1 ml-[8px]'>
-							<StyledView className=' flex flex-row items-center'>
-								<StyledText className='font-bold text-[18px] text-white'>
-									Agent 9
-								</StyledText>
-							</StyledView>
-							<StyledText className='text-white text-[16px]'>
-								MonkeyModeActivated
-							</StyledText>
-						</StyledView>
+						<FlatList
+							data={dummyData2}
+							renderItem={({ item }) => {
+								return (
+									<MemberQueue
+										name={item.name}
+										username={item.username}
+										img={item.img}
+										last={item.key == dummyData.length}
+									/>
+								);
+							}}
+						/>
 					</StyledView>
 				);
 			default:
