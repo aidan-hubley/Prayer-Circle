@@ -99,6 +99,10 @@ export const Post = (post) => {
 		}
 	};
 
+
+	const isTextTruncated = (text) => {
+    return text.length > 300; // Assuming 300 is the truncation limit
+	};
 	// bottom sheet modal
 	const snapPoints = useMemo(() => ['85%'], []);
 	const handlePresentModalPress = useCallback(() => {
@@ -136,7 +140,7 @@ export const Post = (post) => {
 	};
 
 	const handleExpanded = () => {
-		console.log("Pressed!");
+		setIsExpanded(prevState => !prevState);
 	}
 
 	const handle = (title) => {
@@ -241,7 +245,7 @@ export const Post = (post) => {
 							placeholderTextColor={'#ffffff40'}
 							inputMode='text'
 							autoCorrect
-							maxLength={39}
+							maxLength={21}
 							defaultValue={editTitle}
 							onChangeText={(text) => {
 								setEditTitle(text);
@@ -255,7 +259,7 @@ export const Post = (post) => {
 							autoCapitalize='sentences'
 							placeholderTextColor={'#ffffff40'}
 							inputMode='text'
-							maxLength={500}
+							maxLength={1000}
 							defaultValue={editContent}
 							onChangeText={(text) => {
 								setEditContent(text);
@@ -523,9 +527,7 @@ export const Post = (post) => {
 	}, []);
 
 	return (
-		<StyledPressable 
-		onPress={() => {handleExpanded}}
-		className='w-full max-w-[500px]'>
+		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
@@ -541,7 +543,7 @@ export const Post = (post) => {
 					onLongPress={() => {
 						toggleToolbar();
 					}}
-				>
+					>
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
 							<StyledView className='flex flex-row mb-2 '>
@@ -562,9 +564,7 @@ export const Post = (post) => {
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{isExpanded || title?.length <= 21
-											? title.substring(0, 21) + '...'
-											: title}
+										{isExpanded ? title : (title?.length > 21 ? title.substring(0, 21) + '...' : title)}
 									</StyledText>
 									<StyledView className='flex flex-row'>
 										<StyledText
@@ -589,9 +589,7 @@ export const Post = (post) => {
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] pb-[10px]'>
-									{isExpanded || content?.length <= 300
-										? content.substring(0, 297) + '...'
-										: content}
+									{isExpanded ? content : (content?.length > 300 ? content.substring(0, 297) + '...' : content)}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -613,6 +611,11 @@ export const Post = (post) => {
 									)}
 								/>
 							</StyledPressable>
+							{isTextTruncated(content) && (
+								<StyledOpacity onPress={handleExpanded} className='flex items-center justify-center py-2'>
+									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
+								</StyledOpacity>
+							)}
 							<StyledPressable
 								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
 								onPress={() => {
@@ -712,6 +715,7 @@ export const Post = (post) => {
 						</StyledView>
 					</StyledView>
 				</StyledAnimatedView>
+
 			</StyledView>
 			<BottomSheetModal
 				enableDismissOnClose={true}
