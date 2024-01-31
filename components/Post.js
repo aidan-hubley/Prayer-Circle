@@ -524,7 +524,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledPressable 
-		onPress={handleExpanded}
+		onPress={() => {handleExpanded}}
 		className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledPressable
@@ -541,7 +541,6 @@ export const Post = (post) => {
 					onLongPress={() => {
 						toggleToolbar();
 					}}
-					onPress={handleExpanded}
 				>
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
