@@ -11,7 +11,7 @@ function MemberQueue({ img, name, username, last }) {
 	return (
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
-			className={`h-[50px] flex flex-row justify-between items-center bg-grey pl-[10px] py-[10px] border-x border-[#6666660d]
+			className={`h-[50px] flex flex-row justify-between items-center bg-grey pl-[10px] border-x border-[#6666660d]
 			${last ? 'rounded-b-[20px] h-[60px]' : ''}`}
 		>
 			<StyledView className='flex flex-row'>
@@ -31,18 +31,18 @@ function MemberQueue({ img, name, username, last }) {
 					</StyledText>
 				</StyledView>
 			</StyledView>
-			<StyledView className='flex-row absoulte right'>
+			<StyledView className='flex-row absoulte right space-x-3'>
 				<TouchableOpacity onPress={() => {}}>
 					<Ionicons
 						name={'checkmark-circle'}
-						size={30}
+						size={40}
 						color={'#00A55E'}
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={() => {}}>
 					<Ionicons
 						name={'close-circle'}
-						size={30}
+						size={40}
 						color={'#CC2500'}
 					/>
 				</TouchableOpacity>
