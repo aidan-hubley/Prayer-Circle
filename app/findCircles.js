@@ -161,10 +161,16 @@ export default function Page() {
 								} else {
 									if (adminCode) {
 										addUserToCircle(circle);
-										setFilterReload(true);
+										alert(
+											'You have been added to the circle.'
+										);
 									} else {
 										addUserToQueue(circle);
+										alert(
+											"You have been added this circle's waiting queue."
+										);
 									}
+									setFilterReload(true);
 								}
 							} else {
 								alert('Already in circle.');

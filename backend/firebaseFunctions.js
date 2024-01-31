@@ -184,10 +184,11 @@ export async function addUserToCircle(circle, uid) {
 export async function addUserToQueue(circle) {
 	const UID = await getUIDFromStorage();
 	writeData(
-		`prayer_circle/circles/${circle}/usersAwaitingEntry/${UID}`,
+		`prayer_circle/circles/${circle}/awaitingEntry/${UID}`,
 		true,
 		true
 	);
+	writeData();
 }
 
 export async function checkUsername(username) {
@@ -288,10 +289,21 @@ export async function uploadImage(path, uri) {
 
 export async function checkIfUserIsInCircle(circle) {
 	const UID = await getUIDFromStorage();
+	let inCircle = false;
 	let withinPerimeter = Object.keys(
 		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 	);
-	let inCircle = false;
+	for (let i = 0; i < withinPerimeter.length; i++) {
+		if (`${circle}` == withinPerimeter[i]) {
+			inCircle = true;
+			break;
+		}
+	}
+	withinPerimeter = Object.keys(
+		(await readData(
+			`prayer_circle/users/${UID}/private/pending_circles`
+		)) || {}
+	);
 	for (let i = 0; i < withinPerimeter.length; i++) {
 		if (`${circle}` == withinPerimeter[i]) {
 			inCircle = true;

@@ -21,6 +21,9 @@
 							}
 						}
 					},
+					"pending_circles": {
+						"_pushId_": true
+					},
 					"reactions": {
 						"_pushId_": true
 					},
@@ -88,7 +91,7 @@
 					"_uid_": true
 				},
 				"owner": "_uid_",
-				"usersAwaitingEntry": {
+				"awaitingEntry": {
 					"_uid_": true
 				},
 				"codes": {
