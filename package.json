@@ -11,6 +11,7 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.0",
     "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-community/slider": "^4.5.0",
     "expo": "^49.0.15",
     "expo-barcode-scanner": "~12.5.3",
     "expo-cached-image": "^49.0.2",
