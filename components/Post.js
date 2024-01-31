@@ -52,6 +52,7 @@ const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 
+
 export const Post = (post) => {
 	// variables
 	const tS = timeSince(post.timestamp);
@@ -133,6 +134,10 @@ export const Post = (post) => {
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
 	};
+
+	const handleExpanded = () => {
+		console.log("Pressed!");
+	}
 
 	const handle = (title) => {
 		return (
@@ -519,7 +524,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledPressable 
-		onPress={() => setIsExpanded(!isExpanded)}
+		onPress={handleExpanded}
 		className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
 				<StyledPressable
@@ -536,6 +541,7 @@ export const Post = (post) => {
 					onLongPress={() => {
 						toggleToolbar();
 					}}
+					onPress={handleExpanded}
 				>
 					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
 						<StyledView className=' w-[88%]'>
@@ -557,7 +563,9 @@ export const Post = (post) => {
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{isExpanded || title?.length <= 21 ? title : title.substring(0, 21) + '...'}
+										{isExpanded || title?.length <= 21
+											? title.substring(0, 21) + '...'
+											: title}
 									</StyledText>
 									<StyledView className='flex flex-row'>
 										<StyledText
@@ -582,7 +590,7 @@ export const Post = (post) => {
 							</StyledView>
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] pb-[10px]'>
-									{content?.length > 300
+									{isExpanded || content?.length <= 300
 										? content.substring(0, 297) + '...'
 										: content}
 								</StyledText>
