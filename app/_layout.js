@@ -27,11 +27,11 @@ export default function RootLayout() {
 	return (
 		<Provider>
 			<AnimatedSplash
-				backgroundColor={'#5094F5'}
+				backgroundColor={'#121212'}
 				translucent={true}
 				logoImage={require('../assets/Squared_Logo_Dark.png')}
-				logoHeight={200}
-				logoWidth={200}
+				logoHeight={240}
+				logoWidth={240}
 				isLoaded={loaded}
 			>
 				<RootLayoutNavigation />
@@ -42,8 +42,6 @@ export default function RootLayout() {
 
 function RootLayoutNavigation() {
 	const { authInitialized, user } = useAuth();
-
-	console.log(authInitialized, user);
 
 	if (!authInitialized && !user) return null;
 

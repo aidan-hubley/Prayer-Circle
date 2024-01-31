@@ -1,8 +1,8 @@
 import {
-	useRouter,
 	useRootNavigation,
 	useSegments,
-	SplashScreen
+	SplashScreen,
+	router
 } from 'expo-router';
 import React, {
 	createContext,
@@ -29,7 +29,6 @@ export function Provider(props) {
 
 	const useProtectedRoute = (user) => {
 		const segments = useSegments();
-		const router = useRouter();
 
 		const [isNavigationReady, setNavigationReady] = useState(false);
 		const rootNavigation = useRootNavigation();
@@ -52,7 +51,6 @@ export function Provider(props) {
 			if (!isNavigationReady) return;
 
 			const inAuthGroup = segments[0] === '(auth)';
-
 			if (!user && !inAuthGroup) {
 				setTimeout(() => {
 					SplashScreen.hideAsync();
@@ -134,6 +132,8 @@ export function Provider(props) {
 				console.log(errorCode, errorMessage);
 			});
 	};
+
+	useProtectedRoute(user);
 
 	const authContextValue = useMemo(
 		() => ({

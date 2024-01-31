@@ -10,20 +10,17 @@ import {
 	TouchableOpacity,
 	Alert
 } from 'react-native';
-import {
-	BottomSheetModal,
-	BottomSheetBackdrop,
-	BottomSheetModalProvider
-} from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styled } from 'nativewind';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { Button } from '../../components/Buttons';
-import { router } from '../../backend/config';
 import { loginUser } from '../../backend/firebaseFunctions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '../context/auth';
+import { handle, backdrop } from '../../components/BottomSheetModalHelpers';
+import { router } from 'expo-router';
 
 const StyledImage = styled(Image);
 const StyledOpacity = styled(TouchableOpacity);
@@ -34,12 +31,13 @@ const StyledInput = styled(TextInput);
 const StyledIcon = styled(Ionicons);
 
 export default function Login() {
-	const bottomSheetModalRef = useRef(null);
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
 	const [resetEmail, setResetEmail] = useState('');
+	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
 	const auth = getAuth();
+	const snapPoints = useMemo(() => ['40%'], []);
 
 	const handlePasswordReset = async () => {
 		try {
@@ -55,35 +53,12 @@ export default function Login() {
 		}
 	};
 
-	const snapPoints = useMemo(() => ['40%'], []);
-	const handleSheetChanges = useCallback((index) => {}, []);
-
-	const backdrop = (backdropProps) => {
-		return (
-			<BottomSheetBackdrop
-				{...backdropProps}
-				opacity={0.5}
-				appearsOnIndex={0}
-				disappearsOnIndex={-1}
-				enableTouchThrough={true}
-			/>
-		);
-	};
-
-	const handle = () => {
-		return (
-			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px] pb-2'>
-					Reset Password
-				</StyledText>
-			</StyledView>
-		);
-	};
-
 	return (
 		<StyledSafeArea className='flex-1 bg-offblack'>
-			<KeyboardAwareScrollView bounces={false}>
+			<KeyboardAwareScrollView
+				bounces={false}
+				keyboardShouldPersistTaps='handled'
+			>
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<StyledView className='w-screen px-[15px] flex items-center justify-center'>
 						<StyledView className='flex items-center justify-center aspect-square my-6 w-11/12'>
@@ -103,12 +78,6 @@ export default function Login() {
 									inputMode='email'
 									autoComplete='email'
 									maxLength={30}
-									ref={(input) => {
-										this.emailInput = input;
-									}}
-									onSubmitEditing={() => {
-										this.passInput.focus();
-									}}
 									blurOnSubmit={false}
 									onChangeText={(text) => {
 										setEmail(text);
@@ -120,9 +89,6 @@ export default function Login() {
 									placeholderTextColor={'#fff'}
 									secureTextEntry={true}
 									maxLength={25}
-									ref={(input) => {
-										this.passInput = input;
-									}}
 									onChangeText={(text) => {
 										setPass(text);
 									}}
@@ -132,7 +98,11 @@ export default function Login() {
 								title='Login'
 								press={() => {
 									Keyboard.dismiss();
-									authContext.login(email, pass);
+									if (email.length == 0 || pass.length == 0)
+										return alert(
+											'Please fill out all fields'
+										);
+									authContext.signIn(email, pass);
 									setEmail('');
 									setPass('');
 								}}
@@ -175,7 +145,6 @@ export default function Login() {
 				ref={bottomSheetModalRef}
 				index={0}
 				snapPoints={snapPoints}
-				onChange={handleSheetChanges}
 				handleComponent={handle}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
@@ -206,11 +175,4 @@ export default function Login() {
 			</BottomSheetModal>
 		</StyledSafeArea>
 	);
-}
-
-function userLogin(email, password) {
-	if (email.length == 0 || password.length == 0)
-		return alert('Please fill out all fields');
-
-	loginUser(email, password);
 }
