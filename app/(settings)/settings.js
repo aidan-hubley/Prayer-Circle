@@ -153,7 +153,7 @@ export default function Page() {
         handlePresentModalPress();
     };
 
-    const handleReminderButtonPress = () => {
+    const handleReminderInfoButtonPress = () => {
         setModalContent('reminder');
         handlePresentModalPress();
     };
@@ -227,11 +227,6 @@ export default function Page() {
 
     const handle = () => {
         switch (modalContent) {
-        case 'signOut':
-            return (
-                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px]'>
-                </StyledView>
-            );
         case 'tos':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
@@ -239,13 +234,28 @@ export default function Page() {
                         Terms of Service
                     </StyledText>
                 </StyledView>
-            );            
-        case 'password':
+            );          
+        case 'updProfileInfo':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
-                    <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
-                        Change Password
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Ways to Update Your Profile
+                    </StyledText>
+                </StyledView>
+            );
+        case 'changeUsername':  
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Change Username
+                    </StyledText>
+                </StyledView>
+            );
+        case 'updateProfilePic':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Update Profile Picture
                     </StyledText>
                 </StyledView>
             );
@@ -275,6 +285,23 @@ export default function Page() {
                     </StyledText>
                 </StyledView>
             );
+        case 'passwordInfo':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledText className='text-white font-[600] text-[24px] pb-2'>
+                        Password Info
+                    </StyledText>
+                </StyledView>
+            );
+        case 'password':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+                    <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
+                    <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
+                        Change Password
+                    </StyledText>
+                </StyledView>
+            );        
         case 'changeEmail':
             return (
                 <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
@@ -302,6 +329,11 @@ export default function Page() {
                     </StyledText>
                 </StyledView>
             );
+        case 'signOut':
+            return (
+                <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px]'>
+                </StyledView>
+            );
         default:
             return null;
         }
@@ -309,23 +341,6 @@ export default function Page() {
 
     const renderContent = () => {
         switch (modalContent) {
-        case 'signOut':
-            return (
-                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-                    <Button
-                        title='Sign Out'
-                        btnStyles='mt-3'
-                        width='w-[70%]'
-                        press={() => {
-                            signOut(auth);
-                            AsyncStorage.removeItem('user');
-                            AsyncStorage.removeItem('name');
-                            router.replace('/login');
-                        }}
-                    />
-                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign back in next time</StyledText>
-                </StyledView>
-            );
         case 'tos':
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite' style={{ height: '100%' }}>
@@ -455,6 +470,23 @@ export default function Page() {
             return (
                 <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
                     <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This action cannot be undone</StyledText>
+                </StyledView>
+            );
+        case 'signOut':
+            return (
+                <StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+                    <Button
+                        title='Sign Out'
+                        btnStyles='mt-3'
+                        width='w-[70%]'
+                        press={() => {
+                            signOut(auth);
+                            AsyncStorage.removeItem('user');
+                            AsyncStorage.removeItem('name');
+                            router.replace('/login');
+                        }}
+                    />
+                    <StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign back in next time</StyledText>
                 </StyledView>
             );
         default:
