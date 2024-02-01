@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Text,
 	View,
@@ -20,7 +20,6 @@ import shorthash from 'shorthash';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledImage = styled(Image);
 const StyledGradient = styled(LinearGradient);
 
 export default function ProfilePage() {
@@ -222,9 +221,6 @@ export default function ProfilePage() {
 					icon='settings'
 					iconSize={30}
 					href='/settings'
-					press={() => {
-						console.log('press');
-					}}
 				/>
 			</StyledView>
 			<StyledGradient

@@ -18,7 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
 import { ColorPicker, fromHsv } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
-import { router } from '../../backend/config';
+import { router } from 'expo-router';
 import { useStore } from '../global';
 
 const StyledSafeArea = styled(SafeAreaView);
@@ -30,18 +30,14 @@ const StyledIcon = styled(Ionicons);
 const StyledColorPicker = styled(ColorPicker);
 
 export default function Page() {
-	let insets = useSafeAreaInsets();
-
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-
 	const [icon, setIcon] = useState(null);
 	const [iconColor, setIconColor] = useState(null);
-
-	const setFilterReload = useStore((state) => state.setFilterReload);
-
 	const iconSelectorRef = useRef();
 	const circleColorRef = useRef();
+	const setFilterReload = useStore((state) => state.setFilterReload);
+	let insets = useSafeAreaInsets();
 
 	const handleIconSelected = (icon, iconColor) => {
 		setIcon(icon);
@@ -50,7 +46,10 @@ export default function Page() {
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
-			<KeyboardAwareScrollView bounces={false}>
+			<KeyboardAwareScrollView
+				bounces={false}
+				keyboardShouldPersistTaps='handled'
+			>
 				<StyledView className='bg-offblack flex-1 flex flex-col items-center'>
 					<StyledView className='flex items-center justify-center text-center w-screen'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
@@ -97,12 +96,9 @@ export default function Page() {
 							onBlur={() => {
 								Keyboard.dismiss();
 							}}
-							ref={(input) => {
-								this.circleTitle = input;
-							}}
 						/>
 						<StyledInput
-							className='bg-offblack text-[18px] w-full h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-3'
+							className='bg-offblack text-[18px] w-full min-h-[42px] text-offwhite border border-offwhite rounded-lg px-3 py-[10px] my-3'
 							placeholder={'Write a bit about this Circle...'}
 							placeholderTextColor={'#ffffff66'}
 							inputMode='text'
@@ -112,11 +108,10 @@ export default function Page() {
 							onChangeText={(text) => {
 								setDescription(text);
 							}}
+							returnKeyType='done'
+							blurOnSubmit={true}
 							onBlur={() => {
 								Keyboard.dismiss();
-							}}
-							ref={(input) => {
-								this.circleDescription = input;
 							}}
 						/>
 					</StyledView>
@@ -130,14 +125,10 @@ export default function Page() {
 					title='Erase'
 					width='w-[125px]'
 					height='h-[60px]'
-					href='/mainViewLayout'
+					href='/'
 					bgColor={'bg-offblack'}
 					borderColor={'border-offwhite border-2'}
 					textColor={'text-offwhite'}
-					press={() => {
-						this.circleTitle.clear();
-						this.circleDescription.clear();
-					}}
 				/>
 				<Button
 					title='Draw'
@@ -166,12 +157,10 @@ export default function Page() {
 							owner: false
 						};
 						await createCircle(data);
-						this.circleTitle.clear();
-						this.circleDescription.clear();
 						alert('Circle Successfully Created');
 						setFilterReload(true);
 
-						router.push('/mainViewLayout');
+						router.push('/');
 					}}
 				/>
 			</StyledView>

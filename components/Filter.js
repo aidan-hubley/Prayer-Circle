@@ -1,14 +1,9 @@
-import React, {
-	useRef,
-	useState,
-	forwardRef,
-	useImperativeHandle
-} from 'react';
+import React, { useRef, forwardRef, useImperativeHandle } from 'react';
 import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
-import { Timer } from './Timer';
+/* import { Timer } from './Timer'; */
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -17,12 +12,15 @@ const AnimatedView = Animated.createAnimatedComponent(StyledView);
 const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
 
-const Filter = forwardRef((props, ref) => {	
+const Filter = forwardRef((props, ref) => {
+	const opacity = useRef(new Animated.Value(0)).current;
 	const width = Dimensions.get('window').width;
 	const itemSize = 80;
 	const itemMargin = 10;
 	const paddingH = width / 2 - (itemSize + itemMargin) / 2;
-	const opacity = useRef(new Animated.Value(0)).current;
+	let insets = useSafeAreaInsets();
+	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
+	const contentOffset = useSharedValue(0);
 
 	const opacityInter = opacity.interpolate({
 		inputRange: [0, 1],
@@ -32,9 +30,14 @@ const Filter = forwardRef((props, ref) => {
 		inputRange: [0, 1],
 		outputRange: [0, 0.6]
 	});
-
-	let insets = useSafeAreaInsets();
-	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
+	const opacityStyle = {
+		opacity: opacityInter,
+		transform: [{ scale: opacityInter }],
+		bottom: insets.bottom
+	};
+	const backdropOpacityStyle = {
+		opacity: backdropOpacityInter
+	};
 
 	function toggleShown(toggle) {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -45,17 +48,6 @@ const Filter = forwardRef((props, ref) => {
 			useNativeDriver: true
 		}).start();
 	}
-
-	const opacityStyle = {
-		opacity: opacityInter,
-		transform: [{ scale: opacityInter }],
-		bottom: insets.bottom
-	};
-	const backdropOpacityStyle = {
-		opacity: backdropOpacityInter
-	};
-
-	const contentOffset = useSharedValue(0);
 
 	useImperativeHandle(ref, () => ({
 		toggleShown
@@ -80,7 +72,7 @@ const Filter = forwardRef((props, ref) => {
 					style={{ top: topButtonInset - 500 }}
 					className='absolute border border-outline rounded-3xl self-center'
 				>
-					<Timer></Timer>
+					{/* <Timer></Timer> */}
 				</StyledView>
 				<FlatList
 					data={props.data}

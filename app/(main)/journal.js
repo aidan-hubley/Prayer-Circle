@@ -1,17 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Stack } from 'expo-router';
-import {
-	Text,
-	View,
-	StatusBar,
-	ScrollView,
-	TouchableOpacity,
-	FlatList,
-	Dimensions
-} from 'react-native';
+import { Text, View, FlatList, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Post } from '../../components/Post';
@@ -21,11 +11,11 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function JournalPage() {
-	const typeRef = useRef();
 	const [prayers, setPrayers] = useState([]);
 	const [praises, setPraises] = useState([]);
 	const [events, setEvents] = useState([]);
 	const [page, setPage] = useState('prayers');
+	const typeRef = useRef();
 	const [journalReload, setJournalReload] = useStore((state) => [
 		state.journalReload,
 		state.setJournalReload
@@ -70,10 +60,7 @@ export default function JournalPage() {
 				className='w-screen'
 				style={{ height: insets.top + 60 }}
 			></StyledView>
-			<StyledView
-				// style={{bottom:	insets.bottom < 10 ? insets.bottom + 75 : insets.bottom + 95}}
-				className='px-[20px]'
-			>
+			<StyledView className='px-[20px]'>
 				<PostTypeSelector
 					ref={typeRef}
 					onSelect={(index) => {

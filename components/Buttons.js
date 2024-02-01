@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
-import { router } from '../backend/config';
+import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
 
@@ -19,84 +19,68 @@ const AnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
 );
 
-const Button = forwardRef(
-	(
-		{
-			title,
-			width,
-			height,
-			textSize,
-			textStyles,
-			btnStyles,
-			bgColor,
-			icon,
-			iconSize,
-			iconColor,
-			textColor,
-			borderColor,
-			press,
-			href
-		},
-		ref
-	) => {
-		const opacity = useRef(new Animated.Value(1)).current;
+const Button = forwardRef((props, ref) => {
+	const opacity = useRef(new Animated.Value(1)).current;
 
-		const opacityInter = opacity.interpolate({
-			inputRange: [0, 1],
-			outputRange: [0.6, 1]
-		});
+	const opacityInter = opacity.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0.6, 1]
+	});
 
-		function toggleShown(toggle) {
-			Animated.timing(opacity, {
-				toValue: toggle ? 1 : 0,
-				duration: 300,
-				useNativeDriver: true
-			}).start();
-		}
-
-		const opacityStyle = {
-			opacity: opacityInter,
-			transform: [{ scale: opacityInter }]
-		};
-
-		useImperativeHandle(ref, () => ({
-			toggleShown
-		}));
-		return (
-			<StyledTouchableHighlight
-				style={opacityStyle}
-				activeOpacity={0.6}
-				underlayColor={`${bgColor || '#DDDDDD'}`}
-				className={`flex items-center justify-center rounded-full ${
-					bgColor || 'bg-offwhite'
-				} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
-					borderColor ? `border ${borderColor}` : 'border-none'
-				} ${btnStyles || ''} `}
-				onPress={() => {
-					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-					if (press) press();
-					if (href) router.push(href);
-				}}
-			>
-				<>
-					<StyledText
-						className={`font-bold ${textColor || 'text-offblack'} ${
-							textSize || 'text-[20px]'
-						} ${textStyles} ${icon ? 'hidden' : ''}`}
-					>
-						{title}
-					</StyledText>
-					<StyledIcon
-						className={`${icon ? '' : 'hidden'}`}
-						name={`${icon || 'md-checkmark-circle'}`}
-						size={iconSize || 30}
-						color={`${iconColor || '#121212'}`}
-					/>
-				</>
-			</StyledTouchableHighlight>
-		);
+	function toggleShown(toggle) {
+		Animated.timing(opacity, {
+			toValue: toggle ? 1 : 0,
+			duration: 300,
+			useNativeDriver: true
+		}).start();
 	}
-);
+
+	const opacityStyle = {
+		opacity: opacityInter,
+		transform: [{ scale: opacityInter }]
+	};
+
+	useImperativeHandle(ref, () => ({
+		toggleShown
+	}));
+	return (
+		<StyledTouchableHighlight
+			style={opacityStyle}
+			activeOpacity={0.6}
+			underlayColor={`${props.bgColor || '#DDDDDD'}`}
+			className={`flex items-center justify-center rounded-full ${
+				props.bgColor || 'bg-offwhite'
+			} ${props.width || 'w-11/12'} ${props.height || 'h-[50px]'} ${
+				props.borderColor
+					? `border ${props.borderColor}`
+					: 'border-none'
+			} ${props.btnStyles || ''} `}
+			onPress={() => {
+				Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+				if (props.press) props.press();
+				if (props.href) router.push(props.href);
+			}}
+		>
+			<>
+				<StyledText
+					className={`font-bold ${
+						props.textColor || 'text-offblack'
+					} ${props.textSize || 'text-[20px]'} ${props.textStyles} ${
+						props.icon ? 'hidden' : ''
+					}`}
+				>
+					{props.title}
+				</StyledText>
+				<StyledIcon
+					className={`${props.icon ? '' : 'hidden'}`}
+					name={`${props.icon || 'md-checkmark-circle'}`}
+					size={props.iconSize || 30}
+					color={`${props.iconColor || '#121212'}`}
+				/>
+			</>
+		</StyledTouchableHighlight>
+	);
+});
 
 const ExpandableButton = forwardRef(
 	(
@@ -188,7 +172,9 @@ const ExpandableButton = forwardRef(
 				} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
 					borderColor ? `border ${borderColor}` : 'border-none'
 				} ${btnStyles || ''} ${pressed ? 'z-10' : 'z-0'}`}
-				onPressOut={toggleButton}
+				onPressOut={() => {
+					toggleButton();
+				}}
 				onPress={() => {
 					if (press) press();
 					if (expandedHref && pressed) router.push(expandedHref);

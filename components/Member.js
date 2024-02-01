@@ -1,24 +1,13 @@
 import React, { useRef } from 'react';
-import {
-	Text,
-	View,
-	Image,
-	Pressable,
-	Animated,
-	Dimensions
-} from 'react-native';
+import { Text, View, Image, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { MemberPermissionSelector } from './MemberPermissionSelector';
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
 const StyledImage = styled(Image);
-const StyledPressable = styled(Pressable);
-const StyledIcon = styled(Ionicons);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 
-function Member({ img, name, username, role, press, last }) {
+function Member({ img, name, username, role, last }) {
 	permissionRef = useRef(null);
 	return (
 		<StyledView

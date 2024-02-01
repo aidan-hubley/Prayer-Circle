@@ -1,13 +1,5 @@
-import React, { useState } from 'react';
-import {
-	Text,
-	View,
-	Platform,
-	Pressable,
-	Animated,
-	ScrollView,
-	FlatList
-} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Text, View, Platform, Animated, FlatList } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,28 +9,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
-const StyledScrollView = styled(ScrollView);
-const StyledPressable = styled(Pressable);
 const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	const [isModalVisible1, setModalVisible1] = useState(false);
+	const [isModalVisible2, setModalVisible2] = useState(false);
+	const [isEnabled, setIsEnabled] = useState(false);
 	let insets = useSafeAreaInsets();
 
-	const [isModalVisible1, setModalVisible1] = useState(false);
 	const toggleModal1 = () => {
 		setModalVisible1(!isModalVisible1);
 	};
-
-	const [isModalVisible2, setModalVisible2] = useState(false);
 	const toggleModal2 = () => {
 		setModalVisible2(!isModalVisible2);
 	};
 
-	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-	const togglePosition = React.useRef(new Animated.Value(1)).current;
+	const togglePosition = useRef(new Animated.Value(1)).current;
 
 	const filtermembers = () => {
 		const roleOrder = ['own', 'mod', 'mem', 'sus', 'ban'];
@@ -51,7 +39,7 @@ export default function Page() {
 	const Trevor =
 		'https://media.licdn.com/dms/image/C4E03AQEjKbD7qFuQJQ/profile-displayphoto-shrink_200_200/0/1574282480254?e=1701907200&v=beta&t=1BizKLULm5emiKX3xlsRq7twzFTqynOsfTlbRwqNuXI';
 
-	React.useEffect(() => {
+	useEffect(() => {
 		Animated.timing(togglePosition, {
 			toValue: isEnabled ? 45 : 5,
 			duration: 200,
@@ -258,7 +246,7 @@ export default function Page() {
 								iconSize={70}
 								icon='musical-notes'
 								iconColor='white'
-								href='/mainViewLayout'
+								href='/'
 							/>
 						</StyledView>
 
@@ -371,14 +359,14 @@ export default function Page() {
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='arrow-back'
-					href='/mainViewLayout'
+					href='/'
 				/>
 				<Button // to Share Page
 					height={'h-[50px]'}
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='qr-code'
-					href='shareCircle'
+					href='/shareCircle'
 				/>
 			</StyledView>
 
@@ -399,7 +387,7 @@ export default function Page() {
 							iconSize={60}
 							icon='musical-notes'
 							iconColor='white'
-							href='/mainViewLayout'
+							href='/'
 						/>
 
 						<StyledText className='top-[20%] text-3xl text-offwhite'>
@@ -441,7 +429,7 @@ export default function Page() {
 							iconSize={60}
 							icon='musical-notes'
 							iconColor='white'
-							href='/mainViewLayout'
+							href='/'
 						/>
 
 						<StyledText className='top-[20%] text-3xl text-offwhite'>

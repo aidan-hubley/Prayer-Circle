@@ -4,19 +4,16 @@ import { getDatabase } from 'firebase/database';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-
-console.log(process.env.EXPO_PUBLIC_FIREBASE_DB_URL);
 
 const firebaseConfig = {
-	apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-	authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-	databaseURL: process.env.EXPO_PUBLIC_FIREBASE_DB_URL,
-	projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-	storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-	messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-	appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
-	measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID
+	apiKey: 'AIzaSyC-sstL-VtWW-7jo-slmLr-IcizkahjUlM',
+	authDomain: 'prayer-circle-8c3ff.firebaseapp.com',
+	databaseURL: 'https://prayer-circle-8c3ff-default-rtdb.firebaseio.com',
+	projectId: 'prayer-circle-8c3ff',
+	storageBucket: 'prayer-circle-8c3ff.appspot.com',
+	messagingSenderId: '1084782526516',
+	appId: '1:1084782526516:web:a541c99eba181be3ca8a61',
+	measurementId: 'G-8SV7SF9LZN'
 };
 
 // Initialize Firebase
@@ -26,5 +23,3 @@ export const auth = initializeAuth(app, {
 	persistence: getReactNativePersistence(AsyncStorage)
 });
 export const storage = getStorage(app);
-
-export let router = useRouter();

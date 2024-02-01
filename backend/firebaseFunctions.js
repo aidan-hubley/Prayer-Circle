@@ -122,46 +122,6 @@ export async function createCircle(data) {
 	);
 }
 
-export async function registerUser(username, email, password, data) {
-	await createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			writeData(`prayer_circle/users/${user.uid}`, data, true);
-			writeData(`usernames/${username}`, user.uid, true);
-			loginUser(email, password);
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage);
-		});
-}
-
-export async function loginUser(email, password) {
-	await signInWithEmailAndPassword(auth, email, password)
-		.then(async (userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			let userData = await readData(`prayer_circle/users/${user.uid}`);
-			console.log('login', userData.public.profile_img);
-			await AsyncStorage.multiSet([
-				['user', user.uid],
-				['name', `${userData.public.fname} ${userData.public.lname}`],
-				['email', user.email],
-				['profile_img', userData.public.profile_img]
-			]);
-
-			router.replace('/mainViewLayout');
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage);
-			alert('Incorrect email or password');
-		});
-}
-
 export async function addUserToCircle(circle) {
 	const UID = await getUIDFromStorage();
 	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
@@ -194,16 +154,6 @@ export async function checkUsername(username) {
 
 export function generateId() {
 	return push(ref(database)).key;
-}
-
-export async function userLoggedIn(onLogIn, onLogOut) {
-	await onAuthStateChanged(auth, (user) => {
-		if (user) {
-			if (onLogIn) onLogIn();
-		} else {
-			if (onLogOut) onLogOut();
-		}
-	});
 }
 
 export async function getCircles() {
