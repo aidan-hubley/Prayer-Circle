@@ -17,9 +17,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
-	BottomSheetBackdrop,
 	BottomSheetModalProvider
 } from '@gorhom/bottom-sheet';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../../components/BottomSheetModalHelpers.js';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -43,12 +47,10 @@ export default function Page() {
 
 	// bottom sheet modal
 	const bottomSheetModalRef = useRef(null);
-	const snapPoints = useMemo(() => ['85%'], []);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
 	const [modalContent, setModalContent] = useState(null);
-	const handleSheetChanges = useCallback((index) => {}, []);
 
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -151,37 +153,9 @@ export default function Page() {
 		}
 	];
 
-	const backdrop = (backdropProps) => {
-		return (
-			<BottomSheetBackdrop
-				{...backdropProps}
-				opacity={0.5}
-				appearsOnIndex={0}
-				disappearsOnIndex={-1}
-				enableTouchThrough={true}
-			/>
-		);
-	};
-
 	const handleQueuePress = () => {
 		setModalContent('queue');
 		handlePresentModalPress();
-	};
-
-	const handle = () => {
-		switch (modalContent) {
-			case 'queue':
-				return (
-					<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-						<StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
-						<StyledText className='text-white font-[600] text-[24px] pb-2'>
-							User Queue
-						</StyledText>
-					</StyledView>
-				);
-			default:
-				return null;
-		}
 	};
 
 	const renderContent = () => {
@@ -189,7 +163,7 @@ export default function Page() {
 			case 'queue':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<FlatList
+						<BottomSheetFlatList
 							data={dummyData2}
 							renderItem={({ item }) => {
 								return (
@@ -440,9 +414,8 @@ export default function Page() {
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
 					index={0}
-					snapPoints={['65%']}
-					onChange={handleSheetChanges}
-					handleComponent={handle}
+					snapPoints={SnapPoints(['65%'])}
+					handleComponent={() => handle('User Queue')}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}
