@@ -1,5 +1,4 @@
 import React, {
-	useEffect,
 	useState,
 	useRef,
 	forwardRef,
@@ -25,12 +24,12 @@ const StyledFlatList = styled(FlatList);
 const StyledAnimView = styled(Animated.View);
 const StyledPressable = styled(Animated.createAnimatedComponent(Pressable));
 const StyledOpacity = styled(TouchableOpacity);
-const StyledSlider = styled(Slider);
 const StyledColorPicker = styled(TriangleColorPicker);
 
 const IconSelector = forwardRef((props, ref) => {
 	const [opened, setOpened] = useState(false);
 	const iconColorRef = useRef();
+	const opacity = useRef(new Animated.Value(0)).current;
 
 	const icons = [
 		{
@@ -215,8 +214,6 @@ const IconSelector = forwardRef((props, ref) => {
 			]
 		}
 	];
-
-	const opacity = useRef(new Animated.Value(0)).current;
 	const opacityInterpolation = opacity.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0, 1]

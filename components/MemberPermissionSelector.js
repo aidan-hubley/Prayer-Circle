@@ -5,21 +5,12 @@ import React, {
 	useImperativeHandle,
 	useEffect
 } from 'react';
-import {
-	View,
-	Text,
-	TouchableHighlight,
-	TouchableOpacity,
-	Animated,
-	Pressable
-} from 'react-native';
+import { View, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
-import { router } from '../backend/config';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
 
 const MemberPermissionSelector = forwardRef((props, ref) => {
 	const animationValue = useRef(new Animated.Value(0)).current;

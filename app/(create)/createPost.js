@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from '../../backend/config';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from '../global';
 
@@ -19,15 +19,21 @@ export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
 	const [time, setTime] = useState('');
+	const typeRef = useRef();
+	const [showDatePicker, setShowDatePicker] = useState(false);
 	const [uid, name] = useStore((state) => [state.uid, state.name]);
 	const [setGlobalReload, pfp] = useStore((state) => [
 		state.setGlobalReload,
 		state.pfp
 	]);
 
-	const handleSelect = (index) => {};
-
-	const typeRef = useRef();
+	const handleSelect = (index) => {
+		if (index == 2) {
+			setShowDatePicker(true);
+		} else {
+			setShowDatePicker(false);
+		}
+	};
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
@@ -46,13 +52,23 @@ export default function Page() {
 							inputMode='text'
 							autoCorrect
 							maxLength={39}
-							ref={(input) => {
-								this.postTitle = input;
-							}}
 							onChangeText={(text) => {
 								setTitle(text);
 							}}
 						/>
+						{showDatePicker && (
+							<StyledInput
+								className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								placeholder={'Event'}
+								placeholderTextColor={'#fff'}
+								inputMode='text'
+								autoCorrect
+								maxLength={39}
+								onChangeText={(text) => {
+									setTitle(text);
+								}}
+							/>
+						)}
 						<StyledInput
 							className='bg-offblack text-[18px] w-full min-h-[200px] h-[300px] max-h-[50%] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 							placeholder={'Write a Post'}
@@ -62,14 +78,14 @@ export default function Page() {
 							placeholderTextColor={'#fff'}
 							inputMode='text'
 							maxLength={500}
-							ref={(input) => {
-								this.postDescription = input;
-							}}
 							onChangeText={(text) => {
 								setBody(text);
 							}}
 						/>
-						<PostTypeSelector ref={typeRef} onSelect={handleSelect} />
+						<PostTypeSelector
+							ref={typeRef}
+							onSelect={handleSelect}
+						/>
 					</StyledView>
 				</>
 			</KeyboardAwareScrollView>
@@ -78,13 +94,11 @@ export default function Page() {
 					title='Erase'
 					width='w-[125px]'
 					height='h-[60px]'
-					href='/mainViewLayout'
 					bgColor={'bg-offblack'}
 					borderColor={'border-offwhite border-2'}
 					textColor={'text-offwhite'}
 					press={() => {
-						this.postTitle.clear();
-						this.postDescription.clear();
+						router.push('/');
 					}}
 				/>
 				<Button
@@ -142,10 +156,7 @@ export default function Page() {
 						).then(() => {
 							setGlobalReload(true);
 						});
-
-						this.postTitle.clear();
-						this.postDescription.clear();
-						router.push('/mainViewLayout');
+						router.push('/');
 					}}
 				/>
 			</StyledView>

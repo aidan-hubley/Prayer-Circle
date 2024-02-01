@@ -122,48 +122,11 @@ export async function createCircle(data) {
 	);
 }
 
-export async function registerUser(username, email, password, data) {
-	await createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			writeData(`prayer_circle/users/${user.uid}`, data, true);
-			writeData(`usernames/${username}`, user.uid, true);
-			loginUser(email, password);
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage);
-		});
-}
-
-export async function loginUser(email, password) {
-	await signInWithEmailAndPassword(auth, email, password)
-		.then(async (userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			let userData = await readData(`prayer_circle/users/${user.uid}`);
-			console.log('login', userData.public.profile_img);
-			await AsyncStorage.multiSet([
-				['user', user.uid],
-				['name', `${userData.public.fname} ${userData.public.lname}`],
-				['email', user.email],
-				['profile_img', userData.public.profile_img]
-			]);
-
-			router.replace('/mainViewLayout');
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage);
-			alert('Incorrect email or password');
-		});
-}
-
-export async function addUserToCircle(circle) {
-	const UID = await getUIDFromStorage();
+export async function addUserToCircle(circle, uid) {
+	let UID = await getUIDFromStorage();
+	if (arguments.length >= 2) {
+		UID = uid;
+	}
 	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
 	let circlePermissions = {
 		admin: false,
@@ -176,6 +139,16 @@ export async function addUserToCircle(circle) {
 		circlePermissions,
 		true
 	);
+}
+
+export async function addUserToQueue(circle) {
+	const UID = await getUIDFromStorage();
+	writeData(
+		`prayer_circle/circles/${circle}/awaitingEntry/${UID}`,
+		true,
+		true
+	);
+	writeData();
 }
 
 export async function checkUsername(username) {
@@ -194,16 +167,6 @@ export async function checkUsername(username) {
 
 export function generateId() {
 	return push(ref(database)).key;
-}
-
-export async function userLoggedIn(onLogIn, onLogOut) {
-	await onAuthStateChanged(auth, (user) => {
-		if (user) {
-			if (onLogIn) onLogIn();
-		} else {
-			if (onLogOut) onLogOut();
-		}
-	});
 }
 
 export async function getCircles() {
@@ -291,10 +254,21 @@ export async function uploadImage(path, uri) {
 
 export async function checkIfUserIsInCircle(circle) {
 	const UID = await getUIDFromStorage();
+	let inCircle = false;
 	let withinPerimeter = Object.keys(
 		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 	);
-	let inCircle = false;
+	for (let i = 0; i < withinPerimeter.length; i++) {
+		if (`${circle}` == withinPerimeter[i]) {
+			inCircle = true;
+			break;
+		}
+	}
+	withinPerimeter = Object.keys(
+		(await readData(
+			`prayer_circle/users/${UID}/private/pending_circles`
+		)) || {}
+	);
 	for (let i = 0; i < withinPerimeter.length; i++) {
 		if (`${circle}` == withinPerimeter[i]) {
 			inCircle = true;

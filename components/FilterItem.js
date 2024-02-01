@@ -1,26 +1,20 @@
-import React, {
-	useState,
-	useRef,
-	useMemo,
-	forwardRef,
-	useCallback,
-	useImperativeHandle
-} from 'react';
+import React, { forwardRef, useRef, useMemo } from 'react';
 import { View, Text, TouchableHighlight, Pressable, Image } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from '../backend/config';
+import { router } from 'expo-router';
 import Animated, {
 	useAnimatedStyle,
 	interpolate,
 	Extrapolate
 } from 'react-native-reanimated';
-import {
-	BottomSheetModalProvider,
-	BottomSheetModal,
-	BottomSheetBackdrop
-} from '@gorhom/bottom-sheet';
 import { useStore } from '../app/global.js';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../components/BottomSheetModalHelpers.js';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -31,161 +25,124 @@ const StyledAnimatedHighlight = styled(
 	Animated.createAnimatedComponent(TouchableHighlight)
 );
 
-const FilterItem = forwardRef(
-	(
-		{ data, index, contentOffset, itemSize, itemMargin, toggleShown },
-		ref
-	) => {
-		const updateFilter = useStore((state) => state.updateFilter);
-		const updateFilterName = useStore((state) => state.updateFilterName);
-		const itemStyle = useAnimatedStyle(() => {
-			const inputRange = [
-				(index - 3) * (itemSize + itemMargin),
-				(index - 2.5) * (itemSize + itemMargin),
-				(index - 2) * (itemSize + itemMargin),
-				(index - 1.5) * (itemSize + itemMargin),
-				(index - 1) * (itemSize + itemMargin),
-				index * (itemSize + itemMargin),
-				(index + 1) * (itemSize + itemMargin),
-				(index + 1.5) * (itemSize + itemMargin),
-				(index + 2) * (itemSize + itemMargin),
-				(index + 2.5) * (itemSize + itemMargin),
-				(index + 3) * (itemSize + itemMargin)
-			];
-			const shrinkOutputRange = [
-				0.6, 0.6, 0.7, 0.8, 0.8, 1, 0.8, 0.8, 0.7, 0.6, 0.6
-			];
-			const fadeOutputRange = [
-				0.6, 0.6, 0.6, 0.6, 0.6, 1, 0.6, 0.6, 0.6, 0.6, 0.6
-			];
-			const xOutputRange = [-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70];
-			const yOutputRange = [
-				300, 150, 75, 50, 20, 0, 20, 50, 75, 150, 300
-			];
-			const translateX = interpolate(
-				contentOffset.value,
-				inputRange,
-				xOutputRange,
-				Extrapolate.CLAMP
-			);
-			const translateY = interpolate(
-				contentOffset.value,
-				inputRange,
-				yOutputRange,
-				Extrapolate.CLAMP
-			);
-			const shrink = interpolate(
-				contentOffset.value,
-				inputRange,
-				shrinkOutputRange
-			);
-			const fade = interpolate(
-				contentOffset.value,
-				inputRange,
-				fadeOutputRange
-			);
-			return {
-				transform: [
-					{
-						translateX: translateX
-					},
-					{
-						translateY: translateY
-					},
-					{
-						scale: shrink
-					}
-				],
-				opacity: fade
-			};
-		});
-
-		const bottomSheetModalRef = useRef(null);
-		const snapPoints = useMemo(() => ['10%', '45%', '80%'], []);
-
-		const handlePresentModalPress = useCallback(() => {
-			bottomSheetModalRef.current?.present();
-		}, []);
-		const handleSheetChanges = useCallback((index) => {}, []);
-
-		const handle = () => {
-			return (
-				<StyledView className='absolute bottom-0 w-screen flex items-center justify-center bg-grey rounded-t-[10px] py-3 border-b border-[#ffffff33]'>
-					<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-					<StyledText className='text-white font-[500] text-[20px]'>
-						Circles
-					</StyledText>
-				</StyledView>
-			);
+const FilterItem = forwardRef((props, ref) => {
+	const updateFilter = useStore((state) => state.updateFilter);
+	const updateFilterName = useStore((state) => state.updateFilterName);
+	const itemStyle = useAnimatedStyle(() => {
+		const inputRange = [
+			(props.index - 3) * (props.itemSize + props.itemMargin),
+			(props.index - 2.5) * (props.itemSize + props.itemMargin),
+			(props.index - 2) * (props.itemSize + props.itemMargin),
+			(props.index - 1.5) * (props.itemSize + props.itemMargin),
+			(props.index - 1) * (props.itemSize + props.itemMargin),
+			props.index * (props.itemSize + props.itemMargin),
+			(props.index + 1) * (props.itemSize + props.itemMargin),
+			(props.index + 1.5) * (props.itemSize + props.itemMargin),
+			(props.index + 2) * (props.itemSize + props.itemMargin),
+			(props.index + 2.5) * (props.itemSize + props.itemMargin),
+			(props.index + 3) * (props.itemSize + props.itemMargin)
+		];
+		const shrinkOutputRange = [
+			0.6, 0.6, 0.7, 0.8, 0.8, 1, 0.8, 0.8, 0.7, 0.6, 0.6
+		];
+		const fadeOutputRange = [
+			0.6, 0.6, 0.6, 0.6, 0.6, 1, 0.6, 0.6, 0.6, 0.6, 0.6
+		];
+		const xOutputRange = [-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70];
+		const yOutputRange = [300, 150, 75, 50, 20, 0, 20, 50, 75, 150, 300];
+		const translateX = interpolate(
+			props.contentOffset.value,
+			inputRange,
+			xOutputRange,
+			Extrapolate.CLAMP
+		);
+		const translateY = interpolate(
+			props.contentOffset.value,
+			inputRange,
+			yOutputRange,
+			Extrapolate.CLAMP
+		);
+		const shrink = interpolate(
+			props.contentOffset.value,
+			inputRange,
+			shrinkOutputRange
+		);
+		const fade = interpolate(
+			props.contentOffset.value,
+			inputRange,
+			fadeOutputRange
+		);
+		return {
+			transform: [
+				{
+					translateX: translateX
+				},
+				{
+					translateY: translateY
+				},
+				{
+					scale: shrink
+				}
+			],
+			opacity: fade
 		};
+	});
+	const bottomSheetModalRef = useRef(null);
 
-		const backdrop = (backdropProps) => {
-			return (
-				<BottomSheetBackdrop
-					{...backdropProps}
-					opacity={0.5}
-					appearsOnIndex={0}
-					disappearsOnIndex={-1}
-					enableTouchThrough={true}
-				/>
-			);
-		};
-
-		if (data.id == 'addCircles') {
-			return (
+	if (props.data.id == 'addCircles') {
+		return (
+			<StyledAnimatedHighlight
+				style={[
+					{
+						borderColor: props.data.color,
+						width: props.itemSize,
+						height: props.itemSize,
+						marginHorizontal: props.itemMargin / 2,
+						top: 60
+					},
+					itemStyle
+				]}
+				className='justify-center'
+			>
+				<StyledPressable
+					className='flex items-center justify-center'
+					onPress={async () => {
+						router.push('findCircles');
+					}}
+				>
+					<StyledImage
+						source={require('../assets/spiral/thin.png')}
+						style={{ width: 80, height: 80 }}
+					/>
+					<StyledIcon
+						name={'search-outline'}
+						size={45}
+						color={'#FFFBFC'}
+						style={{ position: 'absolute' }}
+					/>
+				</StyledPressable>
+			</StyledAnimatedHighlight>
+		);
+	} else if (props.data.id == 'Gridview') {
+		return (
+			<>
 				<StyledAnimatedHighlight
 					style={[
 						{
-							borderColor: data.color,
-							width: itemSize,
-							height: itemSize,
-							marginHorizontal: itemMargin / 2,
+							borderColor: props.data.color,
+							width: props.itemSize,
+							height: props.itemSize,
+							marginHorizontal: props.itemMargin / 2,
 							top: 60
 						},
 						itemStyle
 					]}
 					className='justify-center'
+					onPress={() => {
+						bottomSheetModalRef.current.present();
+					}}
 				>
-					<StyledPressable
-						className='flex items-center justify-center'
-						onPress={async () => {
-							router.push('findCircles');
-						}}
-					>
-						<StyledImage
-							source={require('../assets/spiral/thin.png')}
-							style={{ width: 80, height: 80 }}
-						/>
-						<StyledIcon
-							name={'search-outline'}
-							size={45}
-							color={'#FFFBFC'}
-							style={{ position: 'absolute' }}
-						/>
-					</StyledPressable>
-				</StyledAnimatedHighlight>
-			);
-		} else if (data.id == 'Gridview') {
-			return (
-				<StyledAnimatedHighlight
-					style={[
-						{
-							borderColor: data.color,
-							width: itemSize,
-							height: itemSize,
-							marginHorizontal: itemMargin / 2,
-							top: 60
-						},
-						itemStyle
-					]}
-					className='justify-center'
-				>
-					<StyledPressable
-						className='flex items-center justify-center'
-						onPress={() => {
-							handlePresentModalPress();
-						}}
-					>
+					<StyledView className='flex items-center justify-center'>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
@@ -196,59 +153,56 @@ const FilterItem = forwardRef(
 							color={'#FFFBFC'}
 							style={{ position: 'absolute' }}
 						/>
-						<BottomSheetModalProvider>
-							<BottomSheetModal
-								enableDismissOnClose={true}
-								ref={bottomSheetModalRef}
-								index={1}
-								snapPoints={snapPoints}
-								onChange={handleSheetChanges}
-								handleComponent={handle}
-								backdropComponent={(backdropProps) =>
-									backdrop(backdropProps)
-								}
-								keyboardBehavior='extend'
-							>
-								<StyledView className='flex-1 bg-grey'></StyledView>
-							</BottomSheetModal>
-						</BottomSheetModalProvider>
-					</StyledPressable>
+					</StyledView>
 				</StyledAnimatedHighlight>
-			);
-		} else {
-			return (
-				<StyledAnimatedHighlight
-					style={[
-						{
-							borderColor: data.color,
-							width: itemSize,
-							height: itemSize,
-							marginHorizontal: itemMargin / 2,
-							top: 60
-						},
-						itemStyle
-					]}
-					className='flex border-[6px] items-center justify-center rounded-full'
-					onPress={() => {
-						toggleShown();
-						updateFilter(data.id);
-						updateFilterName(data.title);
-					}}
+				<BottomSheetModal
+					enableDismissOnClose={true}
+					ref={bottomSheetModalRef}
+					index={0}
+					snapPoints={SnapPoints(['85%'])}
+					handleComponent={() => handle('All Circles', 'bg-[#F00]')}
+					backdropComponent={(backdropProps) =>
+						backdrop(backdropProps)
+					}
+					keyboardBehavior='extend'
 				>
-					<>
-						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
-							{data.title}
-						</StyledText>
-						<StyledIcon
-							name={data.icon}
-							size={35}
-							color={data.iconColor || data.color}
-						/>
-					</>
-				</StyledAnimatedHighlight>
-			);
-		}
+					<StyledView className='flex-1 bg-grey'></StyledView>
+				</BottomSheetModal>
+			</>
+		);
+	} else {
+		return (
+			<StyledAnimatedHighlight
+				style={[
+					{
+						borderColor: props.data.color,
+						width: props.itemSize,
+						height: props.itemSize,
+						marginHorizontal: props.itemMargin / 2,
+						top: 60
+					},
+					itemStyle
+				]}
+				className='flex border-[6px] items-center justify-center rounded-full'
+				onPress={() => {
+					props.toggleShown();
+					updateFilter(props.data.id);
+					updateFilterName(props.data.title);
+				}}
+			>
+				<>
+					<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+						{props.data.title}
+					</StyledText>
+					<StyledIcon
+						name={props.data.icon}
+						size={35}
+						color={props.data.iconColor || props.data.color}
+					/>
+				</>
+			</StyledAnimatedHighlight>
+		);
 	}
-);
+});
 
 export { FilterItem };

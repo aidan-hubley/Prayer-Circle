@@ -17,15 +17,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const StyledView = styled(View);
 
 export default function Layout() {
+	const [circles, setCircles] = useState([]);
+	const [swipingEnabled, setSwipingEnabled] = useState(true);
 	const profileRef = useRef();
 	const journalRef = useRef();
 	const pagerRef = useRef();
 	const circleNameRef = useRef();
-	const [circles, setCircles] = useState([]);
-	const [swipingEnabled, setSwipingEnabled] = useState(true);
 	const filterRef = useRef();
-	const filterName = useStore((state) => state.currentFilterName);
 	const [
+		filterName,
 		globalReload,
 		filterReload,
 		setGlobalReload,
@@ -34,6 +34,7 @@ export default function Layout() {
 		setName,
 		setPfp
 	] = useStore((state) => [
+		state.currentFilterName,
 		state.globalReload,
 		state.filterReload,
 		state.setGlobalReload,

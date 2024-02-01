@@ -1,14 +1,5 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
-import {
-    FlatList,
-    Text,
-    View,
-    TouchableOpacity,
-    Animated,
-    Image,
-    Alert,
-    TextInput
-} from 'react-native';
+import { FlatList, Text, View, TouchableOpacity, Animated, Image, Alert, TextInput } from 'react-native';
 import {
     BottomSheetModal,
     BottomSheetBackdrop,

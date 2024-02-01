@@ -63,6 +63,7 @@ export default function FeedPage() {
 	}, [filterTarget]);
 	useEffect(() => {
 		if (globalReload) {
+			setRefreshing(true);
 			setUpFeed();
 		}
 	}, [globalReload]);
@@ -160,7 +161,6 @@ export default function FeedPage() {
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
-					extraData={refreshing}
 				/>
 			</StyledView>
 
@@ -172,7 +172,6 @@ export default function FeedPage() {
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
-			<StatusBar barStyle={'light-content'} />
 		</StyledView>
 	);
 }

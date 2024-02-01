@@ -7,10 +7,9 @@ import {
 	Image,
 	TouchableWithoutFeedback,
 	TouchableOpacity,
-	StatusBar,
-	ScrollView
+	StatusBar
 } from 'react-native';
-import { KeyboardAwareScrollView, ScrollableComponent } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
@@ -23,8 +22,9 @@ import { passwordValidation } from '../../backend/functions';
 import Modal from 'react-native-modal';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from '../../backend/config';
-import { Terms } from '../../components/Terms';
+import { router } from 'expo-router';
+/* import { Terms } from '../../components/Terms'; */
+import { useAuth } from '../context/auth';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -36,36 +36,36 @@ const StyledModal = styled(Modal);
 
 export default function Register() {
 	const [type, setType] = useState(CameraType.front);
-	const [permission, requestPermission] = Camera.useCameraPermissions();
-
 	const [isModalVisible, setModalVisible] = useState(false);
+	const [isTOSModalVisible, setTOSModalVisible] = useState(false);
+	const [flashMode, setFlashMode] = useState('off');
+	const [profileImage, setProfileImage] = useState(null);
+	const [fname, setFName] = useState('');
+	const [lname, setLName] = useState('');
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [pass, setPass] = useState('');
+	const [permission, requestPermission] = Camera.useCameraPermissions();
+	const cameraRef = useRef(null);
+	const authContext = useAuth();
+
 	const toggleModal = () => {
 		setModalVisible(!isModalVisible);
 	};
-
-	const [isTOSModalVisible, setTOSModalVisible] = useState(false);
-    const toggleTOSModal = () => {
-        setTOSModalVisible(!isTOSModalVisible);
-    };
-
-	const cameraRef = useRef(null);
+	const toggleTOSModal = () => {
+		/* setTOSModalVisible(!isTOSModalVisible); */
+	};
 
 	function toggleCameraType() {
 		setType((current) =>
 			current === CameraType.back ? CameraType.front : CameraType.back
 		);
 	}
-
-	const [flashMode, setFlashMode] = useState('off');
-
 	function toggleFlashMode() {
 		setFlashMode((currentFlashMode) =>
 			currentFlashMode === 'off' ? 'torch' : 'off'
 		);
 	}
-
-	const [profileImage, setProfileImage] = useState(null);
-
 	async function takePicture() {
 		const { status } = await Camera.requestCameraPermissionsAsync();
 		if (status !== 'granted') {
@@ -99,15 +99,12 @@ export default function Register() {
 		}
 	};
 
-	const [fname, setFName] = useState('');
-	const [lname, setLName] = useState('');
-	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
-	const [pass, setPass] = useState('');
-
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
-			<KeyboardAwareScrollView bounces={false}>
+			<KeyboardAwareScrollView
+				bounces={false}
+				keyboardShouldPersistTaps='handled'
+			>
 				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 					<>
 						<StyledView className='flex flex-col pb-3 px-[15px] w-screen'>
@@ -139,15 +136,8 @@ export default function Register() {
 									inputMode='text'
 									maxLength={30}
 									autoCorrect={false}
-									ref={(input) => {
-										this.usernameInput = input;
-									}}
-									onSubmitEditing={() => {
-										this.fNameInput.focus();
-									}}
-									blurOnSubmit={false}
-									onEndEditing={(text) => {
-										setUsername(text.nativeEvent.text);
+									onChangeText={(text) => {
+										setUsername(text);
 									}}
 								/>
 								<StyledView className='flex flex-row w-11/12'>
@@ -157,16 +147,9 @@ export default function Register() {
 										placeholderTextColor={'#fff'}
 										inputMode='text'
 										maxLength={30}
-										ref={(input) => {
-											this.fNameInput = input;
-										}}
-										onSubmitEditing={() => {
-											this.lNameInput.focus();
-										}}
 										autoComplete='given-name'
-										blurOnSubmit={false}
-										onEndEditing={(text) => {
-											setFName(text.nativeEvent.text);
+										onChangeText={(text) => {
+											setFName(text);
 										}}
 									/>
 									<StyledInput
@@ -175,16 +158,9 @@ export default function Register() {
 										placeholderTextColor={'#fff'}
 										inputMode='text'
 										maxLength={30}
-										ref={(input) => {
-											this.lNameInput = input;
-										}}
-										onSubmitEditing={() => {
-											this.emailInput.focus();
-										}}
 										autoComplete='family-name'
-										blurOnSubmit={false}
-										onEndEditing={(text) => {
-											setLName(text.nativeEvent.text);
+										onChangeText={(text) => {
+											setLName(text);
 										}}
 									/>
 								</StyledView>
@@ -196,15 +172,8 @@ export default function Register() {
 									inputMode='email'
 									autoComplete='email'
 									maxLength={30}
-									ref={(input) => {
-										this.emailInput = input;
-									}}
-									onSubmitEditing={() => {
-										this.passInput.focus();
-									}}
-									blurOnSubmit={false}
-									onEndEditing={(text) => {
-										setEmail(text.nativeEvent.text);
+									onChangeText={(text) => {
+										setEmail(text);
 									}}
 								/>
 								<StyledInput
@@ -213,20 +182,15 @@ export default function Register() {
 									placeholderTextColor={'#fff'}
 									secureTextEntry={true}
 									maxLength={25}
-									ref={(input) => {
-										this.passInput = input;
-									}}
-									onEndEditing={(text) => {
-										setPass(text.nativeEvent.text);
+									onChangeText={(text) => {
+										setPass(text);
 									}}
 								/>
 							</StyledView>
 						</StyledView>
 						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
 							Read the{' '}
-							<TouchableWithoutFeedback
-								onPress={toggleTOSModal}
-							>
+							<TouchableWithoutFeedback onPress={toggleTOSModal}>
 								<StyledText className='text-yellow font-bold'>
 									Terms and Conditions
 								</StyledText>
@@ -236,16 +200,16 @@ export default function Register() {
 							className='w-[90%] self-center'
 							isVisible={isTOSModalVisible}
 						>
-						<Terms></Terms>
-						<StyledView className='w-full flex flex-row justify-between absolute bottom-[100px] items-center'>
-							<Button
-								icon='arrow-back-outline'
-								btnStyles={'left-10'}
-								width='w-[50px]'
-								height='h-[50px]'
-								press={toggleTOSModal}
-							/>
-						</StyledView>
+							{/* <Terms></Terms> */}
+							<StyledView className='w-full flex flex-row justify-between absolute bottom-[100px] items-center'>
+								<Button
+									icon='arrow-back-outline'
+									btnStyles={'left-10'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={toggleTOSModal}
+								/>
+							</StyledView>
 						</StyledModal>
 						<StyledView className='flex flex-col items-center'>
 							<Button
@@ -262,7 +226,8 @@ export default function Register() {
 										lname,
 										email,
 										pass,
-										profileImage
+										profileImage,
+										authContext
 									);
 								}}
 							/>
@@ -359,7 +324,15 @@ export default function Register() {
 	);
 }
 
-async function createUserData(username, fname, lname, email, password, image) {
+async function createUserData(
+	username,
+	fname,
+	lname,
+	email,
+	password,
+	image,
+	authContext
+) {
 	if (username.length < 1) return alert('Invalid Username'); // check username length
 
 	let taken = await checkUsername(username); // check if username is taken
@@ -389,13 +362,6 @@ async function createUserData(username, fname, lname, email, password, image) {
 	if (!image) return alert('You need to upload a profile picture');
 	let imgURL = await uploadImage(`prayer_circle/users/${username}`, image);
 
-	//clear all fields
-	this.usernameInput.clear();
-	this.fNameInput.clear();
-	this.lNameInput.clear();
-	this.emailInput.clear();
-	this.passInput.clear();
-
 	let userData = {
 		public: {
 			fname: fname,
@@ -421,5 +387,5 @@ async function createUserData(username, fname, lname, email, password, image) {
 			termsAgreed: true
 		}
 	};
-	registerUser(username, email, password, userData);
+	authContext.register(username, email, password, userData);
 }
