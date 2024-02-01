@@ -30,11 +30,13 @@ export default function Page() {
 		currentFilterIcon,
 		currentFilterColor,
 		currentFilterDescription,
+		currentFilterIconColor,
 	] = useStore((state) => [
 		state.currentFilterName,
 		state.currentFilterIcon,
 		state.currentFilterColor,
-		state.currentFilterDescription
+		state.currentFilterDescription,
+		state.currentFilterIconColor
 	]);
 	let insets = useSafeAreaInsets();
 
@@ -273,7 +275,7 @@ export default function Page() {
 								width={'w-[120px]'}
 								iconSize={70}
 								icon={currentFilterIcon}
-								iconColor='white'
+								iconColor={currentFilterIconColor}
 								href='/mainViewLayout'
 								borderColor={currentFilterColor}
 							/>

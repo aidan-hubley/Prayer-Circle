@@ -41,6 +41,7 @@ const FilterItem = forwardRef(
 		const setFilterIcon = useStore((state) => state.setFilterIcon);
 		const setFilterColor = useStore((state) => state.setFilterColor);
 		const setFilterDescription = useStore((state) => state.setFilterDescription);
+		const setFilterIconColor = useStore((state) => state.setFilterIconColor);
 		const itemStyle = useAnimatedStyle(() => {
 			const inputRange = [
 				(index - 3) * (itemSize + itemMargin),
@@ -239,9 +240,11 @@ const FilterItem = forwardRef(
 						setFilterIcon(data.icon);
 						setFilterColor(data.color);
 						setFilterDescription(data.description); //NRA
+						setFilterIconColor(data.iconColor);
 						console.log(data.icon);
 						console.log(data.color);
 						console.log(data.description);
+						console.log(data.iconColor);
 					}}
 				>
 					<>

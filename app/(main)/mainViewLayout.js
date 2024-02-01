@@ -33,6 +33,7 @@ export default function Layout() {
 		setFilterIcon,
 		setFilterColor,
 		setFilterDescription,
+		setFilterIconColor,
 		setUid,
 		setName,
 		setPfp
@@ -44,6 +45,7 @@ export default function Layout() {
 		state.setFilterIcon,
 		state.setFilterColor,
 		state.setFilterDescription,
+		state.setFilterIconColor,
 		state.setUid,
 		state.setName,
 		state.setPfp
