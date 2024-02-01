@@ -60,7 +60,6 @@ const Filter = forwardRef((props, ref) => {
 				pointerEvents={props.touchEvents ? 'none' : 'auto'}
 				className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
-					//Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					toggleShown();
 				}}
 			/>
@@ -94,6 +93,9 @@ const Filter = forwardRef((props, ref) => {
 								itemSize={itemSize}
 								itemMargin={itemMargin}
 								toggleShown={toggleShown}
+								circles={
+									item.id === 'Gridview' ? props.data : []
+								}
 							/>
 						);
 					}}

@@ -14,7 +14,7 @@ import {
 	backdrop,
 	SnapPoints
 } from '../components/BottomSheetModalHelpers.js';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -140,6 +140,7 @@ const FilterItem = forwardRef((props, ref) => {
 					className='justify-center'
 					onPress={() => {
 						bottomSheetModalRef.current.present();
+						props.toggleShown();
 					}}
 				>
 					<StyledView className='flex items-center justify-center'>
@@ -160,13 +161,53 @@ const FilterItem = forwardRef((props, ref) => {
 					ref={bottomSheetModalRef}
 					index={0}
 					snapPoints={SnapPoints(['85%'])}
-					handleComponent={() => handle('All Circles', 'bg-[#F00]')}
+					handleComponent={() => handle('All Circles')}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}
 					keyboardBehavior='extend'
 				>
-					<StyledView className='flex-1 bg-grey'></StyledView>
+					<StyledView className='flex-1 bg-grey'>
+						<BottomSheetFlatList
+							data={props.circles.slice(2)}
+							keyExtractor={(item) => item.id}
+							contentContainerStyle={{
+								paddingVertical: 30,
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}
+							renderItem={({ item }) => {
+								return (
+									<StyledAnimatedHighlight
+										style={[
+											{
+												borderColor: item.color
+											}
+										]}
+										className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square mx-[22px] my-[20px]'
+										onPress={() => {
+											bottomSheetModalRef.current.dismiss();
+											updateFilter(item.id);
+											updateFilterName(item.title);
+										}}
+									>
+										<>
+											<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+												{item.title}
+											</StyledText>
+											<StyledIcon
+												name={item.icon}
+												size={45}
+												color={
+													item.iconColor || item.color
+												}
+											/>
+										</>
+									</StyledAnimatedHighlight>
+								);
+							}}
+						/>
+					</StyledView>
 				</BottomSheetModal>
 			</>
 		);
@@ -204,5 +245,39 @@ const FilterItem = forwardRef((props, ref) => {
 		);
 	}
 });
+
+const FilterCircle = (props) => {
+	return (
+		<StyledAnimatedHighlight
+			style={[
+				{
+					borderColor: props.data.color,
+					width: props.itemSize,
+					height: props.itemSize,
+					marginHorizontal: props.itemMargin / 2,
+					top: 60
+				},
+				itemStyle
+			]}
+			className='flex border-[6px] items-center justify-center rounded-full'
+			onPress={() => {
+				props.toggleShown();
+				updateFilter(props.data.id);
+				updateFilterName(props.data.title);
+			}}
+		>
+			<>
+				<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+					{props.data.title}
+				</StyledText>
+				<StyledIcon
+					name={props.data.icon}
+					size={35}
+					color={props.data.iconColor || props.data.color}
+				/>
+			</>
+		</StyledAnimatedHighlight>
+	);
+};
 
 export { FilterItem };
