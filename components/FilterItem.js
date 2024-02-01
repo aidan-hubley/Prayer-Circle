@@ -1,8 +1,8 @@
-import React, { useRef, useMemo, forwardRef, useCallback } from 'react';
+import React, { forwardRef } from 'react';
 import { View, Text, TouchableHighlight, Pressable, Image } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from '../backend/config';
+import { router } from 'expo-router';
 import Animated, {
 	useAnimatedStyle,
 	interpolate,

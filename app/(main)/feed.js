@@ -63,6 +63,7 @@ export default function FeedPage() {
 	}, [filterTarget]);
 	useEffect(() => {
 		if (globalReload) {
+			setRefreshing(true);
 			setUpFeed();
 		}
 	}, [globalReload]);

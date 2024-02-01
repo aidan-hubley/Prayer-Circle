@@ -110,7 +110,7 @@ export default function Page() {
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='arrow-back-outline'
-					href='/mainViewLayout'
+					href='/'
 					press={() => {
 						this.searchCode.clear();
 					}}

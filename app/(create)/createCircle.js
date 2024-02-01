@@ -18,7 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createCircle } from '../../backend/firebaseFunctions';
 import { ColorPicker, fromHsv } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
-import { router } from '../../backend/config';
+import { router } from 'expo-router';
 import { useStore } from '../global';
 
 const StyledSafeArea = styled(SafeAreaView);
