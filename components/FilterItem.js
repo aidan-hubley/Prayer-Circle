@@ -1,5 +1,12 @@
 import React, { forwardRef, useRef, useMemo } from 'react';
-import { View, Text, TouchableHighlight, Pressable, Image } from 'react-native';
+import {
+	View,
+	Text,
+	TouchableHighlight,
+	Pressable,
+	Image,
+	Dimensions
+} from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
@@ -172,29 +179,34 @@ const FilterItem = forwardRef((props, ref) => {
 							data={props.circles.slice(2)}
 							keyExtractor={(item) => item.id}
 							contentContainerStyle={{
-								paddingVertical: 30,
-								justifyContent: 'center',
+								paddingVertical: 20,
+								paddingHorizontal: 12,
 								alignItems: 'center'
 							}}
+							numColumns={3}
 							renderItem={({ item }) => {
+								const vw = Dimensions.get('window').width;
 								return (
-									<StyledAnimatedHighlight
-										style={[
-											{
-												borderColor: item.color
-											}
-										]}
-										className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square mx-[22px] my-[20px]'
-										onPress={() => {
-											bottomSheetModalRef.current.dismiss();
-											updateFilter(item.id);
-											updateFilterName(item.title);
-										}}
+									<StyledView
+										className='items-center justify-around my-[10px]'
+										style={{ width: vw / 3 - 8 }}
 									>
-										<>
-											<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
-												{item.title}
-											</StyledText>
+										<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
+											{item.title}
+										</StyledText>
+										<StyledAnimatedHighlight
+											style={[
+												{
+													borderColor: item.color
+												}
+											]}
+											className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
+											onPress={() => {
+												bottomSheetModalRef.current.dismiss();
+												updateFilter(item.id);
+												updateFilterName(item.title);
+											}}
+										>
 											<StyledIcon
 												name={item.icon}
 												size={45}
@@ -202,8 +214,8 @@ const FilterItem = forwardRef((props, ref) => {
 													item.iconColor || item.color
 												}
 											/>
-										</>
-									</StyledAnimatedHighlight>
+										</StyledAnimatedHighlight>
+									</StyledView>
 								);
 							}}
 						/>
