@@ -9,7 +9,11 @@ import Animated, {
 	Extrapolate
 } from 'react-native-reanimated';
 import { useStore } from '../app/global.js';
-import { handle, backdrop } from '../components/BottomSheetModalHelpers.js';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../components/BottomSheetModalHelpers.js';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
@@ -156,7 +160,7 @@ const FilterItem = forwardRef((props, ref) => {
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
 					index={0}
-					snapPoints={snapPoints}
+					snapPoints={SnapPoints(['85%'])}
 					handleComponent={() => handle('All Circles')}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)

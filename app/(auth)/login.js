@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef } from 'react';
 import {
 	Text,
 	View,
@@ -18,7 +18,11 @@ import { Button } from '../../components/Buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '../context/auth';
-import { handle, backdrop } from '../../components/BottomSheetModalHelpers';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../../components/BottomSheetModalHelpers';
 import { router } from 'expo-router';
 
 const StyledImage = styled(Image);
@@ -36,7 +40,6 @@ export default function Login() {
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
 	const auth = getAuth();
-	const snapPoints = useMemo(() => ['40%'], []);
 
 	const handlePasswordReset = async () => {
 		try {
@@ -141,7 +144,7 @@ export default function Login() {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={snapPoints}
+				snapPoints={SnapPoints(['40%'])}
 				handleComponent={() => handle('Reset Password')}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'

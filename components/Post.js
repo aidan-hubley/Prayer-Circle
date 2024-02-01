@@ -34,7 +34,7 @@ import { useStore } from '../app/global';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
-import { backdrop, handle } from './BottomSheetModalHelpers';
+import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -92,7 +92,6 @@ export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 
 	// bottom sheet modal
-	const snapPoints = useMemo(() => ['85%'], []);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
@@ -684,7 +683,7 @@ export const Post = (post) => {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={snapPoints}
+				snapPoints={SnapPoints(['85%'])}
 				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'

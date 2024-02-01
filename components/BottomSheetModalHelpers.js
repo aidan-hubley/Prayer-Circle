@@ -1,4 +1,9 @@
-import React, { forwardRef, useCallback, useImperativeHandle } from 'react';
+import React, {
+	forwardRef,
+	useCallback,
+	useMemo,
+	useImperativeHandle
+} from 'react';
 import { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Text, View } from 'react-native';
 import { styled } from 'nativewind';
@@ -29,9 +34,12 @@ const handle = (title) => {
 	);
 };
 
-const handleChanges = () => {
-	/* useCallback((index) => {}, []); */
+const HandleChanges = () => {
 	return useCallback((index) => {}, []);
 };
 
-export { backdrop, handle, handleChanges };
+const SnapPoints = (points) => {
+	return useMemo(() => points, []);
+};
+
+export { backdrop, handle, HandleChanges, SnapPoints };

@@ -25,7 +25,11 @@ import {
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { handle, backdrop } from '../../components/BottomSheetModalHelpers';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
 
 const StyledView = styled(View);
@@ -263,354 +267,352 @@ export default function Page() {
 			<StyledView className='flex-1 items-center mt-45 pt-10 py-5'>
 				<FlatList
 					ListHeaderComponent={
-						<>
-							<StyledView className='w-full flex items-center'>
-								<View className='relative pt-[100px]'></View>
+						<StyledView className='w-full flex items-center'>
+							<View className='relative pt-[100px]'></View>
 
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-										<Text className='mr-3 text-lg text-offwhite'>
-											Terms of Service
-										</Text>
-										<Button // TODO: use component
-											icon='document'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
+									<Text className='mr-3 text-lg text-offwhite'>
+										Terms of Service
+									</Text>
+									<Button // TODO: use component
+										icon='document'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										textColor={'text-offwhite'}
+										borderColor={'border-offwhite'}
+										btnStyles='border-2'
+									></Button>
+								</View>
+							</View>
+							<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
+									<Text className='mr-3 text-lg text-offwhite'>
+										Update Account
+									</Text>
+									<StyledView className='flex flex-row'>
+										<Button // TODO: add modal + backend
+											title='Name'
+											width={'w-[80px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
 											textColor={'text-offwhite'}
 											borderColor={'border-offwhite'}
-											btnStyles='border-2'
+											btnStyles='mr-3 border-2'
 										></Button>
-									</View>
+										<Button // TODO: add modal + backend
+											icon='camera'
+											width={'w-[65px]'}
+											height={'h-[35px]'}
+											bgColor={'bg-transparent'}
+											borderColor={'border-offwhite'}
+											btnStyles='border-2'
+											iconSize={26}
+											iconColor={'#FFFBFC'}
+										></Button>
+									</StyledView>
 								</View>
-								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-										<Text className='mr-3 text-lg text-offwhite'>
-											Update Account
+							</View>
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
+									<Text className='mr-3 text-lg text-offwhite'>
+										Change Password
+									</Text>
+									<StyledView className='flex flex-row'>
+										<Button
+											icon='text'
+											width={'w-[80px]'}
+											height={'h-[35px]'}
+											iconSize={26}
+											press={handlePasswordModalPress}
+											bgColor={'bg-transparent'}
+											borderColor={'border-offwhite'}
+											iconColor={'#FFFBFC'}
+											btnStyles='mr-3 border-2'
+										></Button>
+										<Button
+											icon='mail'
+											width={'w-[65px]'}
+											height={'h-[35px]'}
+											bgColor={'bg-transparent'}
+											borderColor={'border-offwhite'}
+											iconSize={26}
+											iconColor={'#FFFBFC'}
+											btnStyles='border-2'
+											press={handlePasswordReset}
+										></Button>
+									</StyledView>
+								</View>
+							</View>
+							<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
+									<Text className='mr-3 text-lg text-offwhite'>
+										All Notifications
+									</Text>
+									<StyledView className='flex-row'>
+										<StyledIcon
+											name='notifications-outline'
+											size={30}
+											color='#FFFBFC'
+											className='w-[30px] h-[30px] mr-2'
+										/>
+										<Toggle />
+									</StyledView>
+								</View>
+							</View>
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
+									<Text className='mr-3 text-lg text-offwhite'>
+										Haptics
+									</Text>
+									<StyledView className='flex-row'>
+										<StyledIcon
+											name='radio-outline'
+											size={30}
+											color='#FFFBFC'
+											className='w-[30px] h-[30px] mr-2'
+										/>
+										<Toggle />
+									</StyledView>
+								</View>
+							</View>
+							<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+							<View className='flex-row mt-5 px-5'>
+								<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
+									<StyledView className='flex-row pb-5 w-full'>
+										<Text className='text-lg text-offwhite pr-1'>
+											Presence Timers
 										</Text>
-										<StyledView className='flex flex-row'>
-											<Button // TODO: add modal + backend
-												title='Name'
-												width={'w-[80px]'}
-												height={'h-[35px]'}
-												bgColor={'bg-transparent'}
-												textColor={'text-offwhite'}
-												borderColor={'border-offwhite'}
-												btnStyles='mr-3 border-2'
-											></Button>
-											<Button // TODO: add modal + backend
-												icon='camera'
-												width={'w-[65px]'}
-												height={'h-[35px]'}
-												bgColor={'bg-transparent'}
-												borderColor={'border-offwhite'}
-												btnStyles='border-2'
-												iconSize={26}
-												iconColor={'#FFFBFC'}
-											></Button>
+										<Button
+											icon='list'
+											width={'w-[30px]'}
+											height={'h-[30px]'}
+											bgColor={'bg-transparent'}
+											iconSize={30}
+											iconColor={'#FFFBFC'}
+											btnStyles='absolute right-0'
+											press={handleTimerButtonPress}
+										></Button>
+									</StyledView>
+									<StyledView className='w-full flex-row justify-between'>
+										<StyledView className='flex-row'>
+											<StyledImage
+												source={require('../../assets/timers/calendar-day.png')}
+												className='w-[30px] h-[30px] mr-2'
+											/>
+											<Toggle
+												onToggleStateChange={
+													handleToggleDaily
+												}
+											/>
+											{/* toggle={true} if local storage is true */}
 										</StyledView>
-									</View>
-								</View>
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-										<Text className='mr-3 text-lg text-offwhite'>
-											Change Password
-										</Text>
-										<StyledView className='flex flex-row'>
-											<Button
-												icon='text'
-												width={'w-[80px]'}
-												height={'h-[35px]'}
-												iconSize={26}
-												press={handlePasswordModalPress}
-												bgColor={'bg-transparent'}
-												borderColor={'border-offwhite'}
-												iconColor={'#FFFBFC'}
-												btnStyles='mr-3 border-2'
-											></Button>
-											<Button
-												icon='mail'
-												width={'w-[65px]'}
-												height={'h-[35px]'}
-												bgColor={'bg-transparent'}
-												borderColor={'border-offwhite'}
-												iconSize={26}
-												iconColor={'#FFFBFC'}
-												btnStyles='border-2'
-												press={handlePasswordReset}
-											></Button>
+										<StyledView className='flex-row'>
+											<StyledImage
+												source={require('../../assets/timers/calendar-week.png')}
+												className='w-[30px] h-[30px] mr-2'
+											/>
+											<Toggle
+												onToggleStateChange={
+													handleToggleWeekly
+												}
+											/>
+											{/* toggle={true} if local storage is true */}
 										</StyledView>
-									</View>
-								</View>
-								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-										<Text className='mr-3 text-lg text-offwhite'>
-											All Notifications
-										</Text>
 										<StyledView className='flex-row'>
 											<StyledIcon
-												name='notifications-outline'
+												name='infinite'
 												size={30}
 												color='#FFFBFC'
 												className='w-[30px] h-[30px] mr-2'
 											/>
-											<Toggle />
-										</StyledView>
-									</View>
-								</View>
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-										<Text className='mr-3 text-lg text-offwhite'>
-											Haptics
-										</Text>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='radio-outline'
-												size={30}
-												color='#FFFBFC'
-												className='w-[30px] h-[30px] mr-2'
+											<Toggle
+												onToggleStateChange={
+													handleToggleInfinite
+												}
 											/>
-											<Toggle />
+											{/* toggle={true} if local storage is true */}
 										</StyledView>
-									</View>
+									</StyledView>
 								</View>
-								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-								<View className='flex-row mt-5 px-5'>
-									<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row pb-5 w-full'>
-											<Text className='text-lg text-offwhite pr-1'>
-												Presence Timers
-											</Text>
+							</View>
+							<View className='flex-row mt-5 px-5'>
+								<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
+									<StyledView className='flex-row pb-5 w-full'>
+										<Text className='text-lg text-offwhite pr-1'>
+											Presence Reminder
+										</Text>
+										<StyledView className='absolute right-0'>
 											<Button
-												icon='list'
+												icon='information-circle-outline'
 												width={'w-[30px]'}
 												height={'h-[30px]'}
 												bgColor={'bg-transparent'}
 												iconSize={30}
 												iconColor={'#FFFBFC'}
-												btnStyles='absolute right-0'
-												press={handleTimerButtonPress}
+												press={
+													handleReminderButtonPress
+												}
 											></Button>
 										</StyledView>
-										<StyledView className='w-full flex-row justify-between'>
-											<StyledView className='flex-row'>
-												<StyledImage
-													source={require('../../assets/timers/calendar-day.png')}
-													className='w-[30px] h-[30px] mr-2'
-												/>
-												<Toggle
-													onToggleStateChange={
-														handleToggleDaily
-													}
-												/>
-												{/* toggle={true} if local storage is true */}
-											</StyledView>
-											<StyledView className='flex-row'>
-												<StyledImage
-													source={require('../../assets/timers/calendar-week.png')}
-													className='w-[30px] h-[30px] mr-2'
-												/>
-												<Toggle
-													onToggleStateChange={
-														handleToggleWeekly
-													}
-												/>
-												{/* toggle={true} if local storage is true */}
-											</StyledView>
-											<StyledView className='flex-row'>
+									</StyledView>
+									<StyledView className='w-[98%] flex-row justify-between'>
+										<StyledAnimatedView
+											style={highlightPosition}
+											className='absolute flex items-center justify-center rounded-full border border-offwhite w-[45px] h-[30px]'
+										></StyledAnimatedView>
+										<StyledOpacity
+											className=''
+											onPress={() =>
+												handleReminderPress(0)
+											}
+										>
+											<StyledText className='text-lg text-offwhite top-[1px]'>
 												<StyledIcon
-													name='infinite'
-													size={30}
+													name='notifications-off-outline'
+													size={22}
 													color='#FFFBFC'
-													className='w-[30px] h-[30px] mr-2'
 												/>
-												<Toggle
-													onToggleStateChange={
-														handleToggleInfinite
-													}
-												/>
-												{/* toggle={true} if local storage is true */}
-											</StyledView>
-										</StyledView>
-									</View>
+											</StyledText>
+										</StyledOpacity>
+										<StyledOpacity
+											className=''
+											onPress={() =>
+												handleReminderPress(1)
+											}
+										>
+											<StyledText className='text-lg text-offwhite'>
+												15m
+											</StyledText>
+										</StyledOpacity>
+										<StyledOpacity
+											className=''
+											onPress={() =>
+												handleReminderPress(2)
+											}
+										>
+											<StyledText className='text-lg text-offwhite'>
+												30m
+											</StyledText>
+										</StyledOpacity>
+										<StyledOpacity
+											className=''
+											onPress={() =>
+												handleReminderPress(3)
+											}
+										>
+											<StyledText className='text-lg text-offwhite'>
+												1h
+											</StyledText>
+										</StyledOpacity>
+										<StyledOpacity
+											className=''
+											onPress={() =>
+												handleReminderPress(4)
+											}
+										>
+											<StyledText className='text-lg text-offwhite'>
+												1.5h
+											</StyledText>
+										</StyledOpacity>
+										<StyledOpacity
+											className=''
+											onPress={() =>
+												handleReminderPress(5)
+											}
+										>
+											<StyledText className='text-lg text-offwhite'>
+												2h
+											</StyledText>
+										</StyledOpacity>
+									</StyledView>
 								</View>
-								<View className='flex-row mt-5 px-5'>
-									<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row pb-5 w-full'>
-											<Text className='text-lg text-offwhite pr-1'>
-												Presence Reminder
-											</Text>
-											<StyledView className='absolute right-0'>
-												<Button
-													icon='information-circle-outline'
-													width={'w-[30px]'}
-													height={'h-[30px]'}
-													bgColor={'bg-transparent'}
-													iconSize={30}
-													iconColor={'#FFFBFC'}
-													press={
-														handleReminderButtonPress
-													}
-												></Button>
-											</StyledView>
-										</StyledView>
-										<StyledView className='w-[98%] flex-row justify-between'>
-											<StyledAnimatedView
-												style={highlightPosition}
-												className='absolute flex items-center justify-center rounded-full border border-offwhite w-[45px] h-[30px]'
-											></StyledAnimatedView>
-											<StyledOpacity
-												className=''
-												onPress={() =>
-													handleReminderPress(0)
-												}
-											>
-												<StyledText className='text-lg text-offwhite top-[1px]'>
-													<StyledIcon
-														name='notifications-off-outline'
-														size={22}
-														color='#FFFBFC'
-													/>
-												</StyledText>
-											</StyledOpacity>
-											<StyledOpacity
-												className=''
-												onPress={() =>
-													handleReminderPress(1)
-												}
-											>
-												<StyledText className='text-lg text-offwhite'>
-													15m
-												</StyledText>
-											</StyledOpacity>
-											<StyledOpacity
-												className=''
-												onPress={() =>
-													handleReminderPress(2)
-												}
-											>
-												<StyledText className='text-lg text-offwhite'>
-													30m
-												</StyledText>
-											</StyledOpacity>
-											<StyledOpacity
-												className=''
-												onPress={() =>
-													handleReminderPress(3)
-												}
-											>
-												<StyledText className='text-lg text-offwhite'>
-													1h
-												</StyledText>
-											</StyledOpacity>
-											<StyledOpacity
-												className=''
-												onPress={() =>
-													handleReminderPress(4)
-												}
-											>
-												<StyledText className='text-lg text-offwhite'>
-													1.5h
-												</StyledText>
-											</StyledOpacity>
-											<StyledOpacity
-												className=''
-												onPress={() =>
-													handleReminderPress(5)
-												}
-											>
-												<StyledText className='text-lg text-offwhite'>
-													2h
-												</StyledText>
-											</StyledOpacity>
-										</StyledView>
-									</View>
+							</View>
+							<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
+									<StyledView className='flex-row'>
+										<StyledIcon
+											name='warning-outline'
+											size={30}
+											color='#F9A826'
+											className='w-[30px] h-[30px] mr-2'
+										/>
+										<Text className='mr-3 text-lg text-offwhite'>
+											Clear Cache
+										</Text>
+									</StyledView>
+									<Button
+										icon='trash-outline'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+									></Button>
 								</View>
-								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='warning-outline'
-												size={30}
-												color='#F9A826'
-												className='w-[30px] h-[30px] mr-2'
-											/>
-											<Text className='mr-3 text-lg text-offwhite'>
-												Clear Cache
-											</Text>
-										</StyledView>
-										<Button
-											icon='trash-outline'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
-											btnStyles='border-2'
-										></Button>
-									</View>
+							</View>
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
+									<StyledView className='flex-row'>
+										<StyledIcon
+											name='warning-outline'
+											size={30}
+											color='#F9A826'
+											className='w-[30px] h-[30px] mr-2'
+										/>
+										<Text className='mr-3 text-lg text-offwhite'>
+											Change Email
+										</Text>
+									</StyledView>
+									<Button
+										icon='trash-outline'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+									></Button>
 								</View>
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='warning-outline'
-												size={30}
-												color='#F9A826'
-												className='w-[30px] h-[30px] mr-2'
-											/>
-											<Text className='mr-3 text-lg text-offwhite'>
-												Change Email
-											</Text>
-										</StyledView>
-										<Button
-											icon='trash-outline'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
-											btnStyles='border-2'
-										></Button>
-									</View>
+							</View>
+							<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+							<View className='flex-row items-center mt-5 px-5'>
+								<View className='flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl'>
+									<StyledView className='flex-row'>
+										<StyledIcon
+											name='skull-outline'
+											size={30}
+											color='#CC2500'
+											className='w-[30px] h-[30px] mr-2'
+										/>
+										<Text className='mr-3 text-lg text-offwhite'>
+											Delete Profile
+										</Text>
+									</StyledView>
+									<Button
+										icon='trash-outline'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+									></Button>
 								</View>
-								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='skull-outline'
-												size={30}
-												color='#CC2500'
-												className='w-[30px] h-[30px] mr-2'
-											/>
-											<Text className='mr-3 text-lg text-offwhite'>
-												Delete Profile
-											</Text>
-										</StyledView>
-										<Button
-											icon='trash-outline'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
-											btnStyles='border-2'
-										></Button>
-									</View>
-								</View>
+							</View>
 
-								<View className='relative pb-[75px]'></View>
-							</StyledView>
-						</>
+							<View className='relative pb-[75px]'></View>
+						</StyledView>
 					}
 				/>
 
