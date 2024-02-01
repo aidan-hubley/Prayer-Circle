@@ -259,7 +259,7 @@ export const Post = ({ post }) => {
 							autoCapitalize='sentences'
 							placeholderTextColor={'#ffffff40'}
 							inputMode='text'
-							maxLength={1000}
+							maxLength={500}
 							defaultValue={editContent}
 							onChangeText={(text) => {
 								setEditContent(text);
