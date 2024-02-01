@@ -88,7 +88,6 @@ const FilterItem = forwardRef((props, ref) => {
 		};
 	});
 	const bottomSheetModalRef = useRef(null);
-	const snapPoints = useMemo(() => ['85%'], []);
 
 	if (props.data.id == 'addCircles') {
 		return (
@@ -161,7 +160,7 @@ const FilterItem = forwardRef((props, ref) => {
 					ref={bottomSheetModalRef}
 					index={0}
 					snapPoints={SnapPoints(['85%'])}
-					handleComponent={() => handle('All Circles')}
+					handleComponent={() => handle('All Circles', 'bg-[#F00]')}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}
