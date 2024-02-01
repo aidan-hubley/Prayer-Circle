@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import {
-	Text,
-	View,
-	TextInput,
-	TouchableOpacity,
-	Image,
-	ScrollView
-} from 'react-native';
+import { Text, View, TextInput, ScrollView } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
 	SafeAreaView,
 	useSafeAreaInsets
 } from 'react-native-safe-area-context';
-import { Button } from '../components/Buttons';
+import { Button } from '../../components/Buttons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {
 	readData,
 	addUserToCircle,
 	addUserToQueue,
 	checkIfUserIsInCircle
-} from '../backend/firebaseFunctions';
-import { useStore } from '../app/global';
+} from '../../backend/firebaseFunctions';
+import { useStore } from '../../app/global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -29,13 +22,12 @@ const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 
 export default function Page() {
-	let insets = useSafeAreaInsets();
-	let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
-
 	const [code, setCode] = useState('');
 	const [hasPermission, setHasPermission] = useState(null);
 	const [scanned, setScanned] = useState(false);
 	const setFilterReload = useStore((state) => state.setFilterReload);
+	let insets = useSafeAreaInsets();
+	let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
 
 	useEffect(() => {
 		const getBarCodeScannerPermissions = async () => {
@@ -119,7 +111,7 @@ export default function Page() {
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='arrow-back-outline'
-					href='/mainViewLayout'
+					href='/'
 					press={() => {
 						this.searchCode.clear();
 					}}

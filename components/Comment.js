@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { styled } from 'nativewind';
 import { timeSince } from '../backend/functions';
@@ -16,11 +16,7 @@ export const Comment = (comment) => {
 					width={35}
 					height={35}
 					source={{
-						uri:
-							comment.img ||
-							`https://picsum.photos/${Math.round(
-								Math.random() * 1000
-							)}`
+						uri: comment.img
 					}}
 				/>
 			</StyledView>

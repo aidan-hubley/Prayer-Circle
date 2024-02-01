@@ -4,7 +4,7 @@ import React, {
 	useImperativeHandle,
 	useEffect
 } from 'react';
-import { View, Text, Image, TouchableOpacity, Animated } from 'react-native';
+import { View, Image, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
 
 const StyledView = styled(View);

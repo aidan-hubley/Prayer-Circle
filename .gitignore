@@ -39,3 +39,6 @@ yarn-error.*
 
 #misc
 *.code-workspace
+
+#builds
+*.ipa

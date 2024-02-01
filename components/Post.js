@@ -20,12 +20,7 @@ import {
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince } from '../backend/functions';
-import {
-	writeData,
-	readData,
-	generateId,
-	deleteData
-} from '../backend/firebaseFunctions';
+import { writeData, readData, generateId } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import {
@@ -34,13 +29,12 @@ import {
 	BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../app/global';
-import { PostTypeSelector } from './PostTypeSelector';
+/* import { PostTypeSelector } from './PostTypeSelector'; */
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
-import { set } from 'firebase/database';
+import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -54,7 +48,6 @@ const StyledInput = styled(TextInput);
 
 export const Post = (post) => {
 	// variables
-	const tS = timeSince(post.timestamp);
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
@@ -96,13 +89,12 @@ export const Post = (post) => {
 			nonOutline: require('../assets/post/prayer.png')
 		}
 	};
+	const tS = timeSince(post.timestamp);
 
 	// bottom sheet modal
-	const snapPoints = useMemo(() => ['85%'], []);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
-	const handleSheetChanges = useCallback((index) => {}, []);
 
 	// animations
 	const toolbarVal = useRef(new Animated.Value(0)).current;
@@ -131,29 +123,6 @@ export const Post = (post) => {
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
-	};
-
-	const handle = (title) => {
-		return (
-			<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-				<StyledView className='w-[30px] h-[4px] rounded-full bg-[#dddddd11] mb-3' />
-				<StyledText className='text-white font-[600] text-[24px] pb-2'>
-					{title}
-				</StyledText>
-			</StyledView>
-		);
-	};
-
-	const backdrop = (backdropProps) => {
-		return (
-			<BottomSheetBackdrop
-				{...backdropProps}
-				opacity={0.5}
-				appearsOnIndex={0}
-				disappearsOnIndex={-1}
-				enableTouchThrough={true}
-			/>
-		);
 	};
 
 	const commentsView = () => {
@@ -407,13 +376,18 @@ export const Post = (post) => {
 
 	async function editPost() {
 		let updatedData = post.data;
+
 		updatedData.title = editTitle;
 		setTitle(editTitle);
+
 		updatedData.text = editContent;
 		setContent(editContent);
+
 		updatedData.edited = true;
 		setEdited(true);
+
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
+
 		bottomSheetModalRef.current?.dismiss();
 		setTimeout(() => {
 			setGlobalReload(true);
@@ -709,14 +683,13 @@ export const Post = (post) => {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={snapPoints}
-				onChange={handleSheetChanges}
+				snapPoints={SnapPoints(['85%'])}
 				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
-				{bottomSheetType == 'Comments' && commentsView()}
-				{bottomSheetType == 'Edit' && editView()}
+				{bottomSheetType === 'Comments' && commentsView()}
+				{bottomSheetType === 'Edit' && editView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);
