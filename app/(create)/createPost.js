@@ -45,7 +45,7 @@ export default function Page() {
 							placeholderTextColor={'#fff'}
 							inputMode='text'
 							autoCorrect
-							maxLength={39}
+							maxLength={21}
 							ref={(input) => {
 								this.postTitle = input;
 							}}
