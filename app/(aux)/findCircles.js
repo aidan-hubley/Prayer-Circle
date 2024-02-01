@@ -11,6 +11,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import {
 	readData,
 	addUserToCircle,
+	addUserToQueue,
 	checkIfUserIsInCircle
 } from '../../backend/firebaseFunctions';
 import { useStore } from '../../app/global';
@@ -152,10 +153,16 @@ export default function Page() {
 								} else {
 									if (adminCode) {
 										addUserToCircle(circle);
-										setFilterReload(true);
+										alert(
+											'You have been added to the circle.'
+										);
 									} else {
-										alert('Public Code');
+										addUserToQueue(circle);
+										alert(
+											"You have been added this circle's waiting queue."
+										);
 									}
+									setFilterReload(true);
 								}
 							} else {
 								alert('Already in circle.');

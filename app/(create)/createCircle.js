@@ -154,6 +154,7 @@ export default function Page() {
 							color: borderColor,
 							members: {},
 							admin: {},
+							usersAwaitingEntry: {},
 							owner: false
 						};
 						await createCircle(data);
