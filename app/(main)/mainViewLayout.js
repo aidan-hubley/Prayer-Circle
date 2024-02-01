@@ -30,6 +30,9 @@ export default function Layout() {
 		filterReload,
 		setGlobalReload,
 		setFilterReload,
+		setFilterIcon,
+		setFilterColor,
+		setFilterDescription,
 		setUid,
 		setName,
 		setPfp
@@ -38,6 +41,9 @@ export default function Layout() {
 		state.filterReload,
 		state.setGlobalReload,
 		state.setFilterReload,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterDescription,
 		state.setUid,
 		state.setName,
 		state.setPfp

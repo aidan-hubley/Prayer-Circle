@@ -64,13 +64,13 @@ const Button = forwardRef(
 		}));
 		return (
 			<StyledTouchableHighlight
-				style={opacityStyle}
+				style={[opacityStyle, {borderColor: borderColor}]}
 				activeOpacity={0.6}
 				underlayColor={`${bgColor || '#DDDDDD'}`}
 				className={`flex items-center justify-center rounded-full ${
 					bgColor || 'bg-offwhite'
 				} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
-					borderColor ? `border ${borderColor}` : 'border-none'
+					borderColor ? `border` : 'border-none'
 				} ${btnStyles || ''} `}
 				onPress={() => {
 					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

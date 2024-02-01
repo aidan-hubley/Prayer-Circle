@@ -36,8 +36,11 @@ const FilterItem = forwardRef(
 		{ data, index, contentOffset, itemSize, itemMargin, toggleShown },
 		ref
 	) => {
-		const updateFilter = useStore((state) => state.updateFilter);
-		const updateFilterName = useStore((state) => state.updateFilterName);
+		const setFilter = useStore((state) => state.setFilter);
+		const setFilterName = useStore((state) => state.setFilterName);
+		const setFilterIcon = useStore((state) => state.setFilterIcon);
+		const setFilterColor = useStore((state) => state.setFilterColor);
+		const setFilterDescription = useStore((state) => state.setFilterDescription);
 		const itemStyle = useAnimatedStyle(() => {
 			const inputRange = [
 				(index - 3) * (itemSize + itemMargin),
@@ -231,8 +234,14 @@ const FilterItem = forwardRef(
 					className='flex border-[6px] items-center justify-center rounded-full'
 					onPress={() => {
 						toggleShown();
-						updateFilter(data.id);
-						updateFilterName(data.title);
+						setFilter(data.id);
+						setFilterName(data.title);
+						setFilterIcon(data.icon);
+						setFilterColor(data.color);
+						setFilterDescription(data.description); //NRA
+						console.log(data.icon);
+						console.log(data.color);
+						console.log(data.description);
 					}}
 				>
 					<>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Text,
 	View,
@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useStore } from '../global';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -24,6 +25,17 @@ const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	const [
+		currentFilterName,
+		currentFilterIcon,
+		currentFilterColor,
+		currentFilterDescription,
+	] = useStore((state) => [
+		state.currentFilterName,
+		state.currentFilterIcon,
+		state.currentFilterColor,
+		state.currentFilterDescription
+	]);
 	let insets = useSafeAreaInsets();
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
@@ -232,6 +244,10 @@ export default function Page() {
 		setIsSorted((prev) => !prev); // Toggle the sorting order
 	};
 
+	useEffect(() => {
+		console.log('filter color', typeof currentFilterColor, currentFilterColor);
+	}, []);
+
 	return (
 		<StyledView
 			className='bg-offblack flex-1'
@@ -252,26 +268,23 @@ export default function Page() {
 						/>
 						<StyledView className='w-full flex items-center justify-center'>
 							<Button
-								btnStyles='bg-offblack border-[8px] border-purple'
+								btnStyles='bg-offblack border-[8px]'
 								height={'h-[120px]'}
 								width={'w-[120px]'}
 								iconSize={70}
-								icon='musical-notes'
+								icon={currentFilterIcon}
 								iconColor='white'
 								href='/mainViewLayout'
+								borderColor={currentFilterColor}
 							/>
 						</StyledView>
 
 						<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
-							Circle Name
+							{currentFilterName}
 						</StyledText>
 						<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
 							<StyledText className='text-white text-[14px]'>
-								This is where the description of the circle will
-								go. It will be a short description of the circle
-								that will be displayed to users who are
-								interested in joining. Admins can edit this
-								description by clicking into the box and typing.
+								{currentFilterDescription}
 							</StyledText>
 						</StyledView>
 						<StyledView className='border-x border-t border-[#6666660d] mt-2 h-[50px] py-2 px-[10px] bg-grey rounded-t-[20px] flex-row items-center justify-between'>
