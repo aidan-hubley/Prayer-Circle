@@ -53,7 +53,7 @@ const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 
 
-export const Post = ({ post }) => {
+export const Post = (post) => {
 	// variables
 	const tS = timeSince(post.timestamp);
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
