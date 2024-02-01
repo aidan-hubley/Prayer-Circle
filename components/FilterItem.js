@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useRef, useMemo } from 'react';
 import { View, Text, TouchableHighlight, Pressable, Image } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -9,6 +9,8 @@ import Animated, {
 	Extrapolate
 } from 'react-native-reanimated';
 import { useStore } from '../app/global.js';
+import { handle, backdrop } from '../components/BottomSheetModalHelpers.js';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -81,6 +83,8 @@ const FilterItem = forwardRef((props, ref) => {
 			opacity: fade
 		};
 	});
+	const bottomSheetModalRef = useRef(null);
+	const snapPoints = useMemo(() => ['85%'], []);
 
 	if (props.data.id == 'addCircles') {
 		return (
@@ -118,35 +122,50 @@ const FilterItem = forwardRef((props, ref) => {
 		);
 	} else if (props.data.id == 'Gridview') {
 		return (
-			<StyledAnimatedHighlight
-				style={[
-					{
-						borderColor: props.data.color,
-						width: props.itemSize,
-						height: props.itemSize,
-						marginHorizontal: props.itemMargin / 2,
-						top: 60
-					},
-					itemStyle
-				]}
-				className='justify-center'
-			>
-				<StyledPressable
-					className='flex items-center justify-center'
-					onPress={() => {}}
+			<>
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: props.data.color,
+							width: props.itemSize,
+							height: props.itemSize,
+							marginHorizontal: props.itemMargin / 2,
+							top: 60
+						},
+						itemStyle
+					]}
+					className='justify-center'
+					onPress={() => {
+						bottomSheetModalRef.current.present();
+					}}
 				>
-					<StyledImage
-						source={require('../assets/spiral/thin.png')}
-						style={{ width: 80, height: 80 }}
-					/>
-					<StyledIcon
-						name={'apps-outline'}
-						size={35}
-						color={'#FFFBFC'}
-						style={{ position: 'absolute' }}
-					/>
-				</StyledPressable>
-			</StyledAnimatedHighlight>
+					<StyledView className='flex items-center justify-center'>
+						<StyledImage
+							source={require('../assets/spiral/thin.png')}
+							style={{ width: 80, height: 80 }}
+						/>
+						<StyledIcon
+							name={'apps-outline'}
+							size={35}
+							color={'#FFFBFC'}
+							style={{ position: 'absolute' }}
+						/>
+					</StyledView>
+				</StyledAnimatedHighlight>
+				<BottomSheetModal
+					enableDismissOnClose={true}
+					ref={bottomSheetModalRef}
+					index={0}
+					snapPoints={snapPoints}
+					handleComponent={() => handle('All Circles')}
+					backdropComponent={(backdropProps) =>
+						backdrop(backdropProps)
+					}
+					keyboardBehavior='extend'
+				>
+					<StyledView className='flex-1 bg-grey'></StyledView>
+				</BottomSheetModal>
+			</>
 		);
 	} else {
 		return (
