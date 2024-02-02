@@ -678,7 +678,7 @@ export default function Page() {
 						</StyledView>
 					</StyledView>
 				);
-			case 'deleteProfile': // TODO: add backend
+			case 'deleteProfile':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[85%] items-center'>
@@ -1129,7 +1129,7 @@ export default function Page() {
 					modalContent === 'emptyCache' ? ['35%'] :
 					modalContent === 'changeEmail' ? ['65%'] :
 					modalContent === 'deleteProfile' ? ['65%'] :
-					modalContent === 'signOut' ? ['25%'] :
+					modalContent === 'signOut' ? ['15%'] :
 					['65%', '85%']
 				}
 				//snapPoints={SnapPoints(['85%'])} // SPENT 2 HOURS trying to get this to work...  
