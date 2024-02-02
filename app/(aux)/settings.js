@@ -435,8 +435,23 @@ export default function Page() {
 				);
 			case 'passwordInfo': // TODO: add more info
 				return (
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your password to keep your account secure</StyledText>
+					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
+						<StyledView className='w-[90%] flex-row justify-center'>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>You will have to sign in with the one</StyledText>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
+						<StyledView className='flex-row justify-center py-3'>
+							<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>You can send a reset password to your email!</StyledText>
+							<StyledIcon name='mail' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
+						<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>Password Rules:</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Password must contain atleast: </StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 8 total characters </StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 uppercase letter</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 lowercase letter</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 number</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 special character</StyledText>						
 					</StyledView>
 				);
 			case 'password':
@@ -945,7 +960,7 @@ export default function Page() {
 					modalContent === 'timer' ? ['35%'] :
 					modalContent === 'reminder' ? ['35%'] :
 					modalContent === 'hiddenPosts' ? ['65%', '85%'] :
-					modalContent === 'passwordInfo' ? ['65%'] :
+					modalContent === 'passwordInfo' ? ['25%', '50%'] :
 					modalContent === 'password' ? ['65%', '85%'] :
 					modalContent === 'changeEmail' ? ['65%'] :
 					modalContent === 'emptyCache' ? ['65%'] :
