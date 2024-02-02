@@ -122,6 +122,15 @@ export default function Page() {
 		writeData(`prayer_circle/users/${me}/public/fname`, `${newFName}`, true);
 		writeData(`prayer_circle/users/${me}/public/lname`, `${newLName}`, true);
 
+		// change name in all posts
+		let userPosts = await readData(`prayer_circle/users/${me}/private/posts`);
+		if (userPosts) {
+			userPosts = Object.keys(userPosts);
+			userPosts.forEach((post) => {
+				writeData(`prayer_circle/posts/${post}/name`, `${newFName} ${newLName}`, true);
+			});
+		}
+
 		AsyncStorage.setItem('name', `${newFName} ${newLName}`);
 
 		Alert.alert('Success', 'Name has been updated to: ' + newFName + ' ' + newLName);
@@ -199,7 +208,7 @@ export default function Page() {
 		bottomSheetModalRef.current?.dismiss();
 	};	
 
-	const handleDeleteAccount = async () => {
+	const handleDeleteAccount = async () => { // TODO: throughly test this
 		if (deletionName !== name) {
 			Alert.alert('Error', 'The name does not match. Deletion name: ' + deletionName + ' Name: ' + name);
 			return;
