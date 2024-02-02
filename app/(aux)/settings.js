@@ -20,6 +20,7 @@ import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
 import { getHiddenPosts, writeData, readData } from '../../backend/firebaseFunctions';
+import { router } from 'expo-router';
 import { set } from 'firebase/database';
 
 const StyledView = styled(View);
@@ -218,6 +219,7 @@ export default function Page() {
 					circleMembers = Object.keys(circleMembers);
 					if (circleMembers.length === 1) { // identify if user is the only member of the circle						
 						writeData(`prayer_circle/circles/${circle}`, null, true); // delete circle
+						return;
 					} else if (circleData.owner === me) { // if user is the owner of the circle
 						Alert.alert('Error', 'You are the owner of a circle. Please transfer ownership or delete / leave the circle before deleting your profile.');
 						return;
@@ -234,6 +236,16 @@ export default function Page() {
 			userComments = Object.keys(userComments);
 			userComments.forEach((comment) => {
 				writeData(`prayer_circle/comments/${comment}`, null, true);
+			});
+		}
+
+		// find all hidden posts by user
+		let userHiddenPosts = await readData(`prayer_circle/users/${me}/private/hidden_posts`);
+		if (userHiddenPosts) {
+			userHiddenPosts = Object.keys(userHiddenPosts);
+			userHiddenPosts.forEach((post) => {
+				writeData(`prayer_circle/posts/${post}/hidden/${me}`, null, true);
+				// writeData(`prayer_circle/users/${me}/private/hidden_posts/${post}`, null, true);
 			});
 		}
 
