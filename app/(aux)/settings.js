@@ -242,55 +242,55 @@ export default function Page() {
 						</StyledView> 
 					</StyledView>
 				);
-			case 'password':
+			case 'updProfileInfo': // TODO: add more info
 				return (
-					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your username and profile picture</StyledText>
+					</StyledView>
+				);
+			case 'changeUsername': // TODO: add backend
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current username: </StyledText>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Current Password"
+							placeholder="New Username"
 							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={currentPassword}
-							onChangeText={setCurrentPassword}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Password"
-							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={newPassword}
-							onChangeText={setNewPassword}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Confirm New Password"
-							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={confirmPassword}
-							onChangeText={setConfirmPassword}
 						/>
 						<Button
 							title='Confirm'
+							textColor={'text-offwhite'}
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={handleChangePassword}
 						/>
 					</StyledView>
 				);
-			case 'timer':
+			case 'updateProfilePic': // TODO: add backend
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current profile pic: </StyledText>
+						<Button
+							title='Update Profile Picture'
+							textColor={'text-offwhite'}
+							btnStyles='mt-5'
+							width='w-[70%]'
+						/>
+					</StyledView>
+				);
+			case 'timer': // TODO: add backend / local storage writing to timer
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<Timer></Timer>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Keep track of your time spent on Prayer Circle</StyledText>
 					</StyledView>
 				);
-			case 'reminder':
+			case 'reminder': // TODO: add more info 
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Notify you when you have spend too much time on Prayer Cirlce</StyledText>
 					</StyledView>
 				);
-			case 'hiddenPosts':
+			case 'hiddenPosts': // TODO: New version of post.js for hidden posts
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[90%] flex-1'>
@@ -331,6 +331,47 @@ export default function Page() {
 						</StyledView> 
 					</StyledView>
 				);
+			case 'passwordInfo': // TODO: add more info
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your password to keep your account secure</StyledText>
+					</StyledView>
+				);
+			case 'password':
+				return (
+					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="Current Password"
+							placeholderTextColor={'#FFFBFC'}
+							secureTextEntry={true}
+							value={currentPassword}
+							onChangeText={setCurrentPassword}
+						/>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="New Password"
+							placeholderTextColor={'#FFFBFC'}
+							secureTextEntry={true}
+							value={newPassword}
+							onChangeText={setNewPassword}
+						/>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="Confirm New Password"
+							placeholderTextColor={'#FFFBFC'}
+							secureTextEntry={true}
+							value={confirmPassword}
+							onChangeText={setConfirmPassword}
+						/>
+						<Button
+							title='Confirm'
+							btnStyles='mt-5'
+							width='w-[70%]'
+							press={handleChangePassword}
+						/>
+					</StyledView>
+				);
 			case 'changeEmail':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
@@ -353,16 +394,24 @@ export default function Page() {
 						/>
 					</StyledView>
 				);
-			case 'emptyCache':
+			case 'emptyCache': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Clear all cached data</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This will remove all bookmarked posts and Presence Timers will be reset</StyledText>
 					</StyledView>
 				);
-			case 'deleteProfile':
+			case 'deleteProfile': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This action cannot be undone</StyledText>
+						<Button
+							title='Delete Profile'
+							textColor={'text-offwhite'}
+							backgroundColor={'bg-red'}
+							btnStyles='mt-5'
+							width='w-[70%]'
+						/>
 					</StyledView>
 				);
 			case 'signOut':
@@ -776,15 +825,15 @@ export default function Page() {
 				ref={bottomSheetModalRef}
 				index={0}
 				snapPoints={
-					modalContent === 'tos' ? ['85%'] :
+					modalContent === 'tos' ? ['65%', '85%'] :
 					modalContent === 'updProfileInfo' ? ['65%'] :
 					modalContent === 'changeUsername' ? ['65%'] :
 					modalContent === 'updateProfilePic' ? ['65%'] :
 					modalContent === 'timer' ? ['35%'] :
 					modalContent === 'reminder' ? ['35%'] :
-					modalContent === 'hiddenPosts' ? ['65%'] :
+					modalContent === 'hiddenPosts' ? ['65%', '85%'] :
 					modalContent === 'passwordInfo' ? ['65%'] :
-					modalContent === 'password' ? [('65%', '85%')] :
+					modalContent === 'password' ? ['65%', '85%'] :
 					modalContent === 'changeEmail' ? ['65%'] :
 					modalContent === 'emptyCache' ? ['65%'] :
 					modalContent === 'deleteProfile' ? ['65%'] :
