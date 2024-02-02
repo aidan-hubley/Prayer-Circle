@@ -389,6 +389,8 @@ export default function Page() {
         }
     };
 
+	const content = renderContent();
+
 	const handleToggleDaily = (newState) => {
 		console.log('Daily toggle state is now: ', newState);
 	};
@@ -791,13 +793,13 @@ export default function Page() {
 					modalContent === 'signOut' ? ['15%'] :
 					['65%', '85%']
 				}
-				//snapPoints={SnapPoints(['85%'])}
+				//snapPoints={SnapPoints(['85%'])} // SPENT 2 HOURS trying to get this to work...  
 				handleComponent={() => handles}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
 				<StyledView className='flex-1 bg-offblack'>
-					{renderContent}
+					{content}
 				</StyledView>
 			</BottomSheetModal>
 		</StyledSafeArea>
