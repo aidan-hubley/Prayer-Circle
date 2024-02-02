@@ -32,20 +32,45 @@ const StyledInput = styled(TextInput);
 const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
 
+// Here is what local storage looks like: 					
+					// ['user', user.uid],
+					// [
+					// 	'name',
+					// 	`${userData.public.fname} ${userData.public.lname}`
+					// ],
+					// ['email', user.email],
+					// ['profile_img', userData.public.profile_img]
+
 export default function Page() {
 	const [hiddenPosts, sethiddenPosts] = useState([]);
 	const [handles, setHandles] = useState('');
+	const [newFName, setNewFName] = useState('');
+	const [newLName, setNewLName] = useState('');
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [newEmail, setNewEmail] = useState('');
+	const [confirmEmail, setConfirmEmail] = useState('');
 	const [selectedReminder, setSelectedReminder] = useState(
 		new Animated.Value(0)
 	);
 	const [isEnabled, setIsEnabled] = useState(false);
+	const [email, setEmail] = useState('');
+	const [name, setName] = useState('');
+	const [profileImage, setProfileImage] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
+
+	async function setupProfile() {
+		let gn = await AsyncStorage.getItem('name');
+		setName(gn);
+		let ge = await AsyncStorage.getItem('email');
+		setEmail(ge);
+		let pfp = await AsyncStorage.getItem('profile_img');
+		setProfileImage(pfp);
+	}
 
     async function setUpHiddenPosts() {
         let hp = await getHiddenPosts();
@@ -84,6 +109,23 @@ export default function Page() {
 			Alert.alert('Error', 'No user is currently signed in.');
 		}
 	};
+
+	const hanleChangeName = async () => {
+		if (newFName === '' || newLName === '') {
+			Alert.alert('Error', 'Please enter a valid name.');
+			return;
+		}
+
+		let me = await AsyncStorage.getItem('user');
+		writeData(`prayer_circle/users/${me}/public/fname`, `${newFName}`, true);
+		writeData(`prayer_circle/users/${me}/public/lname`, `${newLName}`, true);
+
+		AsyncStorage.setItem('name', `${newFName} ${newLName}`);
+
+		Alert.alert('Success', 'Name has been updated to: ' + newFName + ' ' + newLName);
+
+		bottomSheetModalRef.current?.dismiss();
+	};				
 
 	const handleChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
@@ -126,6 +168,35 @@ export default function Page() {
 		}
 	};
 
+	const handleChangeEmail = async () => {
+		if (newEmail !== confirmEmail) {
+			Alert.alert('Error', 'The new emails do not match.');
+			return;
+		}
+
+		let approvedEmailProviders = [
+			'gmail.com',
+			'yahoo.com',
+			'outlook.com',
+			'icloud.com',
+			'aol.com'
+		];
+
+		let confirmEmailCheck = confirmEmail.split('@');
+		if (confirmEmailCheck.length !== 2)
+			return alert('Invalid Email'); // check email format
+		else if (!approvedEmailProviders.includes(confirmEmailCheck[1]))
+			return alert('Email provider not supported'); // check email provider
+
+		let me = await AsyncStorage.getItem('user');
+		writeData(`prayer_circle/users/${me}/private/email`, `${confirmEmail}`, true);
+
+		AsyncStorage.setItem('email', confirmEmail);
+
+		Alert.alert('Success', 'Email has been updated to: ' + confirmEmail);
+		bottomSheetModalRef.current?.dismiss();
+	};	
+
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
@@ -142,13 +213,15 @@ export default function Page() {
         handlePresentModalPress();
     };
 
-    const handleChangeUsernameModalPress = () => {
-        setModalContent('changeUsername');
-		setHandles(handle('Change Username'));
+    const handleChangeNameModalPress = () => {
+		setupProfile();
+        setModalContent('changeName');
+		setHandles(handle('Change Name'));
         handlePresentModalPress();
     };
 
     const handleUpdateProfilePicModalPress = () => {
+		setupProfile();
         setModalContent('updateProfilePic');
 		setHandles(handle('Update Profile Picture'));
 		handlePresentModalPress();
@@ -162,7 +235,7 @@ export default function Page() {
 
     const handleReminderInfoButtonPress = () => {
         setModalContent('reminder');
-		setHandles(handle('Presence Reminder'));
+		setHandles(handle('Whats a Presence Reminder?'));
         handlePresentModalPress();
     };
 
@@ -175,7 +248,7 @@ export default function Page() {
 
     const handlePasswordInfoModalPress = () => {
         setModalContent('passwordInfo');
-		setHandles(handle('Password Info', 'bg-[#F9A826]'));
+		setHandles(handle('How to Change Password', 'bg-[#F9A826]'));
         handlePresentModalPress();
     };
 
@@ -186,6 +259,7 @@ export default function Page() {
     };
 
     const handleEmailButtonPress = () => {
+		setupProfile();
         setModalContent('changeEmail');
 		setHandles(handle('Change Email', 'bg-[#F9A826]'));
         handlePresentModalPress();
@@ -242,55 +316,74 @@ export default function Page() {
 						</StyledView> 
 					</StyledView>
 				);
-			case 'password':
+			case 'updProfileInfo':
 				return (
-					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>You can update you First and Last name!</StyledText>
+
+					</StyledView>
+				);
+			case 'changeName':
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current Name: {name}</StyledText>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Current Password"
+							placeholder="New First Name"
 							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={currentPassword}
-							onChangeText={setCurrentPassword}
+							value={newFName}
+							onChangeText={setNewFName}
 						/>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Password"
+							placeholder="New Last Name"
 							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={newPassword}
-							onChangeText={setNewPassword}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Confirm New Password"
-							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={confirmPassword}
-							onChangeText={setConfirmPassword}
+							value={newLName}
+							onChangeText={setNewLName}
 						/>
 						<Button
 							title='Confirm'
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={handleChangePassword}
+							press={hanleChangeName}
 						/>
 					</StyledView>
 				);
-			case 'timer':
+			case 'updateProfilePic': // TODO: add backend
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<Image
+							style={{
+								width: '75%',
+								height: '75%',
+								borderRadius: 18,								
+								display: 'flex'
+							}}
+							source={{
+								uri: profileImage
+							}}
+						/>
+						<Button
+							title='Update Profile Picture'
+							btnStyles='mt-5'
+							width='w-[70%]'
+						/>
+					</StyledView>
+				);
+			case 'timer': // TODO: add backend / local storage writing to timer
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<Timer></Timer>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Keep track of your time spent on Prayer Circle</StyledText>
 					</StyledView>
 				);
-			case 'reminder':
+			case 'reminder': // TODO: add more info 
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Notify you when you have spend too much time on Prayer Cirlce</StyledText>
 					</StyledView>
 				);
-			case 'hiddenPosts':
+			case 'hiddenPosts': // TODO: New version of post.js for hidden posts
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[90%] flex-1'>
@@ -331,38 +424,98 @@ export default function Page() {
 						</StyledView> 
 					</StyledView>
 				);
+			case 'passwordInfo': // TODO: add more info
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your password to keep your account secure</StyledText>
+					</StyledView>
+				);
+			case 'password':
+				return (
+					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="Current Password"
+							placeholderTextColor={'#FFFBFC'}
+							secureTextEntry={true}
+							value={currentPassword}
+							onChangeText={setCurrentPassword}
+						/>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="New Password"
+							placeholderTextColor={'#FFFBFC'}
+							secureTextEntry={true}
+							value={newPassword}
+							onChangeText={setNewPassword}
+						/>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="Confirm New Password"
+							placeholderTextColor={'#FFFBFC'}
+							secureTextEntry={true}
+							value={confirmPassword}
+							onChangeText={setConfirmPassword}
+						/>
+						<Button
+							title='Confirm'
+							btnStyles='mt-5'
+							width='w-[70%]'
+							press={handleChangePassword}
+						/>
+					</StyledView>
+				);
 			case 'changeEmail':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledView className='w-[90%] flex-row justify-center'>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>You will have to sign in with the one</StyledText>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: {email}</StyledText>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Email"
+							placeholder="New Email"							
 							placeholderTextColor={'#FFFBFC'}
+							value={newEmail}
+							onChangeText={setNewEmail}
 						/>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
 							placeholder="Confirm New Email"
 							placeholderTextColor={'#FFFBFC'}
+							value={confirmEmail}
+							onChangeText={setConfirmEmail}
 						/>
 						<Button
 							title='Confirm'
-							textColor={'text-offwhite'}
+							textColor={'text-offblack'}
+							bgColor={'bg-[#F9A826]'}
 							btnStyles='mt-5'
 							width='w-[70%]'
-							
+							press={handleChangeEmail}
 						/>
 					</StyledView>
 				);
-			case 'emptyCache':
+			case 'emptyCache': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Clear all cached data</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This will remove all bookmarked posts and Presence Timers will be reset</StyledText>
 					</StyledView>
 				);
-			case 'deleteProfile':
+			case 'deleteProfile': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This action cannot be undone</StyledText>
+						<Button
+							title='Delete Profile'
+							textColor={'text-offwhite'}
+							backgroundColor={'bg-red'}
+							btnStyles='mt-5'
+							width='w-[70%]'
+						/>
 					</StyledView>
 				);
 			case 'signOut':
@@ -450,7 +603,7 @@ export default function Page() {
 										<StyledView className="flex-row justify-between">
 											<StyledView className="w-50 flex-row">
 												<Button // TODO: add modal + backend                                                    
-													title='Change Username'
+													title='Change Profile Name'
 													textColor={'text-offwhite'}
 													textStyles='font-normal'
 													width={'w-[250px]'}
@@ -458,7 +611,7 @@ export default function Page() {
 													bgColor={'bg-transparent'}
 													borderColor={'border-offwhite'}
 													btnStyles='border-2'
-													press={handleChangeUsernameModalPress}
+													press={handleChangeNameModalPress}
 												></Button>
 											</StyledView>
 											<StyledView className="w-50 flex-row">
@@ -776,15 +929,15 @@ export default function Page() {
 				ref={bottomSheetModalRef}
 				index={0}
 				snapPoints={
-					modalContent === 'tos' ? ['85%'] :
+					modalContent === 'tos' ? ['65%', '85%'] :
 					modalContent === 'updProfileInfo' ? ['65%'] :
-					modalContent === 'changeUsername' ? ['65%'] :
+					modalContent === 'changeName' ? ['65%'] :
 					modalContent === 'updateProfilePic' ? ['65%'] :
 					modalContent === 'timer' ? ['35%'] :
 					modalContent === 'reminder' ? ['35%'] :
-					modalContent === 'hiddenPosts' ? ['65%'] :
+					modalContent === 'hiddenPosts' ? ['65%', '85%'] :
 					modalContent === 'passwordInfo' ? ['65%'] :
-					modalContent === 'password' ? [('65%', '85%')] :
+					modalContent === 'password' ? ['65%', '85%'] :
 					modalContent === 'changeEmail' ? ['65%'] :
 					modalContent === 'emptyCache' ? ['65%'] :
 					modalContent === 'deleteProfile' ? ['65%'] :
