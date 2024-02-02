@@ -229,10 +229,15 @@ export default function Page() {
         switch (modalContent) {
 			case 'tos':
 				return (
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
 						<StyledView className='w-[90%] flex-1'>
 
-							<Terms></Terms>
+						<BottomSheetFlatList
+							data={[{ key: 'terms' }]}
+							renderItem={({ item }) => <Terms />}
+							keyExtractor={(item) => item.key}
+							showsVerticalScrollIndicator={false}
+						/>
 
 						</StyledView> 
 					</StyledView>
