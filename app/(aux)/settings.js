@@ -144,12 +144,13 @@ export default function Page() {
 				const photo = await cameraRef.current.takePictureAsync();
 				console.log('photo', photo);
 				let me = await AsyncStorage.getItem('user');
-				let imgURL = await uploadImage(`prayer_circle/users/${me}`, photo.uri, 'profile_img');
+				let imgURL = await uploadImage(`prayer_circle/users/${me}`, photo.uri);
 
 				console.log('imgURL', imgURL);
 
 				// AsyncStorage.setItem('profile_img', imgURL);
-				writeData(`prayer_circle/users/${me}/public/profile_img`, imgURL);
+				setProfileImage(imgURL);
+				writeData(`prayer_circle/users/${me}/public/profile_img`, imgURL , true);
 
 				Alert.alert('Success', 'Profile picture has been updated.');
 
