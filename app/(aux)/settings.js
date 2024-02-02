@@ -35,6 +35,8 @@ const StyledGradient = styled(LinearGradient);
 export default function Page() {
 	const [hiddenPosts, sethiddenPosts] = useState([]);
 	const [handles, setHandles] = useState('');
+	const [newFName, setNewFName] = useState('');
+	const [newLName, setNewLName] = useState('');
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
@@ -42,6 +44,8 @@ export default function Page() {
 		new Animated.Value(0)
 	);
 	const [isEnabled, setIsEnabled] = useState(false);
+	const [email, setEmail] = useState('');
+	const [name, setName] = useState('');
 	const [profileImage, setProfileImage] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
 	const insets = useSafeAreaInsets();
@@ -49,6 +53,10 @@ export default function Page() {
 	const authContext = useAuth();
 
 	async function setupProfile() {
+		let gn = await AsyncStorage.getItem('name');
+		setName(gn);
+		let ge = await AsyncStorage.getItem('email');
+		setEmail(ge);
 		let pfp = await AsyncStorage.getItem('profile_img');
 		setProfileImage(pfp);
 	}
@@ -90,6 +98,23 @@ export default function Page() {
 			Alert.alert('Error', 'No user is currently signed in.');
 		}
 	};
+
+	const hanleChangeName = async () => {
+		if (newFName === '' || newLName === '') {
+			Alert.alert('Error', 'Please enter a valid name.');
+			return;
+		}
+
+		let me = await AsyncStorage.getItem('user');
+		writeData(`prayer_circle/users/${me}/public/fname`, `${newFName}`, true);
+		writeData(`prayer_circle/users/${me}/public/lname`, `${newLName}`, true);
+
+		AsyncStorage.setItem('name', `${newFName} ${newLName}`);
+
+		Alert.alert('Success', 'Name has been updated to: ' + newFName + ' ' + newLName);
+
+		bottomSheetModalRef.current?.dismiss();
+	};				
 
 	const handleChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
@@ -148,10 +173,10 @@ export default function Page() {
         handlePresentModalPress();
     };
 
-    const handleChangeUsernameModalPress = () => {
+    const handleChangeNameModalPress = () => {
 		setupProfile();
-        setModalContent('changeUsername');
-		setHandles(handle('Change Username'));
+        setModalContent('changeName');
+		setHandles(handle('Change Name'));
         handlePresentModalPress();
     };
 
@@ -253,23 +278,32 @@ export default function Page() {
 			case 'updProfileInfo': // TODO: add more info
 				return (
 					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your username and profile picture</StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Change your Name and profile picture</StyledText>
 					</StyledView>
 				);
-			case 'changeUsername': // TODO: add backend
+			case 'changeName': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current username: </StyledText>
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current Name: {name}</StyledText>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Username"
+							placeholder="New First Name"
 							placeholderTextColor={'#FFFBFC'}
+							value={newFName}
+							onChangeText={setNewFName}
+						/>
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="New Last Name"
+							placeholderTextColor={'#FFFBFC'}
+							value={newLName}
+							onChangeText={setNewLName}
 						/>
 						<Button
 							title='Confirm'
-							textColor={'text-offwhite'}
 							btnStyles='mt-5'
 							width='w-[70%]'
+							press={hanleChangeName}
 						/>
 					</StyledView>
 				);
@@ -516,7 +550,7 @@ export default function Page() {
 										<StyledView className="flex-row justify-between">
 											<StyledView className="w-50 flex-row">
 												<Button // TODO: add modal + backend                                                    
-													title='Change Username'
+													title='Change Profile Name'
 													textColor={'text-offwhite'}
 													textStyles='font-normal'
 													width={'w-[250px]'}
@@ -524,7 +558,7 @@ export default function Page() {
 													bgColor={'bg-transparent'}
 													borderColor={'border-offwhite'}
 													btnStyles='border-2'
-													press={handleChangeUsernameModalPress}
+													press={handleChangeNameModalPress}
 												></Button>
 											</StyledView>
 											<StyledView className="w-50 flex-row">
@@ -844,7 +878,7 @@ export default function Page() {
 				snapPoints={
 					modalContent === 'tos' ? ['65%', '85%'] :
 					modalContent === 'updProfileInfo' ? ['65%'] :
-					modalContent === 'changeUsername' ? ['65%'] :
+					modalContent === 'changeName' ? ['65%'] :
 					modalContent === 'updateProfilePic' ? ['65%'] :
 					modalContent === 'timer' ? ['35%'] :
 					modalContent === 'reminder' ? ['35%'] :
