@@ -53,7 +53,7 @@ export default function Page() {
         let me = await AsyncStorage.getItem('user');
 
 		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, null, true);
-		writeData(`prayer_circle/users/${me}/private/hiddenposts/${postId}`, null, true);
+		writeData(`prayer_circle/users/${me}/private/hidden_posts/${postId}`, null, true);
 
         bottomSheetModalRef.current?.dismiss();
 	}
