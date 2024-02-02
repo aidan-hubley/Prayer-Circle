@@ -20,7 +20,6 @@ import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
 import { getHiddenPosts, writeData, readData } from '../../backend/firebaseFunctions';
-import { router } from 'expo-router';
 import { set } from 'firebase/database';
 
 const StyledView = styled(View);
@@ -32,15 +31,6 @@ const StyledOpacity = styled(TouchableOpacity);
 const StyledInput = styled(TextInput);
 const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
-
-// Here is what local storage looks like: 					
-					// ['user', user.uid],
-					// [
-					// 	'name',
-					// 	`${userData.public.fname} ${userData.public.lname}`
-					// ],
-					// ['email', user.email],
-					// ['profile_img', userData.public.profile_img]
 
 export default function Page() {
 	const [hiddenPosts, sethiddenPosts] = useState([]);
@@ -206,12 +196,16 @@ export default function Page() {
 
 		Alert.alert('Success', 'Email has been updated to: ' + confirmEmail);
 		bottomSheetModalRef.current?.dismiss();
+
+		auth.signOut();
 	};	
 
 	const handleEmptyCache = async () => {
 		AsyncStorage.clear();
 		Alert.alert('Success', 'Cache has been emptied.');
 		bottomSheetModalRef.current?.dismiss();
+
+		auth.signOut();
 	};
 
 	const handleDeleteAccount = async () => { // TODO: throughly test this
@@ -297,14 +291,11 @@ export default function Page() {
 		// delete user
 		writeData(`prayer_circle/users/${me}`, null, true);
 
-		AsyncStorage.removeItem('user');
-		AsyncStorage.removeItem('name');
-		AsyncStorage.removeItem('email');
-		AsyncStorage.removeItem('profile_img');
+		AsyncStorage.clear();
 
 		bottomSheetModalRef.current?.dismiss();
 
-		router.replace('/login');
+		auth.signOut();
 	};
 
 	const handlePresentModalPress = useCallback(() => {
@@ -390,6 +381,7 @@ export default function Page() {
 
     const handleSignOutModalPress = () => {
         setModalContent('signOut');
+		setHandles(handle());
         handlePresentModalPress();
     };
 
@@ -710,18 +702,20 @@ export default function Page() {
 			case 'signOut':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<Button
-							title='Sign Out'
-							btnStyles='mt-3'
-							width='w-[70%]'
-							press={() => {
-								signOut(auth);
-								AsyncStorage.removeItem('user');
-								AsyncStorage.removeItem('name');
-								router.replace('/login');
-							}}
-						/>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign back in next time</StyledText>
+						<StyledView className='w-[85%] items-center'>
+							<Button
+								title='Sign Out'
+								btnStyles='mt-3'
+								width='w-[70%]'
+								press={() => {
+									signOut(auth);
+									AsyncStorage.removeItem('user');
+									AsyncStorage.removeItem('name');
+									router.replace('/login');
+								}}
+							/>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*You will have to sign back in next time</StyledText>
+						</StyledView>
 					</StyledView>
 				);
 			default:
@@ -1129,7 +1123,7 @@ export default function Page() {
 					modalContent === 'emptyCache' ? ['35%'] :
 					modalContent === 'changeEmail' ? ['65%'] :
 					modalContent === 'deleteProfile' ? ['65%'] :
-					modalContent === 'signOut' ? ['15%'] :
+					modalContent === 'signOut' ? ['20%'] :
 					['65%', '85%']
 				}
 				//snapPoints={SnapPoints(['85%'])} // SPENT 2 HOURS trying to get this to work...  
