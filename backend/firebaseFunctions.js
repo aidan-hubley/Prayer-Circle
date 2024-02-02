@@ -228,7 +228,7 @@ export async function getPosts(circleId) {
 export async function getHiddenPosts() {
 	const UID = await getUIDFromStorage();
 	let hiddenPosts = [];
-	let hiddenPostsIds = await readData(`prayer_circle/users/${UID}/private/hiddenposts`);
+	let hiddenPostsIds = await readData(`prayer_circle/users/${UID}/private/hidden_posts`);
 	if (hiddenPostsIds) {
 		// get the posts from their ids, with readData
 		hiddenPostsIds = Object.keys(hiddenPostsIds);
