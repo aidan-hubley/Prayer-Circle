@@ -181,8 +181,7 @@ export async function getFilterCircles() {
 	let circles = await getCircles();
 	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
 
-	for (let i = 0; i < circles.length; i++) {
-		let circle = circles[i];
+	for (const circle of circles) {
 		let circleData =
 			(await readData(`prayer_circle/circles/${circle}`)) || {};
 		let circleStruct = {
