@@ -229,19 +229,12 @@ export default function Page() {
         switch (modalContent) {
 			case 'tos':
 				return (
-					<StyledView className='flex-1 bg-grey'>
-						<BottomSheetFlatList							
-							renderItem={({ item }) => {
-								return (
-								//<StyledView className="flex-1 py-3 items-center text-offwhite w-[90%]" style={{ height: '100%' }}>
-								//	<Terms></Terms>
-									<>
-										<StyledText>Test</StyledText>
-									</>
-								//</StyledView>			
-								)				
-							}}
-						/>
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledView className='w-[90%] flex-1'>
+
+							<Terms></Terms>
+
+						</StyledView> 
 					</StyledView>
 				);
 			case 'password':
@@ -296,7 +289,7 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[90%] flex-1'>
-							<FlatList
+							<BottomSheetFlatList
 								data={hiddenPosts}
 								renderItem={({ item }) => (
 									<>
