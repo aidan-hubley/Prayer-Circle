@@ -20,6 +20,7 @@ import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
 import { getHiddenPosts, writeData } from '../../backend/firebaseFunctions';
+import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -33,6 +34,7 @@ const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 	const [hiddenPosts, sethiddenPosts] = useState([]);
+	const [handles, setHandles] = useState('');
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
@@ -130,62 +132,74 @@ export default function Page() {
 
 	const handleTOSModalPress = () => {
         setModalContent('tos');
+		setHandles(handle('Terms of Service'));
         handlePresentModalPress();
     };
 
     const handleUpdProfileInfoModalPress = () => {
         setModalContent('updProfileInfo');
+		setHandles(handle('Ways to Update Your Profile'));
         handlePresentModalPress();
     };
 
     const handleChangeUsernameModalPress = () => {
         setModalContent('changeUsername');
+		setHandles(handle('Change Username'));
         handlePresentModalPress();
     };
 
     const handleUpdateProfilePicModalPress = () => {
         setModalContent('updateProfilePic');
-        handlePresentModalPress();
+		setHandles(handle('Update Profile Picture'));
+		handlePresentModalPress();
     };
 
     const handleTimerModalPress = () => {
         setModalContent('timer');
+		setHandles(handle('Presence Timers'));
         handlePresentModalPress();
     };
 
     const handleReminderInfoButtonPress = () => {
         setModalContent('reminder');
+		setHandles(handle('Presence Reminder'));
         handlePresentModalPress();
     };
 
     const handleHiddenPostsButtonPress = () => {
-        setUpHiddenPosts();
+        setUpHiddenPosts();		
         setModalContent('hiddenPosts');
+		setHandles(handle('Hidden Posts'));
         handlePresentModalPress();
     };
 
     const handlePasswordInfoModalPress = () => {
         setModalContent('passwordInfo');
+		setHandles(handle('Password Info', 'bg-[#F9A826]'));
         handlePresentModalPress();
     };
 
     const handleChangePasswordModalPress = () => {
         setModalContent('password');
+		setHandles(handle('Change Password', 'bg-[#F9A826]'));
         handlePresentModalPress();
     };
 
     const handleEmailButtonPress = () => {
         setModalContent('changeEmail');
+		setHandles(handle('Change Email', 'bg-[#F9A826]'));
         handlePresentModalPress();
     };
 
     const handleEmptyCacheModalPress = () => {
         setModalContent('emptyCache');
+		setHandles(handle('Empty Cache', 'bg-[#F9A826]'));
         handlePresentModalPress();
     };
 
     const handleDeleteProfileModalPress = () => {
         setModalContent('deleteProfile');
+		setHandles(handle('Delete Profile', 'bg-[#CC2500]'));
         handlePresentModalPress();
     };
 
@@ -209,114 +223,6 @@ export default function Page() {
 
 	const highlightPosition = {
 		left: selectedReminderInter
-	};
-
-	const handle = () => {
-		switch (modalContent) {
-			case 'tos':
-                return ('Terms of Service');          
-            case 'updProfileInfo':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Ways to Update Your Profile
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'changeUsername':  
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Change Username
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'updateProfilePic':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Update Profile Picture
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'timer':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Presence Timers
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'reminder':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Presence Reminder
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'hiddenPosts':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Hidden Posts
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'passwordInfo':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Password Info
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'password':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
-                        <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
-                            Change Password
-                        </StyledText>
-                    </StyledView>
-                );        
-            case 'changeEmail':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
-                        <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
-                            Change Email
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'emptyCache':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledView className='w-[30px] h-[4px] rounded-full bg-[#F9A826] mb-3' />
-                        <StyledText className='text-yellow font-[600] text-[24px] pb-2'>
-                            Empty Cache
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'deleteProfile':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledView className='w-[30px] h-[4px] rounded-full bg-[#FFFBFC] mb-3' />
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Delete Profile
-                        </StyledText>
-                    </StyledView>
-                );
-            case 'signOut':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px]'>
-                    </StyledView>
-                );
-            default:
-                return null;
-		}
 	};
 
     const renderContent = () => {
@@ -886,7 +792,7 @@ export default function Page() {
 					['65%', '85%']
 				}
 				//snapPoints={SnapPoints(['85%'])}
-				handleComponent={() => handle()}
+				handleComponent={() => handles}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
