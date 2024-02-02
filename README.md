@@ -1,11 +1,68 @@
-# Unite in faith, pray in community
+# Prayer Circle: Unite in Faith, Pray in Community
 
-## Our Mission
-To unite people of faith to have meaningful conversations and accountability for prayer. We aim to do this by creating a safe and private space for discussion.
-## Features and Function
-- Our app can be used by people of all ages. Invites are sent directly from person to person through QR codes, with no search or discovery feature. Users can also set their own moderators for their groups, which we call Circles.
-- We aim to prevent the normal trap of social media: doomscrolling. Intentionality undergirds every aspect of our design, including a timer for time spent on the app and offline features should you want to take a break from the public stream.
-- Users can make posts in three categories: praise, prayer request, and events, all of which have their own unique features.
+## Table of Contents
+- [Overview](#overview)
+- [Mission](#mission)
+- [Features and Functionality](#features-and-functionality)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Contribution Guidelines](#contribution-guidelines)
+- [Contact](#contact)
+
+## Overview
+
+Welcome to the **Prayer Circle** app! This README.md provides an overview of our mission, features, and how to get started with the app.
+
+## Mission
+
+Our mission is to unite people of the Christian faith by fostering meaningful interactions and opportunities for prayer. We aim to create a safe and private space for discussion, emphasizing the importance of community in spiritual growth.
+
+## Features and Functionality
+
+### Inclusivity
+- The **Prayer Circle** app is designed for users of all ages.
+- Invites are exchanged directly through QR and numeric codes, ensuring a private and secure connection.
+- Users have the ability to designate moderators for their Circles, allowing for multiple users to share responsibility of a Circle.
+
+### Intentional Design
+- We address the pitfalls of social media by preventing doomscrolling.
+- Intentionality is embedded in the design, featuring a **Presence Timer** to monitor app usage.
+- Offline features are available, allowing users to take a break from the constant pressure of online presence.
+
+### Diverse Post Categories
+Users can make posts in three distinct categories, each with their own respective purpose:
+
+1. **Praise**
+   - Post something that you are thankful/grateful. In a world that can seem so negative, we hope that the ability to post Praises and share how God is working in your life will positively impact our users.
+
+2. **Prayer Request**
+   - Post a Prayer Request to share areas in your life where you want others to pray for you. This is the core feature of our app, providing a faith community centered around prayer and relationship with our Creator and Provider.
+
+3. **Events**
+   - Post and Event to let others in your Circle know when and where you are planning an event. Users can interact with this post, serving as a low commitment RSVP for the post creator to reference.
+
+## Join the Community
+
+Become a beta tester!
+- iOS: [iOS beta link]
+- Android: [Andorid beta link]
+
+Download **Prayer Circle** today!
+- iOS: [iOS download link]
+- Android: [Andorid download link]
+
+## Usage
+
+[Include usage guidelines and any specific instructions to help users make the most of the **Prayer Circle** app.]
+
+## Contribution
+
+### Getting Started
+[Provide detailed steps on how users can get started with the **Prayer Circle** app. Include information on installation, account setup, and any initial configuration.]
+
+### Guidlines
+[Encourage users and developers to contribute to the **Prayer Circle** project. Provide information on how they can report issues, suggest improvements, and contribute to the codebase.]
 
 ## Contact
-Questions, comments, and concerns can be directed to: devs.prayercircle@gmail.com
+
+For any questions, comments, or concerns, feel free to reach out to us at [devs.prayercircle@gmail.com](mailto:devs.prayercircle@gmail.com).
