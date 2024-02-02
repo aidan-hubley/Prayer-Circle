@@ -229,10 +229,12 @@ export async function getFilterCircles() {
 			color: circleData.color,
 			icon: circleData.icon,
 			description: circleData.description,
-			iconColor: circleData.iconColor
+			iconColor: circleData.iconColor,
+			membersList: makeCircleUserList(circle)
 		};
 		circlesData.push(circleStruct);
 	}
+
 	return circlesData;
 }
 
@@ -289,4 +291,64 @@ export async function checkIfUserIsInCircle(circle) {
 		}
 	}
 	return inCircle;
+}
+
+//NRA
+export async function makeCircleUserList(circle) {
+	console.log("start makeCircleUserList");
+	console.log("Passed circle: " + circle);
+	let circleSettingsData = [];
+	let targetUserList = Object.keys(
+		(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
+	);
+	console.log("Target user list " + targetUserList);
+
+	for (targetUser in targetUserList) {
+
+		let fname = Object.values(
+			(await readData(`prayer_circle/users/${targetUser}/public/fname`)) || {}
+		);
+		let lname = Object.values(
+			(await readData(`prayer_circle/users/${targetUser}/public/lname`)) || {}
+		);
+		let name = fname + " " + lname;
+
+		let username = "";
+		const pathRef = firebase.database().ref('usernames/');
+		pathRef.orderByValue().equalTo(targetUser).once('value')
+			.then(snapshot => {
+				if (snapshot.exists()) {
+					username = snapshot.key;
+				console.log('Value found');
+				} else {
+				console.log('Value not found');
+				}
+			})
+			.catch(error => console.error(error));
+
+		let role = {}
+			try {
+				role = Object.values(
+				(await readData(`prayer_circle/users/${targetUser}/private/circles/${circle}/role`)) || {}
+			);
+		} catch {
+			if (role == {} || role == null || role == undefined) {
+				role = "member";
+				writeData(`prayer_circle/users/${targetUser}/private/circles/${circle}/role`, role, false);
+			}
+		}
+		let img = Object.values(
+			(await readData(`prayer_circle/users/${targetUser}/public/profile_img`)) || {}
+		);
+
+		circleSettingsData.push({
+			name: name,
+			username: username,
+			role: role,
+			img: img
+		});
+	}
+
+	console.log("circleSettingsData: " + circleSettingsData);
+	return circleSettingsData;
 }

@@ -31,12 +31,14 @@ export default function Page() {
 		currentFilterColor,
 		currentFilterDescription,
 		currentFilterIconColor,
+		circleMembersData,
 	] = useStore((state) => [
 		state.currentFilterName,
 		state.currentFilterIcon,
 		state.currentFilterColor,
 		state.currentFilterDescription,
-		state.currentFilterIconColor
+		state.currentFilterIconColor,
+		state.circleMembersData
 	]);
 	let insets = useSafeAreaInsets();
 
@@ -56,10 +58,10 @@ export default function Page() {
 
 	const filtermembers = () => {
 		const roleOrder = ['own', 'mod', 'mem', 'sus', 'ban'];
-		const sortedData = dummyData.sort((a, b) => {
+		const sortedData = data.sort((a, b) => {
 			return roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role);
 		});
-		setDummyData([...sortedData]);
+		setData([...sortedData]);
 	};
 
 	const Trevor =
@@ -73,176 +75,29 @@ export default function Page() {
 		}).start();
 	}, [isEnabled]);
 
-	const originalOrder = [
+	const originalOrder = [ //NRA no longer used dummy data
 		{
 			key: '1',
 			name: 'Josh Philips',
 			username: 'JoshuaP.149134',
 			role: 'owner',
 			img: Trevor
-		},
-		{
-			key: '2',
-			name: 'Alex Muresan',
-			username: 'muresanCoder.20',
-			role: 'admin',
-			img: Trevor
-		},
-		{
-			key: '3',
-			name: 'Nason Allen',
-			username: 'AllenNasin0987654',
-			role: 'admin',
-			img: Trevor
-		},
-		{
-			key: '4',
-			name: 'Aidan Hubley',
-			username: 'HubleyPraying',
-			role: 'admin',
-			img: Trevor
-		},
-		{
-			key: '5',
-			name: 'Trevor Bunch long name',
-			username: 'BunchTrevoraccount',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '6',
-			name: 'Another Account',
-			username: 'ExampleAccount1',
-			role: 'restricted',
-			img: Trevor
-		},
-		{
-			key: '7',
-			name: 'Another Account',
-			username: 'ExampleAccount2',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '8',
-			name: 'Another Account',
-			username: 'ExampleAccount3',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '9',
-			name: 'Another Account',
-			username: 'ExampleAccount4',
-			role: 'admin',
-			img: Trevor
-		},
-		{
-			key: '10',
-			name: 'Another Account',
-			username: 'ExampleAccount5',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '11',
-			name: 'Another Account',
-			username: 'ExampleAccount6',
-			role: 'restricted',
-			img: Trevor
-		},
-		{
-			key: '12',
-			name: 'Another Account',
-			username: 'ExampleAccount7',
-			role: 'banned',
-			img: Trevor
-		},
-		{
-			key: '13',
-			name: 'Nason Allen',
-			username: 'AllenNasin0987654',
-			role: 'admin',
-			img: Trevor
-		},
-		{
-			key: '14',
-			name: 'Aidan Hubley',
-			username: 'HubleyPraying',
-			role: 'banned',
-			img: Trevor
-		},
-		{
-			key: '15',
-			name: 'Trevor Bunch',
-			username: 'BunchTrevoraccount',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '16',
-			name: 'Another Account',
-			username: 'ExampleAccount1',
-			role: 'restricted',
-			img: Trevor
-		},
-		{
-			key: '17',
-			name: 'Another Account',
-			username: 'ExampleAccount2',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '18',
-			name: 'Another Account',
-			username: 'ExampleAccount3',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '19',
-			name: 'Another Account',
-			username: 'ExampleAccount4',
-			role: 'admin',
-			img: Trevor
-		},
-		{
-			key: '20',
-			name: 'Another Account',
-			username: 'ExampleAccount5',
-			role: 'member',
-			img: Trevor
-		},
-		{
-			key: '21',
-			name: 'Another Account',
-			username: 'ExampleAccount6',
-			role: 'restricted',
-			img: Trevor
-		},
-		{
-			key: '22',
-			name: 'Another Account',
-			username: 'ExampleAccount7',
-			role: 'banned',
-			img: Trevor
 		}
 	];
 
-	const [dummyData, setDummyData] = useState([...originalOrder]);
+	const [data, setData] = useState([...circleMembersData]);
 	const [isSorted, setIsSorted] = useState(false);
 
 	const toggleSortOrder = () => {
 		const roleOrder = ['owner', 'admin', 'member', 'restricted', 'banned'];
 		const sortedData = isSorted
-			? [...originalOrder]
-			: [...dummyData].sort(
+			? [...circleMembersData]
+			: [...data].sort(
 					(a, b) =>
 						roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role)
 			  );
 
-		setDummyData(sortedData);
+		setData(sortedData);
 		setIsSorted((prev) => !prev); // Toggle the sorting order
 	};
 
@@ -315,7 +170,7 @@ export default function Page() {
 						</StyledView>
 					</>
 				}
-				data={dummyData}
+				data={data}
 				renderItem={({ item }) => {
 					return (
 						<Member
@@ -323,7 +178,7 @@ export default function Page() {
 							username={item.username}
 							role={item.role}
 							img={item.img}
-							last={item.key == dummyData.length}
+							last={item.key == data.length}
 						/>
 					);
 				}}
@@ -420,7 +275,7 @@ export default function Page() {
 						<StyledText className='top-[20%] text-3xl text-offwhite'>
 							Circle Name
 						</StyledText>
-						{/* Database call to remove from Circle  */}
+						{/* NRA Database call to remove from Circle  */}
 						<Button
 							title='Leave'
 							btnStyles={'top-[31%] border-2 border-yellow'}
@@ -462,7 +317,7 @@ export default function Page() {
 						<StyledText className='top-[20%] text-3xl text-offwhite'>
 							Circle Name
 						</StyledText>
-						{/* Database call to remove from Circle  */}
+						{/* NRA TODO Database call to remove from Circle  */}
 						<Button
 							title='Delete'
 							btnStyles={'top-[31%] border-2 border-red'}
