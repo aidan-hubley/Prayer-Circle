@@ -19,7 +19,7 @@ import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
-import { getHiddenPosts, writeData } from '../../backend/firebaseFunctions';
+import { getHiddenPosts, writeData, readData } from '../../backend/firebaseFunctions';
 import { set } from 'firebase/database';
 
 const StyledView = styled(View);
@@ -57,6 +57,7 @@ export default function Page() {
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [email, setEmail] = useState('');
 	const [name, setName] = useState('');
+	const [deletionName, setDeletionName] = useState('');
 	const [profileImage, setProfileImage] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
 	const insets = useSafeAreaInsets();
@@ -197,6 +198,88 @@ export default function Page() {
 		bottomSheetModalRef.current?.dismiss();
 	};	
 
+	const handleDeleteAccount = async () => {
+		if (deletionName !== name) {
+			Alert.alert('Error', 'The name does not match. Deletion name: ' + deletionName + ' Name: ' + name);
+			return;
+		}
+
+		let me = await AsyncStorage.getItem('user');
+
+		// find all circles that user is in
+		let userCircles = await readData(`prayer_circle/users/${me}/private/circles`);
+		if (userCircles) {
+			userCircles = Object.keys(userCircles);
+			userCircles.forEach((circle) => {				
+				let circleData = readData(`prayer_circle/circles/${circle}`);
+				let circleMembers = readData(`prayer_circle/circles/${circle}/members`);
+
+				if (circleMembers) {
+					circleMembers = Object.keys(circleMembers);
+					if (circleMembers.length === 1) { // identify if user is the only member of the circle						
+						writeData(`prayer_circle/circles/${circle}`, null, true); // delete circle
+					} else if (circleData.owner === me) { // if user is the owner of the circle
+						Alert.alert('Error', 'You are the owner of a circle. Please transfer ownership or delete / leave the circle before deleting your profile.');
+						return;
+					} else {
+						writeData(`prayer_circle/circles/${circle}/members/${me}`, null, true); // delete user from circle
+					}
+				}
+			});
+		}
+
+		// find all comments by user
+		let userComments = await readData(`prayer_circle/users/${me}/private/comments`);
+		if (userComments) {
+			userComments = Object.keys(userComments);
+			userComments.forEach((comment) => {
+				writeData(`prayer_circle/comments/${comment}`, null, true);
+			});
+		}
+
+		// find all posts by user
+		let userPosts = await readData(`prayer_circle/users/${me}/private/posts`);
+		if (userPosts) {
+			userPosts = Object.keys(userPosts);
+			userPosts.forEach((post) => {
+				writeData(`prayer_circle/posts/${post}`, null, true);
+			
+				// find all comments on post
+				let postComments = readData(`prayer_circle/posts/${post}/comments`);
+				if (postComments) {
+					postComments = Object.keys(postComments);
+					postComments.forEach((comment) => {
+						writeData(`prayer_circle/comments/${comment}`, null, true);
+					});
+				}
+			});
+		}
+
+		// delete username
+		// get all usernames
+		let usernames = await readData(`usernames`);
+		if (usernames) {
+			usernames = Object.keys(usernames);
+			usernames.forEach((username) => {
+				if (username === name) {
+					writeData(`usernames/${username}`, null, true);
+				}
+			});
+		}
+
+		// delete user
+		writeData(`prayer_circle/users/${me}`, null, true);
+
+		AsyncStorage.removeItem('user');
+		AsyncStorage.removeItem('name');
+		AsyncStorage.removeItem('email');
+		AsyncStorage.removeItem('profile_img');
+
+		bottomSheetModalRef.current?.dismiss();
+
+		router.replace('/login');
+	};
+
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
@@ -272,6 +355,7 @@ export default function Page() {
     };
 
     const handleDeleteProfileModalPress = () => {
+		setupProfile();
         setModalContent('deleteProfile');
 		setHandles(handle('Delete Profile', 'bg-[#CC2500]'));
         handlePresentModalPress();
@@ -457,6 +541,11 @@ export default function Page() {
 			case 'password':
 				return (
 					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
+						<StyledView className='w-[90%] flex-row justify-center'>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
 						<StyledInput
 							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
 							placeholder="Current Password"
@@ -483,6 +572,8 @@ export default function Page() {
 						/>
 						<Button
 							title='Confirm'
+							textColor={'text-offblack'}
+							bgColor={'bg-[#F9A826]'}
 							btnStyles='mt-5'
 							width='w-[70%]'
 							press={handleChangePassword}
@@ -494,7 +585,7 @@ export default function Page() {
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[90%] flex-row justify-center'>
 							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>You will have to sign in with the one</StyledText>
+							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
 							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
 						</StyledView>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: {email}</StyledText>
@@ -525,20 +616,41 @@ export default function Page() {
 			case 'emptyCache': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Clear all cached data</StyledText>
+						<StyledView className='w-[90%] flex-row justify-center'>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This will remove all bookmarked posts and Presence Timers will be reset</StyledText>
 					</StyledView>
 				);
 			case 'deleteProfile': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This action cannot be undone</StyledText>
+						<StyledView className='w-[90%] flex-row justify-center'>
+							<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
+							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+							<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
+						
+						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Please type out your profile name:</StyledText>
+						<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{name}</StyledText>
+
+						<StyledInput
+							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+							placeholder="Type your name"
+							placeholderTextColor={'#FFFBFC'}
+							value={deletionName}
+							onChangeText={setDeletionName}
+						/>
+
 						<Button
 							title='Delete Profile'
 							textColor={'text-offwhite'}
-							backgroundColor={'bg-red'}
+							bgColor={'bg-[#CC2500]'}
 							btnStyles='mt-5'
 							width='w-[70%]'
+							press={handleDeleteAccount}
 						/>
 					</StyledView>
 				);
@@ -965,7 +1077,7 @@ export default function Page() {
 					modalContent === 'changeEmail' ? ['65%'] :
 					modalContent === 'emptyCache' ? ['65%'] :
 					modalContent === 'deleteProfile' ? ['65%'] :
-					modalContent === 'signOut' ? ['15%'] :
+					modalContent === 'signOut' ? ['25%'] :
 					['65%', '85%']
 				}
 				//snapPoints={SnapPoints(['85%'])} // SPENT 2 HOURS trying to get this to work...  
