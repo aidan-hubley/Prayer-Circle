@@ -42,10 +42,16 @@ export default function Page() {
 		new Animated.Value(0)
 	);
 	const [isEnabled, setIsEnabled] = useState(false);
+	const [profileImage, setProfileImage] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
+
+	async function setupProfile() {
+		let pfp = await AsyncStorage.getItem('profile_img');
+		setProfileImage(pfp);
+	}
 
     async function setUpHiddenPosts() {
         let hp = await getHiddenPosts();
@@ -143,12 +149,14 @@ export default function Page() {
     };
 
     const handleChangeUsernameModalPress = () => {
+		setupProfile();
         setModalContent('changeUsername');
 		setHandles(handle('Change Username'));
         handlePresentModalPress();
     };
 
     const handleUpdateProfilePicModalPress = () => {
+		setupProfile();
         setModalContent('updateProfilePic');
 		setHandles(handle('Update Profile Picture'));
 		handlePresentModalPress();
@@ -268,10 +276,19 @@ export default function Page() {
 			case 'updateProfilePic': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current profile pic: </StyledText>
+						<Image
+							style={{
+								width: '75%',
+								height: '75%',
+								borderRadius: 18,								
+								display: 'flex'
+							}}
+							source={{
+								uri: profileImage
+							}}
+						/>
 						<Button
 							title='Update Profile Picture'
-							textColor={'text-offwhite'}
 							btnStyles='mt-5'
 							width='w-[70%]'
 						/>
