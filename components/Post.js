@@ -335,7 +335,7 @@ export const Post = (post) => {
 
 	async function hidePost() {
 		writeData(`prayer_circle/posts/${post.id}/hidden/${me}`, true, true);
-		writeData(`prayer_circle/users/${me}/private/hiddenposts/${post.id}`, true, true);
+		writeData(`prayer_circle/users/${me}/private/hidden_posts/${post.id}`, true, true);
 		toggleToolbar();
 
 		setGlobalReload(true);
