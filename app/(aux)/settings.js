@@ -208,6 +208,12 @@ export default function Page() {
 		bottomSheetModalRef.current?.dismiss();
 	};	
 
+	const handleEmptyCache = async () => {
+		AsyncStorage.clear();
+		Alert.alert('Success', 'Cache has been emptied.');
+		bottomSheetModalRef.current?.dismiss();
+	};
+
 	const handleDeleteAccount = async () => { // TODO: throughly test this
 		if (deletionName !== name) {
 			Alert.alert('Error', 'The name does not match. Deletion name: ' + deletionName + ' Name: ' + name);
@@ -362,16 +368,16 @@ export default function Page() {
         handlePresentModalPress();
     };
 
+    const handleEmptyCacheModalPress = () => {
+        setModalContent('emptyCache');
+		setHandles(handle('Empty Cache', 'bg-[#F9A826]'));
+        handlePresentModalPress();
+    };
+
     const handleEmailButtonPress = () => {
 		setupProfile();
         setModalContent('changeEmail');
 		setHandles(handle('Change Email', 'bg-[#F9A826]'));
-        handlePresentModalPress();
-    };
-
-    const handleEmptyCacheModalPress = () => {
-        setModalContent('emptyCache');
-		setHandles(handle('Empty Cache', 'bg-[#F9A826]'));
         handlePresentModalPress();
     };
 
@@ -424,37 +430,41 @@ export default function Page() {
 			case 'updProfileInfo':
 				return (
 					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>You can update you First and Last name!</StyledText>
-						<StyledView className='flex-row justify-center pt-3'>
-							<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>Update your Profile Picture!</StyledText>
-							<StyledIcon name='camera' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
+						<StyledView className='w-[85%] items-center'>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>You can update you First and Last name!</StyledText>
+							<StyledView className='flex-row justify-center pt-3'>
+								<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>Update your Profile Picture!</StyledText>
+								<StyledIcon name='camera' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
 						</StyledView>
 					</StyledView>
 				);
 			case 'changeName':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current Name: {name}</StyledText>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New First Name"
-							placeholderTextColor={'#FFFBFC'}
-							value={newFName}
-							onChangeText={setNewFName}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Last Name"
-							placeholderTextColor={'#FFFBFC'}
-							value={newLName}
-							onChangeText={setNewLName}
-						/>
-						<Button
-							title='Confirm'
-							btnStyles='mt-5'
-							width='w-[70%]'
-							press={hanleChangeName}
-						/>
+						<StyledView className='w-[85%] items-center'>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current Name: {name}</StyledText>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="New First Name"
+								placeholderTextColor={'#FFFBFC'}
+								value={newFName}
+								onChangeText={setNewFName}
+							/>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="New Last Name"
+								placeholderTextColor={'#FFFBFC'}
+								value={newLName}
+								onChangeText={setNewLName}
+							/>
+							<Button
+								title='Confirm'
+								btnStyles='mt-5'
+								width='w-[70%]'
+								press={hanleChangeName}
+							/>
+						</StyledView>
 					</StyledView>
 				);
 			case 'updateProfilePic': // TODO: add backend
@@ -487,14 +497,20 @@ export default function Page() {
 			case 'timer': // TODO: add backend / local storage writing to timer
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<Timer></Timer>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Keep track of your time spent on Prayer Circle</StyledText>
+						<StyledView className='w-[85%] items-center'>
+							<Timer></Timer>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Keep track of your time spent on Prayer Circle</StyledText>
+							<StyledText className='mt-3 text-[16px] text-center text-offwhite'>*Toggling off a timer hides the timer from you</StyledText>
+							<StyledText className='mt-3 text-[16px] text-center text-offwhite'>*To reset timers you must empty cache</StyledText>
+						</StyledView>
 					</StyledView>
 				);
 			case 'reminder': // TODO: add more info 
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Notify you when you have spend too much time on Prayer Cirlce</StyledText>
+						<StyledView className='w-[85%] items-center'>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Notify you when you have spend too much time on Prayer Cirlce</StyledText>
+						</StyledView>
 					</StyledView>
 				);
 			case 'hiddenPosts': // TODO: New version of post.js for hidden posts
@@ -538,141 +554,157 @@ export default function Page() {
 						</StyledView> 
 					</StyledView>
 				);
-			case 'passwordInfo': // TODO: add more info
+			case 'passwordInfo':
 				return (
 					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
-						<StyledView className='w-[90%] flex-row justify-center'>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>You will have to sign in with the one</StyledText>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						<StyledView className='w-[85%] items-center'>
+							<StyledView className='flex-row justify-center'>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
+							<StyledView className='flex-row justify-center py-3'>
+								<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>Send a reset password to your email!</StyledText>
+								<StyledIcon name='mail' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
+							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>Password Rules:</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Password must contain atleast: </StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 8 total characters </StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 uppercase letter</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 lowercase letter</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 number</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 special character</StyledText>						
 						</StyledView>
-						<StyledView className='flex-row justify-center py-3'>
-							<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>You can send a reset password to your email!</StyledText>
-							<StyledIcon name='mail' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
-						</StyledView>
-						<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>Password Rules:</StyledText>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Password must contain atleast: </StyledText>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 8 total characters </StyledText>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 uppercase letter</StyledText>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 lowercase letter</StyledText>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 number</StyledText>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 special character</StyledText>						
 					</StyledView>
 				);
 			case 'password':
 				return (
 					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
-						<StyledView className='w-[90%] flex-row justify-center'>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						<StyledView className='w-[85%] items-center'>
+							<StyledView className='flex-row justify-center'>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="Current Password"
+								placeholderTextColor={'#FFFBFC'}
+								secureTextEntry={true}
+								value={currentPassword}
+								onChangeText={setCurrentPassword}
+							/>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="New Password"
+								placeholderTextColor={'#FFFBFC'}
+								secureTextEntry={true}
+								value={newPassword}
+								onChangeText={setNewPassword}
+							/>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="Confirm New Password"
+								placeholderTextColor={'#FFFBFC'}
+								secureTextEntry={true}
+								value={confirmPassword}
+								onChangeText={setConfirmPassword}
+							/>
+							<Button
+								title='Confirm'
+								textColor={'text-offblack'}
+								bgColor={'bg-[#F9A826]'}
+								btnStyles='mt-5'
+								width='w-[70%]'
+								press={handleChangePassword}
+							/>
 						</StyledView>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Current Password"
-							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={currentPassword}
-							onChangeText={setCurrentPassword}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Password"
-							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={newPassword}
-							onChangeText={setNewPassword}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Confirm New Password"
-							placeholderTextColor={'#FFFBFC'}
-							secureTextEntry={true}
-							value={confirmPassword}
-							onChangeText={setConfirmPassword}
-						/>
-						<Button
-							title='Confirm'
-							textColor={'text-offblack'}
-							bgColor={'bg-[#F9A826]'}
-							btnStyles='mt-5'
-							width='w-[70%]'
-							press={handleChangePassword}
-						/>
+					</StyledView>
+				);			
+			case 'emptyCache':
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledView className='w-[85%] items-center'>
+							<StyledView className='flex-row justify-center'>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This will remove all bookmarked posts and Presence Timers will be reset</StyledText>
+							<Button
+								title='Empty Cache'
+								textColor={'text-offblack'}
+								bgColor={'bg-[#F9A826]'}
+								btnStyles='mt-5'
+								width='w-[70%]'
+								press={handleEmptyCache}
+							/>
+						</StyledView>
 					</StyledView>
 				);
 			case 'changeEmail':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='w-[90%] flex-row justify-center'>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+						<StyledView className='w-[85%] items-center'>
+							<StyledView className='flex-row justify-center'>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: </StyledText>
+							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{email}</StyledText>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="New Email"							
+								placeholderTextColor={'#FFFBFC'}
+								value={newEmail}
+								onChangeText={setNewEmail}
+							/>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="Confirm New Email"
+								placeholderTextColor={'#FFFBFC'}
+								value={confirmEmail}
+								onChangeText={setConfirmEmail}
+							/>
+							<Button
+								title='Confirm'
+								textColor={'text-offblack'}
+								bgColor={'bg-[#F9A826]'}
+								btnStyles='mt-5'
+								width='w-[70%]'
+								press={handleChangeEmail}
+							/>
 						</StyledView>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: {email}</StyledText>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="New Email"							
-							placeholderTextColor={'#FFFBFC'}
-							value={newEmail}
-							onChangeText={setNewEmail}
-						/>
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Confirm New Email"
-							placeholderTextColor={'#FFFBFC'}
-							value={confirmEmail}
-							onChangeText={setConfirmEmail}
-						/>
-						<Button
-							title='Confirm'
-							textColor={'text-offblack'}
-							bgColor={'bg-[#F9A826]'}
-							btnStyles='mt-5'
-							width='w-[70%]'
-							press={handleChangeEmail}
-						/>
-					</StyledView>
-				);
-			case 'emptyCache': // TODO: add backend
-				return (
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='w-[90%] flex-row justify-center'>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
-							<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
-						</StyledView>
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*This will remove all bookmarked posts and Presence Timers will be reset</StyledText>
 					</StyledView>
 				);
 			case 'deleteProfile': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='w-[90%] flex-row justify-center'>
-							<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
-							<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
-							<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] ml-2"/>
+						<StyledView className='w-[85%] items-center'>
+							<StyledView className='flex-row justify-center'>
+								<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
+								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
+								<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] ml-2"/>
+							</StyledView>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Please type out your profile name:</StyledText>
+							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{name}</StyledText>
+							<StyledInput
+								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								placeholder="Type your name"
+								placeholderTextColor={'#FFFBFC'}
+								value={deletionName}
+								onChangeText={setDeletionName}
+							/>
+							<Button
+								title='Delete Profile'
+								textColor={'text-offwhite'}
+								bgColor={'bg-[#CC2500]'}
+								btnStyles='mt-5'
+								width='w-[70%]'
+								press={handleDeleteAccount}
+							/>
 						</StyledView>
-						
-						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Please type out your profile name:</StyledText>
-						<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{name}</StyledText>
-
-						<StyledInput
-							className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
-							placeholder="Type your name"
-							placeholderTextColor={'#FFFBFC'}
-							value={deletionName}
-							onChangeText={setDeletionName}
-						/>
-
-						<Button
-							title='Delete Profile'
-							textColor={'text-offwhite'}
-							bgColor={'bg-[#CC2500]'}
-							btnStyles='mt-5'
-							width='w-[70%]'
-							press={handleDeleteAccount}
-						/>
 					</StyledView>
 				);
 			case 'signOut':
@@ -960,28 +992,7 @@ export default function Page() {
 											</StyledView>
 										</StyledView>
 									</View>
-								</View>                                  
-								<View className="flex-row items-center mt-5 px-5">
-									<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
-										<StyledView className='flex-row'>
-											<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-											<Text className="mr-3 text-lg text-offwhite">
-												Change Email
-											</Text>
-										</StyledView>
-									<Button
-										icon='create-outline'
-										iconColor={'#FFFBFC'}
-										iconSize={26}
-										width={'w-[65px]'}
-										height={'h-[35px]'}
-										bgColor={'bg-transparent'}
-										borderColor={'border-white'}
-										btnStyles='border-2'
-										press={handleEmailButtonPress}
-									></Button>
-									</View>
-								</View>
+								</View>         
 								<View className="flex-row items-center mt-5 px-5">
 									<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
 										<StyledView className='flex-row'>
@@ -1002,8 +1013,28 @@ export default function Page() {
 										press={handleEmptyCacheModalPress}
 									></Button>
 									</View>
-								</View>
-								
+								</View>                         
+								<View className="flex-row items-center mt-5 px-5">
+									<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+										<StyledView className='flex-row'>
+											<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+											<Text className="mr-3 text-lg text-offwhite">
+												Change Email
+											</Text>
+										</StyledView>
+									<Button
+										icon='create-outline'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+										press={handleEmailButtonPress}
+									></Button>
+									</View>
+								</View>															
 								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
 								<View className="flex-row items-center mt-5 px-5">
 									<View className="flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl">
@@ -1090,13 +1121,13 @@ export default function Page() {
 					modalContent === 'updProfileInfo' ? ['20%'] :
 					modalContent === 'changeName' ? ['65%'] :
 					modalContent === 'updateProfilePic' ? ['65%'] :
-					modalContent === 'timer' ? ['35%'] :
+					modalContent === 'timer' ? ['35%', '45%'] :
 					modalContent === 'reminder' ? ['35%'] :
 					modalContent === 'hiddenPosts' ? ['65%', '85%'] :
 					modalContent === 'passwordInfo' ? ['25%', '50%'] :
 					modalContent === 'password' ? ['65%', '85%'] :
+					modalContent === 'emptyCache' ? ['35%'] :
 					modalContent === 'changeEmail' ? ['65%'] :
-					modalContent === 'emptyCache' ? ['65%'] :
 					modalContent === 'deleteProfile' ? ['65%'] :
 					modalContent === 'signOut' ? ['25%'] :
 					['65%', '85%']
