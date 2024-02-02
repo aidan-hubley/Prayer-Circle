@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { FlatList, Text, View, TouchableOpacity, Animated, Image, Alert, TextInput } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
 import { signOut } from 'firebase/auth';
 import { Toggle } from '../../components/Toggle';
@@ -211,19 +211,10 @@ export default function Page() {
 		left: selectedReminderInter
 	};
 
-
-
-
 	const handle = () => {
 		switch (modalContent) {
 			case 'tos':
-                return (
-                    <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
-                        <StyledText className='text-white font-[600] text-[24px] pb-2'>
-                            Terms of Service
-                        </StyledText>
-                    </StyledView>
-                );          
+                return ('Terms of Service');          
             case 'updProfileInfo':
                 return (
                     <StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
@@ -332,10 +323,19 @@ export default function Page() {
         switch (modalContent) {
 			case 'tos':
 				return (
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite' style={{ height: '100%' }}>
-						<StyledView className="flex-1 w-[90%]" style={{ height: '100%' }}>
-							<Terms></Terms>
-						</StyledView>
+					<StyledView className='flex-1 bg-grey'>
+						<BottomSheetFlatList							
+							renderItem={({ item }) => {
+								return (
+								//<StyledView className="flex-1 py-3 items-center text-offwhite w-[90%]" style={{ height: '100%' }}>
+								//	<Terms></Terms>
+									<>
+										<StyledText>Test</StyledText>
+									</>
+								//</StyledView>			
+								)				
+							}}
+						/>
 					</StyledView>
 				);
 			case 'password':
@@ -885,12 +885,13 @@ export default function Page() {
 					modalContent === 'signOut' ? ['15%'] :
 					['65%', '85%']
 				}
-				handleComponent={handle}
+				//snapPoints={SnapPoints(['85%'])}
+				handleComponent={() => handle()}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
 				<StyledView className='flex-1 bg-offblack'>
-					{renderContent()}
+					{renderContent}
 				</StyledView>
 			</BottomSheetModal>
 		</StyledSafeArea>
