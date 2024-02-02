@@ -8,6 +8,8 @@ import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
 import { Terms } from '../../components/Terms';
 import { Post } from '../../components/Post';
+import { Camera, CameraType } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { auth } from '../../backend/config';
@@ -19,13 +21,14 @@ import { updatePassword } from 'firebase/auth';
 import { reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
-import { getHiddenPosts, writeData, readData } from '../../backend/firebaseFunctions';
+import { getHiddenPosts, writeData, readData, uploadImage } from '../../backend/firebaseFunctions';
 import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
+const StyledCamera = styled(Camera);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledInput = styled(TextInput);
@@ -33,6 +36,9 @@ const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	const [type, setType] = useState(CameraType.front);
+	const [flashMode, setFlashMode] = useState('off');
+	const cameraRef = useRef(null);
 	const [hiddenPosts, sethiddenPosts] = useState([]);
 	const [handles, setHandles] = useState('');
 	const [newFName, setNewFName] = useState('');
@@ -62,20 +68,6 @@ export default function Page() {
 		setEmail(ge);
 		let pfp = await AsyncStorage.getItem('profile_img');
 		setProfileImage(pfp);
-	}
-
-    async function setUpHiddenPosts() {
-        let hp = await getHiddenPosts();
-        sethiddenPosts(hp);
-    };
-
-    async function unhidePost(postId) {
-        let me = await AsyncStorage.getItem('user');
-
-		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, null, true);
-		writeData(`prayer_circle/users/${me}/private/hidden_posts/${postId}`, null, true);
-
-        bottomSheetModalRef.current?.dismiss();
 	}
 
 	const handlePasswordReset = async () => {
@@ -127,6 +119,74 @@ export default function Page() {
 
 		bottomSheetModalRef.current?.dismiss();
 	};				
+
+	function toggleCameraType() {
+		setType((current) =>
+			current === CameraType.back ? CameraType.front : CameraType.back
+		);
+	}
+
+	function toggleFlashMode() {
+		setFlashMode((currentFlashMode) =>
+			currentFlashMode === 'off' ? 'torch' : 'off'
+		);
+	}
+
+	async function takePicture() { // Network Request Errors???
+		const { status } = await Camera.requestCameraPermissionsAsync();
+		if (status !== 'granted') {
+			alert('Permission to access the camera was denied.');
+			return;
+		}
+
+		if (cameraRef.current) {
+			try {
+				const photo = await cameraRef.current.takePictureAsync();
+				console.log('photo', photo);
+				let me = await AsyncStorage.getItem('user');
+				let imgURL = await uploadImage(`prayer_circle/users/${me}`, photo.uri, 'profile_img');
+
+				console.log('imgURL', imgURL);
+
+				// AsyncStorage.setItem('profile_img', imgURL);
+				writeData(`prayer_circle/users/${me}/public/profile_img`, imgURL);
+
+				Alert.alert('Success', 'Profile picture has been updated.');
+
+				bottomSheetModalRef.current?.dismiss();
+			} catch (error) {
+				console.error('Error taking picture:', error);
+			}
+		}
+	}
+
+	const openImagePicker = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 0.2
+		});
+
+		if (result.canceled === false && result.assets.length > 0) {
+			const selectedAsset = result.assets[0];
+			setProfileImage(selectedAsset.uri);
+			uploadImage(selectedAsset.uri, 'profile_img');}
+	};
+
+	async function setUpHiddenPosts() {
+        let hp = await getHiddenPosts();
+        sethiddenPosts(hp);
+    };
+
+    async function unhidePost(postId) {
+        let me = await AsyncStorage.getItem('user');
+
+		writeData(`prayer_circle/posts/${postId}/hidden/${me}`, null, true);
+		writeData(`prayer_circle/users/${me}/private/hidden_posts/${postId}`, null, true);
+
+        bottomSheetModalRef.current?.dismiss();
+	};
 
 	const handleChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
@@ -321,10 +381,16 @@ export default function Page() {
         handlePresentModalPress();
     };
 
-    const handleUpdateProfilePicModalPress = () => {
+    const handlePreviewProfilePicModalPress = () => {
 		setupProfile();
-        setModalContent('updateProfilePic');
-		setHandles(handle('Update Profile Picture'));
+        setModalContent('previewProfilePic');
+		setHandles(handle('Your Profile Picture'));
+		handlePresentModalPress();
+    };
+
+	const handleUpdateProfilePicModalPress = () => {
+		setModalContent('updateProfilePic');
+		setHandles(handle('Take a Selfie!'));
 		handlePresentModalPress();
     };
 
@@ -459,7 +525,7 @@ export default function Page() {
 						</StyledView>
 					</StyledView>
 				);
-			case 'updateProfilePic': // TODO: add backend
+			case 'previewProfilePic':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						{profileImage ? ( 						
@@ -483,7 +549,71 @@ export default function Page() {
 							title='Update Profile Picture'
 							btnStyles='mt-5'
 							width='w-[70%]'
+							press={handleUpdateProfilePicModalPress}
 						/>
+					</StyledView>
+				);
+			case 'updateProfilePic':
+				return (
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						<StyledView className='w-[85%] items-center'>
+							<StyledView	className='w-[300px] aspect-square rounded-[20px]'>
+								<StyledCamera
+									ref={cameraRef}
+									mirrorImage={true}
+									fixOrientation={true}
+									// Still mirroring
+									className='w-full h-full rounded-[20px]'
+									type={type}
+									ratio='1:1'
+									flashMode={flashMode}
+								>
+								</StyledCamera>
+							</StyledView>
+							<StyledView className='w-full py-[90px]'></StyledView>
+							<StyledView className='w-full flex-row justify-between absolute bottom-[100px] items-center'>
+								<Button
+									icon='camera-reverse-outline'
+									btnStyles={'left-[75px]'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={toggleCameraType}
+								/>
+								<Button
+									icon='flashlight-outline'
+									btnStyles={'right-[75px]'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={toggleFlashMode}
+								/>
+							</StyledView>
+							<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
+								<Button
+									icon='arrow-back-outline'
+									btnStyles={'left-10'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={() => bottomSheetModalRef.current?.dismiss()}
+								/>
+								<Button
+									icon='camera-outline'
+									iconColor='#FFFBFC'
+									btnStyles={
+										'border-4 border-offwhite bg-offblack'
+									}
+									width='w-[80px]'
+									height='h-[80px]'
+									press={takePicture}
+								/>
+								<Button
+									icon='images-outline'
+									btnStyles='right-10'
+									width='w-[50px]'
+									height='h-[50px]'
+									press={openImagePicker}
+								/>
+							</StyledView>
+						</StyledView>
 					</StyledView>
 				);
 			case 'timer': // TODO: add backend / local storage writing to timer
@@ -806,7 +936,7 @@ export default function Page() {
 													bgColor={'bg-transparent'}
 													borderColor={'border-offwhite'}
 													btnStyles='border-2'
-													press={handleUpdateProfilePicModalPress}
+													press={handlePreviewProfilePicModalPress}
 												></Button>
 											</StyledView>
 										</StyledView>
@@ -1114,6 +1244,7 @@ export default function Page() {
 					modalContent === 'tos' ? ['65%', '85%'] :
 					modalContent === 'updProfileInfo' ? ['20%'] :
 					modalContent === 'changeName' ? ['65%'] :
+					modalContent === 'previewProfilePic' ? ['65%'] :
 					modalContent === 'updateProfilePic' ? ['65%'] :
 					modalContent === 'timer' ? ['35%', '45%'] :
 					modalContent === 'reminder' ? ['35%'] :
