@@ -184,9 +184,9 @@ export default function Page() {
 
 		let confirmEmailCheck = confirmEmail.split('@');
 		if (confirmEmailCheck.length !== 2)
-			return alert('Invalid Email'); // check email format
+			return alert('Invalid Email');
 		else if (!approvedEmailProviders.includes(confirmEmailCheck[1]))
-			return alert('Email provider not supported'); // check email provider
+			return alert('Email provider not supported');
 
 		let me = await AsyncStorage.getItem('user');
 		writeData(`prayer_circle/users/${me}/private/email`, `${confirmEmail}`, true);
@@ -320,7 +320,10 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
 						<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>You can update you First and Last name!</StyledText>
-
+						<StyledView className='flex-row justify-center pt-3'>
+							<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>Update your Profile Picture!</StyledText>
+							<StyledIcon name='camera' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
+						</StyledView>
 					</StyledView>
 				);
 			case 'changeName':
@@ -352,17 +355,23 @@ export default function Page() {
 			case 'updateProfilePic': // TODO: add backend
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<Image
-							style={{
-								width: '75%',
-								height: '75%',
-								borderRadius: 18,								
-								display: 'flex'
-							}}
-							source={{
-								uri: profileImage
-							}}
-						/>
+						{profileImage ? ( 						
+							<Image
+								style={{
+									width: '75%',
+									height: '75%',
+									borderRadius: 18,								
+									display: 'flex'
+								}}
+								source={{
+									uri: profileImage
+								}}
+							/>
+						) : (
+							<StyledText className='font-bold text-offwhite text-[26px] mt-3'> 
+								{name}'s Profile Picture
+							</StyledText>
+						)}
 						<Button
 							title='Update Profile Picture'
 							btnStyles='mt-5'
@@ -930,7 +939,7 @@ export default function Page() {
 				index={0}
 				snapPoints={
 					modalContent === 'tos' ? ['65%', '85%'] :
-					modalContent === 'updProfileInfo' ? ['65%'] :
+					modalContent === 'updProfileInfo' ? ['20%'] :
 					modalContent === 'changeName' ? ['65%'] :
 					modalContent === 'updateProfilePic' ? ['65%'] :
 					modalContent === 'timer' ? ['35%'] :
