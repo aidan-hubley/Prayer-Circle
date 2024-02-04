@@ -221,7 +221,15 @@ export async function getPosts(circleId) {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
-	return posts;
+
+	let filteredPosts = [];
+	for (let post of posts) {
+		if (filteredPosts.indexOf(post[0]) === -1) {
+			filteredPosts.push(post[0]);
+		}
+	}
+
+	return filteredPosts;
 }
 
 export async function uploadImage(path, uri) {

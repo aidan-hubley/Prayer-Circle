@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useMemo } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import {
 	View,
 	Text,
@@ -28,13 +28,13 @@ const StyledText = styled(Text);
 const StyledPressable = styled(Pressable);
 const StyledImage = styled(Image);
 const StyledIcon = styled(Ionicons);
-const StyledAnimatedHighlight = styled(
-	Animated.createAnimatedComponent(TouchableHighlight)
-);
+const StyledAnimatedHighlight =
+	Animated.createAnimatedComponent(TouchableHighlight);
 
 const FilterItem = forwardRef((props, ref) => {
 	const updateFilter = useStore((state) => state.updateFilter);
 	const updateFilterName = useStore((state) => state.updateFilterName);
+	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
 			(props.index - 3) * (props.itemSize + props.itemMargin),
@@ -53,7 +53,7 @@ const FilterItem = forwardRef((props, ref) => {
 			0.6, 0.6, 0.7, 0.8, 0.8, 1, 0.8, 0.8, 0.7, 0.6, 0.6
 		];
 		const fadeOutputRange = [
-			0.6, 0.6, 0.6, 0.6, 0.6, 1, 0.6, 0.6, 0.6, 0.6, 0.6
+			0.4, 0.4, 0.5, 0.6, 0.7, 1, 0.7, 0.6, 0.5, 0.4, 0.4
 		];
 		const xOutputRange = [-70, -50, -30, -10, 0, 0, 0, 10, 30, 50, 70];
 		const yOutputRange = [300, 150, 75, 50, 20, 0, 20, 50, 75, 150, 300];
@@ -79,6 +79,7 @@ const FilterItem = forwardRef((props, ref) => {
 			inputRange,
 			fadeOutputRange
 		);
+
 		return {
 			transform: [
 				{
@@ -91,48 +92,18 @@ const FilterItem = forwardRef((props, ref) => {
 					scale: shrink
 				}
 			],
-			opacity: fade
+			opacity: selected ? 1 : fade
 		};
 	});
 	const bottomSheetModalRef = useRef(null);
+	const [addCircles, setAddCircles] = useStore((state) => [
+		state.addCircles,
+		state.setAddCircles
+	]);
 
-	if (props.data.id == 'addCircles') {
-		return (
-			<StyledAnimatedHighlight
-				style={[
-					{
-						borderColor: props.data.color,
-						width: props.itemSize,
-						height: props.itemSize,
-						marginHorizontal: props.itemMargin / 2,
-						top: 60
-					},
-					itemStyle
-				]}
-				className='justify-center'
-			>
-				<StyledPressable
-					className='flex items-center justify-center'
-					onPress={async () => {
-						router.push('findCircles');
-					}}
-				>
-					<StyledImage
-						source={require('../assets/spiral/thin.png')}
-						style={{ width: 80, height: 80 }}
-					/>
-					<StyledIcon
-						name={'search-outline'}
-						size={45}
-						color={'#FFFBFC'}
-						style={{ position: 'absolute' }}
-					/>
-				</StyledPressable>
-			</StyledAnimatedHighlight>
-		);
-	} else if (props.data.id == 'Gridview') {
-		return (
-			<>
+	if (!props.multiselect) {
+		if (props.data.id == 'addCircles') {
+			return (
 				<StyledAnimatedHighlight
 					style={[
 						{
@@ -145,151 +116,212 @@ const FilterItem = forwardRef((props, ref) => {
 						itemStyle
 					]}
 					className='justify-center'
-					onPress={() => {
-						bottomSheetModalRef.current.present();
-						props.toggleShown();
-					}}
 				>
-					<StyledView className='flex items-center justify-center'>
+					<StyledPressable
+						className='flex items-center justify-center'
+						onPress={async () => {
+							router.push('findCircles');
+						}}
+					>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
 						/>
 						<StyledIcon
-							name={'apps-outline'}
-							size={35}
+							name={'search-outline'}
+							size={45}
 							color={'#FFFBFC'}
 							style={{ position: 'absolute' }}
 						/>
-					</StyledView>
+					</StyledPressable>
 				</StyledAnimatedHighlight>
-				<BottomSheetModal
-					enableDismissOnClose={true}
-					ref={bottomSheetModalRef}
-					index={0}
-					snapPoints={SnapPoints(['85%'])}
-					handleComponent={() => handle('All Circles')}
-					backdropComponent={(backdropProps) =>
-						backdrop(backdropProps)
-					}
-					keyboardBehavior='extend'
-				>
-					<StyledView className='flex-1 bg-grey'>
-						<BottomSheetFlatList
-							data={props.circles.slice(2)}
-							keyExtractor={(item) => item.id}
-							contentContainerStyle={{
-								paddingVertical: 20,
-								paddingHorizontal: 12,
-								alignItems: 'center'
-							}}
-							numColumns={3}
-							renderItem={({ item }) => {
-								const vw = Dimensions.get('window').width;
-								return (
-									<StyledView
-										className='items-center justify-around my-[10px]'
-										style={{ width: vw / 3 - 8 }}
-									>
-										<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
-											{item.title}
-										</StyledText>
-										<StyledAnimatedHighlight
-											style={[
-												{
-													borderColor: item.color
-												}
-											]}
-											className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
-											onPress={() => {
-												bottomSheetModalRef.current.dismiss();
-												updateFilter(item.id);
-												updateFilterName(item.title);
-											}}
+			);
+		} else if (props.data.id == 'Gridview') {
+			return (
+				<>
+					<StyledAnimatedHighlight
+						style={[
+							{
+								borderColor: props.data.color,
+								width: props.itemSize,
+								height: props.itemSize,
+								marginHorizontal: props.itemMargin / 2,
+								top: 60
+							},
+							itemStyle
+						]}
+						className='justify-center'
+						onPress={() => {
+							bottomSheetModalRef.current.present();
+							props.toggleShown();
+						}}
+					>
+						<StyledView className='flex items-center justify-center'>
+							<StyledImage
+								source={require('../assets/spiral/thin.png')}
+								style={{ width: 80, height: 80 }}
+							/>
+							<StyledIcon
+								name={'apps-outline'}
+								size={35}
+								color={'#FFFBFC'}
+								style={{ position: 'absolute' }}
+							/>
+						</StyledView>
+					</StyledAnimatedHighlight>
+					<BottomSheetModal
+						enableDismissOnClose={true}
+						ref={bottomSheetModalRef}
+						index={0}
+						snapPoints={SnapPoints(['85%'])}
+						handleComponent={() => handle('All Circles')}
+						backdropComponent={(backdropProps) =>
+							backdrop(backdropProps)
+						}
+						keyboardBehavior='extend'
+					>
+						<StyledView className='flex-1 bg-grey'>
+							<BottomSheetFlatList
+								data={props.circles.slice(2)}
+								keyExtractor={(item) => item.id}
+								contentContainerStyle={{
+									paddingVertical: 20,
+									paddingHorizontal: 12,
+									alignItems: 'center'
+								}}
+								numColumns={3}
+								renderItem={({ item }) => {
+									const vw = Dimensions.get('window').width;
+									return (
+										<StyledView
+											className='items-center justify-around my-[10px]'
+											style={{ width: vw / 3 - 8 }}
 										>
-											<StyledIcon
-												name={item.icon}
-												size={45}
-												color={
-													item.iconColor || item.color
-												}
-											/>
-										</StyledAnimatedHighlight>
-									</StyledView>
-								);
-							}}
+											<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
+												{item.title}
+											</StyledText>
+											<StyledAnimatedHighlight
+												style={[
+													{
+														borderColor: item.color
+													}
+												]}
+												className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
+												onPress={() => {
+													bottomSheetModalRef.current.dismiss();
+													updateFilter(item.id);
+													updateFilterName(
+														item.title
+													);
+												}}
+											>
+												<StyledIcon
+													name={item.icon}
+													size={45}
+													color={
+														item.iconColor ||
+														item.color
+													}
+												/>
+											</StyledAnimatedHighlight>
+										</StyledView>
+									);
+								}}
+							/>
+						</StyledView>
+					</BottomSheetModal>
+				</>
+			);
+		} else {
+			return (
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: props.data.color,
+							width: props.itemSize,
+							height: props.itemSize,
+							marginHorizontal: props.itemMargin / 2,
+							top: 60
+						},
+						itemStyle
+					]}
+					className='flex border-[6px] items-center justify-center rounded-full'
+					onPress={() => {
+						props.toggleShown();
+						updateFilter(props.data.id);
+						updateFilterName(props.data.title);
+					}}
+				>
+					<>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							{props.data.title}
+						</StyledText>
+						<StyledIcon
+							name={props.data.icon}
+							size={35}
+							color={props.data.iconColor || props.data.color}
 						/>
-					</StyledView>
-				</BottomSheetModal>
-			</>
-		);
+					</>
+				</StyledAnimatedHighlight>
+			);
+		}
 	} else {
 		return (
 			<StyledAnimatedHighlight
 				style={[
 					{
-						borderColor: props.data.color,
+						backgroundColor: selected ? '#00A55E' : '#00000000',
+						borderColor: selected ? '#00A55E' : props.data.color,
 						width: props.itemSize,
 						height: props.itemSize,
+						borderRadius: 100,
 						marginHorizontal: props.itemMargin / 2,
 						top: 60
 					},
 					itemStyle
 				]}
 				className='flex border-[6px] items-center justify-center rounded-full'
+				underlayColor={selected ? '#00A55E60' : props.data.color + '60'}
+				activeOpacity={1}
 				onPress={() => {
-					props.toggleShown();
-					updateFilter(props.data.id);
-					updateFilterName(props.data.title);
+					if (addCircles.includes(props.data.id)) {
+						setAddCircles(
+							addCircles.filter(
+								(circle) => circle !== props.data.id
+							)
+						);
+						setSelected(false);
+					} else {
+						setAddCircles([...addCircles, props.data.id]);
+						setSelected(true);
+					}
 				}}
 			>
 				<>
 					<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
 						{props.data.title}
 					</StyledText>
-					<StyledIcon
-						name={props.data.icon}
-						size={35}
-						color={props.data.iconColor || props.data.color}
-					/>
+					{!selected && (
+						<StyledIcon
+							name={props.data.icon}
+							size={35}
+							color={props.data.iconColor || props.data.color}
+						/>
+					)}
+					{selected && (
+						<View className='flex items-center justify-center ml-1'>
+							<Ionicons
+								name={'checkmark-circle'}
+								color={'white'}
+								size={50}
+								style={{ display: selected ? 'flex' : 'none' }}
+							/>
+						</View>
+					)}
 				</>
 			</StyledAnimatedHighlight>
 		);
 	}
 });
-
-const FilterCircle = (props) => {
-	return (
-		<StyledAnimatedHighlight
-			style={[
-				{
-					borderColor: props.data.color,
-					width: props.itemSize,
-					height: props.itemSize,
-					marginHorizontal: props.itemMargin / 2,
-					top: 60
-				},
-				itemStyle
-			]}
-			className='flex border-[6px] items-center justify-center rounded-full'
-			onPress={() => {
-				props.toggleShown();
-				updateFilter(props.data.id);
-				updateFilterName(props.data.title);
-			}}
-		>
-			<>
-				<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
-					{props.data.title}
-				</StyledText>
-				<StyledIcon
-					name={props.data.icon}
-					size={35}
-					color={props.data.iconColor || props.data.color}
-				/>
-			</>
-		</StyledAnimatedHighlight>
-	);
-};
 
 export { FilterItem };
