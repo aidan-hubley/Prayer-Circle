@@ -367,10 +367,6 @@ export default function Page() {
 		authContext.signOut();
 	};
 
-	const handlePresentModalPress = useCallback(() => {
-		bottomSheetModalRef.current?.present();
-	}, []);
-
 	const handleModalPress = (modalContent, snapPoints, handleText, handleColor, extra = () => {}) => {
 		extra(); 
 		setModalContent(modalContent); 
@@ -432,7 +428,7 @@ export default function Page() {
 			case 'changeName':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='w-[85%] items-center'>
+						<StyledView className='w-full gap-y-3 items-center'>
 							<StyledText className='my-3 text-[16px] font-bold text-center text-offwhite'>Your current name: {name}</StyledText>
 							<StyledInput
 								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
@@ -634,31 +630,43 @@ export default function Page() {
 			case 'password':
 				return (
 					<StyledView className='flex-1 bg-grey p-4 items-center text-offwhite'>
-						<StyledView className='w-[85%] items-center'>
+						<StyledView className='w-full gap-y-3 items-center'>
 							<StyledView className='flex-row justify-center'>
-								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
-								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
+								<StyledIcon
+									name='warning-outline'
+									size={30}
+									color='#F9A826'
+									className='w-[30px] h-[30px] mr-2'
+								/>
+								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>
+									This cannot be reverted
+								</StyledText>
+								<StyledIcon
+									name='warning-outline'
+									size={30}
+									color='#F9A826'
+									className='w-[30px] h-[30px] ml-2'
+								/>
 							</StyledView>
 							<StyledInput
-								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-								placeholder="Current Password"
+								className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+								placeholder='Current Password'
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
 								value={currentPassword}
 								onChangeText={setCurrentPassword}
 							/>
 							<StyledInput
-								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-								placeholder="New Password"
+								className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+								placeholder='New Password'
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
 								value={newPassword}
 								onChangeText={setNewPassword}
 							/>
 							<StyledInput
-								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-								placeholder="Confirm New Password"
+								className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+								placeholder='Confirm New Password'
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
 								value={confirmPassword}
@@ -699,7 +707,7 @@ export default function Page() {
 			case 'changeEmail':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='w-[85%] items-center'>
+						<StyledView className='w-full gap-y-3 items-center'>
 							<StyledView className='flex-row justify-center'>
 								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
 								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
@@ -708,14 +716,14 @@ export default function Page() {
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: </StyledText>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{email}</StyledText>
 							<StyledInput
-								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+								className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="New Email"							
 								placeholderTextColor={'#FFFBFC'}
 								value={newEmail}
 								onChangeText={setNewEmail}
 							/>
 							<StyledInput
-								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+								className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="Confirm New Email"
 								placeholderTextColor={'#FFFBFC'}
 								value={confirmEmail}
@@ -735,7 +743,7 @@ export default function Page() {
 			case 'deleteProfile':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<StyledView className='w-[85%] items-center'>
+						<StyledView className='w-full gap-y-3 items-center'>
 							<StyledView className='flex-row justify-center'>
 								<StyledIcon name='warning-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
 								<StyledText className='pt-1 text-[16px] font-bold text-center text-offwhite'>This cannot be reverted</StyledText>
@@ -744,7 +752,7 @@ export default function Page() {
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Please type out your profile name:</StyledText>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{name}</StyledText>
 							<StyledInput
-								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+								className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="Type your name"
 								placeholderTextColor={'#FFFBFC'}
 								value={deletionName}
