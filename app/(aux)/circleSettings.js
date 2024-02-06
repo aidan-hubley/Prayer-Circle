@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import {
 	Text,
 	View,
@@ -14,6 +14,7 @@ import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
 import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useStore } from '../global';
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
@@ -33,6 +34,21 @@ const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+		const [
+		currentFilterName,
+		currentFilterIcon,
+		currentFilterColor,
+		currentFilterDescription,
+		currentFilterIconColor,
+		circleMembersData,
+	] = useStore((state) => [
+		state.currentFilterName,
+		state.currentFilterIcon,
+		state.currentFilterColor,
+		state.currentFilterDescription,
+		state.currentFilterIconColor,
+		state.circleMembersData
+	]);
 	let insets = useSafeAreaInsets();
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
@@ -206,27 +222,23 @@ export default function Page() {
 							/>
 							<StyledView className='w-full flex items-center justify-center'>
 								<Button
-									btnStyles='bg-offblack border-[8px] border-purple'
+									btnStyles='bg-offblack border-[8px]'
 									height={'h-[120px]'}
 									width={'w-[120px]'}
 									iconSize={70}
-									icon='musical-notes'
-									iconColor='white'
-									href='/mainViewLayout'
+									icon={currentFilterIcon}
+									iconColor={currentFilterIconColor}
+									href='/'
+									borderColor={currentFilterColor}
 								/>
 							</StyledView>
 
 							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
-								Circle Name
+								{currentFilterName}
 							</StyledText>
 							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
 								<StyledText className='text-white text-[14px]'>
-									This is where the description of the circle
-									will go. It will be a short description of
-									the circle that will be displayed to users
-									who are interested in joining. Admins can
-									edit this description by clicking into the
-									box and typing.
+									{currentFilterDescription}
 								</StyledText>
 							</StyledView>
 							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
@@ -309,7 +321,7 @@ export default function Page() {
 						width={'w-[50px]'}
 						iconSize={30}
 						icon='arrow-back'
-						href='/mainViewLayout'
+						href='/'
 					/>
 					<Button // Queue
 						title='Queue: 4'
@@ -343,7 +355,7 @@ export default function Page() {
 								iconSize={60}
 								icon='musical-notes'
 								iconColor='white'
-								href='/mainViewLayout'
+								href='/'
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
@@ -385,11 +397,11 @@ export default function Page() {
 								iconSize={60}
 								icon='musical-notes'
 								iconColor='white'
-								href='/mainViewLayout'
+								href='/'
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Name
+								Circle Namec
 							</StyledText>
 							{/* Database call to remove from Circle  */}
 							<Button
