@@ -13,7 +13,7 @@ const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
 
 const Filter = forwardRef((props, ref) => {
-	const opacity = useRef(new Animated.Value(0)).current;
+	const opacity = useRef(new Animated.Value(props.open ? 1 : 0)).current;
 	const width = Dimensions.get('window').width;
 	const itemSize = 80;
 	const itemMargin = 10;
@@ -41,7 +41,7 @@ const Filter = forwardRef((props, ref) => {
 
 	function toggleShown(toggle) {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-		props.toggleSwiping(!toggle);
+		if (props.toggleSwiping) props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
 			toValue: toggle ? 1 : 0,
 			duration: 200,
@@ -55,14 +55,16 @@ const Filter = forwardRef((props, ref) => {
 
 	return (
 		<>
-			<AnimatedPressable
-				style={backdropOpacityStyle}
-				pointerEvents={props.touchEvents ? 'none' : 'auto'}
-				className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
-				onPress={() => {
-					toggleShown();
-				}}
-			/>
+			{!props.backdropHidden && (
+				<AnimatedPressable
+					style={backdropOpacityStyle}
+					pointerEvents={props.touchEvents ? 'none' : 'auto'}
+					className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
+					onPress={() => {
+						toggleShown();
+					}}
+				/>
+			)}
 			<AnimatedView
 				style={opacityStyle}
 				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center'
@@ -93,6 +95,7 @@ const Filter = forwardRef((props, ref) => {
 								itemSize={itemSize}
 								itemMargin={itemMargin}
 								toggleShown={toggleShown}
+								multiselect={props.multiselect}
 								circles={
 									item.id === 'Gridview' ? props.data : []
 								}

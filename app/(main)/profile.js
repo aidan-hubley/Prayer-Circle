@@ -55,7 +55,7 @@ export default function ProfilePage() {
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
-			let id = i[0];
+			let id = i;
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
 			if (data.user == me) renderedList.push([id, data]);
 		}

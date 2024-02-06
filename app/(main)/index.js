@@ -17,7 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const StyledView = styled(View);
 
 export default function Layout() {
-	const [circles, setCircles] = useState([]);
 	const [swipingEnabled, setSwipingEnabled] = useState(true);
 	const profileRef = useRef();
 	const journalRef = useRef();
@@ -28,20 +27,24 @@ export default function Layout() {
 		filterName,
 		globalReload,
 		filterReload,
+		circles,
 		setGlobalReload,
 		setFilterReload,
 		setUid,
 		setName,
-		setPfp
+		setPfp,
+		setCircles
 	] = useStore((state) => [
 		state.currentFilterName,
 		state.globalReload,
 		state.filterReload,
+		state.circles,
 		state.setGlobalReload,
 		state.setFilterReload,
 		state.setUid,
 		state.setName,
-		state.setPfp
+		state.setPfp,
+		state.setCircles
 	]);
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
@@ -122,11 +125,7 @@ export default function Layout() {
 				}}
 				className='absolute flex flex-row mx-[100px] justify-center z-0'
 			>
-				<Circle
-					circles={circles}
-					toggleSwiping={setSwipingEnabled}
-					filter={filterRef}
-				/>
+				<Circle toggleSwiping={setSwipingEnabled} filter={filterRef} />
 			</StyledView>
 
 			<StyledView
