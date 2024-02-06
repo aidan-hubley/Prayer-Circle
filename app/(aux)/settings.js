@@ -38,6 +38,7 @@ export default function Page() {
 	const cameraRef = useRef(null);
 	const [hiddenPosts, sethiddenPosts] = useState([]);
 	const [handles, setHandles] = useState('');
+	const [snapPoints, setSnapPoints] = useState([]);
 	const [newFName, setNewFName] = useState('');
 	const [newLName, setNewLName] = useState('');
 	const [currentPassword, setCurrentPassword] = useState('');
@@ -52,7 +53,6 @@ export default function Page() {
 	const [deletionName, setDeletionName] = useState('');
 	const [profileImage, setProfileImage] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-	const [snapPoints, setSnapPoints] = useState([]);
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
@@ -359,82 +359,6 @@ export default function Page() {
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
-
-	const handleTOSModalPress = () => {
-        setModalContent('tos');
-		setHandles(handle('Terms of Service'));
-        handlePresentModalPress();
-    };
-
-    const handleUpdProfileInfoModalPress = () => {
-        setModalContent('updProfileInfo');
-		setHandles(handle('Ways to Update Your Profile'));
-        handlePresentModalPress();
-    };
-
-    const handleChangeNameModalPress = () => {
-		setupProfile();
-        setModalContent('changeName');
-		setHandles(handle('Change Name'));
-        handlePresentModalPress();
-    };
-
-    const handlePreviewProfilePicModalPress = () => {
-		setupProfile();
-        setModalContent('previewProfilePic');
-		setHandles(handle('Your Profile Picture'));
-		handlePresentModalPress();
-    };
-
-	const handleUpdateProfilePicModalPress = () => {
-		setModalContent('updateProfilePic');
-		setHandles(handle('Take a Selfie!'));
-		handlePresentModalPress();
-    };
-
-    const handleTimerModalPress = () => {
-        setModalContent('timer');
-		setHandles(handle('Presence Timers'));
-        handlePresentModalPress();
-    };
-
-    const handleReminderInfoButtonPress = () => {
-        setModalContent('reminder');
-		setHandles(handle('Whats a Presence Reminder?'));
-        handlePresentModalPress();
-    };
-
-    const handleHiddenPostsButtonPress = () => {
-        setUpHiddenPosts();		
-        setModalContent('hiddenPosts');
-		setHandles(handle('Hidden Posts'));
-        handlePresentModalPress();
-    };
-
-    const handlePasswordInfoModalPress = () => {
-        setModalContent('passwordInfo');
-		setHandles(handle('How to Change Password', 'bg-[#F9A826]'));
-        handlePresentModalPress();
-    };
-
-    const handleChangePasswordModalPress = () => {
-        setModalContent('password');
-		setHandles(handle('Change Password', 'bg-[#F9A826]'));
-        handlePresentModalPress();
-    };
-
-    const handleEmptyCacheModalPress = () => {
-        setModalContent('emptyCache');
-		setHandles(handle('Empty Cache', 'bg-[#F9A826]'));
-        handlePresentModalPress();
-    };
-
-    const handleEmailButtonPress = () => {
-		setupProfile();
-        setModalContent('changeEmail');
-		setHandles(handle('Change Email', 'bg-[#F9A826]'));
-        handlePresentModalPress();
-    };
 
 	const handleModalPress = 
 	(modalContent, snapPoints, handleText, handleColor, extra = () => {}) => {
@@ -878,7 +802,7 @@ export default function Page() {
 									textColor={'text-offwhite'}
 									borderColor={'border-offwhite'}
 									btnStyles='border-2'
-									press={handleTOSModalPress}
+									press={() => handleModalPress("tos", ['65%', '85%'], "Terms of Service", "")}
 								></Button>
 							</View>
 						</View>
@@ -897,7 +821,7 @@ export default function Page() {
 										iconSize={30}
 										iconColor={'#FFFBFC'}              
 										btnStyles='absolute right-0'                          
-										press={handleUpdProfileInfoModalPress}
+										press={() => handleModalPress("updProfileInfo", ['20%'], "Ways to Update Your Profile", "")}
 									></Button>
 								</StyledView>
 								<StyledView className="flex-row justify-between">
@@ -911,7 +835,7 @@ export default function Page() {
 											bgColor={'bg-transparent'}
 											borderColor={'border-offwhite'}
 											btnStyles='border-2'
-											press={handleChangeNameModalPress}
+											press={() => handleModalPress("changeName", ['65%'], "Change Name", setupProfile()) }
 										/>
 										<View className="w-[10px]" />
 										<Button // TODO: add modal + backend
@@ -922,7 +846,7 @@ export default function Page() {
 											bgColor={'bg-transparent'}
 											borderColor={'border-offwhite'}
 											btnStyles='border-2'
-											press={handlePreviewProfilePicModalPress}
+											press={() => handleModalPress("previewProfilePic", ['65%'], "Your Profile Picture", setupProfile()) }
 										/>
 									</StyledView>
 								</StyledView>
@@ -966,7 +890,7 @@ export default function Page() {
 										iconSize={30}
 										iconColor={'#FFFBFC'}              
 										btnStyles='absolute right-0'                          
-										press={handleTimerModalPress}
+										press={() => handleModalPress("timer", ['45%'], "Presence Timers", "")}
 									></Button>
 								</StyledView>
 								<StyledView className="w-full flex-row justify-between">
@@ -1002,7 +926,7 @@ export default function Page() {
 										iconSize={30}
 										iconColor={'#FFFBFC'}              
 										btnStyles='absolute right-0'                          
-										press={handleReminderInfoButtonPress}
+										press={() => handleModalPress("reminder", ['35%'], "Presence Reminder", "")}
 									></Button>
 								</StyledView>                                
 								<StyledView className="w-[98%] flex-row justify-between">
@@ -1050,7 +974,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={handleHiddenPostsButtonPress}
+								press={() => {handleModalPress("hiddenPosts", ['65%', '85%'], "Hidden Posts", "", setUpHiddenPosts()) }}
 							></Button>
 							</View>
 						</View>
@@ -1070,7 +994,7 @@ export default function Page() {
 										iconSize={30}
 										iconColor={'#FFFBFC'}              
 										btnStyles='absolute right-0'                          
-										press={handlePasswordInfoModalPress}
+										press={() => {handleModalPress("passwordInfo", ['25%', '65%'], "Password Info", "bg-[#F9A826]") }}
 									></Button>
 								</StyledView>                                            
 								<StyledView className='flex-row justify-between'>
@@ -1084,7 +1008,7 @@ export default function Page() {
 											bgColor={'bg-transparent'}
 											borderColor={'border-offwhite'}
 											btnStyles='mr-3 border-2'
-											press={handleChangePasswordModalPress}
+											press={() => {handleModalPress("password", ['65%', '85%'], "Change Password", "bg-[#F9A826]", setupProfile()) }}
 										/>
 										<View className="w-[10px]" />
 										<Button
@@ -1119,7 +1043,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={handleEmptyCacheModalPress}
+								press={() => {handleModalPress("emptyCache", ['35%'], "Empty Cache", "bg-[#F9A826]", setupProfile()) }}
 							></Button>
 							</View>
 						</View>                         
@@ -1140,7 +1064,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={handleEmailButtonPress}
+								press={() => {handleModalPress("changeEmail", ['65%'], "Change Email", "bg-[#F9A826]", setupProfile()) }}
 							></Button>
 							</View>
 						</View>															
@@ -1162,7 +1086,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={() => {handleModalPress("deleteProfile", [], "Delete Profile", "bg-[#CC2500]", setupProfile) }}
+								press={() => {handleModalPress("deleteProfile", ['65%'], "Delete Profile", "bg-[#CC2500]", setupProfile) }}
 							></Button>
 							</View>
 						</View>
@@ -1221,24 +1145,7 @@ export default function Page() {
 			<BottomSheetModal
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={
-					modalContent === 'tos' ? ['65%', '85%'] :
-					modalContent === 'updProfileInfo' ? ['20%'] :
-					modalContent === 'changeName' ? ['65%'] :
-					modalContent === 'previewProfilePic' ? ['65%'] :
-					modalContent === 'updateProfilePic' ? ['65%'] :
-					modalContent === 'timer' ? ['35%', '45%'] :
-					modalContent === 'reminder' ? ['35%'] :
-					modalContent === 'hiddenPosts' ? ['65%', '85%'] :
-					modalContent === 'passwordInfo' ? ['25%', '50%'] :
-					modalContent === 'password' ? ['65%', '85%'] :
-					modalContent === 'emptyCache' ? ['35%'] :
-					modalContent === 'changeEmail' ? ['65%'] :
-					modalContent === 'deleteProfile' ? ['65%'] :
-					modalContent === 'signOut' ? ['20%'] :
-					['65%', '85%']
-				}
-				//snapPoints={SnapPoints(['85%'])} // SPENT 2 HOURS trying to get this to work...  
+				snapPoints={() => snapPoints}  
 				handleComponent={() => handles}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
