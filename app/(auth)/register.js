@@ -360,13 +360,11 @@ async function createUserData(
 	}
 
 	if (!image) return alert('You need to upload a profile picture');
-	let imgURL = await uploadImage(`prayer_circle/users/${username}`, image);
 
 	let userData = {
 		public: {
 			fname: fname,
 			lname: lname,
-			profile_img: imgURL
 		},
 		private: {
 			email: email,
@@ -387,5 +385,5 @@ async function createUserData(
 			termsAgreed: true
 		}
 	};
-	authContext.register(username, email, password, userData);
+	authContext.register(username, email, password, userData, image);
 }
