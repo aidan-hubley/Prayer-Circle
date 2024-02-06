@@ -16,7 +16,7 @@ import { passwordValidation } from '../../backend/functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'; 
 import { sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers';
+import { backdrop, handle, HandleChanges, SnapPoints } from '../../components/BottomSheetModalHelpers';
 import { useAuth } from '../context/auth';
 import { getHiddenPosts, writeData, readData, uploadImage } from '../../backend/firebaseFunctions';
 import { useStore } from '../global'
@@ -360,8 +360,7 @@ export default function Page() {
 		bottomSheetModalRef.current?.present();
 	}, []);
 
-	const handleModalPress = 
-	(modalContent, snapPoints, handleText, handleColor, extra = () => {}) => {
+	const handleModalPress = (modalContent, snapPoints, handleText, handleColor, extra = () => {}) => {
 		extra(); 
 		setModalContent(modalContent); 
 		setSnapPoints(snapPoints); 
@@ -419,21 +418,21 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[85%] items-center'>
-							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current name: {name}</StyledText>
+							<StyledText className='my-3 text-[16px] font-bold text-center text-offwhite'>Your current name: {name}</StyledText>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="New First Name"
 								placeholderTextColor={'#FFFBFC'}
 								value={newFName}
 								onChangeText={setNewFName}
 							/>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="New Last Name"
 								placeholderTextColor={'#FFFBFC'}
 								value={newLName}
 								onChangeText={setNewLName}
-							/>
+							/>							
 							<Button
 								title='Confirm'
 								btnStyles='mt-5'
@@ -467,7 +466,7 @@ export default function Page() {
 							title='Update Profile Picture'
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={handleUpdateProfilePicModalPress}
+							press={() => handleModalPress('updateProfilePic', ['65%', '85%'], 'Update Profile Picture', '')}
 						/>
 					</StyledView>
 				);
@@ -627,7 +626,7 @@ export default function Page() {
 								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
 							</StyledView>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="Current Password"
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
@@ -635,7 +634,7 @@ export default function Page() {
 								onChangeText={setCurrentPassword}
 							/>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="New Password"
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
@@ -643,7 +642,7 @@ export default function Page() {
 								onChangeText={setNewPassword}
 							/>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="Confirm New Password"
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
@@ -694,14 +693,14 @@ export default function Page() {
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: </StyledText>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{email}</StyledText>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="New Email"							
 								placeholderTextColor={'#FFFBFC'}
 								value={newEmail}
 								onChangeText={setNewEmail}
 							/>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="Confirm New Email"
 								placeholderTextColor={'#FFFBFC'}
 								value={confirmEmail}
@@ -730,7 +729,7 @@ export default function Page() {
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Please type out your profile name:</StyledText>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{name}</StyledText>
 							<StyledInput
-								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
+								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 								placeholder="Type your name"
 								placeholderTextColor={'#FFFBFC'}
 								value={deletionName}
@@ -835,7 +834,7 @@ export default function Page() {
 											bgColor={'bg-transparent'}
 											borderColor={'border-offwhite'}
 											btnStyles='border-2'
-											press={() => handleModalPress("changeName", ['65%'], "Change Name", setupProfile()) }
+											press={() => handleModalPress("changeName", ['65%'], "Change Name", "", setupProfile) }
 										/>
 										<View className="w-[10px]" />
 										<Button // TODO: add modal + backend
@@ -846,7 +845,7 @@ export default function Page() {
 											bgColor={'bg-transparent'}
 											borderColor={'border-offwhite'}
 											btnStyles='border-2'
-											press={() => handleModalPress("previewProfilePic", ['65%'], "Your Profile Picture", setupProfile()) }
+											press={() => handleModalPress("previewProfilePic", ['65%'], "Your Profile Picture", "", setupProfile) }
 										/>
 									</StyledView>
 								</StyledView>
@@ -974,7 +973,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={() => {handleModalPress("hiddenPosts", ['65%', '85%'], "Hidden Posts", "", setUpHiddenPosts()) }}
+								press={() => {handleModalPress("hiddenPosts", ['65%', '85%'], "Hidden Posts", "", setUpHiddenPosts) }}
 							></Button>
 							</View>
 						</View>
@@ -994,7 +993,7 @@ export default function Page() {
 										iconSize={30}
 										iconColor={'#FFFBFC'}              
 										btnStyles='absolute right-0'                          
-										press={() => {handleModalPress("passwordInfo", ['25%', '65%'], "Password Info", "bg-[#F9A826]") }}
+										press={() => {handleModalPress("passwordInfo", ['50%'], "Password Info", "bg-[#F9A826]") }}
 									></Button>
 								</StyledView>                                            
 								<StyledView className='flex-row justify-between'>
@@ -1008,7 +1007,7 @@ export default function Page() {
 											bgColor={'bg-transparent'}
 											borderColor={'border-offwhite'}
 											btnStyles='mr-3 border-2'
-											press={() => {handleModalPress("password", ['65%', '85%'], "Change Password", "bg-[#F9A826]", setupProfile()) }}
+											press={() => {handleModalPress("password", ['65%', '85%'], "Change Password", "bg-[#F9A826]", setupProfile) }}
 										/>
 										<View className="w-[10px]" />
 										<Button
@@ -1043,7 +1042,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={() => {handleModalPress("emptyCache", ['35%'], "Empty Cache", "bg-[#F9A826]", setupProfile()) }}
+								press={() => {handleModalPress("emptyCache", ['35%'], "Empty Cache", "bg-[#F9A826]", setupProfile) }}
 							></Button>
 							</View>
 						</View>                         
@@ -1064,7 +1063,7 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'border-white'}
 								btnStyles='border-2'
-								press={() => {handleModalPress("changeEmail", ['65%'], "Change Email", "bg-[#F9A826]", setupProfile()) }}
+								press={() => {handleModalPress("changeEmail", ['65%'], "Change Email", "bg-[#F9A826]", setupProfile) }}
 							></Button>
 							</View>
 						</View>															
@@ -1145,7 +1144,7 @@ export default function Page() {
 			<BottomSheetModal
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={() => snapPoints}  
+				snapPoints={snapPoints}  
 				handleComponent={() => handles}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
