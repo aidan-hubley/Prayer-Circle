@@ -145,8 +145,6 @@ export default function Page() {
 				let me = await AsyncStorage.getItem('user');
 				let imgURL = await uploadImage(`prayer_circle/users/${me}`, photo.uri);
 
-				console.log('imgURL', imgURL);
-
 				setProfileImage(imgURL);
 				writeData(`prayer_circle/users/${me}/public/profile_img`, imgURL , true);
 				await AsyncStorage.setItem("profile_img", imgURL);
@@ -167,10 +165,22 @@ export default function Page() {
 			quality: 0.2
 		});
 
-		if (result.canceled === false && result.assets.length > 0) {
+		if (!result.canceled) {
+			console.log(result);
 			const selectedAsset = result.assets[0];
-			setProfileImage(selectedAsset.uri);
-			uploadImage(selectedAsset.uri, 'profile_img');}
+			console.log(selectedAsset);
+			// TODO: SVG animation here
+			bottomSheetModalRef.current?.dismiss();
+			let me = await AsyncStorage.getItem('user');
+			let imgURL = await uploadImage(`prayer_circle/users/${me}`, selectedAsset);
+
+			setProfileImage(imgURL);
+			writeData(`prayer_circle/users/${me}/public/profile_img`, imgURL , true);
+			await AsyncStorage.setItem("profile_img", imgURL);
+			setPfp(imgURL);
+
+			Alert.alert('Success', 'Profile picture has been updated.');
+		}
 	};
 
 	async function setUpHiddenPosts() {
