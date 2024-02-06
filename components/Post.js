@@ -317,11 +317,13 @@ export const Post = (post) => {
 	// db related functions
 	async function deletePost() {
 		const me = await AsyncStorage.getItem('user');
-		await writeData(
-			`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${post.id}`,
-			null,
-			true
-		);
+		for (let circle of Object.keys(post.data.circles)) {
+			await writeData(
+				`prayer_circle/circles/${circle}/posts/${post.id}`,
+				null,
+				true
+			);
+		}
 		await writeData(
 			`prayer_circle/users/${me}/private/posts/${post.id}`,
 			null,
