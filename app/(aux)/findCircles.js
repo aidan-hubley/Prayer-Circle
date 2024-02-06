@@ -146,11 +146,13 @@ export default function Page() {
 									break;
 								}
 							}
-							let inCircle = await checkIfUserIsInCircle(circle);
-							if (!inCircle) {
-								if (!(adminCode || publicCode)) {
-									alert('No circles have this code.');
-								} else {
+							if (!(adminCode || publicCode)) {
+								alert('No circles have this code.');
+							} else {
+								let inCircle = await checkIfUserIsInCircle(
+									circle
+								);
+								if (!inCircle) {
 									if (adminCode) {
 										addUserToCircle(circle);
 										alert(
@@ -163,9 +165,9 @@ export default function Page() {
 										);
 									}
 									setFilterReload(true);
+								} else {
+									alert('Already in circle.');
 								}
-							} else {
-								alert('Already in circle.');
 							}
 						}
 						this.searchCode.clear();
