@@ -626,7 +626,7 @@ export default function Page() {
 								<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] ml-2"/>
 							</StyledView>
 							<StyledInput
-								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="Current Password"
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
@@ -634,7 +634,7 @@ export default function Page() {
 								onChangeText={setCurrentPassword}
 							/>
 							<StyledInput
-								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="New Password"
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
@@ -642,7 +642,7 @@ export default function Page() {
 								onChangeText={setNewPassword}
 							/>
 							<StyledInput
-								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="Confirm New Password"
 								placeholderTextColor={'#FFFBFC'}
 								secureTextEntry={true}
@@ -693,14 +693,14 @@ export default function Page() {
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current email: </StyledText>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{email}</StyledText>
 							<StyledInput
-								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="New Email"							
 								placeholderTextColor={'#FFFBFC'}
 								value={newEmail}
 								onChangeText={setNewEmail}
 							/>
 							<StyledInput
-								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="Confirm New Email"
 								placeholderTextColor={'#FFFBFC'}
 								value={confirmEmail}
@@ -729,7 +729,7 @@ export default function Page() {
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Please type out your profile name:</StyledText>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>{name}</StyledText>
 							<StyledInput
-								className='w-[85%] bg-offblack text-[18px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+								className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 								placeholder="Type your name"
 								placeholderTextColor={'#FFFBFC'}
 								value={deletionName}
