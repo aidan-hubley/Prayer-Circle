@@ -495,7 +495,7 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[85%] items-center'>
-							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current Name: {name}</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>Your current name: {name}</StyledText>
 							<StyledInput
 								className='mt-5 p-2 w-[80%] border-[1px] border-offwhite rounded-xl text-offwhite'
 								placeholder="New First Name"
