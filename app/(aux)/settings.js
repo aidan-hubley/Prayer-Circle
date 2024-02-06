@@ -67,7 +67,7 @@ export default function Page() {
 		setProfileImage(pfp);
 	}
 
-	const handlePasswordReset = async () => {
+	const PasswordReset = async () => {
 		const user = auth.currentUser;
 		if (user && user.email) {
 			try {
@@ -186,7 +186,7 @@ export default function Page() {
         bottomSheetModalRef.current?.dismiss();
 	};
 
-	const handleChangePassword = async () => {
+	const ChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
 			Alert.alert('Error', 'The new passwords do not match.');
 			return;
@@ -227,7 +227,7 @@ export default function Page() {
 		}
 	};
 
-	const handleChangeEmail = async () => {
+	const ChangeEmail = async () => {
 		if (newEmail !== confirmEmail) {
 			Alert.alert('Error', 'The new emails do not match.');
 			return;
@@ -255,18 +255,18 @@ export default function Page() {
 		Alert.alert('Success', 'Email has been updated to: ' + confirmEmail);
 		bottomSheetModalRef.current?.dismiss();
 
-		auth.signOut();
+		authContext.signOut();
 	};	
 
-	const handleEmptyCache = async () => {
-		AsyncStorage.clear();
+	const EmptyCache = async () => {
+		
+		// TODO: need to only remove bookmars and timers
+		
 		Alert.alert('Success', 'Cache has been emptied.');
 		bottomSheetModalRef.current?.dismiss();
-
-		auth.signOut();
 	};
 
-	const handleDeleteAccount = async () => { // TODO: throughly test this
+	const DeleteAccount = async () => { // TODO: throughly test this
 		if (deletionName !== name) {
 			Alert.alert('Error', 'The name does not match. Deletion name: ' + deletionName + ' Name: ' + name);
 			return;
@@ -353,7 +353,7 @@ export default function Page() {
 
 		bottomSheetModalRef.current?.dismiss();
 
-		auth.signOut();
+		authContext.signOut();
 	};
 
 	const handlePresentModalPress = useCallback(() => {
@@ -625,7 +625,7 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<StyledView className='w-[85%] items-center'>
-							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Notify you when you have spend too much time on Prayer Cirlce</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Get notified when you have spent too much time on Prayer Cirlce</StyledText>
 						</StyledView>
 					</StyledView>
 				);
@@ -684,8 +684,8 @@ export default function Page() {
 								<StyledIcon name='mail' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
 							</StyledView>
 							<StyledText className='mt-3 text-[20px] font-bold text-center text-offwhite'>Password Rules:</StyledText>
-							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Password must contain atleast: </StyledText>
-							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 8 total characters </StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>*Password must contain at least: </StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 8 characters </StyledText>
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 uppercase letter</StyledText>
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 lowercase letter</StyledText>
 							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>- 1 number</StyledText>
@@ -732,7 +732,7 @@ export default function Page() {
 								bgColor={'bg-[#F9A826]'}
 								btnStyles='mt-5'
 								width='w-[70%]'
-								press={handleChangePassword}
+								press={ChangePassword}
 							/>
 						</StyledView>
 					</StyledView>
@@ -753,7 +753,7 @@ export default function Page() {
 								bgColor={'bg-[#F9A826]'}
 								btnStyles='mt-5'
 								width='w-[70%]'
-								press={handleEmptyCache}
+								press={EmptyCache}
 							/>
 						</StyledView>
 					</StyledView>
@@ -789,7 +789,7 @@ export default function Page() {
 								bgColor={'bg-[#F9A826]'}
 								btnStyles='mt-5'
 								width='w-[70%]'
-								press={handleChangeEmail}
+								press={ChangeEmail}
 							/>
 						</StyledView>
 					</StyledView>
@@ -818,7 +818,7 @@ export default function Page() {
 								bgColor={'bg-[#CC2500]'}
 								btnStyles='mt-5'
 								width='w-[70%]'
-								press={handleDeleteAccount}
+								press={DeleteAccount}
 							/>
 						</StyledView>
 					</StyledView>
@@ -1096,7 +1096,7 @@ export default function Page() {
 											iconSize={26}
 											iconColor={'#FFFBFC'}
 											btnStyles='border-2'
-											press={handlePasswordReset}
+											press={PasswordReset}
 										/>
 									</StyledView>
 								</StyledView>
