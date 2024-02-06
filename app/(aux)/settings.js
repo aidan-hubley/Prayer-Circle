@@ -483,7 +483,7 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey items-center text-offwhite'>
 						<StyledView className='w-[85%] items-center'>
-							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>You can update you First and Last name!</StyledText>
+							<StyledText className='mt-3 text-[16px] font-bold text-center text-offwhite'>You can update your First and Last name!</StyledText>
 							<StyledView className='flex-row justify-center pt-3'>
 								<StyledText className='mt-1 text-[16px] font-bold text-center text-offwhite'>Update your Profile Picture!</StyledText>
 								<StyledIcon name='camera' size={30} color="#FFFBFC" className="w-[30px] h-[30px] ml-2"/>
