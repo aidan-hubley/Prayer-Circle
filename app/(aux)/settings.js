@@ -34,6 +34,7 @@ const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 	const [type, setType] = useState(CameraType.front);
+	const [advancedSettings, setAdvancedSettings] = useState(true);
 	const [flashMode, setFlashMode] = useState('off');
 	const cameraRef = useRef(null);
 	const [hiddenPosts, sethiddenPosts] = useState([]);
@@ -383,6 +384,10 @@ export default function Page() {
 
 	const highlightPosition = {
 		left: selectedReminderInter
+	};
+
+	const toggleAdvancedSettings = () => {
+		setAdvancedSettings(!advancedSettings);
 	};
 
     const renderContent = () => {
@@ -875,87 +880,87 @@ export default function Page() {
 							</View>
 						</View>
 						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className="flex-row mt-5 px-5">
-							<View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
-								<StyledView className="flex-row pb-5 w-full">
-									<Text className="text-lg text-offwhite pr-1">
-										Presence Timers
-									</Text>
-									<Button
-										icon='menu'
-										width={'w-[30px]'}
-										height={'h-[30px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}              
-										btnStyles='absolute right-0'                          
-										press={() => handleModalPress("timer", ['45%'], "Presence Timers", "")}
-									></Button>
-								</StyledView>
-								<StyledView className="w-full flex-row justify-between">
-									<StyledView className="flex-row">
-										<StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
-										<Toggle onToggleStateChange={handleToggleDaily} /> 
-										{/* toggle={true} if local storage is true */}
+							<View className="flex-row mt-3 px-5">
+								<View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
+									<StyledView className="flex-row pb-5 w-full">
+										<Text className="text-lg text-offwhite pr-1">
+											Presence Timers
+										</Text>
+										<Button
+											icon='menu'
+											width={'w-[30px]'}
+											height={'h-[30px]'}
+											bgColor={'bg-transparent'}
+											iconSize={30}
+											iconColor={'#FFFBFC'}              
+											btnStyles='absolute right-0'                          
+											press={() => handleModalPress("timer", ['45%'], "Presence Timers", "")}
+										></Button>
 									</StyledView>
-									<StyledView className="flex-row">
-										<StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
-										<Toggle onToggleStateChange={handleToggleWeekly} />
-										{/* toggle={true} if local storage is true */}
+									<StyledView className="w-full flex-row justify-between">
+										<StyledView className="flex-row">
+											<StyledImage source={require('../../assets/timers/calendar-day.png')} className="w-[30px] h-[30px] mr-2"/>
+											<Toggle onToggleStateChange={handleToggleDaily} /> 
+											{/* toggle={true} if local storage is true */}
+										</StyledView>
+										<StyledView className="flex-row">
+											<StyledImage source={require('../../assets/timers/calendar-week.png')} className="w-[30px] h-[30px] mr-2"/>
+											<Toggle onToggleStateChange={handleToggleWeekly} />
+											{/* toggle={true} if local storage is true */}
+										</StyledView>
+										<StyledView className="flex-row">
+											<StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
+											<Toggle onToggleStateChange={handleToggleInfinite} />
+											{/* toggle={true} if local storage is true */}
+										</StyledView>
 									</StyledView>
-									<StyledView className="flex-row">
-										<StyledIcon name="infinite" size={30} color="#FFFBFC" className="w-[30px] h-[30px] mr-2"/>
-										<Toggle onToggleStateChange={handleToggleInfinite} />
-										{/* toggle={true} if local storage is true */}
+								</View>
+							</View>      
+							<View className="flex-row mt-3 px-5">
+								<View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
+									<StyledView className="flex-row pb-5 w-full">
+										<Text className="text-lg text-offwhite pr-1">
+											Presence Reminder                                                    
+										</Text>
+										<Button
+											icon='information-circle-outline'
+											width={'w-[30px]'}
+											height={'h-[30px]'}
+											bgColor={'bg-transparent'}
+											iconSize={30}
+											iconColor={'#FFFBFC'}              
+											btnStyles='absolute right-0'                          
+											press={() => handleModalPress("reminder", ['35%'], "Presence Reminder", "")}
+										></Button>
+									</StyledView>                                
+									<StyledView className="w-[98%] flex-row justify-between">
+										<StyledAnimatedView
+											style={highlightPosition}
+											className='absolute flex items-center justify-center rounded-full border border-offwhite w-[45px] h-[30px]'
+										></StyledAnimatedView>
+										<StyledOpacity className='' onPress={() => handleReminderPress(0)}>
+											<StyledText className="text-lg text-offwhite top-[1px]">
+												<StyledIcon name="notifications-off-outline" size={22} color="#FFFBFC"/>
+											</StyledText>
+										</StyledOpacity>                            
+										<StyledOpacity className='' onPress={() => handleReminderPress(1)}>
+											<StyledText className="text-lg text-offwhite">15m</StyledText>
+										</StyledOpacity>
+										<StyledOpacity className='' onPress={() => handleReminderPress(2)}>
+											<StyledText className="text-lg text-offwhite">30m</StyledText>
+										</StyledOpacity>                                    
+										<StyledOpacity className='' onPress={() => handleReminderPress(3)}>
+											<StyledText className="text-lg text-offwhite">1h</StyledText>
+										</StyledOpacity>                                    
+										<StyledOpacity className='' onPress={() => handleReminderPress(4)}>
+											<StyledText className="text-lg text-offwhite">1.5h</StyledText>
+										</StyledOpacity>                                    
+										<StyledOpacity className='' onPress={() => handleReminderPress(5)}>
+											<StyledText className="text-lg text-offwhite">2h</StyledText>
+										</StyledOpacity>                                    
 									</StyledView>
-								</StyledView>
+								</View>
 							</View>
-						</View>      
-						<View className="flex-row mt-5 px-5">
-							<View className="justify-between bg-grey py-3 px-5 w-full rounded-xl">
-								<StyledView className="flex-row pb-5 w-full">
-									<Text className="text-lg text-offwhite pr-1">
-										Presence Reminder                                                    
-									</Text>
-									<Button
-										icon='information-circle-outline'
-										width={'w-[30px]'}
-										height={'h-[30px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}              
-										btnStyles='absolute right-0'                          
-										press={() => handleModalPress("reminder", ['35%'], "Presence Reminder", "")}
-									></Button>
-								</StyledView>                                
-								<StyledView className="w-[98%] flex-row justify-between">
-									<StyledAnimatedView
-										style={highlightPosition}
-										className='absolute flex items-center justify-center rounded-full border border-offwhite w-[45px] h-[30px]'
-									></StyledAnimatedView>
-									<StyledOpacity className='' onPress={() => handleReminderPress(0)}>
-										<StyledText className="text-lg text-offwhite top-[1px]">
-											<StyledIcon name="notifications-off-outline" size={22} color="#FFFBFC"/>
-										</StyledText>
-									</StyledOpacity>                            
-									<StyledOpacity className='' onPress={() => handleReminderPress(1)}>
-										<StyledText className="text-lg text-offwhite">15m</StyledText>
-									</StyledOpacity>
-									<StyledOpacity className='' onPress={() => handleReminderPress(2)}>
-										<StyledText className="text-lg text-offwhite">30m</StyledText>
-									</StyledOpacity>                                    
-									<StyledOpacity className='' onPress={() => handleReminderPress(3)}>
-										<StyledText className="text-lg text-offwhite">1h</StyledText>
-									</StyledOpacity>                                    
-									<StyledOpacity className='' onPress={() => handleReminderPress(4)}>
-										<StyledText className="text-lg text-offwhite">1.5h</StyledText>
-									</StyledOpacity>                                    
-									<StyledOpacity className='' onPress={() => handleReminderPress(5)}>
-										<StyledText className="text-lg text-offwhite">2h</StyledText>
-									</StyledOpacity>                                    
-								</StyledView>
-							</View>
-						</View>
 						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />                                    
 						<View className="flex-row items-center mt-5 px-5">
 							<View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
@@ -978,117 +983,146 @@ export default function Page() {
 							</View>
 						</View>
 						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />  
-						<View className="flex-row mt-5 px-5">
-							<View className="justify-between bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
-								<StyledView className="flex-row pb-5 w-full">
-									<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-									<Text className="text-lg text-offwhite">
-										Change Password
-									</Text>
-									<Button
-										icon='information-circle-outline'
-										width={'w-[30px]'}
-										height={'h-[30px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}              
-										btnStyles='absolute right-0'                          
-										press={() => {handleModalPress("passwordInfo", ['50%'], "Password Info", "bg-[#F9A826]") }}
-									></Button>
-								</StyledView>                                            
-								<StyledView className='flex-row justify-between'>
-									<StyledView className="w-full justify-between flex-row">
-										<Button
-											title='Change Password'
-											textColor={'text-offwhite'}
-											textStyles='font-normal'
-											width={'flex-1'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'border-offwhite'}
-											btnStyles='mr-3 border-2'
-											press={() => {handleModalPress("password", ['65%', '85%'], "Change Password", "bg-[#F9A826]", setupProfile) }}
-										/>
-										<View className="w-[10px]" />
-										<Button
-											icon='mail'
-											width={'w-[65px]'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'border-offwhite'}
-											iconSize={26}
-											iconColor={'#FFFBFC'}
-											btnStyles='border-2'
-											press={PasswordReset}
-										/>
-									</StyledView>
-								</StyledView>
-							</View>
-						</View>         
+
 						<View className="flex-row items-center mt-5 px-5">
-							<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
-								<StyledView className='flex-row'>
-									<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+							<View className="flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl">
+								<StyledView className='flex-row'>									
+									{/* <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/> */}
 									<Text className="mr-3 text-lg text-offwhite">
-										Empty Cache
+										Advanced Settings: 
 									</Text>
 								</StyledView>
-							<Button
-								icon='sync'
-								iconColor={'#FFFBFC'}
-								iconSize={26}
-								width={'w-[65px]'}
-								height={'h-[35px]'}
-								bgColor={'bg-transparent'}
-								borderColor={'border-white'}
-								btnStyles='border-2'
-								press={() => {handleModalPress("emptyCache", ['35%'], "Empty Cache", "bg-[#F9A826]", setupProfile) }}
-							></Button>
-							</View>
-						</View>                         
-						<View className="flex-row items-center mt-5 px-5">
-							<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
-								<StyledView className='flex-row'>
-									<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
-									<Text className="mr-3 text-lg text-offwhite">
-										Change Email
-									</Text>
-								</StyledView>
-							<Button
-								icon='create-outline'
-								iconColor={'#FFFBFC'}
-								iconSize={26}
-								width={'w-[65px]'}
-								height={'h-[35px]'}
-								bgColor={'bg-transparent'}
-								borderColor={'border-white'}
-								btnStyles='border-2'
-								press={() => {handleModalPress("changeEmail", ['65%'], "Change Email", "bg-[#F9A826]", setupProfile) }}
-							></Button>
-							</View>
-						</View>															
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className="flex-row items-center mt-5 px-5">
-							<View className="flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl">
-								<StyledView className='flex-row'>
-									<StyledIcon name='skull-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
-									<Text className="mr-3 text-lg text-offwhite">
-										Delete Profile
-									</Text>
-								</StyledView>
-							<Button
-								icon='trash-outline'
-								iconColor={'#FFFBFC'}
-								iconSize={26}
-								width={'w-[65px]'}
-								height={'h-[35px]'}
-								bgColor={'bg-transparent'}
-								borderColor={'border-white'}
-								btnStyles='border-2'
-								press={() => {handleModalPress("deleteProfile", ['65%'], "Delete Profile", "bg-[#CC2500]", setupProfile) }}
-							></Button>
+								<Button
+									icon={advancedSettings ? 'chevron-down-outline' : 'chevron-up-outline'}
+									width={'w-[65px]'}
+									height={'h-[35px]'}
+									bgColor={'bg-transparent'}
+									iconSize={30}
+									iconColor={'#F9A826'}              
+									btnStyles='border-2'  
+									borderColor={'border-yellow'}                        
+									press={() => toggleAdvancedSettings()}
+								></Button>
 							</View>
 						</View>
+
+						{advancedSettings ? (
+							<></>
+						) : (
+							<>
+								<View className="flex-row mt-5 px-5">
+									<View className="justify-between bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+										<StyledView className="flex-row pb-5 w-full">
+											<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+											<Text className="text-lg text-offwhite">
+												Change Password
+											</Text>
+											<Button
+												icon='information-circle-outline'
+												width={'w-[30px]'}
+												height={'h-[30px]'}
+												bgColor={'bg-transparent'}
+												iconSize={30}
+												iconColor={'#FFFBFC'}              
+												btnStyles='absolute right-0'                          
+												press={() => {handleModalPress("passwordInfo", ['50%'], "Password Info", "bg-[#F9A826]") }}
+											></Button>
+										</StyledView>                                            
+										<StyledView className='flex-row justify-between'>
+											<StyledView className="w-full justify-between flex-row">
+												<Button
+													title='Change Password'
+													textColor={'text-offwhite'}
+													textStyles='font-normal'
+													width={'flex-1'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'border-offwhite'}
+													btnStyles='mr-3 border-2'
+													press={() => {handleModalPress("password", ['65%', '85%'], "Change Password", "bg-[#F9A826]", setupProfile) }}
+												/>
+												<View className="w-[10px]" />
+												<Button
+													icon='mail'
+													width={'w-[65px]'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'border-offwhite'}
+													iconSize={26}
+													iconColor={'#FFFBFC'}
+													btnStyles='border-2'
+													press={PasswordReset}
+												/>
+											</StyledView>
+										</StyledView>
+									</View>
+								</View>         
+								<View className="flex-row items-center mt-5 px-5">
+									<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+										<StyledView className='flex-row'>
+											<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+											<Text className="mr-3 text-lg text-offwhite">
+												Empty Cache
+											</Text>
+										</StyledView>
+									<Button
+										icon='sync'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+										press={() => {handleModalPress("emptyCache", ['35%'], "Empty Cache", "bg-[#F9A826]", setupProfile) }}
+									></Button>
+									</View>
+								</View>                         
+								<View className="flex-row items-center mt-5 px-5">
+									<View className="flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl">
+										<StyledView className='flex-row'>
+											<StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/>
+											<Text className="mr-3 text-lg text-offwhite">
+												Change Email
+											</Text>
+										</StyledView>
+									<Button
+										icon='create-outline'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+										press={() => {handleModalPress("changeEmail", ['65%'], "Change Email", "bg-[#F9A826]", setupProfile) }}
+									></Button>
+									</View>
+								</View>															
+								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+								<View className="flex-row items-center mt-5 px-5">
+									<View className="flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl">
+										<StyledView className='flex-row'>
+											<StyledIcon name='skull-outline' size={30} color="#CC2500" className="w-[30px] h-[30px] mr-2"/>
+											<Text className="mr-3 text-lg text-offwhite">
+												Delete Profile
+											</Text>
+										</StyledView>
+									<Button
+										icon='trash-outline'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-white'}
+										btnStyles='border-2'
+										press={() => {handleModalPress("deleteProfile", ['65%'], "Delete Profile", "bg-[#CC2500]", setupProfile) }}
+									></Button>
+									</View>
+								</View>
+							</>
+						)}
 						<View className="relative pb-[75px]"></View>
 					</StyledView>
 				</ScrollView>
