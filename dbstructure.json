@@ -21,6 +21,9 @@
 							}
 						}
 					},
+					"pending_circles": {
+						"_pushId_": true
+					},
 					"reactions": {
 						"_pushId_": true
 					},
@@ -88,6 +91,9 @@
 					"_uid_": true
 				},
 				"owner": "_uid_",
+				"awaitingEntry": {
+					"_uid_": true
+				},
 				"codes": {
 					"admin": 12345678,
 					"public": 12345678

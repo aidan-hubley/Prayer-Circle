@@ -46,7 +46,7 @@ export default function FeedPage() {
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
-			let id = i[0];
+			let id = i;
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
 			if (data.hidden && data.hidden[`${me}`]) {
 				continue;
@@ -63,6 +63,7 @@ export default function FeedPage() {
 	}, [filterTarget]);
 	useEffect(() => {
 		if (globalReload) {
+			setRefreshing(true);
 			setUpFeed();
 		}
 	}, [globalReload]);
@@ -160,7 +161,6 @@ export default function FeedPage() {
 						/>
 					)}
 					keyExtractor={(item) => item[0]}
-					extraData={refreshing}
 				/>
 			</StyledView>
 
@@ -172,7 +172,6 @@ export default function FeedPage() {
 				className='absolute w-screen'
 				colors={['#121212ee', 'transparent']}
 			/>
-			<StatusBar barStyle={'light-content'} />
 		</StyledView>
 	);
 }

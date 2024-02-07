@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Text,
 	View,
@@ -20,7 +20,6 @@ import shorthash from 'shorthash';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledImage = styled(Image);
 const StyledGradient = styled(LinearGradient);
 
 export default function ProfilePage() {
@@ -33,7 +32,7 @@ export default function ProfilePage() {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [profileImage, setProfileImage] = useState(false);
-	const globalReload = useStore((state) => state.globalReload);
+	const [globalReload, pfp] = useStore((state) => [state.globalReload, state.pfp]);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -45,7 +44,6 @@ export default function ProfilePage() {
 		setName(gn);
 		let ge = await AsyncStorage.getItem('email');
 		setEmail(ge);
-		let pfp = await AsyncStorage.getItem('profile_img');
 		setProfileImage(pfp);
 		setInitialLoad('loaded');
 	};
@@ -56,7 +54,7 @@ export default function ProfilePage() {
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
-			let id = i[0];
+			let id = i;
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
 			if (data.user == me) renderedList.push([id, data]);
 		}
@@ -72,6 +70,9 @@ export default function ProfilePage() {
 			setUpFeed();
 		}
 	}, [globalReload]);
+	useEffect(() => {
+		setProfileImage(pfp);
+	}, [pfp])
 
 	let insets = useSafeAreaInsets();
 	return (
@@ -136,7 +137,6 @@ export default function ProfilePage() {
 										width: '100%',
 										height: '100%',
 										borderRadius: 18,
-										backgroundColor: 'red',
 										display: profileImage ? 'flex' : 'none'
 									}}
 									source={{
@@ -150,9 +150,9 @@ export default function ProfilePage() {
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 							{name}
 						</StyledText>
-						<StyledText className=' text-offwhite text-[18px]'>
+						{/* <StyledText className=' text-offwhite text-[18px]'>
 							{email}
-						</StyledText>
+						</StyledText> */}
 					</StyledView>
 				}
 				ListFooterComponent={
@@ -186,18 +186,7 @@ export default function ProfilePage() {
 					</StyledView>
 				}
 				renderItem={({ item }) => (
-					<Post
-						user={item[1].name}
-						img={item[1].profile_img}
-						title={item[1].title}
-						timestamp={`${item[1].timestamp}`}
-						content={item[1].text}
-						icon={item[1].type}
-						id={item[0]}
-						owned={true}
-						edited={item[1].edited}
-						data={item[1]}
-					/>
+					<></>
 				)}
 				keyExtractor={(item) => item[0]}
 			/>
@@ -222,9 +211,6 @@ export default function ProfilePage() {
 					icon='settings'
 					iconSize={30}
 					href='/settings'
-					press={() => {
-						console.log('press');
-					}}
 				/>
 			</StyledView>
 			<StyledGradient

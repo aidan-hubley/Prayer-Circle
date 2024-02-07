@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useStore = create((set) => ({
 	filter: 'unfiltered',
@@ -10,6 +9,8 @@ export const useStore = create((set) => ({
 	uid: '',
 	name: '',
 	pfp: '',
+	circles: [],
+	addCircles: [],
 	updateFilter: (newVal) => set(() => ({ filter: newVal })),
 	updateFilterName: (newVal) => set(() => ({ currentFilterName: newVal })),
 	setGlobalReload: (newVal) => set(() => ({ globalReload: newVal })),
@@ -17,5 +18,7 @@ export const useStore = create((set) => ({
 	setFilterReload: (newVal) => set(() => ({ filterReload: newVal })),
 	setUid: (newVal) => set(() => ({ uid: newVal })),
 	setName: (newVal) => set(() => ({ name: newVal })),
-	setPfp: (newVal) => set(() => ({ pfp: newVal }))
+	setPfp: (newVal) => set(() => ({ pfp: newVal })),
+	setCircles: (newVal) => set(() => ({ circles: newVal })),
+	setAddCircles: (newVal) => set(() => ({ addCircles: newVal }))
 }));

@@ -122,48 +122,11 @@ export async function createCircle(data) {
 	);
 }
 
-export async function registerUser(username, email, password, data) {
-	await createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			writeData(`prayer_circle/users/${user.uid}`, data, true);
-			writeData(`usernames/${username}`, user.uid, true);
-			loginUser(email, password);
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage);
-		});
-}
-
-export async function loginUser(email, password) {
-	await signInWithEmailAndPassword(auth, email, password)
-		.then(async (userCredential) => {
-			// Signed in
-			const user = userCredential.user;
-			let userData = await readData(`prayer_circle/users/${user.uid}`);
-			console.log('login', userData.public.profile_img);
-			await AsyncStorage.multiSet([
-				['user', user.uid],
-				['name', `${userData.public.fname} ${userData.public.lname}`],
-				['email', user.email],
-				['profile_img', userData.public.profile_img]
-			]);
-
-			router.replace('/mainViewLayout');
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage);
-			alert('Incorrect email or password');
-		});
-}
-
-export async function addUserToCircle(circle) {
-	const UID = await getUIDFromStorage();
+export async function addUserToCircle(circle, uid) {
+	let UID = await getUIDFromStorage();
+	if (arguments.length >= 2) {
+		UID = uid;
+	}
 	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
 	let circlePermissions = {
 		admin: false,
@@ -176,6 +139,16 @@ export async function addUserToCircle(circle) {
 		circlePermissions,
 		true
 	);
+}
+
+export async function addUserToQueue(circle) {
+	const UID = await getUIDFromStorage();
+	writeData(
+		`prayer_circle/circles/${circle}/awaitingEntry/${UID}`,
+		true,
+		true
+	);
+	writeData();
 }
 
 export async function checkUsername(username) {
@@ -196,16 +169,6 @@ export function generateId() {
 	return push(ref(database)).key;
 }
 
-export async function userLoggedIn(onLogIn, onLogOut) {
-	await onAuthStateChanged(auth, (user) => {
-		if (user) {
-			if (onLogIn) onLogIn();
-		} else {
-			if (onLogOut) onLogOut();
-		}
-	});
-}
-
 export async function getCircles() {
 	const UID = await getUIDFromStorage();
 	let circles = Object.keys(
@@ -218,8 +181,7 @@ export async function getFilterCircles() {
 	let circles = await getCircles();
 	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
 
-	for (let i = 0; i < circles.length; i++) {
-		let circle = circles[i];
+	for (const circle of circles) {
 		let circleData =
 			(await readData(`prayer_circle/circles/${circle}`)) || {};
 		let circleStruct = {
@@ -259,7 +221,30 @@ export async function getPosts(circleId) {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
-	return posts;
+
+	let filteredPosts = [];
+	for (let post of posts) {
+		if (filteredPosts.indexOf(post[0]) === -1) {
+			filteredPosts.push(post[0]);
+		}
+	}
+
+	return filteredPosts;
+}
+
+export async function getHiddenPosts() {
+	const UID = await getUIDFromStorage();
+	let hiddenPosts = [];
+	let hiddenPostsIds = await readData(`prayer_circle/users/${UID}/private/hidden_posts`);
+	if (hiddenPostsIds) {
+		// get the posts from their ids, with readData
+		hiddenPostsIds = Object.keys(hiddenPostsIds);
+		for (let i = 0; i < hiddenPostsIds.length; i++) {
+			let post = await readData(`prayer_circle/posts/${hiddenPostsIds[i]}`);
+			hiddenPosts.push([hiddenPostsIds[i], post]);
+		}
+	}
+	return hiddenPosts;
 }
 
 export async function uploadImage(path, uri) {
@@ -276,10 +261,21 @@ export async function uploadImage(path, uri) {
 
 export async function checkIfUserIsInCircle(circle) {
 	const UID = await getUIDFromStorage();
+	let inCircle = false;
 	let withinPerimeter = Object.keys(
 		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
 	);
-	let inCircle = false;
+	for (let i = 0; i < withinPerimeter.length; i++) {
+		if (`${circle}` == withinPerimeter[i]) {
+			inCircle = true;
+			break;
+		}
+	}
+	withinPerimeter = Object.keys(
+		(await readData(
+			`prayer_circle/users/${UID}/private/pending_circles`
+		)) || {}
+	);
 	for (let i = 0; i < withinPerimeter.length; i++) {
 		if (`${circle}` == withinPerimeter[i]) {
 			inCircle = true;

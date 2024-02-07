@@ -3,36 +3,42 @@
 		"name": "Prayer Circle",
 		"scheme": "prayer-circle",
 		"slug": "prayer-circle",
-		"version": "1.0.0",
+		"version": "0.0.1",
 		"orientation": "portrait",
-		"icon": "./assets/Logo_Dark.png",
-		"userInterfaceStyle": "light",
+		"icon": "./assets/Squared_Logo_Dark.png",
+		"userInterfaceStyle": "dark",
 		"splash": {
-			"image": "./assets/Dark_Margin.png",
-			"resizeMode": "contain",
 			"backgroundColor": "#121212"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "com.prayercircle.prayercircle"
+			"bundleIdentifier": "com.prayercircle.prayercircle",
+			"userInterfaceStyle": "dark"
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
+				"foregroundImage": "./assets/Logo_Dark.png",
+				"backgroundColor": "#121212"
 			},
-			"package": "com.prayercircle.prayercircle"
+			"package": "com.prayercircle.prayercircle",
+			"userInterfaceStyle": "dark"
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"
 		},
-		"plugins": ["expo-router"],
 		"extra": {
 			"eas": {
 				"projectId": "ba379de7-859d-424a-a1be-46c133aab81a"
 			}
 		},
-		"owner": "prayer-circle"
+		"owner": "prayer-circle",
+		"runtimeVersion": {
+			"policy": "appVersion"
+		},
+		"updates": {
+			"url": "https://u.expo.dev/ba379de7-859d-424a-a1be-46c133aab81a"
+		},
+		"plugins": ["expo-router"]
 	}
 }
