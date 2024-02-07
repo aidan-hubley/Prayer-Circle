@@ -226,6 +226,25 @@ export async function getPosts(circleId) {
 	return filteredPosts;
 }
 
+export async function getHiddenPosts() {
+	const uid = await getUID();
+	let hiddenPosts = [];
+	let hiddenPostsIds = await readData(
+		`prayer_circle/users/${uid}/private/hidden_posts`
+	);
+	if (hiddenPostsIds) {
+		// get the posts from their ids, with readData
+		hiddenPostsIds = Object.keys(hiddenPostsIds);
+		for (let i = 0; i < hiddenPostsIds.length; i++) {
+			let post = await readData(
+				`prayer_circle/posts/${hiddenPostsIds[i]}`
+			);
+			hiddenPosts.push([hiddenPostsIds[i], post]);
+		}
+	}
+	return hiddenPosts;
+}
+
 export async function uploadImage(path, uri) {
 	let id = generateId();
 	const img = await fetch(uri);

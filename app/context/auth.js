@@ -12,7 +12,11 @@ import React, {
 	useMemo
 } from 'react';
 import { auth } from '../../backend/config';
-import { writeData, readData } from '../../backend/firebaseFunctions';
+import {
+	writeData,
+	readData,
+	uploadImage
+} from '../../backend/firebaseFunctions';
 import {
 	signOut,
 	createUserWithEmailAndPassword,
@@ -114,11 +118,17 @@ export function Provider(props) {
 			});
 	};
 
-	const registerUser = async (username, email, password, data) => {
+	const registerUser = async (username, email, password, data, image) => {
 		await createUserWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
+			.then(async (userCredential) => {
 				// Signed in
 				const user = userCredential.user;
+
+				let imgURL = await uploadImage(
+					`prayer_circle/users/${user.uid}`,
+					image
+				);
+				data.public['profile_img'] = imgURL;
 
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
 				writeData(`usernames/${username}`, user.uid, true);

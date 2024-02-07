@@ -307,11 +307,13 @@ export const Post = (post) => {
 
 	// db related functions
 	async function deletePost() {
-		await writeData(
-			`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/posts/${post.id}`,
-			null,
-			true
-		);
+		for (let circle of Object.keys(post.data.circles)) {
+			await writeData(
+				`prayer_circle/circles/${circle}/posts/${post.id}`,
+				null,
+				true
+			);
+		}
 		await writeData(
 			`prayer_circle/users/${userData.uid}/private/posts/${post.id}`,
 			null,
@@ -326,6 +328,11 @@ export const Post = (post) => {
 	async function hidePost() {
 		writeData(
 			`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
+			true,
+			true
+		);
+		writeData(
+			`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
 			true,
 			true
 		);

@@ -31,9 +31,13 @@ const handle = (title, color) => {
 					color || 'bg-[#dddddd11]'
 				} mb-3`}
 			/>
-			<StyledText className='text-white font-[600] text-[24px] pb-2'>
-				{title}
-			</StyledText>
+			{title ? (
+				<StyledText className='text-white font-[600] text-[24px] pb-2'>
+					{title}
+				</StyledText>
+			) : (
+				<></>
+			)}
 		</StyledView>
 	);
 };

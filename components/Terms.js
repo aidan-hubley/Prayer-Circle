@@ -2,7 +2,6 @@ import { Text, View, ScrollView } from 'react-native';
 import React, { forwardRef } from 'react';
 import { styled } from 'nativewind';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Modal from 'react-native-modal';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);

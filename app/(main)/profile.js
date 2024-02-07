@@ -131,7 +131,6 @@ export default function ProfilePage() {
 										width: '100%',
 										height: '100%',
 										borderRadius: 18,
-										backgroundColor: 'red',
 										display: userData.photoURL
 											? 'flex'
 											: 'none'
@@ -147,9 +146,9 @@ export default function ProfilePage() {
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
 							{userData.displayName}
 						</StyledText>
-						<StyledText className=' text-offwhite text-[18px]'>
+						{/* <StyledText className=' text-offwhite text-[18px]'>
 							{userData.email}
-						</StyledText>
+						</StyledText> */}
 					</StyledView>
 				}
 				ListFooterComponent={
@@ -182,20 +181,7 @@ export default function ProfilePage() {
 						</StyledText>
 					</StyledView>
 				}
-				renderItem={({ item }) => (
-					<Post
-						user={item[1].name}
-						img={item[1].profile_img}
-						title={item[1].title}
-						timestamp={`${item[1].timestamp}`}
-						content={item[1].text}
-						icon={item[1].type}
-						id={item[0]}
-						owned={true}
-						edited={item[1].edited}
-						data={item[1]}
-					/>
-				)}
+				renderItem={({ item }) => <></>}
 				keyExtractor={(item) => item[0]}
 			/>
 			<StyledView
