@@ -72,15 +72,15 @@ export default function Page() {
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [deletionName, setDeletionName] = useState('');
 	const [modalContent, setModalContent] = useState(null);
-	const [userData, setUserData] = useState(auth.currentUser);
+	const [userData, setUserData] = useState(auth?.currentUser);
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
 
 	const PasswordReset = async () => {
-		if (userData && userData.email) {
+		if (userData && userData?.email) {
 			try {
-				await sendPasswordResetEmail(auth, userData.email);
+				await sendPasswordResetEmail(auth, userData?.email);
 				Alert.alert(
 					'Check your email',
 					'A link to reset your password has been sent to your email address.',
@@ -168,7 +168,7 @@ export default function Page() {
 					photo.uri
 				);
 
-				updateProfile(auth.currentUser, { photoURL: imgURL });
+				updateProfile(auth?.currentUser, { photoURL: imgURL });
 				writeData(
 					`prayer_circle/users/${userData.uid}/public/profile_img`,
 					imgURL,
@@ -199,7 +199,7 @@ export default function Page() {
 				selectedAsset
 			);
 
-			updateProfile(auth.currentUser, { photoURL: imgURL });
+			updateProfile(auth?.currentUser, { photoURL: imgURL });
 			writeData(
 				`prayer_circle/users/${userData.uid}/public/profile_img`,
 				imgURL,
@@ -295,7 +295,7 @@ export default function Page() {
 			`${confirmEmail}`,
 			true
 		);
-		updateProfile(auth.currentUser, { email: confirmEmail });
+		updateProfile(auth?.currentUser, { email: confirmEmail });
 
 		Alert.alert('Success', 'Email has been updated to: ' + confirmEmail);
 		bottomSheetModalRef.current?.dismiss();
@@ -960,7 +960,7 @@ export default function Page() {
 	};
 
 	useEffect(() => {
-		setUserData(auth.currentUser);
+		setUserData(auth?.currentUser);
 	}, [auth]);
 
 	return (

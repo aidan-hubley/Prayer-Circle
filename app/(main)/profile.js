@@ -12,7 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
@@ -31,7 +30,7 @@ export default function ProfilePage() {
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
 	const globalReload = useStore((state) => state.globalReload);
-	const [userData, setUserData] = useState(auth.currentUser);
+	const [userData, setUserData] = useState(auth?.currentUser);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -43,14 +42,13 @@ export default function ProfilePage() {
 	};
 
 	async function populateList(list, start, numOfItems) {
-		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i;
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			if (data.user == me) renderedList.push([id, data]);
+			if (data.user == userData.uid) renderedList.push([id, data]);
 		}
 		setRefreshing(false);
 		setRenderIndex(start + endOfList);
@@ -65,7 +63,7 @@ export default function ProfilePage() {
 		}
 	}, [globalReload]);
 	useEffect(() => {
-		setUserData(auth.currentUser);
+		setUserData(auth?.currentUser);
 	}, [auth]);
 
 	let insets = useSafeAreaInsets();
@@ -124,7 +122,7 @@ export default function ProfilePage() {
 										expiresIn: 2_628_288
 									}}
 								/> */}
-							{userData.photoURL ? (
+							{userData?.photoURL ? (
 								/* TODO: Make this image cached. currently the cached implementation(above) does not refresh when the profileImage state is changed */
 								<Image
 									style={{
@@ -144,7 +142,7 @@ export default function ProfilePage() {
 							)}
 						</StyledView>
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
-							{userData.displayName}
+							{userData?.displayName}
 						</StyledText>
 						{/* <StyledText className=' text-offwhite text-[18px]'>
 							{userData.email}

@@ -174,7 +174,6 @@ export default function Page() {
 							true
 						);
 						for (let circle of addCircles) {
-							console.log(circle);
 							await writeData(
 								`prayer_circle/circles/${circle}/posts/${newPostId}`,
 								now,

@@ -7,7 +7,7 @@ import {
 } from 'firebase/storage';
 
 async function getUID() {
-	return auth.currentUser.uid;
+	return auth?.currentUser?.uid;
 }
 
 export async function readData(path) {
@@ -143,20 +143,6 @@ export async function addUserToQueue(circle) {
 		true
 	);
 	writeData();
-}
-
-export async function checkUsername(username) {
-	let usernames = (await readData(`usernames`)) || {};
-	let taken = false;
-
-	usernames = Object.keys(usernames);
-	usernames.forEach((uName) => {
-		if (!taken && uName.toLowerCase() == username.toLowerCase()) {
-			console.log('username taken', username);
-			taken = true;
-		}
-	});
-	return taken;
 }
 
 export function generateId() {

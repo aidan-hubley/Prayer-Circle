@@ -330,23 +330,17 @@ async function createUserData(
 ) {
 	if (fname.length < 1 || lname.length < 1) return alert('Invalid Name'); // check name length
 
-	/* let approvedEmailProviders = [
-		'gmail.com',
-		'yahoo.com',
-		'outlook.com',
-		'icloud.com',
-		'aol.com'
-	]; */
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	let emailCheck = email.split('@');
-	if (emailCheck.length !== 2) return alert('Invalid Email'); // check email format
-	/* else if (!approvedEmailProviders.includes(emailCheck[1]))
-		return alert('Email provider not supported'); */ // check email provider
+	if (emailCheck.length !== 2 || !emailRegex.test(email))
+		return alert('Invalid Email'); // check email format
 
 	if (!passwordValidation(password)) {
 		return alert(
 			'Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
 		);
 	}
+	if (password !== confirmPassword) return alert('Passwords do not match');
 
 	if (!image) return alert('You need to upload a profile picture');
 

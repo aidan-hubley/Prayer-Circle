@@ -66,7 +66,7 @@ export function Provider(props) {
 			} else if (user && inAuthGroup) {
 				SplashScreen.hideAsync();
 				router.replace(
-					'/'
+					''
 				); /* TODO: fix this to replace the current screen */
 			} else {
 				SplashScreen.hideAsync();
@@ -75,7 +75,7 @@ export function Provider(props) {
 	};
 	useEffect(() => {
 		onAuthStateChanged(auth, async (token) => {
-			if (token && auth.currentUser.emailVerified) {
+			if (token && auth?.currentUser?.emailVerified) {
 				setAuth(true);
 			} else {
 				setAuth(false);
@@ -98,8 +98,8 @@ export function Provider(props) {
 	const login = async (email, password) => {
 		await signInWithEmailAndPassword(auth, email, password)
 			.then(async () => {
-				if (!auth.currentUser.emailVerified) {
-					await sendEmailVerification(auth.currentUser).catch(
+				if (!auth?.currentUser?.emailVerified) {
+					await sendEmailVerification(auth?.currentUser).catch(
 						(err) => {
 							console.error(err);
 						}
@@ -118,7 +118,7 @@ export function Provider(props) {
 			});
 	};
 
-	const registerUser = async (username, email, password, data, image) => {
+	const registerUser = async (email, password, data, image) => {
 		await createUserWithEmailAndPassword(auth, email, password)
 			.then(async (userCredential) => {
 				// Signed in
@@ -131,7 +131,6 @@ export function Provider(props) {
 				data.public['profile_img'] = imgURL;
 
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
-				writeData(`usernames/${username}`, user.uid, true);
 
 				alert(
 					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.'
@@ -140,15 +139,17 @@ export function Provider(props) {
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
-				console.error(errorCode, errorMessage);
+				if (errorCode === 'auth/email-already-in-use') {
+					return alert('Email already in use');
+				} else console.error(errorCode, errorMessage);
 			});
-		await sendEmailVerification(auth.currentUser).catch((err) =>
-			console.error(err)
-		);
-		await updateProfile(auth.currentUser, {
+		await updateProfile(auth?.currentUser, {
 			displayName: data.public.fname + ' ' + data.public.lname,
 			photoURL: data.public.profile_img
 		});
+		await sendEmailVerification(auth?.currentUser).catch((err) =>
+			console.error(err)
+		);
 	};
 
 	useProtectedRoute(user);

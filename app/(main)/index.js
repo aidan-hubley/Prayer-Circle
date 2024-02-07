@@ -18,7 +18,6 @@ const StyledView = styled(View);
 
 export default function Layout() {
 	const [swipingEnabled, setSwipingEnabled] = useState(true);
-	const [uid, setUID] = useState(auth.currentUser.uid);
 	const profileRef = useRef();
 	const journalRef = useRef();
 	const pagerRef = useRef();
@@ -67,9 +66,6 @@ export default function Layout() {
 			}
 		})();
 	}, [filterReload]);
-	useEffect(() => {
-		setUID(auth.currentUser.uid);
-	}, [auth]);
 
 	return (
 		<BottomSheetModalProvider>

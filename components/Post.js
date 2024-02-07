@@ -56,7 +56,7 @@ export const Post = (post) => {
 	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
 	const [type, setType] = useState(post.type);
-	const [userData, setUserData] = useState(auth.currentUser);
+	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
@@ -486,7 +486,7 @@ export const Post = (post) => {
 		setUp(post.id);
 	}, []);
 	useEffect(() => {
-		setUserData(auth.currentUser);
+		setUserData(auth?.currentUser);
 	}, [auth]);
 
 	return (

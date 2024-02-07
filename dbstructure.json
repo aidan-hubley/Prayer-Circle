@@ -3,7 +3,6 @@
 		"users": {
 			"_uid_": {
 				"public": {
-					"username": "Username",
 					"fname": "First Name",
 					"lname": "Last Name",
 					"profile_img": "https://www.gravatar.com/"
