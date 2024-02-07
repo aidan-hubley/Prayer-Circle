@@ -9,6 +9,7 @@ export const useStore = create((set) => ({
 	uid: '',
 	name: '',
 	pfp: '',
+	email: '',
 	circles: [],
 	addCircles: [],
 	updateFilter: (newVal) => set(() => ({ filter: newVal })),
@@ -19,6 +20,7 @@ export const useStore = create((set) => ({
 	setUid: (newVal) => set(() => ({ uid: newVal })),
 	setName: (newVal) => set(() => ({ name: newVal })),
 	setPfp: (newVal) => set(() => ({ pfp: newVal })),
+	setEmail: (newVal) => set(() => ({ email: newVal })),
 	setCircles: (newVal) => set(() => ({ circles: newVal })),
 	setAddCircles: (newVal) => set(() => ({ addCircles: newVal }))
 }));

@@ -17,15 +17,24 @@ import {
 	signOut,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	onAuthStateChanged
+	onAuthStateChanged,
+	sendEmailVerification,
+	updateProfile
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useStore } from '../global';
 
 const AuthContext = createContext(null);
 
 export function Provider(props) {
 	const [user, setAuth] = useState(null);
 	const [authInitialized, setAuthInitialized] = useState(false);
+	const [setUid, setName, setPfp, setEmail] = useStore((state) => [
+		state.setUid,
+		state.setName,
+		state.setPfp,
+		state.setEmail
+	]);
 
 	const useProtectedRoute = (user) => {
 		const segments = useSegments();
@@ -59,7 +68,7 @@ export function Provider(props) {
 				router.replace('/login');
 			} else if (user && inAuthGroup) {
 				SplashScreen.hideAsync();
-				router.push(
+				router.replace(
 					'/'
 				); /* TODO: fix this to replace the current screen */
 			} else {
@@ -68,8 +77,12 @@ export function Provider(props) {
 		}, [user, segments, authInitialized, isNavigationReady]);
 	};
 	useEffect(() => {
-		onAuthStateChanged(auth, (token) => {
-			if (token) {
+		onAuthStateChanged(auth, async (token) => {
+			if (token && auth.currentUser.emailVerified) {
+				setUid(token.uid);
+				setName(token.displayName);
+				setEmail(token.email);
+				setPfp(token.photoURL);
 				setAuth(true);
 			} else {
 				setAuth(false);
@@ -92,27 +105,26 @@ export function Provider(props) {
 	const login = async (email, password) => {
 		await signInWithEmailAndPassword(auth, email, password)
 			.then(async (userCredential) => {
+				if (!auth.currentUser.emailVerified) {
+					sendEmailVerification(auth.currentUser).catch((err) => {
+						console.error(err);
+					});
+					return alert(
+						'Please verify your email before logging in. Check your email for a verification link.'
+					);
+				}
 				// Signed in
 				const user = userCredential.user;
 				let userData = await readData(
 					`prayer_circle/users/${user.uid}`
 				);
 
-				await AsyncStorage.multiSet([
-					['user', user.uid],
-					[
-						'name',
-						`${userData.public.fname} ${userData.public.lname}`
-					],
-					['email', user.email],
-					['profile_img', userData.public.profile_img]
-				]);
 				setAuth(true);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
-				console.log(errorCode, errorMessage);
+				console.error(errorCode, errorMessage);
 				alert('Incorrect email or password');
 			});
 	};
@@ -122,15 +134,26 @@ export function Provider(props) {
 			.then((userCredential) => {
 				// Signed in
 				const user = userCredential.user;
+
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
 				writeData(`usernames/${username}`, user.uid, true);
-				login(email, password);
+
+				alert(
+					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.'
+				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
-				console.log(errorCode, errorMessage);
+				console.error(errorCode, errorMessage);
 			});
+		await sendEmailVerification(auth.currentUser).catch((err) =>
+			console.error(err)
+		);
+		await updateProfile(auth.currentUser, {
+			displayName: data.public.fname + ' ' + data.public.lname,
+			photoURL: data.public.profile_img
+		});
 	};
 
 	useProtectedRoute(user);
