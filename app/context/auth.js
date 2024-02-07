@@ -22,19 +22,12 @@ import {
 	updateProfile
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useStore } from '../global';
 
 const AuthContext = createContext(null);
 
 export function Provider(props) {
 	const [user, setAuth] = useState(null);
 	const [authInitialized, setAuthInitialized] = useState(false);
-	const [setUid, setName, setPfp, setEmail] = useStore((state) => [
-		state.setUid,
-		state.setName,
-		state.setPfp,
-		state.setEmail
-	]);
 
 	const useProtectedRoute = (user) => {
 		const segments = useSegments();
@@ -79,10 +72,6 @@ export function Provider(props) {
 	useEffect(() => {
 		onAuthStateChanged(auth, async (token) => {
 			if (token && auth.currentUser.emailVerified) {
-				setUid(token.uid);
-				setName(token.displayName);
-				setEmail(token.email);
-				setPfp(token.photoURL);
 				setAuth(true);
 			} else {
 				setAuth(false);
@@ -104,21 +93,17 @@ export function Provider(props) {
 
 	const login = async (email, password) => {
 		await signInWithEmailAndPassword(auth, email, password)
-			.then(async (userCredential) => {
+			.then(async () => {
 				if (!auth.currentUser.emailVerified) {
-					sendEmailVerification(auth.currentUser).catch((err) => {
-						console.error(err);
-					});
+					await sendEmailVerification(auth.currentUser).catch(
+						(err) => {
+							console.error(err);
+						}
+					);
 					return alert(
 						'Please verify your email before logging in. Check your email for a verification link.'
 					);
 				}
-				// Signed in
-				const user = userCredential.user;
-				let userData = await readData(
-					`prayer_circle/users/${user.uid}`
-				);
-
 				setAuth(true);
 			})
 			.catch((error) => {

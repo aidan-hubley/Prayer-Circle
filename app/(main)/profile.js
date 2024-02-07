@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
+import { auth } from '../../backend/config';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 
@@ -29,10 +30,8 @@ export default function ProfilePage() {
 	const [renderIndex, setRenderIndex] = useState(0);
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [profileImage, setProfileImage] = useState(false);
 	const globalReload = useStore((state) => state.globalReload);
+	const [userData, setUserData] = useState(auth.currentUser);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -40,12 +39,6 @@ export default function ProfilePage() {
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
 		setPosts(pl);
-		let gn = await AsyncStorage.getItem('name');
-		setName(gn);
-		let ge = await AsyncStorage.getItem('email');
-		setEmail(ge);
-		let pfp = await AsyncStorage.getItem('profile_img');
-		setProfileImage(pfp);
 		setInitialLoad('loaded');
 	};
 
@@ -71,6 +64,9 @@ export default function ProfilePage() {
 			setUpFeed();
 		}
 	}, [globalReload]);
+	useEffect(() => {
+		setUserData(auth.currentUser);
+	}, [auth]);
 
 	let insets = useSafeAreaInsets();
 	return (
@@ -128,7 +124,7 @@ export default function ProfilePage() {
 										expiresIn: 2_628_288
 									}}
 								/> */}
-							{profileImage ? (
+							{userData.photoURL ? (
 								/* TODO: Make this image cached. currently the cached implementation(above) does not refresh when the profileImage state is changed */
 								<Image
 									style={{
@@ -136,10 +132,12 @@ export default function ProfilePage() {
 										height: '100%',
 										borderRadius: 18,
 										backgroundColor: 'red',
-										display: profileImage ? 'flex' : 'none'
+										display: userData.photoURL
+											? 'flex'
+											: 'none'
 									}}
 									source={{
-										uri: profileImage
+										uri: userData.photoURL
 									}}
 								/>
 							) : (
@@ -147,10 +145,10 @@ export default function ProfilePage() {
 							)}
 						</StyledView>
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
-							{name}
+							{userData.displayName}
 						</StyledText>
 						<StyledText className=' text-offwhite text-[18px]'>
-							{email}
+							{userData.email}
 						</StyledText>
 					</StyledView>
 				}
