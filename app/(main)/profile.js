@@ -179,7 +179,20 @@ export default function ProfilePage() {
 						</StyledText>
 					</StyledView>
 				}
-				renderItem={({ item }) => <></>}
+				renderItem={({ item }) => (
+					<Post
+						user={item[1].name}
+						img={item[1].profile_img}
+						title={item[1].title}
+						timestamp={`${item[1].timestamp}`}
+						content={item[1].text}
+						icon={item[1].type}
+						id={item[0]}
+						owned={true}
+						edited={item[1].edited}
+						data={item[1]}
+					/>
+				)}
 				keyExtractor={(item) => item[0]}
 			/>
 			<StyledView
