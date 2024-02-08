@@ -5,7 +5,6 @@ import { PostTypeSelector } from '../../components/PostTypeSelector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import {
 	SafeAreaView,
@@ -151,9 +150,6 @@ export default function Page() {
 						else if (typeSelectedVal == 1) typeSelected = 'request';
 						else if (typeSelectedVal == 2) typeSelected = 'event';
 
-						let uid = await AsyncStorage.getItem('user');
-						let name = await AsyncStorage.getItem('name');
-
 						let circles = {};
 						addCircles.forEach((circle) => {
 							circles[circle] = true;
@@ -178,7 +174,6 @@ export default function Page() {
 							true
 						);
 						for (let circle of addCircles) {
-							console.log(circle);
 							await writeData(
 								`prayer_circle/circles/${circle}/posts/${newPostId}`,
 								now,
