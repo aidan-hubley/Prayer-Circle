@@ -1023,8 +1023,8 @@ export default function Page() {
 								</StyledView>
 								<StyledView className='flex-row justify-between'>
 									<StyledView className='w-full justify-between flex-row'>
-										<Button // TODO: add modal + backend
-											title='Edit Name'
+										<Button
+  											title={`Edit Name: ${userData.displayName}`}
 											textColor={'text-offwhite'}
 											textStyles='font-normal'
 											width={'flex-1'}
@@ -1042,7 +1042,7 @@ export default function Page() {
 											}
 										/>
 										<View className='w-[10px]' />
-										<Button // TODO: add modal + backend
+										<Button
 											icon='camera'
 											iconColor={'#FFFBFC'}
 											width={'w-[65px]'}
