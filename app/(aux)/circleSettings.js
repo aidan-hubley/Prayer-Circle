@@ -15,6 +15,8 @@ import { Member } from '../../components/Member.js';
 import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../global';
+import { readData, writeData } from '../../backend/firebaseFunctions.js';
+import { getDatabase, ref, query, orderByValue, equalTo, get, child } from "firebase/database";
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
@@ -35,19 +37,19 @@ const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 		const [
+		filter,
 		currentFilterName,
 		currentFilterIcon,
 		currentFilterColor,
 		currentFilterDescription,
 		currentFilterIconColor,
-		circleMembersData,
 	] = useStore((state) => [
+		state.filter,
 		state.currentFilterName,
 		state.currentFilterIcon,
 		state.currentFilterColor,
 		state.currentFilterDescription,
 		state.currentFilterIconColor,
-		state.circleMembersData
 	]);
 	let insets = useSafeAreaInsets();
 
@@ -180,14 +182,14 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<BottomSheetFlatList
-							data={dummyData2}
+							data={circleMembersData}
 							renderItem={({ item }) => {
 								return (
 									<MemberQueue
 										name={item.name}
 										username={item.username}
 										img={item.img}
-										last={item.key == dummyData.length}
+										last={item.key == circleMembersData.length}
 									/>
 								);
 							}}
@@ -198,6 +200,82 @@ export default function Page() {
 				return null;
 		}
 	};
+
+	async function makeCircleUserList(circle) {
+		console.log("start makeCircleUserList");
+		console.log("Passed circle: " + circle);
+		let circleMembersData = [];
+		let targetUserList = Object.keys(
+			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
+		);
+		console.log("Target user list " + targetUserList);
+		let keySomething = 1;
+	
+		for (targetUser in targetUserList) {
+	
+			let data = await readData(`prayer_circle/users/${targetUser}/public`) || {};
+			let name = data.fname + " " + data.lname;
+	
+			let username = "";
+			const db = getDatabase();
+			const pathRef = ref(db, 'usernames/');
+			const q = query(pathRef, orderByValue(), equalTo(targetUser));
+
+			get(q)
+			.then((snapshot) => {
+				if (snapshot.exists()) {
+				username = child(snapshot, targetUser).key;
+				console.log('Value found');
+				} else {
+				console.log('Value not found');
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	
+			let role = ""
+				try {
+					role = Object.values(
+					(await readData(`prayer_circle/users/${targetUser}/private/circles/${circle}/role`)) || {}
+				);
+			} catch {
+				if (role == {} || role == null || role == undefined) {
+					role = "member";
+					writeData(`prayer_circle/users/${targetUser}/private/circles/${circle}/role`, role, false);
+				}
+			}
+			let img = Object.values(
+				(await readData(`prayer_circle/users/${targetUser}/public/profile_img`)) || {}
+			);
+
+			keySomething++;
+	
+			circleMembersData.push({
+				key: keySomething.toString(),
+				name: name,
+				username: username,
+				role: role,
+				img: img
+			});
+		}
+	
+		console.log("circleSettingsData: " + circleMembersData);
+		return circleMembersData;
+	}
+
+	let description = null;
+	let circleMembersData = null;
+
+	useEffect(() => {
+
+		(async () => {
+			//read data from db for description using `filter` as the key
+			description = await readData(`prayer_circle/circles/${circle}/description`) || {};
+			circleMembersData = makeCircleUserList(filter);
+			console.log('filter', filter);
+		})();
+	}, [filter])
 
 	return (
 		<BottomSheetModalProvider>
@@ -248,7 +326,7 @@ export default function Page() {
 							</StyledView>
 						</>
 					}
-					data={dummyData}
+					data={circleMembersData}
 					renderItem={({ item }) => {
 						return (
 							<Member
@@ -256,7 +334,7 @@ export default function Page() {
 								username={item.username}
 								role={item.role}
 								img={item.img}
-								last={item.key == dummyData.length}
+								last={item.key == circleMembersData.length}
 							/>
 						);
 					}}
@@ -353,13 +431,14 @@ export default function Page() {
 								height={'h-[90px]'}
 								width={'w-[90px]'}
 								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
+								icon={currentFilterIcon}
+								iconColor={currentFilterIconColor}
 								href='/'
+								borderColor={currentFilterColor}
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Name
+								{currentFilterName}
 							</StyledText>
 							{/* Database call to remove from Circle  */}
 							<Button
@@ -395,13 +474,14 @@ export default function Page() {
 								height={'h-[90px]'}
 								width={'w-[90px]'}
 								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
+								icon={currentFilterIcon}
+								iconColor={currentFilterIconColor}
 								href='/'
+								borderColor={currentFilterColor}
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Namec
+								{currentFilterName}
 							</StyledText>
 							{/* Database call to remove from Circle  */}
 							<Button
