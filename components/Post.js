@@ -237,7 +237,7 @@ export const Post = (post) => {
 							placeholderTextColor={'#ffffff40'}
 							inputMode='text'
 							autoCorrect
-							maxLength={21}
+							maxLength={20}
 							defaultValue={editTitle}
 							onChangeText={(text) => {
 								setEditTitle(text);
