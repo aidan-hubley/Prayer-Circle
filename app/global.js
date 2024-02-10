@@ -11,9 +11,6 @@ export const useStore = create((set) => ({
 	globalReload: false,
 	journalReload: false,
 	filterReload: false,
-	uid: '',
-	name: '',
-	pfp: '',
 	circles: [],
 	addCircles: [],
 	setFilter: (newVal) => set(() => ({ filter: newVal })),
@@ -26,9 +23,6 @@ export const useStore = create((set) => ({
 	setGlobalReload: (newVal) => set(() => ({ globalReload: newVal })),
 	setJournalReload: (newVal) => set(() => ({ journalReload: newVal })),
 	setFilterReload: (newVal) => set(() => ({ filterReload: newVal })),
-	setUid: (newVal) => set(() => ({ uid: newVal })),
-	setName: (newVal) => set(() => ({ name: newVal })),
-	setPfp: (newVal) => set(() => ({ pfp: newVal })),
 	setCircles: (newVal) => set(() => ({ circles: newVal })),
 	setAddCircles: (newVal) => set(() => ({ addCircles: newVal }))
 }));
