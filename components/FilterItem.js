@@ -254,8 +254,9 @@ const FilterItem = forwardRef((props, ref) => {
 						]}
 						className='justify-center'
 						onPress={() => {
-							bottomSheetModalRef.current.present();
 							props.toggleShown();
+							updateFilter();
+							updateFilterName('Prayer Circle');
 						}}
 					>
 						<StyledView className='flex items-center justify-center'>

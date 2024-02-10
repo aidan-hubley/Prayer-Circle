@@ -121,7 +121,7 @@ export default function Layout() {
 				className='absolute mx-[85px]'
 			>
 				<Button
-					title={filterName}
+					title={filterName || 'Prayer Circle'}
 					height='h-[50]'
 					width='w-full'
 					href='/circleSettings'
