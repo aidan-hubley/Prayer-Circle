@@ -12,8 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useStore } from '../global';
+import { auth } from '../../backend/config';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -26,14 +26,14 @@ export default function FeedPage() {
 	const [renderIndex, setRenderIndex] = useState(0);
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
-	const [me, setMe] = useState('');
-	const filterTarget = useStore((state) => state.filter);
-	const globalReload = useStore((state) => state.globalReload);
+	const [uid, setUid] = useState(auth?.currentUser?.uid);
+	const [filterTarget, globalReload] = useStore((state) => [
+		state.filter,
+		state.globalReload
+	]);
 
 	async function setUpFeed() {
 		setRenderIndex(0);
-		let gm = await AsyncStorage.getItem('user');
-		setMe(gm);
 		let gp = await getPosts(filterTarget);
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 12);
@@ -41,14 +41,13 @@ export default function FeedPage() {
 		setInitialLoad('loaded');
 	}
 	async function populateList(list, start, numOfItems) {
-		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i;
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			if (data.hidden && data.hidden[`${me}`]) {
+			if (data.hidden && data.hidden[`${uid}`]) {
 				continue;
 			}
 			renderedList.push([id, data]);
@@ -67,6 +66,9 @@ export default function FeedPage() {
 			setUpFeed();
 		}
 	}, [globalReload]);
+	useEffect(() => {
+		setUid(auth?.currentUser?.uid);
+	}, [auth]);
 
 	let insets = useSafeAreaInsets();
 
@@ -154,7 +156,7 @@ export default function FeedPage() {
 							content={item[1].text}
 							icon={item[1].type}
 							id={item[0]}
-							ownedToolBar={item[1].user == me}
+							ownedToolBar={item[1].user == uid}
 							edited={item[1].edited}
 							comments={item[1].comments}
 							data={item[1]}

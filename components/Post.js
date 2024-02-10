@@ -1,10 +1,4 @@
-import React, {
-	useState,
-	useRef,
-	useEffect,
-	useMemo,
-	useCallback
-} from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
 	Text,
 	View,
@@ -23,11 +17,7 @@ import { timeSince } from '../backend/functions';
 import { writeData, readData, generateId } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
-import {
-	BottomSheetModal,
-	BottomSheetFlatList,
-	BottomSheetBackdrop
-} from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useStore } from '../app/global';
 /* import { PostTypeSelector } from './PostTypeSelector'; */
@@ -35,6 +25,7 @@ import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
+import { auth } from '../backend/config';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -51,7 +42,6 @@ export const Post = (post) => {
 	const [iconType, setIconType] = useState(`${post.icon}_outline`);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
-	const [me, setMe] = useState('');
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
@@ -66,6 +56,7 @@ export const Post = (post) => {
 	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
 	const [type, setType] = useState(post.type);
+	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
@@ -316,7 +307,6 @@ export const Post = (post) => {
 
 	// db related functions
 	async function deletePost() {
-		const me = await AsyncStorage.getItem('user');
 		for (let circle of Object.keys(post.data.circles)) {
 			await writeData(
 				`prayer_circle/circles/${circle}/posts/${post.id}`,
@@ -325,7 +315,7 @@ export const Post = (post) => {
 			);
 		}
 		await writeData(
-			`prayer_circle/users/${me}/private/posts/${post.id}`,
+			`prayer_circle/users/${userData.uid}/private/posts/${post.id}`,
 			null,
 			true
 		);
@@ -336,8 +326,16 @@ export const Post = (post) => {
 	}
 
 	async function hidePost() {
-		writeData(`prayer_circle/posts/${post.id}/hidden/${me}`, true, true);
-		writeData(`prayer_circle/users/${me}/private/hidden_posts/${post.id}`, true, true);
+		writeData(
+			`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
+			true,
+			true
+		);
+		writeData(
+			`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
+			true,
+			true
+		);
 		toggleToolbar();
 
 		setGlobalReload(true);
@@ -399,9 +397,6 @@ export const Post = (post) => {
 
 	// post setup
 	const setUp = async (postId) => {
-		let uid = await AsyncStorage.getItem('user');
-		setMe(uid);
-
 		try {
 			// Check if the post ID already exists in AsyncStorage
 			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
@@ -452,15 +447,13 @@ export const Post = (post) => {
 			//prep data
 			let commentId = generateId();
 			let timestamp = Date.now();
-			let displayName = await AsyncStorage.getItem('name');
-			let pfp = await AsyncStorage.getItem('profile_img');
 			let comment = {
 				content: newComment,
 				edited: false,
 				timestamp: timestamp,
-				user: me,
-				username: displayName,
-				profile_img: pfp
+				user: userData.uid,
+				name: userData.displayName,
+				profile_img: userData.photoURL
 			};
 
 			//write data
@@ -470,7 +463,7 @@ export const Post = (post) => {
 				true
 			);
 			await writeData(
-				`prayer_circle/users/${me}/private/comments/${commentId}`,
+				`prayer_circle/users/${userData.uid}/private/comments/${commentId}`,
 				true,
 				true
 			);
@@ -492,6 +485,9 @@ export const Post = (post) => {
 	useEffect(() => {
 		setUp(post.id);
 	}, []);
+	useEffect(() => {
+		setUserData(auth?.currentUser);
+	}, [auth]);
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>

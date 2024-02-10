@@ -1,19 +1,13 @@
-import { database, auth, router, storage } from './config.js';
+import { database, auth, storage } from './config.js';
 import { ref, child, get, push, set } from 'firebase/database';
-import {
-	createUserWithEmailAndPassword,
-	onAuthStateChanged,
-	signInWithEmailAndPassword
-} from 'firebase/auth';
 import {
 	ref as sRef,
 	getDownloadURL,
 	uploadBytesResumable
 } from 'firebase/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-async function getUIDFromStorage() {
-	return await AsyncStorage.getItem('user');
+async function getUID() {
+	return auth?.currentUser?.uid;
 }
 
 export async function readData(path) {
@@ -59,7 +53,7 @@ export async function deleteData(path) {
 }
 
 export async function createCircle(data) {
-	const UID = await getUIDFromStorage();
+	let uid = await getUID();
 	let circleId = generateId();
 	let circleCode = '';
 	let divisor = 10;
@@ -71,9 +65,9 @@ export async function createCircle(data) {
 		}
 		circleCode += sectionCode.toString() + '.';
 	}
-	data.members[`${UID}`] = true;
-	data.admin[`${UID}`] = true;
-	data.owner = UID;
+	data.members[`${uid}`] = true;
+	data.admin[`${uid}`] = true;
+	data.owner = uid;
 	data.codes = { admin: 0, public: 0 };
 
 	let circles = Object.keys((await readData(`prayer_circle/circles`)) || {});
@@ -104,9 +98,9 @@ export async function createCircle(data) {
 		}
 	}
 
-	data.members[`${UID}`] = true;
-	data.admin[`${UID}`] = true;
-	data.owner = UID;
+	data.members[`${uid}`] = true;
+	data.admin[`${uid}`] = true;
+	data.owner = uid;
 	let circlePermissions = {
 		admin: true,
 		read: true,
@@ -116,18 +110,18 @@ export async function createCircle(data) {
 
 	writeData(`prayer_circle/circles/${circleId}`, data, true);
 	writeData(
-		`prayer_circle/users/${UID}/private/circles/${circleId}/permissions`,
+		`prayer_circle/users/${uid}/private/circles/${circleId}/permissions`,
 		circlePermissions,
 		true
 	);
 }
 
-export async function addUserToCircle(circle, uid) {
-	let UID = await getUIDFromStorage();
+export async function addUserToCircle(circle, otherUserUID) {
+	let uid = await getUID();
 	if (arguments.length >= 2) {
-		UID = uid;
+		uid = otherUserUID;
 	}
-	writeData(`prayer_circle/circles/${circle}/members/${UID}`, true, true);
+	writeData(`prayer_circle/circles/${circle}/members/${uid}`, true, true);
 	let circlePermissions = {
 		admin: false,
 		read: true,
@@ -135,34 +129,20 @@ export async function addUserToCircle(circle, uid) {
 		owner: false
 	};
 	writeData(
-		`prayer_circle/users/${UID}/private/circles/${circle}/permissions`,
+		`prayer_circle/users/${uid}/private/circles/${circle}/permissions`,
 		circlePermissions,
 		true
 	);
 }
 
 export async function addUserToQueue(circle) {
-	const UID = await getUIDFromStorage();
+	let uid = await getUID();
 	writeData(
-		`prayer_circle/circles/${circle}/awaitingEntry/${UID}`,
+		`prayer_circle/circles/${circle}/awaitingEntry/${uid}`,
 		true,
 		true
 	);
 	writeData();
-}
-
-export async function checkUsername(username) {
-	let usernames = (await readData(`usernames`)) || {};
-	let taken = false;
-
-	usernames = Object.keys(usernames);
-	usernames.forEach((uName) => {
-		if (!taken && uName.toLowerCase() == username.toLowerCase()) {
-			console.log('username taken', username);
-			taken = true;
-		}
-	});
-	return taken;
 }
 
 export function generateId() {
@@ -170,9 +150,9 @@ export function generateId() {
 }
 
 export async function getCircles() {
-	const UID = await getUIDFromStorage();
+	let uid = await getUID();
 	let circles = Object.keys(
-		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
+		(await readData(`prayer_circle/users/${uid}/private/circles`)) || {}
 	);
 	return circles;
 }
@@ -197,13 +177,13 @@ export async function getFilterCircles() {
 }
 
 export async function getPosts(circleId) {
-	const UID = await getUIDFromStorage();
+	let uid = await getUID();
 	let circles = [];
 	let posts = [];
 
 	if (!circleId || circleId == 'unfiltered') {
 		circles = Object.keys(
-			(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
+			(await readData(`prayer_circle/users/${uid}/private/circles`)) || {}
 		);
 	} else {
 		circles.push(circleId);
@@ -233,14 +213,18 @@ export async function getPosts(circleId) {
 }
 
 export async function getHiddenPosts() {
-	const UID = await getUIDFromStorage();
+	const uid = await getUID();
 	let hiddenPosts = [];
-	let hiddenPostsIds = await readData(`prayer_circle/users/${UID}/private/hidden_posts`);
+	let hiddenPostsIds = await readData(
+		`prayer_circle/users/${uid}/private/hidden_posts`
+	);
 	if (hiddenPostsIds) {
 		// get the posts from their ids, with readData
 		hiddenPostsIds = Object.keys(hiddenPostsIds);
 		for (let i = 0; i < hiddenPostsIds.length; i++) {
-			let post = await readData(`prayer_circle/posts/${hiddenPostsIds[i]}`);
+			let post = await readData(
+				`prayer_circle/posts/${hiddenPostsIds[i]}`
+			);
 			hiddenPosts.push([hiddenPostsIds[i], post]);
 		}
 	}
@@ -260,10 +244,10 @@ export async function uploadImage(path, uri) {
 }
 
 export async function checkIfUserIsInCircle(circle) {
-	const UID = await getUIDFromStorage();
+	let uid = await getUID();
 	let inCircle = false;
 	let withinPerimeter = Object.keys(
-		(await readData(`prayer_circle/users/${UID}/private/circles`)) || {}
+		(await readData(`prayer_circle/users/${uid}/private/circles`)) || {}
 	);
 	for (let i = 0; i < withinPerimeter.length; i++) {
 		if (`${circle}` == withinPerimeter[i]) {
@@ -273,7 +257,7 @@ export async function checkIfUserIsInCircle(circle) {
 	}
 	withinPerimeter = Object.keys(
 		(await readData(
-			`prayer_circle/users/${UID}/private/pending_circles`
+			`prayer_circle/users/${uid}/private/pending_circles`
 		)) || {}
 	);
 	for (let i = 0; i < withinPerimeter.length; i++) {

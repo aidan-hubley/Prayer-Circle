@@ -13,11 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
-import {
-	checkUsername,
-	registerUser,
-	uploadImage
-} from '../../backend/firebaseFunctions';
+import { uploadImage } from '../../backend/firebaseFunctions';
 import { passwordValidation } from '../../backend/functions';
 import Modal from 'react-native-modal';
 import { Camera, CameraType } from 'expo-camera';
@@ -42,9 +38,9 @@ export default function Register() {
 	const [profileImage, setProfileImage] = useState(null);
 	const [fname, setFName] = useState('');
 	const [lname, setLName] = useState('');
-	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
+	const [confirmPass, setConfirmPass] = useState('');
 	const [permission, requestPermission] = Camera.useCameraPermissions();
 	const cameraRef = useRef(null);
 	const authContext = useAuth();
@@ -129,17 +125,6 @@ export default function Register() {
 								</StyledView>
 							</StyledView>
 							<StyledView className='flex flex-col items-center justify-center w-full gap-y-2'>
-								<StyledInput
-									className=' bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-									placeholder={'Username'}
-									placeholderTextColor={'#fff'}
-									inputMode='text'
-									maxLength={30}
-									autoCorrect={false}
-									onChangeText={(text) => {
-										setUsername(text);
-									}}
-								/>
 								<StyledView className='flex flex-row w-11/12'>
 									<StyledInput
 										className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
@@ -186,6 +171,16 @@ export default function Register() {
 										setPass(text);
 									}}
 								/>
+								<StyledInput
+									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+									placeholder={'Confirm Password'}
+									placeholderTextColor={'#fff'}
+									secureTextEntry={true}
+									maxLength={25}
+									onChangeText={(text) => {
+										setConfirmPass(text);
+									}}
+								/>
 							</StyledView>
 						</StyledView>
 						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
@@ -221,11 +216,11 @@ export default function Register() {
 								press={() => {
 									Keyboard.dismiss();
 									createUserData(
-										username,
 										fname,
 										lname,
 										email,
 										pass,
+										confirmPass,
 										profileImage,
 										authContext
 									);
@@ -325,46 +320,34 @@ export default function Register() {
 }
 
 async function createUserData(
-	username,
 	fname,
 	lname,
 	email,
 	password,
+	confirmPassword,
 	image,
 	authContext
 ) {
-	if (username.length < 1) return alert('Invalid Username'); // check username length
-
-	let taken = await checkUsername(username); // check if username is taken
-	if (taken) return alert('Username already taken');
-
 	if (fname.length < 1 || lname.length < 1) return alert('Invalid Name'); // check name length
 
-	let approvedEmailProviders = [
-		'gmail.com',
-		'yahoo.com',
-		'outlook.com',
-		'icloud.com',
-		'aol.com'
-	];
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	let emailCheck = email.split('@');
-	if (emailCheck.length !== 2)
+	if (emailCheck.length !== 2 || !emailRegex.test(email))
 		return alert('Invalid Email'); // check email format
-	else if (!approvedEmailProviders.includes(emailCheck[1]))
-		return alert('Email provider not supported'); // check email provider
 
 	if (!passwordValidation(password)) {
 		return alert(
 			'Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
 		);
 	}
+	if (password !== confirmPassword) return alert('Passwords do not match');
 
 	if (!image) return alert('You need to upload a profile picture');
 
 	let userData = {
 		public: {
 			fname: fname,
-			lname: lname,
+			lname: lname
 		},
 		private: {
 			email: email,
@@ -385,5 +368,5 @@ async function createUserData(
 			termsAgreed: true
 		}
 	};
-	authContext.register(username, email, password, userData, image);
+	authContext.register(email, password, userData, image);
 }

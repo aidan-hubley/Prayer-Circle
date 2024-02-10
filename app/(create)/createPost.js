@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import {
 	SafeAreaView,
@@ -14,6 +13,7 @@ import {
 import { useStore } from '../global';
 import { Filter } from '../../components/Filter';
 import { Ionicons } from '@expo/vector-icons';
+import { auth } from '../../backend/config';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -24,18 +24,14 @@ export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
 	const [time, setTime] = useState('');
+	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [uid, name, circles, setGlobalReload, pfp, addCircles] = useStore(
-		(state) => [
-			state.uid,
-			state.name,
-			state.circles,
-			state.setGlobalReload,
-			state.pfp,
-			state.addCircles
-		]
-	);
+	const [circles, setGlobalReload, addCircles] = useStore((state) => [
+		state.circles,
+		state.setGlobalReload,
+		state.addCircles
+	]);
 	const insets = useSafeAreaInsets();
 
 	const handleSelect = (index) => {
@@ -45,6 +41,10 @@ export default function Page() {
 			setShowDatePicker(false);
 		}
 	};
+
+	useEffect(() => {
+		setUserData(auth.currentUser);
+	}, [auth.currentUser]);
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
@@ -151,18 +151,15 @@ export default function Page() {
 						else if (typeSelectedVal == 1) typeSelected = 'request';
 						else if (typeSelectedVal == 2) typeSelected = 'event';
 
-						let uid = await AsyncStorage.getItem('user');
-						let name = await AsyncStorage.getItem('name');
-
 						let circles = {};
 						addCircles.forEach((circle) => {
 							circles[circle] = true;
 						});
 
 						let newPost = {
-							user: uid,
-							profile_img: pfp,
-							name: name,
+							user: userData.uid,
+							profile_img: userData.photoURL,
+							name: userData.displayName,
 							title: title,
 							text: body,
 							type: typeSelected,
@@ -178,7 +175,6 @@ export default function Page() {
 							true
 						);
 						for (let circle of addCircles) {
-							console.log(circle);
 							await writeData(
 								`prayer_circle/circles/${circle}/posts/${newPostId}`,
 								now,
@@ -186,7 +182,7 @@ export default function Page() {
 							);
 						}
 						writeData(
-							`prayer_circle/users/${uid}/private/posts/${newPostId}`,
+							`prayer_circle/users/${userData.uid}/private/posts/${newPostId}`,
 							now,
 							true
 						).then(() => {
