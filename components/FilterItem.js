@@ -127,6 +127,9 @@ const FilterItem = forwardRef((props, ref) => {
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
 						/>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							Search Circles
+						</StyledText>
 						<StyledIcon
 							name={'search-outline'}
 							size={45}
@@ -161,6 +164,9 @@ const FilterItem = forwardRef((props, ref) => {
 								source={require('../assets/spiral/thin.png')}
 								style={{ width: 80, height: 80 }}
 							/>
+							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+								Gridview
+							</StyledText>
 							<StyledIcon
 								name={'apps-outline'}
 								size={35}
