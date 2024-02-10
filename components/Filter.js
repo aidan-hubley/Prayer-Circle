@@ -61,6 +61,7 @@ const Filter = forwardRef((props, ref) => {
 					pointerEvents={props.touchEvents ? 'none' : 'auto'}
 					className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 					onPress={() => {
+						console.log('backdrop pressed');
 						toggleShown();
 					}}
 				/>
