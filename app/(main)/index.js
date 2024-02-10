@@ -100,6 +100,7 @@ export default function Layout() {
 			</StyledView>
 
 			<Filter
+				index={2}
 				data={circles}
 				ref={filterRef}
 				touchEvents={swipingEnabled}

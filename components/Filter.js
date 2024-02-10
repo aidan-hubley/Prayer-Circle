@@ -6,7 +6,6 @@ import { FilterItem } from './FilterItem';
 /* import { Timer } from './Timer'; */
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { useStore } from '../app/global';
 
 const StyledView = styled(View);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
@@ -14,12 +13,6 @@ const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
 
 const Filter = forwardRef((props, ref) => {
-	const [filter] = useStore((state) => [
-		state.filter,
-	]);
-
-	console.log(filter);
-
 	const opacity = useRef(new Animated.Value(props.open ? 1 : 0)).current;
 	const width = Dimensions.get('window').width;
 	const itemSize = 80;
@@ -60,7 +53,7 @@ const Filter = forwardRef((props, ref) => {
 		toggleShown
 	}));
 
-	return (		
+	return (
 		<>
 			{!props.backdropHidden && (
 				<AnimatedPressable
@@ -93,6 +86,13 @@ const Filter = forwardRef((props, ref) => {
 					snapToInterval={itemSize + itemMargin}
 					decelerationRate={'fast'}
 					contentContainerStyle={{ paddingHorizontal: paddingH }}
+					getItemLayout={(data, index) => ({
+						length: itemSize + itemMargin,
+						offset: (itemSize + itemMargin) * index,
+						index
+					  })}
+					initialScrollIndex={2}
+					// scrollToIndex={2}
 					renderItem={({ item, index }) => {
 						return (
 							<FilterItem

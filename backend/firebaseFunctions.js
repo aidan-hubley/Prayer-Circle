@@ -158,6 +158,7 @@ export async function getCircles() {
 }
 
 export async function getFilterCircles() {
+	// help me force 'addCircles' to be -2 index, 'Gridview' to be -1 index, and 'allCircles' to be the starting point
 	let circles = await getCircles();
 	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' },  { id: 'allCircles' }];
 
