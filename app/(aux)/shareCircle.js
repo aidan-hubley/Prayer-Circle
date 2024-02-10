@@ -39,6 +39,12 @@ const shareCircle = async () => {
 	}
 };
 
+async function getCircleCodes(circle, type) {
+	return (
+		(await readData(`prayer_circle/circles/${circle}/codes/${type}`)) || {}
+	);
+}
+
 export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
@@ -56,12 +62,12 @@ export default function Page() {
 
 	const filterTarget = useStore((state) => state.filter);
 
-	async function obtainCircleCodes(circle) {
-		return (await readData(`prayer_circle/circles/${circle}/codes`)) || {};
-	}
-
-	let circleData = obtainCircleCodes(filterTarget);
-	let publicCode = circleData.public;
+	let publicCode = 0;
+	let fetchCodes = async () => {
+		publicCode = await getCircleCodes(filterTarget, 'public');
+	};
+	fetchCodes();
+	console.log(publicCode);
 
 	return (
 		<StyledView
@@ -92,7 +98,7 @@ export default function Page() {
 								className='px-[5px] font-bold text-3xl text-offblack text-center'
 								onPress={() => shareCircle()}
 							>
-								{publicCode}
+								1234567890
 							</StyledText>
 						</StyledView>
 						<StyledView className='flex-row justify-center items-baseline'>
