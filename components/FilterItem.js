@@ -188,7 +188,7 @@ const FilterItem = forwardRef((props, ref) => {
 					>
 						<StyledView className='flex-1 bg-grey'>
 							<BottomSheetFlatList
-								data={props.circles.slice(2)}
+								data={props.circles.slice(3)}
 								keyExtractor={(item) => item.id}
 								contentContainerStyle={{
 									paddingVertical: 20,
@@ -238,7 +238,7 @@ const FilterItem = forwardRef((props, ref) => {
 					</BottomSheetModal>
 				</>
 			);
-		} else if (props.data.id == 'allCircles') {
+		} else if (props.data.id == 'allCircles') {			
 			return (
 				<>
 					<StyledAnimatedHighlight
@@ -255,7 +255,7 @@ const FilterItem = forwardRef((props, ref) => {
 						className='justify-center'
 						onPress={() => {
 							props.toggleShown();
-							updateFilter();
+							updateFilter('unfiltered');
 							updateFilterName('Prayer Circle');
 						}}
 					>
