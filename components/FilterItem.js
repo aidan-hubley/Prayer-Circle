@@ -165,7 +165,7 @@ const FilterItem = forwardRef((props, ref) => {
 								style={{ width: 80, height: 80 }}
 							/>
 							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
-								Gridview
+								View Circles
 							</StyledText>
 							<StyledIcon
 								name={'apps-outline'}
@@ -236,6 +236,39 @@ const FilterItem = forwardRef((props, ref) => {
 							/>
 						</StyledView>
 					</BottomSheetModal>
+				</>
+			);
+		} else if (props.data.id == 'allCircles') {
+			return (
+				<>
+					<StyledAnimatedHighlight
+						style={[
+							{
+								borderColor: props.data.color,
+								width: props.itemSize,
+								height: props.itemSize,
+								marginHorizontal: props.itemMargin / 2,
+								top: 60
+							},
+							itemStyle
+						]}
+						className='justify-center'
+						onPress={() => {
+							bottomSheetModalRef.current.present();
+							props.toggleShown();
+						}}
+					>
+						<StyledView className='flex items-center justify-center'>
+							<StyledImage
+								className='absolute'
+								source={require('../assets/Dark_Margin.png')}
+								style={{ width: 110, height: 110 }}
+							/>
+							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-10'>
+								All Circles
+							</StyledText>
+						</StyledView>
+					</StyledAnimatedHighlight>
 				</>
 			);
 		} else {

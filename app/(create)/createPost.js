@@ -114,7 +114,7 @@ export default function Page() {
 				</>
 			</KeyboardAwareScrollView>
 
-			<Filter open data={circles.slice(2)} multiselect backdropHidden />
+			<Filter open data={circles.slice(3)} multiselect backdropHidden />
 			<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
 				{/* <Button
 					title='Erase'

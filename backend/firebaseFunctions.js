@@ -159,7 +159,7 @@ export async function getCircles() {
 
 export async function getFilterCircles() {
 	let circles = await getCircles();
-	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
+	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' },  { id: 'allCircles' }];
 
 	for (const circle of circles) {
 		let circleData =
