@@ -12,7 +12,7 @@ import { getFilterCircles } from '../../backend/firebaseFunctions.js';
 import { Filter } from '../../components/Filter.js';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useStore } from '../global.js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../../backend/config.js';
 
 const StyledView = styled(View);
 
@@ -62,12 +62,6 @@ export default function Layout() {
 	const setUp = async () => {
 		let gc = await getFilterCircles();
 		setCircles(gc);
-		let uid = await AsyncStorage.getItem('user');
-		setUid(uid);
-		let name = await AsyncStorage.getItem('name');
-		setName(name);
-		let pfp = await AsyncStorage.getItem('profile_img');
-		setPfp(pfp);
 	};
 
 	useEffect(() => {

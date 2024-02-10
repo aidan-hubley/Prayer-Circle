@@ -12,12 +12,18 @@ import React, {
 	useMemo
 } from 'react';
 import { auth } from '../../backend/config';
-import { writeData, readData } from '../../backend/firebaseFunctions';
+import {
+	writeData,
+	readData,
+	uploadImage
+} from '../../backend/firebaseFunctions';
 import {
 	signOut,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	onAuthStateChanged
+	onAuthStateChanged,
+	sendEmailVerification,
+	updateProfile
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -59,8 +65,8 @@ export function Provider(props) {
 				router.replace('/login');
 			} else if (user && inAuthGroup) {
 				SplashScreen.hideAsync();
-				router.push(
-					'/'
+				router.replace(
+					''
 				); /* TODO: fix this to replace the current screen */
 			} else {
 				SplashScreen.hideAsync();
@@ -68,8 +74,8 @@ export function Provider(props) {
 		}, [user, segments, authInitialized, isNavigationReady]);
 	};
 	useEffect(() => {
-		onAuthStateChanged(auth, (token) => {
-			if (token) {
+		onAuthStateChanged(auth, async (token) => {
+			if (token && auth?.currentUser?.emailVerified) {
 				setAuth(true);
 			} else {
 				setAuth(false);
@@ -91,46 +97,59 @@ export function Provider(props) {
 
 	const login = async (email, password) => {
 		await signInWithEmailAndPassword(auth, email, password)
-			.then(async (userCredential) => {
-				// Signed in
-				const user = userCredential.user;
-				let userData = await readData(
-					`prayer_circle/users/${user.uid}`
-				);
-
-				await AsyncStorage.multiSet([
-					['user', user.uid],
-					[
-						'name',
-						`${userData.public.fname} ${userData.public.lname}`
-					],
-					['email', user.email],
-					['profile_img', userData.public.profile_img]
-				]);
+			.then(async () => {
+				if (!auth?.currentUser?.emailVerified) {
+					await sendEmailVerification(auth?.currentUser).catch(
+						(err) => {
+							console.error(err);
+						}
+					);
+					return alert(
+						'Please verify your email before logging in. Check your email for a verification link.'
+					);
+				}
 				setAuth(true);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
-				console.log(errorCode, errorMessage);
+				console.error(errorCode, errorMessage);
 				alert('Incorrect email or password');
 			});
 	};
 
-	const registerUser = async (username, email, password, data) => {
+	const registerUser = async (email, password, data, image) => {
 		await createUserWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
+			.then(async (userCredential) => {
 				// Signed in
 				const user = userCredential.user;
+
+				let imgURL = await uploadImage(
+					`prayer_circle/users/${user.uid}`,
+					image
+				);
+				data.public['profile_img'] = imgURL;
+
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
-				writeData(`usernames/${username}`, user.uid, true);
-				login(email, password);
+
+				alert(
+					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.'
+				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
-				console.log(errorCode, errorMessage);
+				if (errorCode === 'auth/email-already-in-use') {
+					return alert('Email already in use');
+				} else console.error(errorCode, errorMessage);
 			});
+		await updateProfile(auth?.currentUser, {
+			displayName: data.public.fname + ' ' + data.public.lname,
+			photoURL: data.public.profile_img
+		});
+		await sendEmailVerification(auth?.currentUser).catch((err) =>
+			console.error(err)
+		);
 	};
 
 	useProtectedRoute(user);

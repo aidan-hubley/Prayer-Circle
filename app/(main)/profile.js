@@ -12,9 +12,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
+import { auth } from '../../backend/config';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 
@@ -29,10 +29,8 @@ export default function ProfilePage() {
 	const [renderIndex, setRenderIndex] = useState(0);
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [profileImage, setProfileImage] = useState(false);
 	const globalReload = useStore((state) => state.globalReload);
+	const [userData, setUserData] = useState(auth?.currentUser);
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
@@ -40,24 +38,17 @@ export default function ProfilePage() {
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
 		setPosts(pl);
-		let gn = await AsyncStorage.getItem('name');
-		setName(gn);
-		let ge = await AsyncStorage.getItem('email');
-		setEmail(ge);
-		let pfp = await AsyncStorage.getItem('profile_img');
-		setProfileImage(pfp);
 		setInitialLoad('loaded');
 	};
 
 	async function populateList(list, start, numOfItems) {
-		let me = await AsyncStorage.getItem('user');
 		let renderedList = [];
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
 			let id = i;
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			if (data.user == me) renderedList.push([id, data]);
+			if (data.user == userData.uid) renderedList.push([id, data]);
 		}
 		setRefreshing(false);
 		setRenderIndex(start + endOfList);
@@ -71,6 +62,9 @@ export default function ProfilePage() {
 			setUpFeed();
 		}
 	}, [globalReload]);
+	useEffect(() => {
+		setUserData(auth?.currentUser);
+	}, [auth]);
 
 	let insets = useSafeAreaInsets();
 	return (
@@ -128,18 +122,19 @@ export default function ProfilePage() {
 										expiresIn: 2_628_288
 									}}
 								/> */}
-							{profileImage ? (
+							{userData?.photoURL ? (
 								/* TODO: Make this image cached. currently the cached implementation(above) does not refresh when the profileImage state is changed */
 								<Image
 									style={{
 										width: '100%',
 										height: '100%',
 										borderRadius: 18,
-										backgroundColor: 'red',
-										display: profileImage ? 'flex' : 'none'
+										display: userData.photoURL
+											? 'flex'
+											: 'none'
 									}}
 									source={{
-										uri: profileImage
+										uri: userData.photoURL
 									}}
 								/>
 							) : (
@@ -147,11 +142,11 @@ export default function ProfilePage() {
 							)}
 						</StyledView>
 						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
-							{name}
+							{userData?.displayName}
 						</StyledText>
-						<StyledText className=' text-offwhite text-[18px]'>
-							{email}
-						</StyledText>
+						{/* <StyledText className=' text-offwhite text-[18px]'>
+							{userData.email}
+						</StyledText> */}
 					</StyledView>
 				}
 				ListFooterComponent={

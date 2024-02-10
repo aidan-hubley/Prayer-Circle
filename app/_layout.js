@@ -47,7 +47,9 @@ function RootLayoutNavigation() {
 
 	return (
 		<BottomSheetModalProvider>
-			<Stack screenOptions={{ headerShown: false }}>
+			<Stack
+				screenOptions={{ headerShown: false, gestureEnabled: false }}
+			>
 				<Stack.Screen
 					name='(aux)/circleSettings'
 					options={{ presentation: 'modal' }}
