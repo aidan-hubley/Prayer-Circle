@@ -85,9 +85,7 @@ export default function Page() {
 							<StyledView className='p-[15px] rounded-xl'>
 								<QRCode
 									size={240}
-									value={
-										'Hey, this is a test, it works! - Aidan'
-									} // This is where the circle ID will go
+									value={`${publicCode}`}
 									onPress={() => shareCircle()}
 								/>
 							</StyledView>
