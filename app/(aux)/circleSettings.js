@@ -73,10 +73,7 @@ export default function Page() {
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 	const togglePosition = React.useRef(new Animated.Value(1)).current;
-
-	const Trevor =
-		'https://media.licdn.com/dms/image/C4E03AQEjKbD7qFuQJQ/profile-displayphoto-shrink_200_200/0/1574282480254?e=1701907200&v=beta&t=1BizKLULm5emiKX3xlsRq7twzFTqynOsfTlbRwqNuXI';
-
+	
 	React.useEffect(() => {
 		Animated.timing(togglePosition, {
 			toValue: isEnabled ? 45 : 5,
@@ -84,92 +81,6 @@ export default function Page() {
 			useNativeDriver: false
 		}).start();
 	}, [isEnabled]);
-
-	const dummyData = [
-		{
-			key: '1',
-			name: 'Josh Philips',
-			username: 'JoshuaP.149134',
-			role: 'own',
-			img: Trevor
-		},
-		{
-			key: '2',
-			name: 'Alex Muresan',
-			username: 'muresanCoder.20',
-			role: 'mod',
-			img: Trevor
-		},
-		{
-			key: '3',
-			name: 'Nason Allen',
-			username: 'AllenNasin0987654',
-			role: 'mod',
-			img: Trevor
-		},
-		{
-			key: '4',
-			name: 'Aidan Hubley',
-			username: 'HubleyPraying',
-			role: 'ban',
-			img: Trevor
-		},
-		{
-			key: '5',
-			name: 'Trevor Bunch',
-			username: 'BunchTrevoraccount',
-			role: 'mem',
-			img: Trevor
-		},
-		{
-			key: '6',
-			name: 'Another Account',
-			username: 'ExampleAccount1',
-			role: 'sus',
-			img: Trevor
-		},
-		{
-			key: '7',
-			name: 'Another Account',
-			username: 'ExampleAccount2',
-			role: 'mem',
-			img: Trevor
-		},
-		{
-			key: '8',
-			name: 'Another Account',
-			username: 'ExampleAccount3',
-			role: 'mem',
-			img: Trevor
-		}
-	];
-
-	const dummyData2 = [
-		{
-			key: '1',
-			name: 'Shiela Sunrise',
-			username: 'GotHops00',
-			img: Trevor
-		},
-		{
-			key: '2',
-			name: 'James Byrd',
-			username: 'NamesByrd...JamesByrd',
-			img: Trevor
-		},
-		{
-			key: '3',
-			name: 'Bentley Lastname',
-			username: 'TotallyNotBartholomew',
-			img: Trevor
-		},
-		{
-			key: '4',
-			name: 'Agent 9',
-			username: 'MonkeyModeActivated',
-			img: Trevor
-		}
-	];
 
 	const handleQueuePress = () => {
 		setModalContent('queue');
@@ -187,7 +98,6 @@ export default function Page() {
 								return (
 									<MemberQueue
 										name={item.name}
-										username={item.username}
 										img={item.img}
 										last={item.key == circleMembersData.length}
 									/>
@@ -202,79 +112,46 @@ export default function Page() {
 	};
 
 	async function makeCircleUserList(circle) {
-		console.log("start makeCircleUserList");
-		console.log("Passed circle: " + circle);
 		let circleMembersData = [];
 		let targetUserList = Object.keys(
 			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
 		);
-		console.log("Target user list " + targetUserList);
-		let keySomething = 1;
-	
-		for (targetUser in targetUserList) {
-	
-			let data = await readData(`prayer_circle/users/${targetUser}/public`) || {};
+		for (i = 0; i<targetUserList.length; i++) {
+
+			let data = await readData(`prayer_circle/users/${targetUserList[i]}/public`) || {};
 			let name = data.fname + " " + data.lname;
 	
-			let username = "";
-			const db = getDatabase();
-			const pathRef = ref(db, 'usernames/');
-			const q = query(pathRef, orderByValue(), equalTo(targetUser));
-
-			get(q)
-			.then((snapshot) => {
-				if (snapshot.exists()) {
-				username = child(snapshot, targetUser).key;
-				console.log('Value found');
-				} else {
-				console.log('Value not found');
-				}
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-	
-			let role = ""
-				try {
-					role = Object.values(
-					(await readData(`prayer_circle/users/${targetUser}/private/circles/${circle}/role`)) || {}
-				);
-			} catch {
-				if (role == {} || role == null || role == undefined) {
-					role = "member";
-					writeData(`prayer_circle/users/${targetUser}/private/circles/${circle}/role`, role, false);
-				}
+			role = await readData(`prayer_circle/users/${targetUserList[i]}/private/circles/${circle}/role`);
+			if (role == {} || role == null || role == undefined) {
+				role = "member";
+				writeData(`prayer_circle/users/${targetUserList[i]}/public/circles/${circle}/role`, role, false);
+				//This says "data written successfully" but it doesn't actually write anything
 			}
-			let img = Object.values(
-				(await readData(`prayer_circle/users/${targetUser}/public/profile_img`)) || {}
-			);
 
-			keySomething++;
-	
+			let img = data.profile_img;
+			
 			circleMembersData.push({
-				key: keySomething.toString(),
 				name: name,
-				username: username,
 				role: role,
 				img: img
 			});
 		}
-	
-		console.log("circleSettingsData: " + circleMembersData);
-		return circleMembersData;
+		console.log('Inside: ');
+		console.log(circleMembersData);
+
+		// return circleMembersData;
+		return ("hello world")
 	}
 
-	let description = null;
 	let circleMembersData = null;
 
 	useEffect(() => {
 
 		(async () => {
-			//read data from db for description using `filter` as the key
-			description = await readData(`prayer_circle/circles/${circle}/description`) || {};
 			circleMembersData = makeCircleUserList(filter);
-			console.log('filter', filter);
 		})();
+		console.log("Outside: ")
+		console.log(circleMembersData);
 	}, [filter])
 
 	return (
@@ -331,7 +208,6 @@ export default function Page() {
 						return (
 							<Member
 								name={item.name}
-								username={item.username}
 								role={item.role}
 								img={item.img}
 								last={item.key == circleMembersData.length}
