@@ -26,6 +26,7 @@ import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
+import { formatDateAndTime } from '../backend/functions';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -55,9 +56,9 @@ export const Post = (post) => {
 	const [title, setTitle] = useState(post.title);
 	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
-	const [type, setType] = useState(post.type);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
+	const [eventDate, setEventDate] = useState('');
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -261,7 +262,6 @@ export const Post = (post) => {
 
 	//functions
 	function getTypeSource(iconType, isOutline) {
-		console.log(iconType);
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
@@ -416,7 +416,25 @@ export const Post = (post) => {
 			console.error('Error toggling bookmark:', error.message);
 		}
 
+		if (post.icon == 'event') getEventDate();
 		await populateComments(post.comments);
+	};
+
+	const getEventDate = () => {
+		const start = formatDateAndTime(post?.data?.metadata?.start);
+		const end = formatDateAndTime(post?.data?.metadata?.end);
+		let date = '';
+
+		console.log(start.split(', ')[0]);
+		if (start === end) {
+			date = start;
+		} else if (start.split(', ')[0] === end.split(', ')[0]) {
+			date = `${start.split(', ')[0]}, ${start.split(', ')[1]} - ${
+				end.split(', ')[1]
+			}`;
+		}
+
+		setEventDate(date);
 	};
 
 	const populateComments = async (comments) => {
@@ -549,21 +567,17 @@ export const Post = (post) => {
 											} text-white`}
 										>
 											(edited)
-										</StyledText>										
-										{/* {iconType == 'event_outline' || iconType == 'event' ? 
-											(
-												<>
-													<StyledText 
-														className='text-offwhite'  // start date time
-													>
-														• hh:mm dd/mm
-													</StyledText>
-												</>
-											) : (null) 
-										} */}
+										</StyledText>
 									</StyledView>
 								</StyledView>
 							</StyledView>
+							{post.icon == 'event' && (
+								<StyledView className='flex flex-row items-center mb-2'>
+									<StyledText className='text-white font-bold text-[16px]'>
+										{eventDate}
+									</StyledText>
+								</StyledView>
+							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] pb-[10px]'>
 									{content?.length > 300
@@ -589,22 +603,6 @@ export const Post = (post) => {
 											: iconType.includes('outline')
 									)}
 								/>
-								{iconType == 'event_outline' || iconType == 'event' ? 
-									(
-										<StyledView className='flex flex-col pt-2'>
-											<StyledText 
-												className={iconType == 'event_outline' ? 'text-outline' : 'text-offwhite'}
-											>
-												04:30
-											</StyledText>
-											<StyledText 
-												className={iconType == 'event_outline' ? 'text-outline' : 'text-offwhite'}
-											>
-												11/02
-											</StyledText>
-										</StyledView>
-									) : (null) 
-								}
 							</StyledPressable>
 							<StyledPressable
 								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
