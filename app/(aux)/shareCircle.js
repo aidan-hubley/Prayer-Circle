@@ -39,15 +39,11 @@ const shareCircle = async () => {
 	}
 };
 
-async function getCircleCodes(circle, type) {
-	return (
-		(await readData(`prayer_circle/circles/${circle}/codes/${type}`)) || {}
-	);
-}
-
 export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
+	const [publicCode, setPublicCode] = useState(0);
+	const [privateCode, setPrivateCode] = useState(0);
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
 	const toggleModal1 = () => {
@@ -62,16 +58,15 @@ export default function Page() {
 
 	const filterTarget = useStore((state) => state.filter);
 
-	let publicCode,
-		privateCode = 0;
-	fetchCodes = async () => {
-		publicCode = await getCircleCodes(filterTarget, 'public');
-		privateCode = await getCircleCodes(filterTarget, 'admin');
-	};
-	fetchCodes().then(() => {
-		console.log(publicCode);
-		console.log(privateCode);
-	});
+	useEffect(() => {
+		(async () => {
+			let codes = (await readData(
+				`prayer_circle/circles/${filterTarget}/codes`
+			)) || { public: 0, admin: 0 };
+			setPublicCode(codes.public);
+			setPrivateCode(codes.admin);
+		})();
+	}, []);
 
 	return (
 		<StyledView
