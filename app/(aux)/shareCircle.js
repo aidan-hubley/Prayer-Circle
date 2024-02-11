@@ -62,12 +62,16 @@ export default function Page() {
 
 	const filterTarget = useStore((state) => state.filter);
 
-	let publicCode = 0;
-	let fetchCodes = async () => {
+	let publicCode,
+		privateCode = 0;
+	fetchCodes = async () => {
 		publicCode = await getCircleCodes(filterTarget, 'public');
+		privateCode = await getCircleCodes(filterTarget, 'admin');
 	};
-	fetchCodes();
-	console.log(publicCode);
+	fetchCodes().then(() => {
+		console.log(publicCode);
+		console.log(privateCode);
+	});
 
 	return (
 		<StyledView
@@ -98,7 +102,7 @@ export default function Page() {
 								className='px-[5px] font-bold text-3xl text-offblack text-center'
 								onPress={() => shareCircle()}
 							>
-								1234567890
+								{publicCode}
 							</StyledText>
 						</StyledView>
 						<StyledView className='flex-row justify-center items-baseline'>
@@ -116,7 +120,7 @@ export default function Page() {
 										className='font-bold text-3xl text-offwhite'
 										onPress={() => shareCircle()}
 									>
-										0987654321
+										{privateCode}
 									</StyledText>
 									<StyledView className='absolute left-3 top-3'>
 										<StyledIcon
