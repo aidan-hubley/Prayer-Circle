@@ -121,7 +121,7 @@ export async function addUserToCircle(circle, otherUserUID) {
 	if (arguments.length >= 2) {
 		uid = otherUserUID;
 	}
-	writeData(`prayer_circle/circles/${circle}/members/${uid}`, true, true);
+	writeData(`prayer_circle/circles/${circle}/members/${uid}`, 'member', true);
 	let circlePermissions = {
 		admin: false,
 		read: true,
@@ -171,7 +171,7 @@ export async function getFilterCircles() {
 			color: circleData.color,
 			icon: circleData.icon,
 			description: circleData.description,
-			iconColor: circleData.iconColor,
+			iconColor: circleData.iconColor
 		};
 		circlesData.push(circleStruct);
 	}

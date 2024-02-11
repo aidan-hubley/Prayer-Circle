@@ -131,6 +131,11 @@ export function Provider(props) {
 				data.public['profile_img'] = imgURL;
 
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
+				writeData(
+					`prayer_circle/circles/-NiN-27IuGR02mcGS2CS/members/${user.uid}`,
+					'member',
+					true
+				);
 
 				alert(
 					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.'
