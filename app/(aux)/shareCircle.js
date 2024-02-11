@@ -44,6 +44,7 @@ export default function Page() {
 	let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
 	const [publicCode, setPublicCode] = useState(0);
 	const [privateCode, setPrivateCode] = useState(0);
+	const [circleName, setCircleName] = useState('');
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
 	const toggleModal1 = () => {
@@ -65,6 +66,11 @@ export default function Page() {
 			)) || { public: 0, admin: 0 };
 			setPublicCode(codes.public);
 			setPrivateCode(codes.admin);
+			let name =
+				(await readData(
+					`prayer_circle/circles/${filterTarget}/title`
+				)) || 'Circle Name';
+			setCircleName(name);
 		})();
 	}, []);
 
@@ -77,7 +83,7 @@ export default function Page() {
 				<StyledView className='flex-1 min-h-screen flex flex-col items-center'>
 					<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
-							Circle Name
+							{circleName}
 						</StyledText>
 					</StyledView>
 					<StyledView className='align-self-center'>
