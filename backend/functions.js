@@ -51,3 +51,54 @@ export function timeSince(timeStamp) {
 		return Math.round(timeDiff) + 'y';
 	}
 }
+
+export function formatDateAndTime(inputDateTime) {
+	// Parse the input date string
+	const dateTime = new Date(inputDateTime);
+
+	// Get abbreviated month
+	const months = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec'
+	];
+	const abbreviatedMonth = months[dateTime.getMonth()];
+
+	// Get day of the month
+	const day = dateTime.getDate();
+
+	// Get 12-hour time
+	const hours = dateTime.getHours() % 12 || 12; // Convert 24hr to 12hr format
+	const minutes = dateTime.getMinutes();
+	const meridiem = dateTime.getHours() < 12 ? 'AM' : 'PM';
+
+	// Format time
+	const formattedTime = `${hours}:${
+		minutes < 10 ? '0' : ''
+	}${minutes} ${meridiem}`;
+
+	// Combine abbreviated month, day and formatted time
+	return `${abbreviatedMonth} ${day}, ${formattedTime}`;
+}
+
+export function isTimeBefore(firstTime, secondTime) {
+	// Splitting hours and minutes from time strings
+	const [firstHours, firstMinutes] = firstTime.split(':').map(Number);
+	const [secondHours, secondMinutes] = secondTime.split(':').map(Number);
+
+	// Convert times to minutes since midnight
+	const firstMinutesSinceMidnight = firstHours * 60 + firstMinutes;
+	const secondMinutesSinceMidnight = secondHours * 60 + secondMinutes;
+
+	// Check if second time is before first time
+	return secondMinutesSinceMidnight < firstMinutesSinceMidnight;
+}
