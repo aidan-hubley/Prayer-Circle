@@ -261,6 +261,7 @@ export const Post = (post) => {
 
 	//functions
 	function getTypeSource(iconType, isOutline) {
+		console.log(iconType);
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
@@ -548,7 +549,18 @@ export const Post = (post) => {
 											} text-white`}
 										>
 											(edited)
-										</StyledText>
+										</StyledText>										
+										{/* {iconType == 'event_outline' || iconType == 'event' ? 
+											(
+												<>
+													<StyledText 
+														className='text-offwhite'  // start date time
+													>
+														• hh:mm dd/mm
+													</StyledText>
+												</>
+											) : (null) 
+										} */}
 									</StyledView>
 								</StyledView>
 							</StyledView>
@@ -560,9 +572,9 @@ export const Post = (post) => {
 								</StyledText>
 							</StyledView>
 						</StyledView>
-						<StyledView className='flex flex-col w-[12%] items-center justify-between'>
+						<StyledView className='flex flex-col w-[15%] items-center justify-between'>
 							<StyledPressable
-								className='rounded-full aspect-square flex items-center justify-center' // bg-radial gradient??
+								className='rounded-full aspect-square flex items-center justify-center'
 								onPress={toggleIcon}
 							>
 								<AnimatedImage
@@ -577,6 +589,22 @@ export const Post = (post) => {
 											: iconType.includes('outline')
 									)}
 								/>
+								{iconType == 'event_outline' || iconType == 'event' ? 
+									(
+										<StyledView className='flex flex-col pt-2'>
+											<StyledText 
+												className={iconType == 'event_outline' ? 'text-outline' : 'text-offwhite'}
+											>
+												04:30
+											</StyledText>
+											<StyledText 
+												className={iconType == 'event_outline' ? 'text-outline' : 'text-offwhite'}
+											>
+												11/02
+											</StyledText>
+										</StyledView>
+									) : (null) 
+								}
 							</StyledPressable>
 							<StyledPressable
 								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
