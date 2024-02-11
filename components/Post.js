@@ -170,7 +170,7 @@ export const Post = (post) => {
 							<Comment
 								id={item[0]}
 								user={item[1].user}
-								username={item[1].username}
+								username={item[1].name}
 								content={item[1].content}
 								edited={item[1].edited}
 								timestamp={item[1].timestamp}
