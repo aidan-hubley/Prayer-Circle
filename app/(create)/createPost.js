@@ -38,11 +38,14 @@ export default function Page() {
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [circles, setGlobalReload, addCircles] = useStore((state) => [
-		state.circles,
-		state.setGlobalReload,
-		state.addCircles
-	]);
+	const [circles, setGlobalReload, addCircles, setAddCircles] = useStore(
+		(state) => [
+			state.circles,
+			state.setGlobalReload,
+			state.addCircles,
+			state.setAddCircles
+		]
+	);
 	const [dateTimePickerShown, setDateTimePickerShown] = useState(false);
 	const dtpOpacity = useRef(new Animated.Value(0)).current;
 
