@@ -21,6 +21,42 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 
+async function searchForCircle(code) {
+	let publicCode,
+		adminCode = false;
+	let circles = Object.keys((await readData(`prayer_circle/circles`)) || {});
+	let circle = null;
+	for (let i = 0; i < circles.length; i++) {
+		circle = circles[i];
+		let circleData =
+			(await readData(`prayer_circle/circles/${circle}/codes`)) || {};
+		if (circleData.public == code) {
+			publicCode = true;
+			break;
+		} else if (circleData.admin == code) {
+			adminCode = true;
+			break;
+		}
+	}
+	if (!(adminCode || publicCode)) {
+		alert('No circles have this code.');
+	} else {
+		let inCircle = await checkIfUserIsInCircle(circle);
+		if (!inCircle) {
+			if (adminCode) {
+				addUserToCircle(circle);
+				alert('You have been added to the circle.');
+			} else {
+				addUserToQueue(circle);
+				alert("You have been added this circle's waiting queue.");
+			}
+			setFilterReload(true);
+		} else {
+			alert('Already in circle.');
+		}
+	}
+}
+
 export default function Page() {
 	const [code, setCode] = useState('');
 	const [hasPermission, setHasPermission] = useState(null);
@@ -41,9 +77,7 @@ export default function Page() {
 	const handleBarCodeScanned = ({ type, data }) => {
 		setScanned(true);
 		if (type == 'org.iso.QRCode') {
-			alert(
-				`Bar code with type ${type} and data ${data} has been scanned!`
-			);
+			searchForCircle(data);
 		} else {
 			alert('Invalid code type!');
 		}
@@ -126,49 +160,7 @@ export default function Page() {
 							alert('Please enter 8 digits');
 							return;
 						} else {
-							let publicCode,
-								adminCode = false;
-							let circles = Object.keys(
-								(await readData(`prayer_circle/circles`)) || {}
-							);
-							let circle = null;
-							for (let i = 0; i < circles.length; i++) {
-								circle = circles[i];
-								let circleData =
-									(await readData(
-										`prayer_circle/circles/${circle}/codes`
-									)) || {};
-								if (circleData.public == code) {
-									publicCode = true;
-									break;
-								} else if (circleData.admin == code) {
-									adminCode = true;
-									break;
-								}
-							}
-							if (!(adminCode || publicCode)) {
-								alert('No circles have this code.');
-							} else {
-								let inCircle = await checkIfUserIsInCircle(
-									circle
-								);
-								if (!inCircle) {
-									if (adminCode) {
-										addUserToCircle(circle);
-										alert(
-											'You have been added to the circle.'
-										);
-									} else {
-										addUserToQueue(circle);
-										alert(
-											"You have been added this circle's waiting queue."
-										);
-									}
-									setFilterReload(true);
-								} else {
-									alert('Already in circle.');
-								}
-							}
+							searchForCircle(code);
 						}
 						this.searchCode.clear();
 					}}
