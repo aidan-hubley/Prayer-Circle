@@ -45,7 +45,8 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
-
+const titleCharThreshold = 20; 
+const contentCharThreshold = 300;
 
 export const Post = (post) => {
 	// variables
@@ -69,6 +70,7 @@ export const Post = (post) => {
 	const [type, setType] = useState(post.type);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isToggleVisible, setIsToggleVisible] = useState(title.length > titleCharThreshold || content.length > contentCharThreshold);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -237,7 +239,7 @@ export const Post = (post) => {
 							placeholderTextColor={'#ffffff40'}
 							inputMode='text'
 							autoCorrect
-							maxLength={20}
+							maxLength={39}
 							defaultValue={editTitle}
 							onChangeText={(text) => {
 								setEditTitle(text);
@@ -526,6 +528,11 @@ export const Post = (post) => {
 		setUp(post.id);
 	}, []);
 
+	useEffect(() => {
+	setIsToggleVisible(title.length > titleCharThreshold || content.length > contentCharThreshold);
+	}, [title, content]);
+
+
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
@@ -563,8 +570,11 @@ export const Post = (post) => {
 								<StyledView
 									className={`${post.owned ? '' : 'ml-2'}`}
 								>
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{isExpanded ? title : (title?.length > 21 ? title.substring(0, 21) + '...' : title)}
+									<StyledText     
+										className='text-offwhite font-bold text-[20px]'
+										style={{ maxWidth: '99%' }}
+										>
+										{isExpanded || title.length <= titleCharThreshold ? title : `${title.substring(0, titleCharThreshold)}...`}
 									</StyledText>
 									<StyledView className='flex flex-row'>
 										<StyledText
@@ -611,11 +621,7 @@ export const Post = (post) => {
 									)}
 								/>
 							</StyledPressable>
-							{isTextTruncated(post.content) && (
-								<StyledOpacity onPress={handleExpanded} className='flex items-center justify-center py-2'>
-									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
-								</StyledOpacity>
-							)}
+
 							<StyledPressable
 								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
 								onPress={() => {
@@ -629,6 +635,11 @@ export const Post = (post) => {
 								/>
 							</StyledPressable>
 						</StyledView>
+						{(isToggleVisible || isTextTruncated(post.content)) && (
+							<StyledOpacity onPress={handleExpanded} className='self-end pt-2 pr-2'> {/* Adjust positioning as needed */}
+								<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
+							</StyledOpacity>
+						)}
 					</StyledView>
 				</StyledPressable>
 				<StyledAnimatedView
