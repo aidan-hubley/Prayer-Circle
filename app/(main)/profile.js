@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import { readData, getPosts } from '../../backend/firebaseFunctions';
+import { readData, getProfilePosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
 import CachedImage from 'expo-cached-image';
@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
 	const setUpFeed = async () => {
 		setRenderIndex(0);
-		let gp = await getPosts();
+		let gp = await getProfilePosts();
 		setPostList(gp);
 		let pl = await populateList(gp, 0, 7);
 		setPosts(pl);
@@ -46,7 +46,7 @@ export default function ProfilePage() {
 		let endOfList =
 			list.length < start + numOfItems ? list.length - start : numOfItems;
 		for (let i of list.slice(start, endOfList + start)) {
-			let id = i;
+			let id = i[0];
 			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
 			if (data.user == userData.uid) renderedList.push([id, data]);
 		}
