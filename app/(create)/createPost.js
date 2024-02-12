@@ -1,41 +1,64 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import {
+	Text,
+	View,
+	TextInput,
+	TouchableOpacity,
+	Pressable,
+	Animated
+} from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
 import { router } from 'expo-router';
-import {
-	SafeAreaView,
-	useSafeAreaInsets
-} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from '../global';
 import { Filter } from '../../components/Filter';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../backend/config';
+import DateTimePicker from 'react-native-ui-datepicker';
+import dayjs from 'dayjs';
+import { formatDateAndTime, isTimeBefore } from '../../backend/functions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
-	const [time, setTime] = useState('');
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [getDate, setGetDate] = useState(dayjs);
+	const [getWhichDate, setGetWhichDate] = useState(null);
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [circles, setGlobalReload, addCircles, setAddCircles] = useStore(
-		(state) => [
-			state.circles,
-			state.setGlobalReload,
-			state.addCircles,
-			state.setAddCircles
-		]
-	);
-	const insets = useSafeAreaInsets();
+	const [circles, setGlobalReload, addCircles] = useStore((state) => [
+		state.circles,
+		state.setGlobalReload,
+		state.addCircles
+	]);
+	const [dateTimePickerShown, setDateTimePickerShown] = useState(false);
+	const dtpOpacity = useRef(new Animated.Value(0)).current;
+
+	const dtpInter = dtpOpacity.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0, 1]
+	});
+
+	const toggleDateTimePicker = () => {
+		Animated.spring(dtpOpacity, {
+			toValue: dateTimePickerShown ? 0 : 1,
+			duration: 200,
+			useNativeDriver: true
+		}).start();
+		setDateTimePickerShown(!dateTimePickerShown);
+	};
 
 	const handleSelect = (index) => {
 		if (index == 2) {
@@ -83,7 +106,7 @@ export default function Page() {
 						<StyledInput
 							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 							placeholder={'Title'}
-							placeholderTextColor={'#fff'}
+							placeholderTextColor={'#fefefe80'}
 							inputMode='text'
 							autoCorrect
 							maxLength={39}
@@ -92,17 +115,48 @@ export default function Page() {
 							}}
 						/>
 						{showDatePicker && (
-							<StyledInput
-								className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
-								placeholder={'Event'}
-								placeholderTextColor={'#fff'}
-								inputMode='text'
-								autoCorrect
-								maxLength={39}
-								onChangeText={(text) => {
-									setTitle(text);
-								}}
-							/>
+							<View className='w-full flex flex-row justify-between'>
+								<Pressable
+									className='bg-offblack w-[48%] border border-outline rounded-lg px-3 py-[10px] my-2'
+									onPress={() => {
+										setGetWhichDate('start');
+										toggleDateTimePicker();
+									}}
+								>
+									<Text
+										className='text-[18px]'
+										style={{
+											color: startDate
+												? '#fefefe'
+												: '#fefefe80'
+										}}
+									>
+										{startDate
+											? formatDateAndTime(startDate)
+											: 'Start'}
+									</Text>
+								</Pressable>
+								<Pressable
+									className='bg-offblack w-[48%] border border-outline rounded-lg px-3 py-[10px] my-2'
+									onPress={() => {
+										setGetWhichDate('end');
+										toggleDateTimePicker();
+									}}
+								>
+									<Text
+										className='text-[18px]'
+										style={{
+											color: endDate
+												? '#fefefe'
+												: '#fefefe80'
+										}}
+									>
+										{endDate
+											? formatDateAndTime(endDate)
+											: 'End'}
+									</Text>
+								</Pressable>
+							</View>
 						)}
 						<StyledInput
 							className='bg-offblack text-[18px] w-full min-h-[100px] max-h-[150px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
@@ -110,7 +164,7 @@ export default function Page() {
 							multiline
 							autoCorrect
 							autoCapitalize='sentences'
-							placeholderTextColor={'#fff'}
+							placeholderTextColor={'#fefefe80'}
 							inputMode='text'
 							maxLength={500}
 							onChangeText={(text) => {
@@ -123,17 +177,6 @@ export default function Page() {
 
 			<Filter open data={circles.slice(2)} multiselect backdropHidden />
 			<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
-				{/* <Button
-					title='Erase'
-					width='w-[125px]'
-					height='h-[60px]'
-					bgColor={'bg-offblack'}
-					borderColor={'border-offwhite border-2'}
-					textColor={'text-offwhite'}
-					press={() => {
-						router.push('/');
-					}}
-				/> */}
 				<Button
 					title='Draw'
 					height='h-[60px]'
@@ -173,7 +216,10 @@ export default function Page() {
 							timestamp: now,
 							circles,
 							metadata: {
-								flag_count: 0
+								flag_count: 0,
+								start:
+									typeSelected === 'event' ? startDate : null,
+								end: typeSelected === 'event' ? endDate : null
 							}
 						};
 						await writeData(
@@ -194,11 +240,65 @@ export default function Page() {
 							true
 						).then(() => {
 							setGlobalReload(true);
+							router.back();
 						});
-						router.back();
 					}}
 				/>
 			</StyledView>
+			<AnimatedPressable
+				className='absolute w-screen h-screen items-center justify-center bg-[#12121280]'
+				onPress={() => {
+					if (getWhichDate === 'start') {
+						setStartDate(getDate);
+						toggleDateTimePicker();
+					} else {
+						let start = startDate.split(' ');
+						let end = getDate.split(' ');
+						if (
+							start[0] === end[0] &&
+							isTimeBefore(start[1], end[1])
+						) {
+							return alert('Please select a valid end time.');
+						} else {
+							setEndDate(getDate);
+							toggleDateTimePicker();
+						}
+					}
+				}}
+				style={{ opacity: dtpInter }}
+				pointerEvents={dateTimePickerShown ? 'auto' : 'none'}
+			>
+				<View className='w-[80%] max-w-[340px] border border-outline bg-offblack py-2 px-2 rounded-2xl'>
+					<DateTimePicker
+						mode='single'
+						date={getDate}
+						onChange={(params) => {
+							setGetDate(params.date);
+						}}
+						selectedItemColor='#5946B2'
+						timePicker
+						minDate={
+							getWhichDate === 'start'
+								? new Date().setDate(new Date().getDate() - 1)
+								: startDate
+						}
+						calendarTextStyle={{ color: '#FEFEFE' }}
+						headerTextStyle={{ color: '#FEFEFE', fontSize: 18 }}
+						weekDaysTextStyle={{ color: '#FEFEFE' }}
+						monthContainerStyle={{ backgroundColor: '#121212' }}
+						yearContainerStyle={{ backgroundColor: '#121212' }}
+						headerButtonColor='#FEFEFE'
+						dayContainerStyle={{
+							borderRadius: 8
+						}}
+						headerButtonsPosition='right'
+						timePickerContainerStyle={{
+							color: '#FEFEFE',
+							backgroundColor: '#121212'
+						}}
+					/>
+				</View>
+			</AnimatedPressable>
 		</StyledSafeArea>
 	);
 }

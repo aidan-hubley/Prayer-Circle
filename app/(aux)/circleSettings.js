@@ -212,7 +212,7 @@ export default function Page() {
 									iconSize={70}
 									icon='musical-notes'
 									iconColor='white'
-									href='/mainViewLayout'
+									href='/'
 								/>
 							</StyledView>
 
@@ -309,7 +309,7 @@ export default function Page() {
 						width={'w-[50px]'}
 						iconSize={30}
 						icon='arrow-back'
-						href='/mainViewLayout'
+						href='/'
 					/>
 					<Button // Queue
 						title='Queue: 4'
@@ -343,7 +343,7 @@ export default function Page() {
 								iconSize={60}
 								icon='musical-notes'
 								iconColor='white'
-								href='/mainViewLayout'
+								href='/'
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
@@ -385,7 +385,7 @@ export default function Page() {
 								iconSize={60}
 								icon='musical-notes'
 								iconColor='white'
-								href='/mainViewLayout'
+								href='/'
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>

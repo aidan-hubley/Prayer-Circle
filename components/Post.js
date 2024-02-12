@@ -27,6 +27,7 @@ import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
+import { formatDateAndTime } from '../backend/functions';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -58,9 +59,9 @@ export const Post = (post) => {
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [editContent, setEditContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
-	const [type, setType] = useState(post.type);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
+	const [eventDate, setEventDate] = useState('');
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -466,51 +467,6 @@ export const Post = (post) => {
 		}, 100);
 	}
 
-	const postComment = async () => {
-		if (newComment.length > 0) {
-			//get current comments
-			let currentComments =
-				(await readData(`prayer_circle/posts/${post.id}/comments`)) ||
-				{};
-
-			//prep data
-			let commentId = generateId();
-			let timestamp = Date.now();
-			let comment = {
-				content: newComment,
-				edited: false,
-				timestamp: timestamp,
-				user: userData.uid,
-				name: userData.displayName,
-				profile_img: userData.photoURL
-			};
-
-			//write data
-			await writeData(
-				`prayer_circle/posts/${post.id}/comments/${commentId}`,
-				timestamp,
-				true
-			);
-			await writeData(
-				`prayer_circle/users/${userData.uid}/private/comments/${commentId}`,
-				true,
-				true
-			);
-			await writeData(
-				`prayer_circle/comments/${commentId}`,
-				comment,
-				true
-			);
-			//clear input
-			setNewComment('');
-			newCommentRef.current.clear();
-
-			currentComments[commentId] = timestamp;
-			//render new comment
-			await populateComments(currentComments);
-		}
-	};
-
 	// post setup
 	const setUp = async (postId) => {
 		try {
@@ -554,6 +510,23 @@ export const Post = (post) => {
 		}
 	};
 
+	const getEventDate = () => {
+		const start = formatDateAndTime(post?.data?.metadata?.start);
+		const end = formatDateAndTime(post?.data?.metadata?.end);
+		let date = '';
+
+		console.log(start.split(', ')[0]);
+		if (start === end) {
+			date = start;
+		} else if (start.split(', ')[0] === end.split(', ')[0]) {
+			date = `${start.split(', ')[0]}, ${start.split(', ')[1]} - ${
+				end.split(', ')[1]
+			}`;
+		}
+
+		setEventDate(date);
+	};
+
 	const populateComments = async () => {
 		let comments = await readData(
 			`prayer_circle/posts/${post.id}/comments`
@@ -576,6 +549,51 @@ export const Post = (post) => {
 			commentList.push([comment[0], data]);
 		}
 		await setCommentData(commentList);
+	};
+
+	const postComment = async () => {
+		if (newComment.length > 0) {
+			//get current comments
+			let currentComments =
+				(await readData(`prayer_circle/posts/${post.id}/comments`)) ||
+				{};
+
+			//prep data
+			let commentId = generateId();
+			let timestamp = Date.now();
+			let comment = {
+				content: newComment,
+				edited: false,
+				timestamp: timestamp,
+				user: userData.uid,
+				name: userData.displayName,
+				profile_img: userData.photoURL
+			};
+
+			//write data
+			await writeData(
+				`prayer_circle/posts/${post.id}/comments/${commentId}`,
+				timestamp,
+				true
+			);
+			await writeData(
+				`prayer_circle/users/${userData.uid}/private/comments/${commentId}`,
+				true,
+				true
+			);
+			await writeData(
+				`prayer_circle/comments/${commentId}`,
+				comment,
+				true
+			);
+			//clear input
+			setNewComment('');
+			newCommentRef.current.clear();
+
+			currentComments[commentId] = timestamp;
+			//render new comment
+			await populateComments(currentComments);
+		}
 	};
 
 	useEffect(() => {
@@ -648,6 +666,13 @@ export const Post = (post) => {
 									</StyledView>
 								</StyledView>
 							</StyledView>
+							{post.icon == 'event' && (
+								<StyledView className='flex flex-row items-center mb-2'>
+									<StyledText className='text-white font-bold text-[16px]'>
+										{eventDate}
+									</StyledText>
+								</StyledView>
+							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText className='text-white mt-[2px] pb-[10px]'>
 									{content?.length > 300
@@ -656,9 +681,9 @@ export const Post = (post) => {
 								</StyledText>
 							</StyledView>
 						</StyledView>
-						<StyledView className='flex flex-col w-[12%] items-center justify-between'>
+						<StyledView className='flex flex-col w-[15%] items-center justify-between'>
 							<StyledPressable
-								className='rounded-full aspect-square flex items-center justify-center' // bg-radial gradient??
+								className='aspect-square flex items-center justify-center'
 								onPress={() => {
 									if (!post.owned) {
 										toggleIcon();
