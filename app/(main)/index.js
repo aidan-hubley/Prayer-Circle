@@ -103,7 +103,7 @@ export default function Layout() {
 			<Filter
 				data={circles}
 				ref={filterRef}
-				setPressed={circleRef.current.setPressed}
+				setPressed={circleRef?.current?.setPressed}
 				touchEvents={swipingEnabled}
 				toggleSwiping={setSwipingEnabled}
 			/>

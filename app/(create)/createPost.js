@@ -27,11 +27,14 @@ export default function Page() {
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [circles, setGlobalReload, addCircles] = useStore((state) => [
-		state.circles,
-		state.setGlobalReload,
-		state.addCircles
-	]);
+	const [circles, setGlobalReload, addCircles, setAddCircles] = useStore(
+		(state) => [
+			state.circles,
+			state.setGlobalReload,
+			state.addCircles,
+			state.setAddCircles
+		]
+	);
 	const insets = useSafeAreaInsets();
 
 	const handleSelect = (index) => {
@@ -45,6 +48,10 @@ export default function Page() {
 	useEffect(() => {
 		setUserData(auth.currentUser);
 	}, [auth.currentUser]);
+
+	useEffect(() => {
+		setAddCircles([]);
+	}, []);
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
