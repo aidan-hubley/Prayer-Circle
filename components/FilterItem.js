@@ -154,6 +154,7 @@ const FilterItem = forwardRef((props, ref) => {
 						onPress={() => {
 							bottomSheetModalRef.current.present();
 							props.toggleShown();
+							props.setPressed('none');
 						}}
 					>
 						<StyledView className='flex items-center justify-center'>
@@ -248,6 +249,7 @@ const FilterItem = forwardRef((props, ref) => {
 					className='flex border-[6px] items-center justify-center rounded-full'
 					onPress={() => {
 						props.toggleShown();
+						props.setPressed('none');
 						updateFilter(props.data.id);
 						updateFilterName(props.data.title);
 					}}
