@@ -17,7 +17,7 @@ function Member({ img, name, username, role, last }) {
 		>
 			<StyledView className='flex flex-row'>
 				<StyledImage
-					className='rounded-xl'
+					className='rounded-[6px]'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
 				/>

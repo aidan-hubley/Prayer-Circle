@@ -8,7 +8,8 @@ import {
 	Animated,
 	TextInput,
 	Keyboard,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	Dimensions
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -19,12 +20,13 @@ import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useStore } from '../app/global';
-/* import { PostTypeSelector } from './PostTypeSelector'; */
+import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
+import { Interaction } from '../components/Interaction';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -38,7 +40,11 @@ const StyledInput = styled(TextInput);
 
 export const Post = (post) => {
 	// variables
-	const [iconType, setIconType] = useState(`${post.icon}_outline`);
+	const [title, setTitle] = useState(post.title);
+	const [content, setContent] = useState(post.content);
+	const [icon, setIcon] = useState(post.icon);
+	const [interacted, setInteracted] = useState(false);
+	const [interactions, setInteractions] = useState([]);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
 	const [lastTap, setLastTap] = useState(null);
@@ -51,8 +57,6 @@ export const Post = (post) => {
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [editContent, setEditContent] = useState(post.content);
-	const [title, setTitle] = useState(post.title);
-	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
 	const [type, setType] = useState(post.type);
 	const [userData, setUserData] = useState(auth?.currentUser);
@@ -110,6 +114,10 @@ export const Post = (post) => {
 		inputRange: [0, 1],
 		outputRange: ['0deg', '180deg']
 	});
+	const iconInter = iconAnimation.interpolate({
+		inputRange: [0, 0.5, 1],
+		outputRange: [1, 1.6, 1]
+	});
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
@@ -166,6 +174,21 @@ export const Post = (post) => {
 							/>
 						);
 					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 350
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Comments
+								</StyledText>
+							</StyledView>
+						);
+					}}
 					keyExtractor={(item) => item[0]}
 				/>
 			</StyledView>
@@ -177,6 +200,19 @@ export const Post = (post) => {
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 				<StyledView className='flex-1 bg-grey'>
 					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
+						<StyledView className='bg-offblack rounded-full mx-[10px] mb-3'>
+							<PostTypeSelector
+								noYMargin
+								initialValue={
+									post?.data?.type === 'praise'
+										? 0
+										: post?.data?.type === 'request'
+										? 1
+										: 2
+								}
+								ref={typeRef}
+							/>
+						</StyledView>
 						<StyledInput
 							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 							placeholder={'Title'}
@@ -228,6 +264,52 @@ export const Post = (post) => {
 		);
 	};
 
+	const interactionsView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<BottomSheetFlatList
+					data={interactions}
+					contentContainerStyle={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+						width: '100%'
+					}}
+					ItemSeparatorComponent={() => {
+						return (
+							<StyledView className='w-[90%] h-[1px] bg-offwhite' />
+						);
+					}}
+					renderItem={({ item }) => {
+						return (
+							<Interaction
+								name={item.fname + ' ' + item.lname}
+								image={item.profile_img}
+							/>
+						);
+					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 250
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Interactions
+								</StyledText>
+							</StyledView>
+						);
+					}}
+					keyExtractor={(item) => item.profile_img}
+				/>
+			</StyledView>
+		);
+	};
+
 	const ToolbarButton = (props) => {
 		return (
 			<StyledOpacity
@@ -248,7 +330,7 @@ export const Post = (post) => {
 	};
 
 	//functions
-	function getTypeSource(iconType, isOutline) {
+	function getIconSource(iconType, interacted) {
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
@@ -257,30 +339,25 @@ export const Post = (post) => {
 		if (post.owned) {
 			return images[iconKey].nonOutline;
 		}
-		return isOutline ? images[iconKey].outline : images[iconKey].nonOutline;
+		return !interacted
+			? images[iconKey].outline
+			: images[iconKey].nonOutline;
 	}
 
 	function toggleIcon() {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-		const iconKey = iconType.replace('_outline', '');
-		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
-			setIconType(
-				iconType.includes('outline') ? iconKey : iconKey + '_outline'
-			);
-
-			Animated.sequence([
-				Animated.timing(iconAnimation, {
-					toValue: 1.5,
-					duration: 100,
-					useNativeDriver: true
-				}),
-				Animated.timing(iconAnimation, {
-					toValue: 1,
-					duration: 100,
-					useNativeDriver: true
-				})
-			]).start();
-		}
+		let now = Date.now();
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		Animated.spring(iconAnimation, {
+			toValue: interacted ? 1 : 0,
+			duration: 100,
+			useNativeDriver: false
+		}).start();
+		writeData(
+			`prayer_circle/posts/${post.id}/interacted/${userData.uid}`,
+			!interacted ? now : null,
+			true
+		);
+		setInteracted(!interacted);
 	}
 
 	function toggleToolbar() {
@@ -375,6 +452,12 @@ export const Post = (post) => {
 		updatedData.edited = true;
 		setEdited(true);
 
+		let typeVal = Math.round(Math.abs(typeRef.current.selected._value));
+		if (typeVal == 0) updatedData.type = 'praise';
+		else if (typeVal == 1) updatedData.type = 'request';
+		else if (typeVal == 2) updatedData.type = 'event';
+		setIcon(updatedData.type);
+
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
 
 		bottomSheetModalRef.current?.dismiss();
@@ -382,51 +465,6 @@ export const Post = (post) => {
 			setGlobalReload(true);
 		}, 100);
 	}
-
-	// post setup
-	const setUp = async (postId) => {
-		try {
-			// Check if the post ID already exists in AsyncStorage
-			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
-			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
-
-			let keys = [];
-
-			existingPosts.forEach((post) => {
-				keys.push(post.id);
-			});
-
-			if (keys.includes(postId)) {
-				setBookmarked(true);
-			}
-		} catch (error) {
-			console.error('Error toggling bookmark:', error.message);
-		}
-	};
-
-	const populateComments = async () => {
-		let comments = await readData(
-			`prayer_circle/posts/${post.id}/comments`
-		);
-		if (!comments) return;
-
-		if (typeof comments == 'undefined' || comments == false) return;
-		comments = Object.entries(comments);
-
-		if (comments.length > 1) {
-			comments.sort((a, b) => {
-				return b[1] - a[1];
-			});
-		}
-
-		let commentList = [];
-		for (let comment of comments) {
-			let data =
-				(await readData(`prayer_circle/comments/${comment[0]}`)) || {};
-			commentList.push([comment[0], data]);
-		}
-		await setCommentData(commentList);
-	};
 
 	const postComment = async () => {
 		if (newComment.length > 0) {
@@ -471,6 +509,73 @@ export const Post = (post) => {
 			//render new comment
 			await populateComments(currentComments);
 		}
+	};
+
+	// post setup
+	const setUp = async (postId) => {
+		try {
+			// Check if the post ID already exists in AsyncStorage
+			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
+			const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
+
+			let keys = [];
+
+			existingPosts.forEach((post) => {
+				keys.push(post.id);
+			});
+
+			if (keys.includes(postId)) {
+				setBookmarked(true);
+			}
+		} catch (error) {
+			console.error('Error toggling bookmark:', error.message);
+		}
+
+		let interactions =
+			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
+
+		if (!post.owned) {
+			if (interactions[userData.uid]) {
+				setInteracted(true);
+			}
+		} else {
+			interactions = Object.keys(interactions);
+			interactions.sort((a, b) => {
+				return b[1] - a[1];
+			});
+			let interactionsData = [];
+			for (let interaction of interactions) {
+				let data = await readData(
+					`prayer_circle/users/${interaction}/public`
+				);
+				interactionsData.push(data);
+			}
+			setInteractions(interactionsData);
+		}
+	};
+
+	const populateComments = async () => {
+		let comments = await readData(
+			`prayer_circle/posts/${post.id}/comments`
+		);
+		if (!comments) return;
+
+		if (typeof comments == 'undefined' || comments == false) return;
+		comments = Object.entries(comments);
+
+		if (comments.length > 1) {
+			comments.sort((a, b) => {
+				return b[1] - a[1];
+			});
+		}
+
+		let commentList = [];
+		for (let comment of comments) {
+			let data =
+				(await readData(`prayer_circle/comments/${comment[0]}`)) || {};
+			commentList.push([comment[0], data]);
+		}
+		await setCommentData(commentList);
 	};
 
 	useEffect(() => {
@@ -554,19 +659,22 @@ export const Post = (post) => {
 						<StyledView className='flex flex-col w-[12%] items-center justify-between'>
 							<StyledPressable
 								className='rounded-full aspect-square flex items-center justify-center' // bg-radial gradient??
-								onPress={toggleIcon}
+								onPress={() => {
+									if (!post.owned) {
+										toggleIcon();
+									} else {
+										setBottomSheetType('Interactions');
+										handlePresentModalPress();
+									}
+								}}
 							>
 								<AnimatedImage
-									className='w-[26px] h-[26px]'
+									source={getIconSource(icon, interacted)}
 									style={{
-										transform: [{ scale: iconAnimation }]
+										width: 26,
+										height: 26,
+										transform: [{ scale: iconInter }]
 									}}
-									source={getTypeSource(
-										iconType,
-										post.owned
-											? false
-											: iconType.includes('outline')
-									)}
 								/>
 							</StyledPressable>
 							<StyledPressable
@@ -681,6 +789,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'Interactions' && interactionsView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);

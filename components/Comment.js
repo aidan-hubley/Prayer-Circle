@@ -36,7 +36,7 @@ export const Comment = (comment) => {
 					{comment.content}
 				</StyledText>
 			</StyledView>
-			<StyledView className='w-[35px] flex flex-col items-end justify-center'>
+			<StyledView className='w-[35px] flex flex-col h-full items-end justify-center'>
 				<StyledText className='text-[13px] text-white'>
 					{timeSince(comment.timestamp)}
 				</StyledText>
