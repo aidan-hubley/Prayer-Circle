@@ -6,7 +6,6 @@ import {
 	Pressable,
 	TouchableOpacity,
 	Animated,
-	RefreshControl,
 	TextInput,
 	Keyboard,
 	TouchableWithoutFeedback
@@ -154,23 +153,12 @@ export const Post = (post) => {
 						alignItems: 'center',
 						width: '100%'
 					}}
-					refreshControl={
-						<RefreshControl
-							onRefresh={() => {
-								{
-									/* TODO: add refresh button that will pull new comments from db */
-								}
-							}}
-							refreshing={false}
-							tintColor='#ebebeb'
-						/>
-					}
 					renderItem={({ item }) => {
 						return (
 							<Comment
 								id={item[0]}
 								user={item[1].user}
-								username={item[1].username}
+								name={item[1].name}
 								content={item[1].content}
 								edited={item[1].edited}
 								timestamp={item[1].timestamp}
@@ -414,11 +402,14 @@ export const Post = (post) => {
 		} catch (error) {
 			console.error('Error toggling bookmark:', error.message);
 		}
-
-		await populateComments(post.comments);
 	};
 
-	const populateComments = async (comments) => {
+	const populateComments = async () => {
+		let comments = await readData(
+			`prayer_circle/posts/${post.id}/comments`
+		);
+		if (!comments) return;
+
 		if (typeof comments == 'undefined' || comments == false) return;
 		comments = Object.entries(comments);
 
@@ -659,7 +650,8 @@ export const Post = (post) => {
 								icon={'chatbubble-outline'}
 								size={29}
 								color='#5946B2'
-								onPress={() => {
+								onPress={async () => {
+									populateComments();
 									setBottomSheetType('Comments');
 									handlePresentModalPress();
 								}}
