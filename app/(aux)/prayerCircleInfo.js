@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { Text, View, Platform, Image, Animated, ScrollView, FlatList} from 'react-native';
+import { Text, View, Platform, Image, Animated, ScrollView, Pressable} from 'react-native';
 import { styled } from 'nativewind';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
 import { Terms } from '../../components/Terms';
+import { router } from 'expo-router';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -14,6 +15,7 @@ const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 const StyledGradient = styled(LinearGradient);
+const StyledPressable = styled(Pressable);
 
 export default function Page() {
 	const [handles, setHandles] = useState('');
@@ -74,12 +76,14 @@ export default function Page() {
 								height: 80
 							}}
 						/>
-						<StyledView className='flex items-center'>
+						<StyledPressable 							
+							onPress={() => (router.push('http://prayer-circle.com'))}	
+						>
 							<StyledImage
 								className='w-[300px] h-[300px]'
 								source={require('../../assets/Dark_Margin.png')}								
 							/>
-						</StyledView>
+						</StyledPressable>
 
 						<StyledText className='w-full text-center text-[30px] text-offwhite'>
 							Our Mission
@@ -95,7 +99,80 @@ export default function Page() {
 							</StyledText>
 						</StyledView>
 
-						<StyledText className='w-full text-center text-[30px] text-offwhite mt-3'>
+						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
+							Give your Feedback
+						</StyledText>
+						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledView className='flex w-full gap-y-2'>
+								
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2'>
+										<StyledText
+											className={`font-[600] text-offwhite text-[20px]`}
+										>
+											Beta Test Review
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon='document'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border-2 absolute right-2 top-[5px]'
+										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
+									></Button>
+								</StyledView>
+
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2'>
+										<StyledText
+											className={`font-[600] text-offwhite text-[20px]`}
+										>
+											Rate the App
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon={Platform.OS == 'android' ? 'logo-andriod' : 'logo-apple'}
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border-2 absolute right-2 top-[5px]'
+										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
+									></Button>
+								</StyledView>
+
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2'>
+										<StyledText
+											className={`font-[600] text-offwhite text-[20px]`}
+										>
+											Report a Bug
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon='bug'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border-2 absolute right-2 top-[5px]'
+										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
+									></Button>
+								</StyledView>
+
+							</StyledView>
+							
+						</StyledView>
+
+						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
 							Our Team
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
