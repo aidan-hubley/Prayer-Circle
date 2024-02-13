@@ -170,8 +170,7 @@ export async function getFilterCircles() {
 			title: circleData.title,
 			color: circleData.color,
 			icon: circleData.icon,
-			description: circleData.description,
-			iconColor: circleData.iconColor,
+			description: circleData.description
 		};
 		circlesData.push(circleStruct);
 	}

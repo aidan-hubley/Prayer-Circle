@@ -613,7 +613,11 @@ export const Post = (post) => {
 						const now = Date.now();
 						if (lastTap && now - lastTap < 300) {
 							clearTimeout(timer.current);
-							toggleIcon();
+							if (!post.owned && !post.ownedToolbar) toggleIcon();
+							else {
+								setBottomSheetType('Interactions');
+								handlePresentModalPress();
+							}
 						} else {
 							setLastTap(now);
 							timer.current = setTimeout(() => {}, 300);
