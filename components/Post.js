@@ -337,7 +337,7 @@ export const Post = (post) => {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
-		if (post.owned) {
+		if (post.owned || post.ownedToolBar) {
 			return images[iconKey].nonOutline;
 		}
 		return !interacted
@@ -492,7 +492,7 @@ export const Post = (post) => {
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
 
-		if (!post.owned) {
+		if (!post.owned && !post.ownedToolBar) {
 			if (interactions[userData.uid]) {
 				setInteracted(true);
 			}
@@ -608,7 +608,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
 						const now = Date.now();
@@ -624,9 +624,9 @@ export const Post = (post) => {
 						toggleToolbar();
 					}}
 				>
-					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
-						<StyledView className=' w-[88%]'>
-							<StyledView className='flex flex-row mb-2 '>
+					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
+						<StyledView className='w-[90%]'>
+							<StyledView className='flex flex-row mb-2'>
 								<CachedImage
 									cacheKey={shorthash.unique(post.img)}
 									style={{
@@ -641,7 +641,7 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${post.owned ? '' : 'ml-2'}`}
+									className={`${post.owned ? 'ml-[10px]' : 'ml-2'}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
 										{title?.length > 21
@@ -671,24 +671,24 @@ export const Post = (post) => {
 							</StyledView>
 							{post.icon == 'event' && (
 								<StyledView className='flex flex-row items-center mb-2'>
-									<StyledText className='text-white font-bold text-[16px]'>
+									<StyledText className={`${post.owned ? 'ml-[10px] text-white font-bold text-[16px]' : 'text-white font-bold text-[16px]'}`}>
 										{eventDate}
 									</StyledText>
 								</StyledView>
 							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white mt-[2px] pb-[10px]'>
+								<StyledText className={`${post.owned ? 'ml-[10px] text-white mt-[2px] pb-[10px]' : 'text-white mt-[2px] pb-[10px]'}`} >
 									{content?.length > 300
 										? content.substring(0, 297) + '...'
 										: content}
 								</StyledText>
 							</StyledView>
 						</StyledView>
-						<StyledView className='flex flex-col w-[15%] items-center justify-between'>
+						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
 							<StyledPressable
-								className='aspect-square flex items-center justify-center'
+								className='flex aspect-square w-[30px] self-end'
 								onPress={() => {
-									if (!post.owned) {
+									if (!post.owned && !post.ownedToolBar) {
 										toggleIcon();
 									} else {
 										setBottomSheetType('Interactions');
@@ -706,13 +706,13 @@ export const Post = (post) => {
 								/>
 							</StyledPressable>
 							<StyledPressable
-								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
+								className='flex w-[30px] aspect-square justify-end mb-[2px]'
 								onPress={() => {
 									toggleToolbar();
 								}}
 							>
 								<AnimatedImage
-									className='w-[32px] h-[32px]'
+									className='w-[28px] h-[28px]'
 									style={spiralStyle}
 									source={require('../assets/spiral/spiral.png')}
 								/>
