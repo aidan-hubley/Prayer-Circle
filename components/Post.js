@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { timeSince } from '../backend/functions';
+import { timeSince, formatDateAndTime } from '../backend/functions';
 import { writeData, readData, generateId } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -27,7 +27,6 @@ import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
-import { formatDateAndTime } from '../backend/functions';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -641,7 +640,9 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${post.owned ? 'ml-[10px]' : 'ml-2'}`}
+									className={`${
+										post.owned ? 'ml-[10px]' : 'ml-2'
+									}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
 										{title?.length > 21
@@ -671,13 +672,25 @@ export const Post = (post) => {
 							</StyledView>
 							{post.icon == 'event' && (
 								<StyledView className='flex flex-row items-center mb-2'>
-									<StyledText className={`${post.owned ? 'ml-[10px] text-white font-bold text-[16px]' : 'text-white font-bold text-[16px]'}`}>
+									<StyledText
+										className={`${
+											post.owned
+												? 'ml-[10px] text-white font-bold text-[16px]'
+												: 'text-white font-bold text-[16px]'
+										}`}
+									>
 										{eventDate}
 									</StyledText>
 								</StyledView>
 							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className={`${post.owned ? 'ml-[10px] text-white mt-[2px] pb-[10px]' : 'text-white mt-[2px] pb-[10px]'}`} >
+								<StyledText
+									className={`${
+										post.owned
+											? 'ml-[10px] text-white mt-[2px] pb-[10px]'
+											: 'text-white mt-[2px] pb-[10px]'
+									}`}
+								>
 									{content?.length > 300
 										? content.substring(0, 297) + '...'
 										: content}

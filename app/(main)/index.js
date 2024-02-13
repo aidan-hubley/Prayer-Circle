@@ -31,6 +31,13 @@ export default function Layout() {
 		circles,
 		setGlobalReload,
 		setFilterReload,
+		setFilterIcon,
+		setFilterColor,
+		setFilterDescription,
+		setFilterIconColor,
+		setUid,
+		setName,
+		setPfp,
 		setCircles
 	] = useStore((state) => [
 		state.currentFilterName,
@@ -39,6 +46,13 @@ export default function Layout() {
 		state.circles,
 		state.setGlobalReload,
 		state.setFilterReload,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterDescription,
+		state.setFilterIconColor,
+		state.setUid,
+		state.setName,
+		state.setPfp,
 		state.setCircles
 	]);
 	let insets = useSafeAreaInsets();

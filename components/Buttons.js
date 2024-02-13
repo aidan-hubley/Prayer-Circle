@@ -45,14 +45,14 @@ const Button = forwardRef((props, ref) => {
 	}));
 	return (
 		<StyledTouchableHighlight
-			style={opacityStyle}
+			style={[opacityStyle, {borderColor: props.borderColor}]}
 			activeOpacity={0.6}
 			underlayColor={`${props.bgColor || '#DDDDDD'}`}
 			className={`flex items-center justify-center rounded-full ${
 				props.bgColor || 'bg-offwhite'
 			} ${props.width || 'w-11/12'} ${props.height || 'h-[50px]'} ${
 				props.borderColor
-					? `border ${props.borderColor}`
+					? `border`
 					: 'border-none'
 			} ${props.btnStyles || ''} `}
 			onPress={() => {

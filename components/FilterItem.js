@@ -32,8 +32,17 @@ const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
 
 const FilterItem = forwardRef((props, ref) => {
-	const updateFilter = useStore((state) => state.updateFilter);
-	const updateFilterName = useStore((state) => state.updateFilterName);
+	const setFilter = useStore((state) => state.setFilter);
+	const setFilterName = useStore((state) => state.setFilterName);
+	const setFilterIcon = useStore((state) => state.setFilterIcon);
+	const setFilterColor = useStore((state) => state.setFilterColor);
+	const setFilterDescription = useStore(
+		(state) => state.setFilterDescription
+	);
+	const setFilterIconColor = useStore((state) => state.setFilterIconColor);
+	const setCircleMembersData = useStore(
+		(state) => state.setCircleMembersData
+	); //NRA
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -252,6 +261,13 @@ const FilterItem = forwardRef((props, ref) => {
 						props.setPressed('none');
 						updateFilter(props.data.id);
 						updateFilterName(props.data.title);
+						setFilter(props.data.id);
+						setFilterName(props.data.title);
+						setFilterIcon(props.data.icon);
+						setFilterColor(props.data.color);
+						setFilterDescription(props.data.description);
+						setFilterIconColor(props.data.iconColor);
+						setCircleMembersData(props.data.circleMembersData);
 					}}
 				>
 					<>
