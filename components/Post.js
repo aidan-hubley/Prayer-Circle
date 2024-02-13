@@ -425,7 +425,6 @@ export const Post = (post) => {
 		const end = formatDateAndTime(post?.data?.metadata?.end);
 		let date = '';
 
-		console.log(start.split(', ')[0]);
 		if (start === end) {
 			date = start;
 		} else if (start.split(', ')[0] === end.split(', ')[0]) {

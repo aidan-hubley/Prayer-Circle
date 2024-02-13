@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Text, View, Platform, Animated, FlatList } from 'react-native';
+import {
+	Text,
+	View,
+	Platform,
+	Animated,
+	FlatList,
+	ActivityIndicator
+} from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -119,16 +126,35 @@ export default function Page() {
 			circleMembersData.push({
 				name: name,
 				role: role,
-				img: img
+				img: img,
+				uid: targetUserList[i][0]
 			});
 		}
 		return circleMembersData;
 	}
 
+	function sortUsers(array) {
+		let data = array;
+		const statusesOrder = [
+			'owner',
+			'admin',
+			'member',
+			'suspended',
+			'banned'
+		];
+		data.sort((a, b) => {
+			return (
+				statusesOrder.indexOf(a.role) - statusesOrder.indexOf(b.role)
+			);
+		});
+
+		setMemberData(data);
+	}
+
 	useEffect(() => {
 		(async () => {
 			let data = await makeCircleUserList(filter);
-			setMemberData(data);
+			sortUsers(data);
 		})();
 	}, [filter]);
 
@@ -169,12 +195,12 @@ export default function Page() {
 							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
 								{currentFilterName}
 							</StyledText>
-							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
 								<StyledText className='text-white text-[14px]'>
 									{currentFilterDescription}
 								</StyledText>
 							</StyledView>
-							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
+							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[10px] items-center justify-center'>
 								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 									Members
 								</StyledText>
@@ -188,6 +214,7 @@ export default function Page() {
 								name={item.name}
 								role={item.role}
 								img={item.img}
+								uid={item.uid}
 								last={
 									memberData.indexOf(item) + 1 ==
 									memberData.length
@@ -195,6 +222,14 @@ export default function Page() {
 							/>
 						);
 					}}
+					ListEmptyComponent={
+						<StyledView className='border-x border-b border-[#6666660d] w-full h-[140px] bg-grey rounded-b-[10px] items-center justify-center'>
+							<ActivityIndicator size={'large'} />
+						</StyledView>
+					}
+					ListFooterComponent={
+						<StyledView className='w-full h-[100px] bg-offblack' />
+					}
 				/>
 				<StyledGradient
 					pointerEvents='none'

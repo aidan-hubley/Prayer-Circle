@@ -158,12 +158,15 @@ export async function getCircles() {
 }
 
 export async function getFilterCircles() {
+	let uid = await getUID();
 	let circles = await getCircles();
 	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
 
 	for (const circle of circles) {
 		let circleData =
 			(await readData(`prayer_circle/circles/${circle}`)) || {};
+
+		let role = circleData.members[uid];
 		let circleStruct = {
 			id: circle,
 			iconColor: circleData.iconColor,
@@ -172,6 +175,7 @@ export async function getFilterCircles() {
 			icon: circleData.icon,
 			description: circleData.description,
 			iconColor: circleData.iconColor,
+			role
 		};
 		circlesData.push(circleStruct);
 	}

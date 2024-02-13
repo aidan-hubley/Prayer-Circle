@@ -9,13 +9,19 @@ import { View, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
+import { writeData } from '../backend/firebaseFunctions';
 
 const StyledView = styled(View);
 
 const MemberPermissionSelector = forwardRef((props, ref) => {
 	const animationValue = useRef(new Animated.Value(0)).current;
 	const [open, setOpen] = useState(false);
-	const [permission, setPermission] = useState('');
+	const [permission, setPermission] = useState(props.role);
+	const [currentCircleRole, filter] = useStore((state) => [
+		state.currentCircleRole,
+		state.filter
+	]);
 
 	/* TODO: Implement DB update on permission change */
 
@@ -46,6 +52,7 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	};
 
 	const toggleOpen = () => {
+		if (permission === 'owner' || currentCircleRole === 'member') return;
 		Animated.timing(animationValue, {
 			toValue: open ? 0 : 1,
 			duration: 350,
@@ -55,12 +62,35 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 		setOpen(!open);
 	};
 
+	const updatePermission = (prevRole, newRole) => {
+		if (prevRole !== newRole) {
+			writeData(
+				`prayer_circle/circles/${filter}/members/${props.uid}`,
+				newRole,
+				true
+			);
+			if (newRole === 'admin') {
+				writeData(
+					`prayer_circle/circles/${filter}/admin/${props.uid}`,
+					true,
+					true
+				);
+			} else {
+				writeData(
+					`prayer_circle/circles/${filter}/admin/${props.uid}`,
+					null,
+					true
+				);
+			}
+			return newRole;
+		} else {
+			return prevRole;
+		}
+	};
+
 	useImperativeHandle(ref, () => ({
 		role: permission
 	}));
-	useEffect(() => {
-		setPermission(props.role);
-	}, []);
 
 	return (
 		<StyledView className={'justify-center'}>
@@ -76,27 +106,33 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 				{permission === 'admin' && (
 					<Ionicons name={'shield'} size={30} color={'#fff'} />
 				)}
-				{permission === 'member' && (
-					<Ionicons
-						name={'checkmark-circle'}
-						size={30}
-						color={'#00A55E'}
-					/>
-				)}
-				{permission === 'restricted' && (
-					<Ionicons
-						name={'remove-circle'}
-						size={30}
-						color={'#F9A826'}
-					/>
-				)}
-				{permission === 'banned' && (
-					<Ionicons
-						name={'close-circle'}
-						size={30}
-						color={'#CC2500'}
-					/>
-				)}
+				{permission === 'member' &&
+					(currentCircleRole === 'owner' ||
+						currentCircleRole === 'admin') && (
+						<Ionicons
+							name={'checkmark-circle'}
+							size={30}
+							color={'#00A55E'}
+						/>
+					)}
+				{permission === 'suspended' &&
+					(currentCircleRole === 'owner' ||
+						currentCircleRole === 'admin') && (
+						<Ionicons
+							name={'remove-circle'}
+							size={30}
+							color={'#F9A826'}
+						/>
+					)}
+				{permission === 'banned' &&
+					(currentCircleRole === 'owner' ||
+						currentCircleRole === 'admin') && (
+						<Ionicons
+							name={'close-circle'}
+							size={30}
+							color={'#CC2500'}
+						/>
+					)}
 			</Animated.View>
 			<Animated.View
 				style={[
@@ -119,7 +155,6 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 			>
 				<TouchableOpacity
 					onPress={() => {
-						/* setPermission('owner'); */
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
@@ -131,7 +166,9 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						setPermission('admin');
+						setPermission((prevPerm) =>
+							updatePermission(prevPerm, 'admin')
+						);
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
@@ -144,7 +181,9 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 				<StyledView className='h-[70%] mx-[3px] border-r border-r-outline' />
 				<TouchableOpacity
 					onPress={() => {
-						setPermission('member');
+						setPermission((prevPerm) =>
+							updatePermission(prevPerm, 'member')
+						);
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
@@ -161,18 +200,22 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 				<TouchableOpacity
 					onPress={() => {
 						toggleOpen();
-						setPermission('restricted');
+						setPermission((prevPerm) =>
+							updatePermission(prevPerm, 'suspended')
+						);
 					}}
 					style={iconContainerStyle}
 				>
 					<Ionicons name='remove-circle' size={30} color='#F9A826' />
-					{permission === 'restricted' && (
+					{permission === 'suspended' && (
 						<StyledView className='w-[24px] h-[1px] bg-offwhite' />
 					)}
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						setPermission('banned');
+						setPermission((prevPerm) =>
+							updatePermission(prevPerm, 'banned')
+						);
 						toggleOpen();
 					}}
 					style={iconContainerStyle}
