@@ -1,45 +1,65 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Text, View, Platform, Animated, ScrollView, FlatList} from 'react-native';
-import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
-import { Member } from '../../components/Member.js';
-import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
+import { Terms } from '../../components/Terms';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledScrollView = styled(ScrollView);
-const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	const [handles, setHandles] = useState('');
+	const [snapPoints, setSnapPoints] = useState([]);
+	const [modalContent, setModalContent] = useState(null);
+	const bottomSheetModalRef = useRef(null);
+
 	let insets = useSafeAreaInsets();
 
-	const [isModalVisible1, setModalVisible1] = useState(false);
-	const toggleModal1 = () => {
-		setModalVisible1(!isModalVisible1);
-	};
-
-	const [isModalVisible2, setModalVisible2] = useState(false);
-	const toggleModal2 = () => {
-		setModalVisible2(!isModalVisible2);
-	};
-
 	// bottom sheet modal
-	const bottomSheetModalRef = useRef(null);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
-	const [modalContent, setModalContent] = useState(null);
 
-	const [isEnabled, setIsEnabled] = useState(false);
-	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-	const togglePosition = React.useRef(new Animated.Value(1)).current;
+	const handleModalPress = (
+		modalContent,
+		snapPoints,
+		handleText,
+		handleColor,
+		extra = () => {}
+	) => {
+		extra();
+		setModalContent(modalContent);
+		setSnapPoints(snapPoints);
+		setHandles(handle(handleText, handleColor));
+		bottomSheetModalRef.current?.present();
+	};
+
+	const renderContent = () => {
+		switch (modalContent) {
+			case 'tos':
+				return (
+					<StyledView className='w-[90%] flex-1'>
+						<BottomSheetFlatList
+							data={[{ key: 'terms' }]}
+							renderItem={({ item }) => <Terms />}
+							keyExtractor={(item) => item.key}
+							showsVerticalScrollIndicator={false}
+						/>
+					</StyledView>
+				);
+			default:
+				return (
+					<></>
+				)			
+		}
+	};
+
 
 	return (
 		<BottomSheetModalProvider>
@@ -49,74 +69,6 @@ export default function Page() {
 					paddingTop: Platform.OS == 'android' ? insets.top : 0
 				}}
 			>
-				<FlatList
-					style={{
-						backgroundColor: '#121212',
-						paddingHorizontal: 15
-					}}
-					ListHeaderComponent={
-						<>
-							<StyledView
-								className='w-full flex items-center mb-[10px]'
-								style={{
-									height: 80
-								}}
-							/>
-							<StyledView className='w-full flex items-center justify-center'>
-								<Button
-									btnStyles='bg-offblack border-[8px] border-purple'
-									height={'h-[120px]'}
-									width={'w-[120px]'}
-									iconSize={70}
-									icon='musical-notes'
-									iconColor='white'
-									href='/'
-								/>
-							</StyledView>
-
-							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
-								Circle Name
-							</StyledText>
-							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-								<StyledText className='text-white text-[14px]'>
-									This is where the description of the circle
-									will go. It will be a short description of
-									the circle that will be displayed to users
-									who are interested in joining. Admins can
-									edit this description by clicking into the
-									box and typing.
-								</StyledText>
-							</StyledView>
-							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
-								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
-									Members
-								</StyledText>
-							</StyledView>
-						</>
-					}
-					data={dummyData}
-					renderItem={({ item }) => {
-						return (
-							<Member
-								name={item.name}
-								username={item.username}
-								role={item.role}
-								img={item.img}
-								last={item.key == dummyData.length}
-							/>
-						);
-					}}
-					ListFooterComponent={
-						<>
-							<StyledView
-								className='w-full flex items-center mb-[10px]'
-								style={{
-									height: insets.bottom + 55
-								}}
-							/>
-						</>
-					}
-				/>
 				<StyledGradient
 					pointerEvents='none'
 					start={{ x: 0, y: 0.1 }}
@@ -131,31 +83,28 @@ export default function Page() {
 					}}
 					className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
 				>
-					<Button
-						btnStyles='rotate-180 border-2'
-						bgColor='bg-offblack'
-						borderColor='border-yellow'
-						height={'h-[50px]'}
-						width={'w-[50px]'}
-						iconSize={30}
-						icon='log-out-outline'
-						iconColor='#F9A826'
-						press={toggleModal1}
-					/>
 					<StyledText className='text-4xl font-bold text-offwhite'>
-						Settings
+						Prayer Circle
 					</StyledText>
 					<Button
+						icon='document-text'
+						iconColor={'#FFFBFC'}
+						iconSize={26}
+						width={'w-[65px]'}
+						height={'h-[35px]'}
+						bgColor={'bg-transparent'}
+						textColor={'text-offwhite'}
+						borderColor={'border-offwhite'}
 						btnStyles='border-2'
-						bgColor='bg-offblack'
-						borderColor='border-red'
-						height={'h-[50px]'}
-						width={'w-[50px]'}
-						iconSize={30}
-						icon='trash-outline'
-						iconColor='#CC2500'
-						press={toggleModal2}
-					/>
+						press={() =>
+							handleModalPress(
+								'tos',
+								['65%', '85%'],
+								'Terms of Service',
+								''
+							)
+						}
+					></Button>
 				</StyledView>
 
 				<StyledView
@@ -169,12 +118,12 @@ export default function Page() {
 						icon='arrow-back'
 						href='/mainViewLayout'
 					/>
-					<Button // Queue
+					{/* <Button // Queue
 						title='Queue: 4'
 						height={'h-[50px]'}
 						width={'w-[200px]'}
 						press={handleQueuePress}
-					/>
+					/> */}
 					<Button // to Share Page
 						height={'h-[50px]'}
 						width={'w-[50px]'}
@@ -184,102 +133,15 @@ export default function Page() {
 					/>
 				</StyledView>
 
-				<StyledModal
-					className='w-[80%] self-center'
-					isVisible={isModalVisible1}
-				>
-					<StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<StyledText className='top-[6%] text-3xl text-offwhite'>
-								Leave this circle?
-							</StyledText>
-
-							<Button
-								btnStyles='top-[15%] bg-grey border-4 border-purple'
-								height={'h-[90px]'}
-								width={'w-[90px]'}
-								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
-								href='/mainViewLayout'
-							/>
-
-							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Name
-							</StyledText>
-							{/* Database call to remove from Circle  */}
-							<Button
-								title='Leave'
-								btnStyles={'top-[31%] border-2 border-yellow'}
-								bgColor={'bg-offblack'}
-								textStyles={'text-yellow'}
-								width='w-[70%]'
-								press={toggleModal1}
-							/>
-							<Button
-								title='Cancel'
-								btnStyles={'top-[37%]'}
-								width='w-[70%]'
-								press={toggleModal1}
-							/>
-						</StyledView>
-					</StyledView>
-				</StyledModal>
-
-				<StyledModal
-					className='w-[80%] self-center'
-					isVisible={isModalVisible2}
-				>
-					<StyledView className='bg-offblack border-[5px] border-red rounded-2xl h-[60%]'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<StyledText className='top-[6%] text-3xl text-offwhite'>
-								Delete this circle?
-							</StyledText>
-
-							<Button
-								btnStyles='top-[15%] bg-grey border-4 border-purple'
-								height={'h-[90px]'}
-								width={'w-[90px]'}
-								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
-								href='/mainViewLayout'
-							/>
-
-							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Name
-							</StyledText>
-							{/* Database call to remove from Circle  */}
-							<Button
-								title='Delete'
-								btnStyles={'top-[31%] border-2 border-red'}
-								bgColor={'bg-offblack'}
-								textStyles={'text-red'}
-								width='w-[70%]'
-								press={toggleModal2}
-							/>
-							<Button
-								title='Cancel'
-								btnStyles={'top-[37%]'}
-								width='w-[70%]'
-								press={toggleModal2}
-							/>
-						</StyledView>
-					</StyledView>
-				</StyledModal>
-
 				<BottomSheetModal
-					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
 					index={0}
-					snapPoints={SnapPoints(['65%'])}
-					handleComponent={() => handle('User Queue')}
-					backdropComponent={(backdropProps) =>
-						backdrop(backdropProps)
-					}
+					snapPoints={snapPoints}
+					handleComponent={() => handles}
+					backdropComponent={(backdropProps) => backdrop(backdropProps)}
 					keyboardBehavior='extend'
 				>
-					<StyledView className='flex-1 bg-offblack'>
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						{renderContent()}
 					</StyledView>
 				</BottomSheetModal>

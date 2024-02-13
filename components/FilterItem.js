@@ -262,8 +262,8 @@ const FilterItem = forwardRef((props, ref) => {
 						<StyledView className='flex items-center justify-center'>
 							<StyledImage
 								className='absolute'
-								source={require('../assets/Dark_Margin.png')}
-								style={{ width: 110, height: 110 }}
+								source={require('../assets/spiral/spiral.png')}
+								style={{ width: 75, height: 75 }}
 							/>
 							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-10'>
 								All Circles
