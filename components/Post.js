@@ -9,12 +9,20 @@ import {
 	RefreshControl,
 	TextInput,
 	Keyboard,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	Dimensions,
+	TouchableHighlight
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince } from '../backend/functions';
-import { writeData, readData, generateId } from '../backend/firebaseFunctions';
+import {
+	writeData,
+	readData,
+	generateId,
+	getFilterCircles,
+	getCircles
+} from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -37,6 +45,8 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
+const StyledAnimatedHighlight =
+	Animated.createAnimatedComponent(TouchableHighlight);
 
 export const Post = (post) => {
 	// variables
@@ -46,9 +56,26 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const [setGlobalReload, setJournalReload] = useStore((state) => [
+	const [
+		setGlobalReload,
+		setJournalReload,
+		setFilter,
+		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterDescription,
+		setFilterIconColor,
+		setCircleMembersData
+	] = useStore((state) => [
 		state.setGlobalReload,
-		state.setJournalReload
+		state.setJournalReload,
+		state.setFilter,
+		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterDescription,
+		state.setFilterIconColor,
+		state.setCircleMembersData
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(post.title);
@@ -59,6 +86,7 @@ export const Post = (post) => {
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
+	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -112,7 +140,6 @@ export const Post = (post) => {
 		inputRange: [0, 1],
 		outputRange: ['0deg', '180deg']
 	});
-
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
 	};
@@ -238,6 +265,62 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledView>
 			</TouchableWithoutFeedback>
+		);
+	};
+
+	const circlesView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<BottomSheetFlatList
+					data={circles}
+					keyExtractor={(item) => item.id}
+					contentContainerStyle={{
+						paddingVertical: 20,
+						paddingHorizontal: 12,
+						alignItems: 'center'
+					}}
+					numColumns={3}
+					renderItem={({ item }) => {
+						const vw = Dimensions.get('window').width;
+						return (
+							<StyledView
+								className='items-center justify-around my-[10px]'
+								style={{ width: vw / 3 - 8 }}
+							>
+								<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
+									{item.title}
+								</StyledText>
+								<StyledAnimatedHighlight
+									style={[
+										{
+											borderColor: item.color
+										}
+									]}
+									className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
+									onPress={() => {
+										bottomSheetModalRef.current.dismiss();
+										setFilter(item.id);
+										setFilterName(item.title);
+										setFilterIcon(item.icon);
+										setFilterColor(item.color);
+										setFilterDescription(item.description);
+										setFilterIconColor(item.iconColor);
+										setCircleMembersData(
+											item.circleMembersData
+										);
+									}}
+								>
+									<StyledIcon
+										name={item.icon}
+										size={45}
+										color={item.iconColor || item.color}
+									/>
+								</StyledAnimatedHighlight>
+							</StyledView>
+						);
+					}}
+				/>
+			</StyledView>
 		);
 	};
 
@@ -418,6 +501,16 @@ export const Post = (post) => {
 
 		if (post.icon == 'event') getEventDate();
 		await populateComments(post.comments);
+
+		let circlesData = [];
+		let userCircles = await getCircles();
+		for (let circle of Object.keys(post.data.circles)) {
+			if (!userCircles.includes(circle)) continue;
+			let circleData = await readData(`prayer_circle/circles/${circle}`);
+			circleData.id = circle;
+			circlesData.push(circleData);
+		}
+		setCircles(circlesData);
 	};
 
 	const getEventDate = () => {
@@ -425,7 +518,6 @@ export const Post = (post) => {
 		const end = formatDateAndTime(post?.data?.metadata?.end);
 		let date = '';
 
-		console.log(start.split(', ')[0]);
 		if (start === end) {
 			date = start;
 		} else if (start.split(', ')[0] === end.split(', ')[0]) {
@@ -693,11 +785,12 @@ export const Post = (post) => {
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
-								onPress={() => {
+								onPress={async () => {
 									Haptics.impactAsync(
 										Haptics.ImpactFeedbackStyle.Light
 									);
-									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
+									setBottomSheetType('All Circles');
+									handlePresentModalPress();
 								}}
 							/>
 						</StyledView>
@@ -715,6 +808,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'All Circles' && circlesView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);
