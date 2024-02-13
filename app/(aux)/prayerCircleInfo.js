@@ -6,14 +6,14 @@ import { Button } from '../../components/Buttons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Terms } from '../../components/Terms';
 import { router } from 'expo-router';
-import { SvgUri } from 'react-native-svg';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
-const StyledSvg = styled(SvgUri);
+const StyledIcon = styled(Ionicons);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 const StyledGradient = styled(LinearGradient);
@@ -105,74 +105,56 @@ export default function Page() {
 							Give your Feedback
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-							<StyledView className='flex w-full gap-y-2'>
+							<StyledView className='flex w-full gap-y-3'>
 								
 								<StyledView className='flex flex-row w-full h-[35px]'>									
-									<StyledView className='pl-2'>
-										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
-										>
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 											Beta Test Review
 										</StyledText>
 									</StyledView>								
-									<Button
-										icon='document'
-										iconColor={'#FFFBFC'}
-										iconSize={26}
-										width={'w-[65px]'}
-										height={'h-[35px]'}
-										bgColor={'bg-transparent'}
-										borderColor={'border-offwhite'}										
-										btnStyles='border-2 absolute right-2 top-[5px]'
-										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
-									></Button>
-								</StyledView>
-
-								<StyledView className='flex flex-row w-full h-[35px]'>									
-									<StyledView className='pl-2'>
-										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
-										>
-											Rate the App
-										</StyledText>
-									</StyledView>								
-									{/* <Button
-										icon={Platform.OS == 'android' ? 'logo-andriod' : 'logo-apple'}
-										iconColor={'#FFFBFC'}
-										iconSize={26}
-										width={'w-[65px]'}
-										height={'h-[35px]'}
-										bgColor={'bg-transparent'}
-										borderColor={'border-offwhite'}										
-										btnStyles='border-2 absolute right-2 top-[5px]'
-										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
-									></Button> */}
-									<StyledPressable>
-										<StyledSvg
-											className='w-[26px] h-[26px]'
-											// uri={Platform.OS == 'android' ? '../../assets/logos/logo-andriod.svg' : '../../assets/logos/logo-apple.svg'}
-											
+									<StyledPressable className='w-[65px] h-[35px] bg-transparent border-offwhite border rounded-[20px] absolute right-2 top-[5px] justify-center items-center'>
+										<StyledImage
+											className='w-[18px] h-[24px]'
+											source={require('../../assets/logos/googleForm.png')}
 										/>
 									</StyledPressable>
 								</StyledView>
 
 								<StyledView className='flex flex-row w-full h-[35px]'>									
-									<StyledView className='pl-2'>
-										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
-										>
-											Report a Bug
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+											Rate the App
 										</StyledText>
 									</StyledView>								
 									<Button
-										icon='bug'
-										iconColor={'#FFFBFC'}
+										icon={Platform.OS == 'android' ? 'logo-google-playstore' : 'logo-apple-appstore'}
+										iconColor={'#4285F4'}
 										iconSize={26}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
 										bgColor={'bg-transparent'}
 										borderColor={'border-offwhite'}										
-										btnStyles='border-2 absolute right-2 top-[5px]'
+										btnStyles='border absolute right-2 top-[5px]'
+										href={'/'}
+									></Button>
+								</StyledView>
+
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+											Report a Bug
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon='bug'
+										iconColor={'#00A55E'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
 									></Button>
 								</StyledView>
@@ -185,7 +167,7 @@ export default function Page() {
 							Our Team
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-							<StyledView className='flex w-full gap-y-2'>
+							<StyledView className='flex w-full gap-y-3'>
 							
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
