@@ -125,7 +125,7 @@ export default function Layout() {
 					title={filterName || 'Prayer Circle'}
 					height='h-[50]'
 					width='w-full'
-					href='/circleSettings'
+					href={filterName == 'Prayer Circle' ? '/prayerCircleInfo' : '/circleSettings'}
 					ref={circleNameRef}
 				/>
 			</StyledView>
