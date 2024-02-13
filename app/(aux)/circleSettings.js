@@ -1,3 +1,4 @@
+{/* In the future, Leave Circle and Delete circle code could be parameterized and merged */}
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Text, View, Platform, Animated, FlatList } from 'react-native';
 import Modal from 'react-native-modal';
@@ -44,7 +45,7 @@ export default function Page() {
 	]);
 	let insets = useSafeAreaInsets();
 
-	const [isModalVisible1, setModalVisible1] = useState(false);
+	const [isModalVisible1, setModalVisible1] = useState(false); //NRA replace
 	const toggleModal1 = () => {
 		setModalVisible1(!isModalVisible1);
 	};
@@ -54,7 +55,7 @@ export default function Page() {
 		setModalVisible2(!isModalVisible2);
 	};
 
-	// bottom sheet modal
+	// bottom sheet modal //NRA use
 	const bottomSheetModalRef = useRef(null);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
@@ -76,11 +77,11 @@ export default function Page() {
 	const handleQueuePress = () => {
 		setModalContent('queue');
 		handlePresentModalPress();
-	};
+	}; //NRA imitate
 
 	const renderContent = () => {
 		switch (modalContent) {
-			case 'queue':
+			case 'queue': //NRA imitate
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<BottomSheetFlatList
@@ -263,6 +264,7 @@ export default function Page() {
 					/>
 				</StyledView>
 
+				{/* NRA replace */}
 				<StyledModal
 					className='w-[80%] self-center'
 					isVisible={isModalVisible1}
@@ -306,6 +308,7 @@ export default function Page() {
 					</StyledView>
 				</StyledModal>
 
+				{/* NRA replace */}
 				<StyledModal
 					className='w-[80%] self-center'
 					isVisible={isModalVisible2}
@@ -354,7 +357,7 @@ export default function Page() {
 					ref={bottomSheetModalRef}
 					index={0}
 					snapPoints={SnapPoints(['65%'])}
-					handleComponent={() => handle('User Queue')}
+					handleComponent={() => handle('User Queue')} //NRA what does this line mean exactly?
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}

@@ -38,7 +38,7 @@ const FilterItem = forwardRef((props, ref) => {
 		const setFilterColor = useStore((state) => state.setFilterColor);
 		const setFilterDescription = useStore((state) => state.setFilterDescription);
 		const setFilterIconColor = useStore((state) => state.setFilterIconColor);
-		const setCircleMembersData = useStore((state) => state.setCircleMembersData); //NRA
+		const setCircleMembersData = useStore((state) => state.setCircleMembersData);
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -257,10 +257,9 @@ const FilterItem = forwardRef((props, ref) => {
 						setFilterName(props.data.title);
 						setFilterIcon(props.data.icon);
 						setFilterColor(props.data.color);
-						setFilterDescription(props.data.description); //NRA
+						setFilterDescription(props.data.description);
 						setFilterIconColor(props.data.iconColor);
 						setCircleMembersData(props.data.circleMembersData)
-						console.log(props.data.circleMembersData);
 					}}
 				>
 					<>
