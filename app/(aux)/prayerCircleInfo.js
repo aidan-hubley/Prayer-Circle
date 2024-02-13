@@ -71,18 +71,17 @@ export default function Page() {
 			<StyledView className='flex-1 items-center'>
 				<ScrollView>
 					<StyledView className='w-full flex items-center'>
-						<View className='relative'></View>
 						<StyledView
 							className='w-full flex items-center mb-[10px]'
 							style={{
-								height: 80
+								height: 30
 							}}
 						/>
 						<StyledPressable 							
-							onPress={() => (router.push('http://prayer-circle.com'))}	
+							onPress={() => (router.push('http://prayer-circle.com'))}
 						>
 							<StyledImage
-								className='w-[300px] h-[300px]'
+								style={{ width: 300, height: 300 }}
 								source={require('../../assets/Dark_Margin.png')}								
 							/>
 						</StyledPressable>
@@ -102,10 +101,10 @@ export default function Page() {
 						</StyledView>
 
 						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
-							Give your Feedback
+							Send Feedback
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-							<StyledView className='flex w-full gap-y-3'>
+							<StyledView className='flex w-full gap-y-3 pb-2'>
 								
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
@@ -113,7 +112,10 @@ export default function Page() {
 											Beta Test Review
 										</StyledText>
 									</StyledView>								
-									<StyledPressable className='w-[65px] h-[35px] bg-transparent border-offwhite border rounded-[20px] absolute right-2 top-[5px] justify-center items-center'>
+									<StyledPressable 
+										className='w-[65px] h-[35px] bg-transparent border-offwhite border rounded-[20px] absolute right-2 top-[5px] justify-center items-center'
+										onPress={() => ('/')}
+									>	
 										<StyledImage
 											className='w-[18px] h-[24px]'
 											source={require('../../assets/logos/googleForm.png')}
@@ -155,7 +157,74 @@ export default function Page() {
 										bgColor={'bg-transparent'}
 										borderColor={'border-offwhite'}										
 										btnStyles='border absolute right-2 top-[5px]'
-										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
+										href={'/'}
+									></Button>
+								</StyledView>
+
+							</StyledView>
+							
+						</StyledView>
+
+						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
+							Connect with Us
+						</StyledText>
+						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledView className='flex w-full gap-y-3 pb-2'>
+								
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+											Instagram
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon={'logo-instagram'}
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border absolute right-2 top-[5px]'
+										href={'/'}
+									></Button>
+								</StyledView>
+
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+											Visit the Site
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon={'globe-outline'}
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border absolute right-2 top-[5px]'
+										href={'http://prayer-circle.com'}
+									></Button>
+								</StyledView>
+
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+											Email our Team
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon='mail'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										borderColor={'border-offwhite'}										
+										btnStyles='border absolute right-2 top-[5px]'
+										href={'/'}
 									></Button>
 								</StyledView>
 
@@ -172,7 +241,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 40, height: 40 }}
+										style={{ width: 60, height: 60 }}
 										source={require('../../assets/devs/aidan.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -191,8 +260,9 @@ export default function Page() {
 										iconSize={26}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
-										bgColor={'bg-transparent'}										
-										btnStyles='absolute right-2 top-[5px]'
+										bgColor={'bg-transparent'}			
+										borderColor={'border-offwhite'}																	
+										btnStyles='border absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
 									></Button>
 								</StyledView>
@@ -200,7 +270,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 40, height: 40 }}
+										style={{ width: 60, height: 60 }}
 										source={require('../../assets/devs/alex.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -219,8 +289,9 @@ export default function Page() {
 										iconSize={26}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
-										bgColor={'bg-transparent'}										
-										btnStyles='absolute right-2 top-[5px]'
+										bgColor={'bg-transparent'}	
+										borderColor={'border-offwhite'}																			
+										btnStyles='border absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/amuresan5833/'}
 									></Button>
 								</StyledView>
@@ -229,7 +300,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 40, height: 40 }}
+										style={{ width: 60, height: 60 }}
 										source={require('../../assets/devs/nason.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -248,8 +319,9 @@ export default function Page() {
 										iconSize={26}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
-										bgColor={'bg-transparent'}										
-										btnStyles='absolute right-2 top-[5px]'
+										bgColor={'bg-transparent'}	
+										borderColor={'border-offwhite'}																			
+										btnStyles='border absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/nason-allen/'}
 									></Button>
 								</StyledView>
@@ -257,7 +329,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 40, height: 40 }}
+										style={{ width: 60, height: 60 }}
 										source={require('../../assets/devs/andrew.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -276,8 +348,9 @@ export default function Page() {
 										iconSize={26}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
-										bgColor={'bg-transparent'}										
-										btnStyles='absolute right-2 top-[5px]'
+										bgColor={'bg-transparent'}		
+										borderColor={'border-offwhite'}																		
+										btnStyles='border absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/andrew-roberti-4724a8263/'}
 									></Button>
 								</StyledView>
@@ -285,7 +358,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 40, height: 40 }}
+										style={{ width: 60, height: 60 }}
 										source={require('../../assets/devs/justin.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -304,12 +377,136 @@ export default function Page() {
 										iconSize={26}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
-										bgColor={'bg-transparent'}										
-										btnStyles='absolute right-2 top-[5px]'
+										bgColor={'bg-transparent'}	
+										borderColor={'border-offwhite'}																			
+										btnStyles='border absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/justin-ayres-25576921b/'}
 									></Button>
 								</StyledView>
 							
+							</StyledView>
+						</StyledView>
+
+						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
+							Our Team Stylized
+						</StyledText>
+						<StyledView className='w-[95%]  border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledView className='flex w-full h-auto'>
+								
+								<StyledView className='z-10 flex'>		
+									<StyledPressable
+										className='flex-col w-auto items-center justify-center'
+										onPress={() => (router.push('https://www.linkedin.com/in/aidan-hubley-24228322b/'))}
+									>							
+										<StyledImage
+											className='rounded-xl'
+											style={{ width: 60, height: 60 }}
+											source={require('../../assets/devs/aidan.jpg')}
+										/>
+										<StyledText
+											className={`font-[600] text-offwhite text-[20px]`}
+										>
+											Aidan Hubley
+										</StyledText>
+										{/* <StyledText className={`text-offwhite text-[14px]`}>
+											Team Lead
+										</StyledText> */}
+									</StyledPressable>							
+								</StyledView>
+
+								<StyledView className='z-10 flex-row justify-between pt-3 pb-5'>
+									<StyledView className='flex right-2'>		
+										<StyledPressable
+											className='flex-col w-auto items-center justify-center'
+											onPress={() => (router.push('https://www.linkedin.com/in/amuresan5833/'))}
+										>							
+											<StyledImage
+												className='rounded-xl'
+												style={{ width: 60, height: 60 }}
+												source={require('../../assets/devs/alex.jpg')}
+											/>
+											<StyledText
+												className={`font-[600] text-offwhite text-[20px]`}
+											>
+												Alex Muresan
+											</StyledText>
+											{/* <StyledText className={`text-offwhite text-[14px]`}>
+												Batabase Manager
+											</StyledText> */}
+										</StyledPressable>							
+									</StyledView>
+
+									<StyledView className='flex left-4'>		
+										<StyledPressable
+											className='flex-col w-auto items-center justify-center'
+											onPress={() => (router.push('https://www.linkedin.com/in/andrew-roberti-4724a8263/'))}
+										>							
+											<StyledImage
+												className='rounded-xl'
+												style={{ width: 60, height: 60 }}
+												source={require('../../assets/devs/andrew.jpg')}
+											/>
+											<StyledText
+												className={`font-[600] text-offwhite text-[20px]`}
+											>
+												Andrew Roberti
+											</StyledText>
+											{/* <StyledText className={`text-offwhite text-[14px]`}>
+												Developer
+											</StyledText> */}
+										</StyledPressable>					
+									</StyledView>
+								</StyledView>
+								
+								<StyledView className='z-10 flex-row justify-evenly'>
+									<StyledView className='flex'>			
+										<StyledPressable
+											className='flex-col w-auto items-center justify-center'
+											onPress={() => (router.push('https://www.linkedin.com/in/nason-allen/'))}
+										>							
+											<StyledImage
+												className='rounded-xl'
+												style={{ width: 60, height: 60 }}
+												source={require('../../assets/devs/nason.jpg')}
+											/>
+											<StyledText
+												className={`font-[600] text-offwhite text-[20px]`}
+											>
+												Nason Allen
+											</StyledText>
+											{/* <StyledText className={`text-offwhite text-[14px]`}>
+												Developer
+											</StyledText> */}
+										</StyledPressable>							
+									</StyledView>
+
+									<StyledView className='flex'>		
+										<StyledPressable
+											className='flex-col w-auto items-center justify-center'
+											onPress={() => (router.push('https://www.linkedin.com/in/justin-ayres-25576921b/'))}
+										>							
+											<StyledImage
+												className='rounded-xl'
+												style={{ width: 60, height: 60 }}
+												source={require('../../assets/devs/justin.jpg')}
+											/>
+											<StyledText
+												className={`font-[600] text-offwhite text-[20px]`}
+											>
+												Justin Ayres
+											</StyledText>
+											{/* <StyledText className={`text-offwhite text-[14px]`}>
+												Developer
+											</StyledText> */}
+										</StyledPressable>							
+									</StyledView>
+								</StyledView>
+							
+								<StyledImage
+									className='z-0 absolute top-2 self-center justify-center w-[260px] h-[260px]'															
+									source={require('../../assets/spiral/spiral.png')}
+								/>
+
 							</StyledView>
 						</StyledView>
 
@@ -367,25 +564,12 @@ export default function Page() {
 					className='absolute flex flex-row w-screen px-[15px] justify-between'
 					style={{ bottom: insets.bottom }}
 				>
-					<Button // Back to Feed Page
+					<Button
 						height={'h-[50px]'}
 						width={'w-[50px]'}
 						iconSize={30}
 						icon='arrow-back'
-						href='/mainViewLayout'
-					/>
-					{/* <Button // Queue
-						title='Queue: 4'
-						height={'h-[50px]'}
-						width={'w-[200px]'}
-						press={handleQueuePress}
-					/> */}
-					<Button // to Share Page
-						height={'h-[50px]'}
-						width={'w-[50px]'}
-						iconSize={30}
-						icon='qr-code'
-						href='shareCircle'
+						href='/'
 					/>
 				</StyledView>
 
