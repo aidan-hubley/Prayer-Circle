@@ -190,6 +190,7 @@ export default function ProfilePage() {
 						id={item[0]}
 						owned={true}
 						edited={item[1].edited}
+						metadata={item[1].metadata}
 						data={item[1]}
 					/>
 				)}

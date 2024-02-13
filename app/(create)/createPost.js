@@ -209,6 +209,14 @@ export default function Page() {
 							circles[circle] = true;
 						});
 
+						if (
+							typeSelected === 'event' &&
+							(!startDate || !endDate)
+						)
+							return alert(
+								'Please select a start and end date for your event.'
+							);
+
 						let newPost = {
 							user: userData.uid,
 							profile_img: userData.photoURL,

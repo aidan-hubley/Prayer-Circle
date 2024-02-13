@@ -487,7 +487,7 @@ export const Post = (post) => {
 			console.error('Error toggling bookmark:', error.message);
 		}
 
-		if (post.icon == 'event') getEventDate();
+		if (post.icon === 'event') getEventDate();
 
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
@@ -513,16 +513,18 @@ export const Post = (post) => {
 	};
 
 	const getEventDate = () => {
-		const start = formatDateAndTime(post?.data?.metadata?.start);
-		const end = formatDateAndTime(post?.data?.metadata?.end);
+		const start = formatDateAndTime(post?.metadata?.start);
+		const end = formatDateAndTime(post?.metadata?.end);
 		let date = '';
 
 		if (start === end) {
 			date = start;
 		} else if (start.split(', ')[0] === end.split(', ')[0]) {
-			date = `${start.split(', ')[0]}, ${start.split(', ')[1]} - ${
+			date = `${start.split(', ')[0]}, ${start.split(', ')[1]}-${
 				end.split(', ')[1]
 			}`;
+		} else {
+			date = `${start} - ${end}`;
 		}
 
 		setEventDate(date);
