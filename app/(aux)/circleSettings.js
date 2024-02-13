@@ -1,12 +1,5 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
-import {
-	Text,
-	View,
-	Platform,
-	Animated,
-	ScrollView,
-	FlatList
-} from 'react-native';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Text, View, Platform, Animated, FlatList } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,6 +7,8 @@ import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
 import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useStore } from '../global';
+import { readData } from '../../backend/firebaseFunctions.js';
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
@@ -27,12 +22,26 @@ import {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
-const StyledScrollView = styled(ScrollView);
 const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+	const [memberData, setMemberData] = useState([]);
+	const [
+		filter,
+		currentFilterName,
+		currentFilterIcon,
+		currentFilterColor,
+		currentFilterDescription,
+		currentFilterIconColor
+	] = useStore((state) => [
+		state.filter,
+		state.currentFilterName,
+		state.currentFilterIcon,
+		state.currentFilterColor,
+		state.currentFilterDescription,
+		state.currentFilterIconColor
+	]);
 	let insets = useSafeAreaInsets();
 
 	const [isModalVisible1, setModalVisible1] = useState(false);
@@ -56,9 +65,6 @@ export default function Page() {
 	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 	const togglePosition = React.useRef(new Animated.Value(1)).current;
 
-	const Trevor =
-		'https://media.licdn.com/dms/image/C4E03AQEjKbD7qFuQJQ/profile-displayphoto-shrink_200_200/0/1574282480254?e=1701907200&v=beta&t=1BizKLULm5emiKX3xlsRq7twzFTqynOsfTlbRwqNuXI';
-
 	React.useEffect(() => {
 		Animated.timing(togglePosition, {
 			toValue: isEnabled ? 45 : 5,
@@ -66,92 +72,6 @@ export default function Page() {
 			useNativeDriver: false
 		}).start();
 	}, [isEnabled]);
-
-	const dummyData = [
-		{
-			key: '1',
-			name: 'Josh Philips',
-			username: 'JoshuaP.149134',
-			role: 'own',
-			img: Trevor
-		},
-		{
-			key: '2',
-			name: 'Alex Muresan',
-			username: 'muresanCoder.20',
-			role: 'mod',
-			img: Trevor
-		},
-		{
-			key: '3',
-			name: 'Nason Allen',
-			username: 'AllenNasin0987654',
-			role: 'mod',
-			img: Trevor
-		},
-		{
-			key: '4',
-			name: 'Aidan Hubley',
-			username: 'HubleyPraying',
-			role: 'ban',
-			img: Trevor
-		},
-		{
-			key: '5',
-			name: 'Trevor Bunch',
-			username: 'BunchTrevoraccount',
-			role: 'mem',
-			img: Trevor
-		},
-		{
-			key: '6',
-			name: 'Another Account',
-			username: 'ExampleAccount1',
-			role: 'sus',
-			img: Trevor
-		},
-		{
-			key: '7',
-			name: 'Another Account',
-			username: 'ExampleAccount2',
-			role: 'mem',
-			img: Trevor
-		},
-		{
-			key: '8',
-			name: 'Another Account',
-			username: 'ExampleAccount3',
-			role: 'mem',
-			img: Trevor
-		}
-	];
-
-	const dummyData2 = [
-		{
-			key: '1',
-			name: 'Shiela Sunrise',
-			username: 'GotHops00',
-			img: Trevor
-		},
-		{
-			key: '2',
-			name: 'James Byrd',
-			username: 'NamesByrd...JamesByrd',
-			img: Trevor
-		},
-		{
-			key: '3',
-			name: 'Bentley Lastname',
-			username: 'TotallyNotBartholomew',
-			img: Trevor
-		},
-		{
-			key: '4',
-			name: 'Agent 9',
-			username: 'MonkeyModeActivated',
-			img: Trevor
-		}
-	];
 
 	const handleQueuePress = () => {
 		setModalContent('queue');
@@ -164,14 +84,13 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<BottomSheetFlatList
-							data={dummyData2}
+							data={memberData}
 							renderItem={({ item }) => {
 								return (
 									<MemberQueue
 										name={item.name}
-										username={item.username}
 										img={item.img}
-										last={item.key == dummyData.length}
+										last={item.key == memberData.length}
 									/>
 								);
 							}}
@@ -182,6 +101,36 @@ export default function Page() {
 				return null;
 		}
 	};
+
+	async function makeCircleUserList(circle) {
+		let circleMembersData = [];
+		let targetUserList = Object.entries(
+			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
+		);
+		for (i = 0; i < targetUserList.length; i++) {
+			let data =
+				(await readData(
+					`prayer_circle/users/${targetUserList[i][0]}/public`
+				)) || {};
+			let name = data.fname + ' ' + data.lname;
+
+			let role = targetUserList[i][1];
+			let img = data.profile_img;
+			circleMembersData.push({
+				name: name,
+				role: role,
+				img: img
+			});
+		}
+		return circleMembersData;
+	}
+
+	useEffect(() => {
+		(async () => {
+			let data = await makeCircleUserList(filter);
+			setMemberData(data);
+		})();
+	}, [filter]);
 
 	return (
 		<BottomSheetModalProvider>
@@ -206,27 +155,23 @@ export default function Page() {
 							/>
 							<StyledView className='w-full flex items-center justify-center'>
 								<Button
-									btnStyles='bg-offblack border-[8px] border-purple'
+									btnStyles='bg-offblack border-[8px]'
 									height={'h-[120px]'}
 									width={'w-[120px]'}
 									iconSize={70}
-									icon='musical-notes'
-									iconColor='white'
+									icon={currentFilterIcon}
+									iconColor={currentFilterIconColor}
 									href='/'
+									borderColor={currentFilterColor}
 								/>
 							</StyledView>
 
 							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
-								Circle Name
+								{currentFilterName}
 							</StyledText>
 							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
 								<StyledText className='text-white text-[14px]'>
-									This is where the description of the circle
-									will go. It will be a short description of
-									the circle that will be displayed to users
-									who are interested in joining. Admins can
-									edit this description by clicking into the
-									box and typing.
+									{currentFilterDescription}
 								</StyledText>
 							</StyledView>
 							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
@@ -236,28 +181,20 @@ export default function Page() {
 							</StyledView>
 						</>
 					}
-					data={dummyData}
+					data={memberData}
 					renderItem={({ item }) => {
 						return (
 							<Member
 								name={item.name}
-								username={item.username}
 								role={item.role}
 								img={item.img}
-								last={item.key == dummyData.length}
+								last={
+									memberData.indexOf(item) + 1 ==
+									memberData.length
+								}
 							/>
 						);
 					}}
-					ListFooterComponent={
-						<>
-							<StyledView
-								className='w-full flex items-center mb-[10px]'
-								style={{
-									height: insets.bottom + 55
-								}}
-							/>
-						</>
-					}
 				/>
 				<StyledGradient
 					pointerEvents='none'
@@ -341,13 +278,14 @@ export default function Page() {
 								height={'h-[90px]'}
 								width={'w-[90px]'}
 								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
+								icon={currentFilterIcon}
+								iconColor={currentFilterIconColor}
 								href='/'
+								borderColor={currentFilterColor}
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Name
+								{currentFilterName}
 							</StyledText>
 							{/* Database call to remove from Circle  */}
 							<Button
@@ -383,13 +321,14 @@ export default function Page() {
 								height={'h-[90px]'}
 								width={'w-[90px]'}
 								iconSize={60}
-								icon='musical-notes'
-								iconColor='white'
+								icon={currentFilterIcon}
+								iconColor={currentFilterIconColor}
 								href='/'
+								borderColor={currentFilterColor}
 							/>
 
 							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								Circle Name
+								{currentFilterName}
 							</StyledText>
 							{/* Database call to remove from Circle  */}
 							<Button
