@@ -983,7 +983,7 @@ export default function Page() {
 									height={'h-[35px]'}
 									bgColor={'bg-transparent'}
 									textColor={'text-offwhite'}
-									borderColor={'border-offwhite'}
+									borderColor={'#FFFBFC'}
 									btnStyles='border-2'
 									press={() =>
 										handleModalPress(
@@ -1024,13 +1024,13 @@ export default function Page() {
 								<StyledView className='flex-row justify-between'>
 									<StyledView className='w-full justify-between flex-row'>
 										<Button
-  											title={`Edit Name: ${userData.displayName}`}
+											title={`Edit Name: ${userData.displayName}`}
 											textColor={'text-offwhite'}
 											textStyles='font-normal'
 											width={'flex-1'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-offwhite'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() =>
 												handleModalPress(
@@ -1048,7 +1048,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-offwhite'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() =>
 												handleModalPress(
@@ -1262,7 +1262,7 @@ export default function Page() {
 									width={'w-[65px]'}
 									height={'h-[35px]'}
 									bgColor={'bg-transparent'}
-									borderColor={'border-white'}
+									borderColor={'#FFFBFC'}
 									btnStyles='border-2'
 									press={() => {
 										handleModalPress(
@@ -1298,7 +1298,7 @@ export default function Page() {
 									iconSize={30}
 									iconColor={'#F9A826'}
 									btnStyles='border-2'
-									borderColor={'border-yellow'}
+									borderColor={'#F9A826'}
 									press={() => toggleAdvancedSettings()}
 								></Button>
 							</View>
@@ -1347,9 +1347,7 @@ export default function Page() {
 													width={'flex-1'}
 													height={'h-[35px]'}
 													bgColor={'bg-transparent'}
-													borderColor={
-														'border-offwhite'
-													}
+													borderColor={'#FFFBFC'}
 													btnStyles='mr-3 border-2'
 													press={() => {
 														handleModalPress(
@@ -1366,9 +1364,7 @@ export default function Page() {
 													width={'w-[65px]'}
 													height={'h-[35px]'}
 													bgColor={'bg-transparent'}
-													borderColor={
-														'border-offwhite'
-													}
+													borderColor={'#FFFBFC'}
 													iconSize={26}
 													iconColor={'#FFFBFC'}
 													btnStyles='border-2'
@@ -1398,7 +1394,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() => {
 												handleModalPress(
@@ -1431,7 +1427,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() => {
 												handleModalPress(
@@ -1465,7 +1461,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() => {
 												handleModalPress(

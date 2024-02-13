@@ -40,9 +40,6 @@ const FilterItem = forwardRef((props, ref) => {
 		(state) => state.setFilterDescription
 	);
 	const setFilterIconColor = useStore((state) => state.setFilterIconColor);
-	const setCircleMembersData = useStore(
-		(state) => state.setCircleMembersData
-	); //NRA
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -219,9 +216,14 @@ const FilterItem = forwardRef((props, ref) => {
 												className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
 												onPress={() => {
 													bottomSheetModalRef.current.dismiss();
-													updateFilter(item.id);
-													updateFilterName(
-														item.title
+													props.toggleShown();
+													props.setPressed('none');
+													setFilter(item.id);
+													setFilterName(item.title);
+													setFilterIcon(item.icon);
+													setFilterColor(item.color);
+													setFilterIconColor(
+														item.iconColor
 													);
 												}}
 											>
@@ -259,15 +261,11 @@ const FilterItem = forwardRef((props, ref) => {
 					onPress={() => {
 						props.toggleShown();
 						props.setPressed('none');
-						updateFilter(props.data.id);
-						updateFilterName(props.data.title);
 						setFilter(props.data.id);
 						setFilterName(props.data.title);
 						setFilterIcon(props.data.icon);
 						setFilterColor(props.data.color);
-						setFilterDescription(props.data.description);
 						setFilterIconColor(props.data.iconColor);
-						setCircleMembersData(props.data.circleMembersData);
 					}}
 				>
 					<>
