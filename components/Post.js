@@ -117,6 +117,27 @@ export const Post = (post) => {
 		transform: [{ rotate: spinInter }]
 	};
 
+	const selected = useRef(new Animated.Value(0)).current;
+
+	const selectedDualInter = selected.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['21%', '71%']
+	});
+
+	const handlePress = (index) => {
+		Animated.spring(selected, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+
+		//if (props.onSelect) props.onSelect(index);
+	};
+
+	const highlightDualPosition = {
+		left: selectedDualInter
+	};
+
 	const commentsView = () => {
 		return (
 			<StyledView className='flex-1 bg-grey'>
@@ -238,6 +259,38 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledView>
 			</TouchableWithoutFeedback>
+		);
+	};
+
+	const settingsView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<StyledView className='flex flex-col w-screen items-center border border-outline border-offwhite py-4 px-[20px]'>
+					<StyledText className='text-offwhite'>Comments</StyledText>
+					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
+						<StyledAnimatedView
+							style={highlightDualPosition}
+							className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[55px] h-[36px]'
+						></StyledAnimatedView>
+						<StyledOpacity
+							className='flex items-center justify-center w-[50px] h-[50px]'
+							onPress={() => handlePress(0)}
+						>
+							<StyledText className='text-offwhite'>
+								Display
+							</StyledText>
+						</StyledOpacity>
+						<StyledOpacity
+							className='flex items-center justify-center w-[50px] h-[50px]'
+							onPress={() => handlePress(1)}
+						>
+							<StyledText className='text-offwhite'>
+								Hide
+							</StyledText>
+						</StyledOpacity>
+					</StyledView>
+				</StyledView>
+			</StyledView>
 		);
 	};
 
@@ -639,7 +692,10 @@ export const Post = (post) => {
 										icon={'cog-outline'}
 										size={29}
 										color='#F9A826'
-										onPress={() => {}}
+										onPress={() => {
+											setBottomSheetType('Settings');
+											handlePresentModalPress();
+										}}
 									/>
 									<ToolbarButton
 										icon={'create-outline'}
@@ -715,6 +771,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'Settings' && settingsView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);
