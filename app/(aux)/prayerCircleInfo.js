@@ -8,10 +8,12 @@ import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from 
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
 import { Terms } from '../../components/Terms';
 import { router } from 'expo-router';
+import { SvgUri } from 'react-native-svg';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
+const StyledSvg = styled(SvgUri);
 const StyledSafeArea = styled(SafeAreaView);
 const StyledScrollView = styled(ScrollView);
 const StyledGradient = styled(LinearGradient);
@@ -134,7 +136,7 @@ export default function Page() {
 											Rate the App
 										</StyledText>
 									</StyledView>								
-									<Button
+									{/* <Button
 										icon={Platform.OS == 'android' ? 'logo-andriod' : 'logo-apple'}
 										iconColor={'#FFFBFC'}
 										iconSize={26}
@@ -144,7 +146,14 @@ export default function Page() {
 										borderColor={'border-offwhite'}										
 										btnStyles='border-2 absolute right-2 top-[5px]'
 										href={'https://www.linkedin.com/in/aidan-hubley-24228322b/'}
-									></Button>
+									></Button> */}
+									<StyledPressable>
+										<StyledSvg
+											className='w-[26px] h-[26px]'
+											// uri={Platform.OS == 'android' ? '../../assets/logos/logo-andriod.svg' : '../../assets/logos/logo-apple.svg'}
+											
+										/>
+									</StyledPressable>
 								</StyledView>
 
 								<StyledView className='flex flex-row w-full h-[35px]'>									
