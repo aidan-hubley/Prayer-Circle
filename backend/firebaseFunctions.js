@@ -214,6 +214,19 @@ export async function getPosts(circleId) {
 	return filteredPosts;
 }
 
+export async function getProfilePosts() {
+	let uid = await getUID();
+	let posts = Object.entries(
+		(await readData(`prayer_circle/users/${uid}/private/posts`)) || {}
+	);
+
+	posts.sort((a, b) => {
+		return b[1] - a[1];
+	});
+
+	return posts;
+}
+
 export async function getHiddenPosts() {
 	const uid = await getUID();
 	let hiddenPosts = [];

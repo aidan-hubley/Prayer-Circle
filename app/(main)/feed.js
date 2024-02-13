@@ -158,7 +158,7 @@ export default function FeedPage() {
 							id={item[0]}
 							ownedToolBar={item[1].user == uid}
 							edited={item[1].edited}
-							comments={item[1].comments}
+							metadata={item[1].metadata}
 							data={item[1]}
 						/>
 					)}

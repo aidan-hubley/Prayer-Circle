@@ -6,27 +6,27 @@ import {
 	Pressable,
 	TouchableOpacity,
 	Animated,
-	RefreshControl,
 	TextInput,
 	Keyboard,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	Dimensions
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { timeSince } from '../backend/functions';
+import { timeSince, formatDateAndTime } from '../backend/functions';
 import { writeData, readData, generateId } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useStore } from '../app/global';
-/* import { PostTypeSelector } from './PostTypeSelector'; */
+import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
-import { formatDateAndTime } from '../backend/functions';
+import { Interaction } from '../components/Interaction';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -40,7 +40,11 @@ const StyledInput = styled(TextInput);
 
 export const Post = (post) => {
 	// variables
-	const [iconType, setIconType] = useState(`${post.icon}_outline`);
+	const [title, setTitle] = useState(post.title);
+	const [content, setContent] = useState(post.content);
+	const [icon, setIcon] = useState(post.icon);
+	const [interacted, setInteracted] = useState(false);
+	const [interactions, setInteractions] = useState([]);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
 	const [lastTap, setLastTap] = useState(null);
@@ -53,8 +57,6 @@ export const Post = (post) => {
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(post.title);
 	const [editContent, setEditContent] = useState(post.content);
-	const [title, setTitle] = useState(post.title);
-	const [content, setContent] = useState(post.content);
 	const [edited, setEdited] = useState(post.edited);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
@@ -112,6 +114,10 @@ export const Post = (post) => {
 		inputRange: [0, 1],
 		outputRange: ['0deg', '180deg']
 	});
+	const iconInter = iconAnimation.interpolate({
+		inputRange: [0, 0.5, 1],
+		outputRange: [1, 1.6, 1]
+	});
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
@@ -155,28 +161,32 @@ export const Post = (post) => {
 						alignItems: 'center',
 						width: '100%'
 					}}
-					refreshControl={
-						<RefreshControl
-							onRefresh={() => {
-								{
-									/* TODO: add refresh button that will pull new comments from db */
-								}
-							}}
-							refreshing={false}
-							tintColor='#ebebeb'
-						/>
-					}
 					renderItem={({ item }) => {
 						return (
 							<Comment
 								id={item[0]}
 								user={item[1].user}
-								username={item[1].name}
+								name={item[1].name}
 								content={item[1].content}
 								edited={item[1].edited}
 								timestamp={item[1].timestamp}
 								img={item[1].profile_img}
 							/>
+						);
+					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 350
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Comments
+								</StyledText>
+							</StyledView>
 						);
 					}}
 					keyExtractor={(item) => item[0]}
@@ -190,6 +200,19 @@ export const Post = (post) => {
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 				<StyledView className='flex-1 bg-grey'>
 					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
+						<StyledView className='bg-offblack rounded-full mx-[10px] mb-3'>
+							<PostTypeSelector
+								noYMargin
+								initialValue={
+									post?.data?.type === 'praise'
+										? 0
+										: post?.data?.type === 'request'
+										? 1
+										: 2
+								}
+								ref={typeRef}
+							/>
+						</StyledView>
 						<StyledInput
 							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 							placeholder={'Title'}
@@ -241,6 +264,52 @@ export const Post = (post) => {
 		);
 	};
 
+	const interactionsView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<BottomSheetFlatList
+					data={interactions}
+					contentContainerStyle={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+						width: '100%'
+					}}
+					ItemSeparatorComponent={() => {
+						return (
+							<StyledView className='w-[90%] h-[1px] bg-offwhite' />
+						);
+					}}
+					renderItem={({ item }) => {
+						return (
+							<Interaction
+								name={item.fname + ' ' + item.lname}
+								image={item.profile_img}
+							/>
+						);
+					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 250
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Interactions
+								</StyledText>
+							</StyledView>
+						);
+					}}
+					keyExtractor={(item) => item.profile_img}
+				/>
+			</StyledView>
+		);
+	};
+
 	const ToolbarButton = (props) => {
 		return (
 			<StyledOpacity
@@ -261,39 +330,34 @@ export const Post = (post) => {
 	};
 
 	//functions
-	function getTypeSource(iconType, isOutline) {
+	function getIconSource(iconType, interacted) {
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
-		if (post.owned) {
+		if (post.owned || post.ownedToolBar) {
 			return images[iconKey].nonOutline;
 		}
-		return isOutline ? images[iconKey].outline : images[iconKey].nonOutline;
+		return !interacted
+			? images[iconKey].outline
+			: images[iconKey].nonOutline;
 	}
 
 	function toggleIcon() {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-		const iconKey = iconType.replace('_outline', '');
-		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
-			setIconType(
-				iconType.includes('outline') ? iconKey : iconKey + '_outline'
-			);
-
-			Animated.sequence([
-				Animated.timing(iconAnimation, {
-					toValue: 1.5,
-					duration: 100,
-					useNativeDriver: true
-				}),
-				Animated.timing(iconAnimation, {
-					toValue: 1,
-					duration: 100,
-					useNativeDriver: true
-				})
-			]).start();
-		}
+		let now = Date.now();
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		Animated.spring(iconAnimation, {
+			toValue: interacted ? 1 : 0,
+			duration: 100,
+			useNativeDriver: false
+		}).start();
+		writeData(
+			`prayer_circle/posts/${post.id}/interacted/${userData.uid}`,
+			!interacted ? now : null,
+			true
+		);
+		setInteracted(!interacted);
 	}
 
 	function toggleToolbar() {
@@ -388,6 +452,12 @@ export const Post = (post) => {
 		updatedData.edited = true;
 		setEdited(true);
 
+		let typeVal = Math.round(Math.abs(typeRef.current.selected._value));
+		if (typeVal == 0) updatedData.type = 'praise';
+		else if (typeVal == 1) updatedData.type = 'request';
+		else if (typeVal == 2) updatedData.type = 'event';
+		setIcon(updatedData.type);
+
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
 
 		bottomSheetModalRef.current?.dismiss();
@@ -416,28 +486,55 @@ export const Post = (post) => {
 			console.error('Error toggling bookmark:', error.message);
 		}
 
-		if (post.icon == 'event') getEventDate();
-		await populateComments(post.comments);
+		if (post.icon === 'event') getEventDate();
+
+		let interactions =
+			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
+
+		if (!post.owned && !post.ownedToolBar) {
+			if (interactions[userData.uid]) {
+				setInteracted(true);
+			}
+		} else {
+			interactions = Object.keys(interactions);
+			interactions.sort((a, b) => {
+				return b[1] - a[1];
+			});
+			let interactionsData = [];
+			for (let interaction of interactions) {
+				let data = await readData(
+					`prayer_circle/users/${interaction}/public`
+				);
+				interactionsData.push(data);
+			}
+			setInteractions(interactionsData);
+		}
 	};
 
 	const getEventDate = () => {
-		const start = formatDateAndTime(post?.data?.metadata?.start);
-		const end = formatDateAndTime(post?.data?.metadata?.end);
+		const start = formatDateAndTime(post?.metadata?.start);
+		const end = formatDateAndTime(post?.metadata?.end);
 		let date = '';
 
-		console.log(start.split(', ')[0]);
 		if (start === end) {
 			date = start;
 		} else if (start.split(', ')[0] === end.split(', ')[0]) {
-			date = `${start.split(', ')[0]}, ${start.split(', ')[1]} - ${
+			date = `${start.split(', ')[0]}, ${start.split(', ')[1]}-${
 				end.split(', ')[1]
 			}`;
+		} else {
+			date = `${start} - ${end}`;
 		}
 
 		setEventDate(date);
 	};
 
-	const populateComments = async (comments) => {
+	const populateComments = async () => {
+		let comments = await readData(
+			`prayer_circle/posts/${post.id}/comments`
+		);
+		if (!comments) return;
+
 		if (typeof comments == 'undefined' || comments == false) return;
 		comments = Object.entries(comments);
 
@@ -510,7 +607,7 @@ export const Post = (post) => {
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
 						const now = Date.now();
@@ -526,9 +623,9 @@ export const Post = (post) => {
 						toggleToolbar();
 					}}
 				>
-					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
-						<StyledView className=' w-[88%]'>
-							<StyledView className='flex flex-row mb-2 '>
+					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
+						<StyledView className='w-[90%]'>
+							<StyledView className='flex flex-row mb-2'>
 								<CachedImage
 									cacheKey={shorthash.unique(post.img)}
 									style={{
@@ -543,7 +640,9 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${post.owned ? '' : 'ml-2'}`}
+									className={`${
+										post.owned ? 'ml-[10px]' : 'ml-2'
+									}`}
 								>
 									<StyledText className='text-offwhite font-bold text-[20px]'>
 										{title?.length > 21
@@ -573,45 +672,60 @@ export const Post = (post) => {
 							</StyledView>
 							{post.icon == 'event' && (
 								<StyledView className='flex flex-row items-center mb-2'>
-									<StyledText className='text-white font-bold text-[16px]'>
+									<StyledText
+										className={`${
+											post.owned
+												? 'ml-[10px] text-white font-bold text-[16px]'
+												: 'text-white font-bold text-[16px]'
+										}`}
+									>
 										{eventDate}
 									</StyledText>
 								</StyledView>
 							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white mt-[2px] pb-[10px]'>
+								<StyledText
+									className={`${
+										post.owned
+											? 'ml-[10px] text-white mt-[2px] pb-[10px]'
+											: 'text-white mt-[2px] pb-[10px]'
+									}`}
+								>
 									{content?.length > 300
 										? content.substring(0, 297) + '...'
 										: content}
 								</StyledText>
 							</StyledView>
 						</StyledView>
-						<StyledView className='flex flex-col w-[15%] items-center justify-between'>
+						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
 							<StyledPressable
-								className='rounded-full aspect-square flex items-center justify-center'
-								onPress={toggleIcon}
+								className='flex aspect-square w-[30px] self-end'
+								onPress={() => {
+									if (!post.owned && !post.ownedToolBar) {
+										toggleIcon();
+									} else {
+										setBottomSheetType('Interactions');
+										handlePresentModalPress();
+									}
+								}}
 							>
 								<AnimatedImage
-									className='w-[26px] h-[26px]'
+									source={getIconSource(icon, interacted)}
 									style={{
-										transform: [{ scale: iconAnimation }]
+										width: 26,
+										height: 26,
+										transform: [{ scale: iconInter }]
 									}}
-									source={getTypeSource(
-										iconType,
-										post.owned
-											? false
-											: iconType.includes('outline')
-									)}
 								/>
 							</StyledPressable>
 							<StyledPressable
-								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
+								className='flex w-[30px] aspect-square justify-end mb-[2px]'
 								onPress={() => {
 									toggleToolbar();
 								}}
 							>
 								<AnimatedImage
-									className='w-[32px] h-[32px]'
+									className='w-[28px] h-[28px]'
 									style={spiralStyle}
 									source={require('../assets/spiral/spiral.png')}
 								/>
@@ -685,7 +799,8 @@ export const Post = (post) => {
 								icon={'chatbubble-outline'}
 								size={29}
 								color='#5946B2'
-								onPress={() => {
+								onPress={async () => {
+									populateComments();
 									setBottomSheetType('Comments');
 									handlePresentModalPress();
 								}}
@@ -715,6 +830,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'Interactions' && interactionsView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);

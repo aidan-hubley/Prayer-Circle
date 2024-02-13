@@ -13,8 +13,11 @@ const StyledOpacity = styled(TouchableOpacity);
 const StyledAnimatedView = styled(Animated.View);
 
 const PostTypeSelector = forwardRef((props, ref) => {
-	const selected = useRef(new Animated.Value(1)).current;
-
+	const selected = useRef(
+		new Animated.Value(
+			props.initialValue != undefined ? props.initialValue : 1
+		)
+	).current;
 	const selectedInter = selected.interpolate({
 		inputRange: [0, 1, 2],
 		outputRange: ['12.5%', '46%', '79.5%']
@@ -43,7 +46,11 @@ const PostTypeSelector = forwardRef((props, ref) => {
 	}));
 
 	return (
-		<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
+		<StyledView
+			className={`flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] ${
+				props.noYMargin ? '' : 'my-3'
+			}`}
+		>
 			<StyledAnimatedView
 				style={highlightPosition}
 				className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[55px] h-[36px]'

@@ -38,11 +38,14 @@ export default function Page() {
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [circles, setGlobalReload, addCircles] = useStore((state) => [
-		state.circles,
-		state.setGlobalReload,
-		state.addCircles
-	]);
+	const [circles, setGlobalReload, addCircles, setAddCircles] = useStore(
+		(state) => [
+			state.circles,
+			state.setGlobalReload,
+			state.addCircles,
+			state.setAddCircles
+		]
+	);
 	const [dateTimePickerShown, setDateTimePickerShown] = useState(false);
 	const dtpOpacity = useRef(new Animated.Value(0)).current;
 
@@ -71,6 +74,10 @@ export default function Page() {
 	useEffect(() => {
 		setUserData(auth.currentUser);
 	}, [auth.currentUser]);
+
+	useEffect(() => {
+		setAddCircles([]);
+	}, []);
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
@@ -201,6 +208,14 @@ export default function Page() {
 						addCircles.forEach((circle) => {
 							circles[circle] = true;
 						});
+
+						if (
+							typeSelected === 'event' &&
+							(!startDate || !endDate)
+						)
+							return alert(
+								'Please select a start and end date for your event.'
+							);
 
 						let newPost = {
 							user: userData.uid,

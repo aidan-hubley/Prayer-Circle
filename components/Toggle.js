@@ -6,7 +6,7 @@ const StyledView = styled(View);
 
 export const Toggle = forwardRef(
 	({ width, height, offColor, onColor, toggle }, ref) => {
-		const [isEnabled, setIsEnabled] = useState(toggle);
+		const [isEnabled, setIsEnabled] = useState(toggle || false);
 		const position = useRef(new Animated.Value(0)).current;
 
 		const positionInter = position.interpolate({
@@ -20,14 +20,14 @@ export const Toggle = forwardRef(
 		const togglePosition = () => {
 			setIsEnabled(!isEnabled);
 			Animated.timing(position, {
-				toValue: isEnabled ? 1 : 0,
+				toValue: isEnabled ? 0 : 1,
 				duration: 200,
 				useNativeDriver: false
 			}).start();
 		};
 
 		return (
-			<TouchableOpacity onPress={togglePosition} ref={ref}>
+			<TouchableOpacity onPress={() => togglePosition()} ref={ref}>
 				<StyledView
 					className={`${width || 'w-[50px]'} ${
 						height || 'h-[28px]'

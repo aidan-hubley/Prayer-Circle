@@ -32,13 +32,17 @@ const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
 
 const FilterItem = forwardRef((props, ref) => {
-		const setFilter = useStore((state) => state.setFilter);
-		const setFilterName = useStore((state) => state.setFilterName);
-		const setFilterIcon = useStore((state) => state.setFilterIcon);
-		const setFilterColor = useStore((state) => state.setFilterColor);
-		const setFilterDescription = useStore((state) => state.setFilterDescription);
-		const setFilterIconColor = useStore((state) => state.setFilterIconColor);
-		const setCircleMembersData = useStore((state) => state.setCircleMembersData); //NRA
+	const setFilter = useStore((state) => state.setFilter);
+	const setFilterName = useStore((state) => state.setFilterName);
+	const setFilterIcon = useStore((state) => state.setFilterIcon);
+	const setFilterColor = useStore((state) => state.setFilterColor);
+	const setFilterDescription = useStore(
+		(state) => state.setFilterDescription
+	);
+	const setFilterIconColor = useStore((state) => state.setFilterIconColor);
+	const setCircleMembersData = useStore(
+		(state) => state.setCircleMembersData
+	); //NRA
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -159,6 +163,7 @@ const FilterItem = forwardRef((props, ref) => {
 						onPress={() => {
 							bottomSheetModalRef.current.present();
 							props.toggleShown();
+							props.setPressed('none');
 						}}
 					>
 						<StyledView className='flex items-center justify-center'>
@@ -253,14 +258,16 @@ const FilterItem = forwardRef((props, ref) => {
 					className='flex border-[6px] items-center justify-center rounded-full'
 					onPress={() => {
 						props.toggleShown();
+						props.setPressed('none');
+						updateFilter(props.data.id);
+						updateFilterName(props.data.title);
 						setFilter(props.data.id);
 						setFilterName(props.data.title);
 						setFilterIcon(props.data.icon);
 						setFilterColor(props.data.color);
-						setFilterDescription(props.data.description); //NRA
+						setFilterDescription(props.data.description);
 						setFilterIconColor(props.data.iconColor);
-						setCircleMembersData(props.data.circleMembersData)
-						console.log(props.data.circleMembersData);
+						setCircleMembersData(props.data.circleMembersData);
 					}}
 				>
 					<>
