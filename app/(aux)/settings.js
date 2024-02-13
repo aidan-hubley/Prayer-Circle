@@ -14,6 +14,7 @@ import { styled } from 'nativewind';
 import { Toggle } from '../../components/Toggle';
 import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
+import { Terms } from '../../components/Terms';
 import { Post } from '../../components/Post';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -955,7 +956,8 @@ export default function Page() {
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
 			<StyledView className='flex-1 items-center mt-45 pt-10 py-5'>
 				<ScrollView>
-					<StyledView className='w-full flex items-center'>						
+					<StyledView className='w-full flex items-center'>
+						<View className='relative pt-[100px]'></View>
 						<View className='flex-row mt-5 px-5'>
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
 								<StyledView className='flex-row pb-5 w-full'>
