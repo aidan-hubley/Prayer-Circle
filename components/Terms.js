@@ -9,17 +9,17 @@ const StyledText = styled(Text);
 
 const Terms = forwardRef(() => {
 	return (
-		<StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px] h-[90%]'>
-			<StyledView className='flex-1 items-center h-[60%]'>
-				<StyledText className='top-[3%] pb-[20px] text-xl text-offwhite'>
+		<StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px]'>
+			<StyledView className='flex-1 items-center'>
+				<StyledText className='text-xl text-offwhite'>
 					TERMS AND CONDITIONS
 				</StyledText>
-				<StyledText className='top-[1%] pb-[20px] text-offwhite'>
+				<StyledText className='text-offwhite'>
 					Last updated January 20, 2024
 				</StyledText>
-				<ScrollView className='top-[3%] text-offwhite mb-[10%]'>
+				<ScrollView className='top-[10px] bottom-[10px] w-[90%] text-offwhite pt-[10px] pb-[20px]'>
 					{/* Below is the TOS container (collapsed) */}
-					<StyledText className='pt-[1%] pb-[30%] pr-[5%] pl-[5%] text-offwhite'>
+					<StyledText className='text-offwhite'>
 						AGREEMENT TO OUR LEGAL TERMS We are __________
 						("Company," "we," "us," "our"). We operate the mobile
 						application Prayer Circle (the "App"), as well as any

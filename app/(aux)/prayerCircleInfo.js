@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { Text, View, Platform, Image, Animated, ScrollView, Pressable} from 'react-native';
+import { Text, View, Platform, Image, Animated, ScrollView, Pressable, Linking } from 'react-native';
 import { styled } from 'nativewind';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { auth } from '../../backend/config';
 import { Terms } from '../../components/Terms';
 import { router } from 'expo-router';
 
@@ -23,6 +24,7 @@ export default function Page() {
 	const [handles, setHandles] = useState('');
 	const [snapPoints, setSnapPoints] = useState([]);
 	const [modalContent, setModalContent] = useState(null);
+	const [userData] = useState(auth?.currentUser);
 	const bottomSheetModalRef = useRef(null);
 
 	let insets = useSafeAreaInsets();
@@ -186,7 +188,7 @@ export default function Page() {
 										bgColor={'bg-transparent'}
 										borderColor={'border-offwhite'}										
 										btnStyles='border absolute right-2 top-[5px]'
-										href={'/'}
+										href={'https://www.instagram.com/prayercircleapp?igsh=bDQ1cTJqbW5oc25l'}
 									></Button>
 								</StyledView>
 
@@ -224,7 +226,7 @@ export default function Page() {
 										bgColor={'bg-transparent'}
 										borderColor={'border-offwhite'}										
 										btnStyles='border absolute right-2 top-[5px]'
-										href={'/'}
+										press={() => Linking.openURL('mailto:devs.prayercircle@gmail.com?subject=Prayer Circle User &body=Hello Prayer Circle Devs, %0A %0A [add your message here] %0A %0A Account Name: ' + userData.displayName + ' %0A Account Email: ' + userData?.email + '')}      
 									></Button>
 								</StyledView>
 
@@ -241,7 +243,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 60, height: 60 }}
+										style={{ width: 40, height: 40 }}
 										source={require('../../assets/devs/aidan.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -270,7 +272,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 60, height: 60 }}
+										style={{ width: 40, height: 40 }}
 										source={require('../../assets/devs/alex.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -300,7 +302,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 60, height: 60 }}
+										style={{ width: 40, height: 40 }}
 										source={require('../../assets/devs/nason.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -329,7 +331,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 60, height: 60 }}
+										style={{ width: 40, height: 40 }}
 										source={require('../../assets/devs/andrew.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -358,7 +360,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full'>									
 									<StyledImage
 										className='rounded-xl'
-										style={{ width: 60, height: 60 }}
+										style={{ width: 40, height: 40 }}
 										source={require('../../assets/devs/justin.jpg')}
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
@@ -386,14 +388,12 @@ export default function Page() {
 							
 							</StyledView>
 						</StyledView>
-
-						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
-							Our Team Stylized
-						</StyledText>
-						<StyledView className='w-[95%]  border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+						
+						{/* Styled View of team */}
+						{/* <StyledView className='w-[95%] p-[10px] my-2'>
 							<StyledView className='flex w-full h-auto'>
 								
-								<StyledView className='z-10 flex'>		
+								<StyledView className='z-10 flex bottom-2'>		
 									<StyledPressable
 										className='flex-col w-auto items-center justify-center'
 										onPress={() => (router.push('https://www.linkedin.com/in/aidan-hubley-24228322b/'))}
@@ -403,14 +403,9 @@ export default function Page() {
 											style={{ width: 60, height: 60 }}
 											source={require('../../assets/devs/aidan.jpg')}
 										/>
-										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
-										>
+										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 											Aidan Hubley
 										</StyledText>
-										{/* <StyledText className={`text-offwhite text-[14px]`}>
-											Team Lead
-										</StyledText> */}
 									</StyledPressable>							
 								</StyledView>
 
@@ -425,14 +420,9 @@ export default function Page() {
 												style={{ width: 60, height: 60 }}
 												source={require('../../assets/devs/alex.jpg')}
 											/>
-											<StyledText
-												className={`font-[600] text-offwhite text-[20px]`}
-											>
+											<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 												Alex Muresan
 											</StyledText>
-											{/* <StyledText className={`text-offwhite text-[14px]`}>
-												Batabase Manager
-											</StyledText> */}
 										</StyledPressable>							
 									</StyledView>
 
@@ -446,14 +436,9 @@ export default function Page() {
 												style={{ width: 60, height: 60 }}
 												source={require('../../assets/devs/andrew.jpg')}
 											/>
-											<StyledText
-												className={`font-[600] text-offwhite text-[20px]`}
-											>
+											<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 												Andrew Roberti
 											</StyledText>
-											{/* <StyledText className={`text-offwhite text-[14px]`}>
-												Developer
-											</StyledText> */}
 										</StyledPressable>					
 									</StyledView>
 								</StyledView>
@@ -469,14 +454,9 @@ export default function Page() {
 												style={{ width: 60, height: 60 }}
 												source={require('../../assets/devs/nason.jpg')}
 											/>
-											<StyledText
-												className={`font-[600] text-offwhite text-[20px]`}
-											>
+											<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 												Nason Allen
 											</StyledText>
-											{/* <StyledText className={`text-offwhite text-[14px]`}>
-												Developer
-											</StyledText> */}
 										</StyledPressable>							
 									</StyledView>
 
@@ -490,14 +470,9 @@ export default function Page() {
 												style={{ width: 60, height: 60 }}
 												source={require('../../assets/devs/justin.jpg')}
 											/>
-											<StyledText
-												className={`font-[600] text-offwhite text-[20px]`}
-											>
+											<StyledText className={`font-[600] text-offwhite text-[20px]`}>
 												Justin Ayres
 											</StyledText>
-											{/* <StyledText className={`text-offwhite text-[14px]`}>
-												Developer
-											</StyledText> */}
 										</StyledPressable>							
 									</StyledView>
 								</StyledView>
@@ -508,7 +483,7 @@ export default function Page() {
 								/>
 
 							</StyledView>
-						</StyledView>
+						</StyledView> */}
 
 						<View className='relative pb-[75px]'></View>
 					</StyledView>
