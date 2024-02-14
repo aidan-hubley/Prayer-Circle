@@ -167,6 +167,30 @@ export default function Page() {
 					`prayer_circle/users/${userData.uid}`,
 					photo.uri
 				);
+				updateProfile(auth.currentUser, {
+				photoURL: imgURL,
+				}).then(() => {
+				Alert.alert("Success", "Profile picture has been updated.");
+				}).catch((error) => {
+				console.error("Error updating profile picture:", error);
+			
+			updateProfile(auth.currentUser, {
+			photoURL: imgURL,
+			}).then(() => {
+			Alert.alert("Success", "Profile picture has been updated.");
+			}).catch((error) => {
+			console.error("Error updating profile picture:", error);
+			});
+
+				
+			updateProfile(auth?.currentUser, { photoURL: imgURL });
+			writeData(
+				`prayer_circle/users/${userData.uid}/public/profile_img`,
+				imgURL,
+				true
+			);
+
+			Alert.alert('Success', 'Profile picture has been updated.');				});
 
 				updateProfile(auth?.currentUser, { photoURL: imgURL });
 				writeData(
@@ -190,23 +214,16 @@ export default function Page() {
 			quality: 0.2
 		});
 
-		if (!result.canceled) {
+		if (!result.canceled && result.assets && result.assets.length > 0) {
 			const selectedAsset = result.assets[0];
-			// TODO: SVG animation here
-			bottomSheetModalRef.current?.dismiss();
-			let imgURL = await uploadImage(
-				`prayer_circle/users/${userData.photoURL}`,
-				selectedAsset
-			);
-
-			updateProfile(auth?.currentUser, { photoURL: imgURL });
-			writeData(
-				`prayer_circle/users/${userData.uid}/public/profile_img`,
-				imgURL,
-				true
-			);
-
-			Alert.alert('Success', 'Profile picture has been updated.');
+			try {
+				const imgURL = await uploadImage(`prayer_circle/users/${userData.uid}`, selectedAsset.uri);
+				await updateProfile(auth.currentUser, { photoURL: imgURL });
+				Alert.alert("Success", "Profile picture has been updated.");
+			} catch (error) {
+				console.error("Error updating profile picture:", error);
+				Alert.alert("Error", "Failed to update profile picture.");
+			}
 		}
 	};
 
@@ -967,6 +984,7 @@ export default function Page() {
 		}
 	}
 	};
+
 
 	useEffect(() => {
 		setUserData(auth?.currentUser);
