@@ -37,6 +37,8 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
+const titleCharThreshold = 20; 
+const contentCharThreshold = 300;
 
 export const Post = (post) => {
 	// variables
@@ -62,6 +64,8 @@ export const Post = (post) => {
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
 	const newCommentRef = useRef(null);
+	const [isExpanded, setIsExpanded] = useState(false);
+	const [isToggleVisible, setIsToggleVisible] = useState(title.length > titleCharThreshold || content.length > contentCharThreshold);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -84,6 +88,10 @@ export const Post = (post) => {
 		}
 	};
 	const tS = timeSince(post.timestamp);
+
+	const isTextTruncated = (text) => {
+    return text && text.length > 300;
+	};
 
 	// bottom sheet modal
 	const handlePresentModalPress = useCallback(() => {
@@ -122,6 +130,10 @@ export const Post = (post) => {
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
 	};
+
+	const handleExpanded = () => {
+		setIsExpanded(prevState => !prevState);
+	}
 
 	const commentsView = () => {
 		return (
@@ -605,6 +617,10 @@ export const Post = (post) => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
+	useEffect(() => {
+	setIsToggleVisible(title.length > titleCharThreshold || content.length > contentCharThreshold);
+	}, [title, content]);
+
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
@@ -649,11 +665,11 @@ export const Post = (post) => {
 										post.owned ? 'ml-[10px]' : 'ml-2'
 									}`}
 								>
+								<View className ={`${post.owned? "ml-[10px]" : "ml-[2px]"} max-w-[95%]`} > 
 									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{title?.length > 21
-											? title.substring(0, 21) + '...'
-											: title}
+										{isExpanded || title.length <= titleCharThreshold ? title : `${title.substring(0, titleCharThreshold)}...`}
 									</StyledText>
+								</View>
 									<StyledView className='flex flex-row'>
 										<StyledText
 											className={`${
@@ -696,9 +712,7 @@ export const Post = (post) => {
 											: 'text-white mt-[2px] pb-[10px]'
 									}`}
 								>
-									{content?.length > 300
-										? content.substring(0, 297) + '...'
-										: content}
+									{isExpanded || content.length <= contentCharThreshold ? content : `${content.substring(0, contentCharThreshold)}...`}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -723,6 +737,11 @@ export const Post = (post) => {
 									}}
 								/>
 							</StyledPressable>
+							{isToggleVisible && (
+								<StyledOpacity onPress={handleExpanded} className='self-center pt-2'>
+									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
+								</StyledOpacity>
+							)}
 							<StyledPressable
 								className='flex w-[30px] aspect-square justify-end mb-[2px]'
 								onPress={() => {
