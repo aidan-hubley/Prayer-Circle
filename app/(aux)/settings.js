@@ -959,9 +959,22 @@ export default function Page() {
 		console.log('Infinite toggle state is now: ', newState);
 	};
 
+	const getPermissionAsync = async () => {
+	if (Platform.OS !== 'web') {
+		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+		if (status !== 'granted') {
+		alert('Sorry, we need camera roll permissions to make this work!');
+		}
+	}
+	};
+
 	useEffect(() => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
+
+	useEffect(() => {
+		getPermissionAsync();
+	}, []);
 
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
