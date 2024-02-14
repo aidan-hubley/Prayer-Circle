@@ -3,7 +3,7 @@ export default {
 		name: 'Prayer Circle',
 		scheme: 'prayer-circle',
 		slug: 'prayer-circle',
-		version: '0.0.1',
+		version: '0.0.2',
 		orientation: 'portrait',
 		icon: './assets/Squared_Logo_Dark.png',
 		userInterfaceStyle: 'dark',
