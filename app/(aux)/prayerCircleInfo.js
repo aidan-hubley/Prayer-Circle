@@ -29,7 +29,6 @@ export default function Page() {
 
 	let insets = useSafeAreaInsets();
 
-	// bottom sheet modal
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
 	}, []);
@@ -92,17 +91,17 @@ export default function Page() {
 							Our Mission
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
-							<StyledText className='text-white text-center text-[20px]'>
+							<StyledText className='text-white text-center text-[18px]'>
 							Unite people of the Christian faith by fostering 
 							meaningful interactions and opportunities for prayer. 
 							</StyledText>
-							<StyledText className='pt-2 text-white text-center text-[20px]'>
+							<StyledText className='pt-4 text-white text-center text-[18px]'>
 							We aim to create a safe and private space for discussion,
 							emphasizing the importance of community in spiritual growth.
 							</StyledText>
 						</StyledView>
 
-						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
+						<StyledText className='w-full font-[600] text-center text-[30px] text-offwhite mt-4'>
 							Send Feedback
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
@@ -110,7 +109,7 @@ export default function Page() {
 								
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
-										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+										<StyledText className={`text-offwhite text-[20px]`}>
 											Beta Test Review
 										</StyledText>
 									</StyledView>								
@@ -127,7 +126,7 @@ export default function Page() {
 
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
-										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+										<StyledText className={`text-offwhite text-[20px]`}>
 											Rate the App
 										</StyledText>
 									</StyledView>								
@@ -146,7 +145,7 @@ export default function Page() {
 
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
-										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+										<StyledText className={`text-offwhite text-[20px]`}>
 											Report a Bug
 										</StyledText>
 									</StyledView>								
@@ -167,7 +166,7 @@ export default function Page() {
 							
 						</StyledView>
 
-						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
+						<StyledText className='w-full font-[600] text-center text-[30px] text-offwhite mt-4'>
 							Connect with Us
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
@@ -175,7 +174,7 @@ export default function Page() {
 								
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
-										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+										<StyledText className={`text-offwhite text-[20px]`}>
 											Instagram
 										</StyledText>
 									</StyledView>								
@@ -194,7 +193,7 @@ export default function Page() {
 
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
-										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+										<StyledText className={`text-offwhite text-[20px]`}>
 											Visit the Site
 										</StyledText>
 									</StyledView>								
@@ -213,7 +212,7 @@ export default function Page() {
 
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
-										<StyledText className={`font-[600] text-offwhite text-[20px]`}>
+										<StyledText className={`text-offwhite text-[20px]`}>
 											Email our Team
 										</StyledText>
 									</StyledView>								
@@ -234,7 +233,7 @@ export default function Page() {
 							
 						</StyledView>
 
-						<StyledText className='w-full text-center text-[30px] text-offwhite mt-4'>
+						<StyledText className='w-full font-[600] text-center text-[30px] text-offwhite mt-4'>
 							Our Team
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
@@ -248,7 +247,7 @@ export default function Page() {
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
 										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
+											className={`text-offwhite text-[20px]`}
 										>
 											Aidan Hubley
 										</StyledText>
@@ -277,12 +276,12 @@ export default function Page() {
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
 										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
+											className={`text-offwhite text-[20px]`}
 										>
 											Alex Muresan
 										</StyledText>
 										<StyledText className={`text-offwhite text-[14px]`}>
-											Database Manager
+											Lead Developer
 										</StyledText>
 									</StyledView>								
 									<Button
@@ -307,7 +306,7 @@ export default function Page() {
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
 										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
+											className={`text-offwhite text-[20px]`}
 										>
 											Nason Allen
 										</StyledText>
@@ -336,7 +335,7 @@ export default function Page() {
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
 										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
+											className={`text-offwhite text-[20px]`}
 										>
 											Andrew Roberti
 										</StyledText>
@@ -365,12 +364,12 @@ export default function Page() {
 									/>
 									<StyledView className='pl-2 bottom-[3px]'>
 										<StyledText
-											className={`font-[600] text-offwhite text-[20px]`}
+											className={`text-offwhite text-[20px]`}
 										>
 											Justin Ayres
 										</StyledText>
 										<StyledText className={`text-offwhite text-[14px]`}>
-											Developer
+											Security
 										</StyledText>
 									</StyledView>								
 									<Button
