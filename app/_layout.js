@@ -4,6 +4,8 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SplashScreen } from 'expo-router';
 import { Provider, useAuth } from './context/auth';
 import AnimatedSplash from 'react-native-animated-splash-screen';
+import { readData, writeData } from '../backend/firebaseFunctions';
+import { encrypt, decrypt } from 'react-native-simple-encryption';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -11,6 +13,19 @@ export default function RootLayout() {
 	const [loaded, setLoaded] = useState(false);
 
 	useEffect(() => {
+		(async () => {
+			/* let posts = await Object.entries(
+				(await readData('prayer_circle/posts')) || {}
+			);
+
+			posts.forEach(([id, post]) => {
+				let encrypted = post;
+
+				encrypted.text = null;
+
+				writeData(`prayer_circle/posts/${id}`, encrypted, true);
+			}); */
+		})();
 		setTimeout(() => {
 			setLoaded(true);
 		}, 1000);

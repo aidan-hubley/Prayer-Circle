@@ -21,6 +21,7 @@ import { auth } from '../../backend/config';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import { formatDateAndTime, isTimeBefore } from '../../backend/functions';
+import { encrypt, decrypt } from 'react-native-simple-encryption';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -221,8 +222,8 @@ export default function Page() {
 							user: userData.uid,
 							profile_img: userData.photoURL,
 							name: userData.displayName,
-							title: title,
-							text: body,
+							title: encrypt(newPostId, title),
+							body: encrypt(newPostId, body),
 							type: typeSelected,
 							timestamp: now,
 							circles,

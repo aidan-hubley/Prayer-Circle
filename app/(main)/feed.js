@@ -153,7 +153,7 @@ export default function FeedPage() {
 							img={item[1].profile_img}
 							title={item[1].title}
 							timestamp={`${item[1].timestamp}`}
-							content={item[1].text}
+							content={item[1].body}
 							icon={item[1].type}
 							id={item[0]}
 							ownedToolBar={item[1].user == uid}
