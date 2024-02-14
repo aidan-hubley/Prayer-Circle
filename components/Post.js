@@ -464,9 +464,6 @@ export const Post = (post) => {
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
 
 		bottomSheetModalRef.current?.dismiss();
-		setTimeout(() => {
-			setGlobalReload(true);
-		}, 100);
 	}
 
 	// post setup
@@ -768,8 +765,8 @@ export const Post = (post) => {
 										size={29}
 										color='#00A55E'
 										onPress={() => {
-											/* setBottomSheetType('Edit');
-											handlePresentModalPress(); */
+											setBottomSheetType('Edit');
+											handlePresentModalPress();
 										}}
 									/>
 								</>
