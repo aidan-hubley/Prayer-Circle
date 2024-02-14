@@ -46,7 +46,7 @@ const Terms = forwardRef(() => {
         <StyledText className='text-offwhite'>
           Last updated: {lastUpdated}
         </StyledText>
-        <ScrollView ref={scrollViewRef} className='top-[10px] bottom-[10px] w-[90%] text-offwhite pt-[10px] pb-[20px]'>
+        <ScrollView className='top-[10px] bottom-[10px] w-[90%] text-offwhite pt-[10px] pb-[20px]'>
           <StyledText className='text-offwhite py-2'>
             {intro}
           </StyledText>
