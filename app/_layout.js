@@ -6,6 +6,7 @@ import { Provider, useAuth } from './context/auth';
 import AnimatedSplash from 'react-native-animated-splash-screen';
 import { readData, writeData } from '../backend/firebaseFunctions';
 import { encrypt, decrypt } from 'react-native-simple-encryption';
+import * as Config from '../app.config';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,10 +26,17 @@ export default function RootLayout() {
 
 				writeData(`prayer_circle/posts/${id}`, encrypted, true);
 			}); */
+			let latestVersion = await readData(
+				'prayer_circle/constants/minimum_stable_version'
+			);
+			if (latestVersion > Config.default.expo.version) {
+				alert(
+					'A new version of Prayer Circle is available. Please update to the latest version to continue using the app.'
+				);
+			} else {
+				setLoaded(true);
+			}
 		})();
-		setTimeout(() => {
-			setLoaded(true);
-		}, 1000);
 	}, []);
 
 	useEffect(() => {
