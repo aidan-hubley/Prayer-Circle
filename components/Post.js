@@ -27,6 +27,7 @@ import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
+import { decrypt, encrypt } from 'react-native-simple-encryption';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -42,8 +43,8 @@ const contentCharThreshold = 300;
 
 export const Post = (post) => {
 	// variables
-	const [title, setTitle] = useState(post.title);
-	const [content, setContent] = useState(post.content);
+	const [title, setTitle] = useState(decrypt(post.id, post.title));
+	const [content, setContent] = useState(decrypt(post.id, post.content));
 	const [icon, setIcon] = useState(post.icon);
 	const [interacted, setInteracted] = useState(false);
 	const [interactions, setInteractions] = useState([]);
@@ -57,8 +58,10 @@ export const Post = (post) => {
 		state.setJournalReload
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
-	const [editTitle, setEditTitle] = useState(post.title);
-	const [editContent, setEditContent] = useState(post.content);
+	const [editTitle, setEditTitle] = useState(decrypt(post.id, post.title));
+	const [editContent, setEditContent] = useState(
+		decrypt(post.id, post.content)
+	);
 	const [edited, setEdited] = useState(post.edited);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
@@ -455,10 +458,10 @@ export const Post = (post) => {
 	async function editPost() {
 		let updatedData = post.data;
 
-		updatedData.title = editTitle;
+		updatedData.title = encrypt(post.id, editTitle);
 		setTitle(editTitle);
 
-		updatedData.text = editContent;
+		updatedData.body = encrypt(post.id, editContent);
 		setContent(editContent);
 
 		updatedData.edited = true;
@@ -473,9 +476,6 @@ export const Post = (post) => {
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
 
 		bottomSheetModalRef.current?.dismiss();
-		setTimeout(() => {
-			setGlobalReload(true);
-		}, 100);
 	}
 
 	// post setup

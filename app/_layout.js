@@ -4,6 +4,9 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SplashScreen } from 'expo-router';
 import { Provider, useAuth } from './context/auth';
 import AnimatedSplash from 'react-native-animated-splash-screen';
+import { readData, writeData } from '../backend/firebaseFunctions';
+import { encrypt, decrypt } from 'react-native-simple-encryption';
+import * as Config from '../app.config';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -11,9 +14,29 @@ export default function RootLayout() {
 	const [loaded, setLoaded] = useState(false);
 
 	useEffect(() => {
-		setTimeout(() => {
-			setLoaded(true);
-		}, 1000);
+		(async () => {
+			/* let posts = await Object.entries(
+				(await readData('prayer_circle/posts')) || {}
+			);
+
+			posts.forEach(([id, post]) => {
+				let encrypted = post;
+
+				encrypted.text = null;
+
+				writeData(`prayer_circle/posts/${id}`, encrypted, true);
+			}); */
+			let latestVersion = await readData(
+				'prayer_circle/constants/minimum_stable_version'
+			);
+			if (latestVersion > Config.default.expo.version) {
+				alert(
+					'A new version of Prayer Circle is available. Please update to the latest version to continue using the app.'
+				);
+			} else {
+				setLoaded(true);
+			}
+		})();
 	}, []);
 
 	useEffect(() => {
