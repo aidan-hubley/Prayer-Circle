@@ -34,19 +34,18 @@ const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 	const [memberData, setMemberData] = useState([]);
+	const [description, setDescription] = useState('');
 	const [
 		filter,
 		currentFilterName,
 		currentFilterIcon,
 		currentFilterColor,
-		currentFilterDescription,
 		currentFilterIconColor
 	] = useStore((state) => [
 		state.filter,
 		state.currentFilterName,
 		state.currentFilterIcon,
 		state.currentFilterColor,
-		state.currentFilterDescription,
 		state.currentFilterIconColor
 	]);
 	let insets = useSafeAreaInsets();
@@ -155,6 +154,10 @@ export default function Page() {
 		(async () => {
 			let data = await makeCircleUserList(filter);
 			sortUsers(data);
+			let description = await readData(
+				`prayer_circle/circles/${filter}/description`
+			);
+			setDescription(description);
 		})();
 	}, [filter]);
 
@@ -197,7 +200,7 @@ export default function Page() {
 							</StyledText>
 							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
 								<StyledText className='text-white text-[14px]'>
-									{currentFilterDescription}
+									{description}
 								</StyledText>
 							</StyledView>
 							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[10px] items-center justify-center'>
@@ -248,7 +251,7 @@ export default function Page() {
 					<Button
 						btnStyles='rotate-180 border-2'
 						bgColor='bg-offblack'
-						borderColor='border-yellow'
+						borderColor='#F9A826'
 						height={'h-[50px]'}
 						width={'w-[50px]'}
 						iconSize={30}
@@ -262,7 +265,7 @@ export default function Page() {
 					<Button
 						btnStyles='border-2'
 						bgColor='bg-offblack'
-						borderColor='border-red'
+						borderColor='#CC2500'
 						height={'h-[50px]'}
 						width={'w-[50px]'}
 						iconSize={30}

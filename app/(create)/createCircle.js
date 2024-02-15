@@ -127,7 +127,8 @@ export default function Page() {
 					height='h-[60px]'
 					href='/'
 					bgColor={'bg-offblack'}
-					borderColor={'border-offwhite border-2'}
+					borderColor={'#FFFBFC'}
+					borderWidth={'border-2'}
 					textColor={'text-offwhite'}
 				/>
 				<Button

@@ -21,6 +21,7 @@ import { auth } from '../../backend/config';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import { formatDateAndTime, isTimeBefore } from '../../backend/functions';
+import { encrypt, decrypt } from 'react-native-simple-encryption';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -38,11 +39,14 @@ export default function Page() {
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const [circles, setGlobalReload, addCircles] = useStore((state) => [
-		state.circles,
-		state.setGlobalReload,
-		state.addCircles
-	]);
+	const [circles, setGlobalReload, addCircles, setAddCircles] = useStore(
+		(state) => [
+			state.circles,
+			state.setGlobalReload,
+			state.addCircles,
+			state.setAddCircles
+		]
+	);
 	const [dateTimePickerShown, setDateTimePickerShown] = useState(false);
 	const dtpOpacity = useRef(new Animated.Value(0)).current;
 
@@ -71,6 +75,10 @@ export default function Page() {
 	useEffect(() => {
 		setUserData(auth.currentUser);
 	}, [auth.currentUser]);
+
+	useEffect(() => {
+		setAddCircles([]);
+	}, []);
 
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
@@ -202,12 +210,20 @@ export default function Page() {
 							circles[circle] = true;
 						});
 
+						if (
+							typeSelected === 'event' &&
+							(!startDate || !endDate)
+						)
+							return alert(
+								'Please select a start and end date for your event.'
+							);
+
 						let newPost = {
 							user: userData.uid,
 							profile_img: userData.photoURL,
 							name: userData.displayName,
-							title: title,
-							text: body,
+							title: encrypt(newPostId, title),
+							body: encrypt(newPostId, body),
 							type: typeSelected,
 							timestamp: now,
 							circles,

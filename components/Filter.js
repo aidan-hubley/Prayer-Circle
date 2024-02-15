@@ -62,6 +62,7 @@ const Filter = forwardRef((props, ref) => {
 					className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 					onPress={() => {
 						toggleShown();
+						props.setPressed('none');
 					}}
 				/>
 			)}
@@ -96,6 +97,7 @@ const Filter = forwardRef((props, ref) => {
 								itemMargin={itemMargin}
 								toggleShown={toggleShown}
 								multiselect={props.multiselect}
+								setPressed={props.setPressed}
 								circles={
 									item.id === 'Gridview' ? props.data : []
 								}
