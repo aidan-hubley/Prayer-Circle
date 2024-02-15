@@ -8,7 +8,7 @@ import shorthash from 'shorthash';
 const StyledText = styled(Text);
 const StyledView = styled(View);
 
-function Member({ img, name, role, last, uid }) {
+function Member({ img, name, role, last, uid, setUp }) {
 	permissionRef = useRef(null);
 	return (
 		<StyledView
@@ -36,6 +36,7 @@ function Member({ img, name, role, last, uid }) {
 					role={role}
 					uid={uid}
 					ref={permissionRef}
+					setUp={setUp}
 				/>
 			</StyledView>
 		</StyledView>

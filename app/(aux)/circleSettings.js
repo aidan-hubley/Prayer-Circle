@@ -26,6 +26,7 @@ import {
 	backdrop,
 	SnapPoints
 } from '../../components/BottomSheetModalHelpers.js';
+import { auth } from '../../backend/config';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -40,13 +41,17 @@ export default function Page() {
 		currentFilterName,
 		currentFilterIcon,
 		currentFilterColor,
-		currentFilterIconColor
+		currentFilterIconColor,
+		currentCircleRole,
+		setCurrentCircleRole
 	] = useStore((state) => [
 		state.filter,
 		state.currentFilterName,
 		state.currentFilterIcon,
 		state.currentFilterColor,
-		state.currentFilterIconColor
+		state.currentFilterIconColor,
+		state.currentCircleRole,
+		state.setCurrentCircleRole
 	]);
 	let insets = useSafeAreaInsets();
 
@@ -122,6 +127,11 @@ export default function Page() {
 
 			let role = targetUserList[i][1];
 			let img = data.profile_img;
+
+			if (targetUserList[i][0] === auth.currentUser.uid) {
+				setCurrentCircleRole(role);
+			}
+
 			circleMembersData.push({
 				name: name,
 				role: role,
@@ -150,10 +160,15 @@ export default function Page() {
 		setMemberData(data);
 	}
 
+	async function setUp(hard) {
+		if (hard) setMemberData([]);
+		let data = await makeCircleUserList(filter);
+		sortUsers(data);
+	}
+
 	useEffect(() => {
 		(async () => {
-			let data = await makeCircleUserList(filter);
-			sortUsers(data);
+			setUp();
 			let description = await readData(
 				`prayer_circle/circles/${filter}/description`
 			);
@@ -203,7 +218,7 @@ export default function Page() {
 									{description}
 								</StyledText>
 							</StyledView>
-							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[10px] items-center justify-center'>
+							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[60px] bg-grey rounded-t-[10px] items-center justify-center'>
 								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 									Members
 								</StyledText>
@@ -222,6 +237,7 @@ export default function Page() {
 									memberData.indexOf(item) + 1 ==
 									memberData.length
 								}
+								setUp={setUp}
 							/>
 						);
 					}}
@@ -233,6 +249,7 @@ export default function Page() {
 					ListFooterComponent={
 						<StyledView className='w-full h-[100px] bg-offblack' />
 					}
+					extraData={memberData}
 				/>
 				<StyledGradient
 					pointerEvents='none'

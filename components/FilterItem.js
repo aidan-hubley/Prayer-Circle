@@ -37,18 +37,14 @@ const FilterItem = forwardRef((props, ref) => {
 		setFilterName,
 		setFilterIcon,
 		setFilterColor,
-		setFilterDescription,
 		setFilterIconColor,
-		setCircleMembersData,
 		setCurrentCircleRole
 	] = useStore((state) => [
 		state.setFilter,
 		state.setFilterName,
 		state.setFilterIcon,
 		state.setFilterColor,
-		state.setFilterDescription,
 		state.setFilterIconColor,
-		state.setCircleMembersData,
 		state.setCurrentCircleRole
 	]);
 
