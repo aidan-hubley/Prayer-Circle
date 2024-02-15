@@ -98,10 +98,7 @@ export default function Register() {
 		}
 	};
 
-		const handlePresentModalPress = useCallback(() => {
-		bottomSheetModalRef.current?.present();
-	}, []);
-
+	
 	const handleModalPress = (
 		modalContent,
 		snapPoints,

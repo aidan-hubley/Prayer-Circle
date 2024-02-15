@@ -258,16 +258,15 @@ const FilterItem = forwardRef((props, ref) => {
 							updateFilter('unfiltered');
 							updateFilterName('Prayer Circle');
 						}}
-					>
+					>						
 						<StyledView className='flex items-center justify-center'>
 							<StyledImage
-								className='absolute'
-								source={require('../assets/spiral/spiral.png')}
-								style={{ width: 75, height: 75 }}
+								source={require('../assets/spiral/thin.png')}
+								style={{ width: 80, height: 80 }}
 							/>
-							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-10'>
+							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
 								All Circles
-							</StyledText>
+							</StyledText>							
 						</StyledView>
 					</StyledAnimatedHighlight>
 				</>

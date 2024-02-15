@@ -58,6 +58,10 @@ function RootLayoutNavigation() {
 					name='(aux)/shareCircle'
 					options={{ presentation: 'modal' }}
 				/>
+				<Stack.Screen 
+					name='(aux)/prayerCircleInfo' 
+					options={{ presentation: 'modal' }}	
+				/>
 			</Stack>
 		</BottomSheetModalProvider>
 	);

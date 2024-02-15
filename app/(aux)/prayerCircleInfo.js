@@ -1,12 +1,11 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { Text, View, Platform, Image, Animated, ScrollView, Pressable, Linking } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Text, View, Platform, Image, ScrollView, Pressable, Linking } from 'react-native';
 import { styled } from 'nativewind';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
 import { auth } from '../../backend/config';
 import { Terms } from '../../components/Terms';
 import { router } from 'expo-router';
@@ -14,9 +13,7 @@ import { router } from 'expo-router';
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
-const StyledIcon = styled(Ionicons);
 const StyledSafeArea = styled(SafeAreaView);
-const StyledScrollView = styled(ScrollView);
 const StyledGradient = styled(LinearGradient);
 const StyledPressable = styled(Pressable);
 
@@ -28,10 +25,6 @@ export default function Page() {
 	const bottomSheetModalRef = useRef(null);
 
 	let insets = useSafeAreaInsets();
-
-	const handlePresentModalPress = useCallback(() => {
-		bottomSheetModalRef.current?.present();
-	}, []);
 
 	const handleModalPress = (
 		modalContent,
@@ -87,7 +80,7 @@ export default function Page() {
 							/>
 						</StyledPressable>
 
-						<StyledText className='w-full text-center text-[30px] text-offwhite'>
+						<StyledText className='w-full font-[600] text-center text-[30px] text-offwhite'>
 							Our Mission
 						</StyledText>
 						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
@@ -101,6 +94,38 @@ export default function Page() {
 							</StyledText>
 						</StyledView>
 
+						<StyledView className='w-[95%] bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledView className='flex w-full gap-y-3 pb-2'>
+								
+								<StyledView className='flex flex-row w-full h-[35px]'>									
+									<StyledView className='pl-2 top-[5px]'>
+										<StyledText className={`text-offwhite text-[20px]`}>
+											Review TOS
+										</StyledText>
+									</StyledView>								
+									<Button
+										icon='document-text'
+										iconColor={'#FFFBFC'}
+										iconSize={26}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										textColor={'text-offwhite'}
+										borderColor={'border-offwhite'}
+										btnStyles='border absolute right-2 top-[5px]'
+										press={() =>
+											handleModalPress(
+												'tos',
+												['65%', '85%'],
+												'Terms of Service',
+												''
+											)
+										}
+									></Button>
+								</StyledView>
+							</StyledView>
+						</StyledView>
+
 						<StyledText className='w-full font-[600] text-center text-[30px] text-offwhite mt-4'>
 							Send Feedback
 						</StyledText>
@@ -110,7 +135,7 @@ export default function Page() {
 								<StyledView className='flex flex-row w-full h-[35px]'>									
 									<StyledView className='pl-2 top-[5px]'>
 										<StyledText className={`text-offwhite text-[20px]`}>
-											Beta Test Review
+											Beta Test Feedback
 										</StyledText>
 									</StyledView>								
 									<StyledPressable 
@@ -229,8 +254,7 @@ export default function Page() {
 									></Button>
 								</StyledView>
 
-							</StyledView>
-							
+							</StyledView>						
 						</StyledView>
 
 						<StyledText className='w-full font-[600] text-center text-[30px] text-offwhite mt-4'>
@@ -500,30 +524,11 @@ export default function Page() {
 					style={{
 						top: Platform.OS == 'android' ? 15 : 15 // Need Alex to test this, it's perfect on Andriod
 					}}
-					className='absolute w-screen flex-row items-center justify-between px-[15px]'
+					className='absolute w-screen flex-row items-center justify-center px-[15px]'
 				>
 					<StyledText className='text-4xl font-bold text-offwhite'>
 						Prayer Circle
 					</StyledText>
-					<Button
-						icon='document-text'
-						iconColor={'#FFFBFC'}
-						iconSize={26}
-						width={'w-[65px]'}
-						height={'h-[35px]'}
-						bgColor={'bg-transparent'}
-						textColor={'text-offwhite'}
-						borderColor={'border-offwhite'}
-						btnStyles='border-2'
-						press={() =>
-							handleModalPress(
-								'tos',
-								['65%', '85%'],
-								'Terms of Service',
-								''
-							)
-						}
-					></Button>
 				</StyledView>
 				<StyledGradient
 					pointerEvents='none'
@@ -543,6 +548,13 @@ export default function Page() {
 						width={'w-[50px]'}
 						iconSize={30}
 						icon='arrow-back'
+						href='/'
+					/>
+					<Button // to Share Page
+						height={'h-[50px]'}
+						width={'w-[50px]'}
+						iconSize={30}
+						icon='share'
 						href='/'
 					/>
 				</StyledView>
