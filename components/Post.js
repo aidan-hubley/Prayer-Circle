@@ -9,7 +9,8 @@ import {
 	TextInput,
 	Keyboard,
 	TouchableWithoutFeedback,
-	Dimensions
+	Dimensions,
+	TouchableHighlight
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -38,7 +39,7 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
-const titleCharThreshold = 20; 
+const titleCharThreshold = 20;
 const contentCharThreshold = 300;
 
 export const Post = (post) => {
@@ -63,12 +64,17 @@ export const Post = (post) => {
 		decrypt(post.id, post.content)
 	);
 	const [edited, setEdited] = useState(post.edited);
+	const [reported, setReported] = useState(false);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isToggleVisible, setIsToggleVisible] = useState(title.length > titleCharThreshold || content.length > contentCharThreshold);
+	const [isToggleVisible, setIsToggleVisible] = useState(
+		title.length > titleCharThreshold ||
+			content.length > contentCharThreshold
+	);
+	const [snapPoints, setSnapPoints] = useState([]);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -93,7 +99,7 @@ export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 
 	const isTextTruncated = (text) => {
-    return text && text.length > 300;
+		return text && text.length > 300;
 	};
 
 	// bottom sheet modal
@@ -135,8 +141,8 @@ export const Post = (post) => {
 	};
 
 	const handleExpanded = () => {
-		setIsExpanded(prevState => !prevState);
-	}
+		setIsExpanded((prevState) => !prevState);
+	};
 
 	const commentsView = () => {
 		return (
@@ -325,6 +331,41 @@ export const Post = (post) => {
 		);
 	};
 
+	const reportView = () => {
+		const reportItem = (text, first, last, onPress) => {
+			return (
+				<TouchableHighlight
+					activeOpacity={0.6}
+					underlayColor='#3D3D3D'
+					onPress={() => {
+						if (onPress) onPress();
+						else reportPost(text);
+						setReported(true);
+					}}
+					className={`w-full h-[60px] justify-center pl-4 ${
+						first && 'rounded-t-[20px]'
+					} ${last ? 'rounded-b-[20px]' : 'border-b border-outline'}`}
+				>
+					<Text className='text-offwhite text-[18px]'>{text}</Text>
+				</TouchableHighlight>
+			);
+		};
+
+		return (
+			<StyledView className='flex-1 bg-grey px-[20px] pt-[10px]'>
+				<View className='w-full bg-[#292929] rounded-[20px]'>
+					{reportItem("I don't like this post", true)}
+					{reportItem("It's spam")}
+					{reportItem("It's inappropriate")}
+					{reportItem('Hate speech or symbols')}
+					{reportItem('Bullying or harassment')}
+					{reportItem('Hate speech or symbols')}
+					{reportItem('Other', false, true)}
+				</View>
+			</StyledView>
+		);
+	};
+
 	const ToolbarButton = (props) => {
 		return (
 			<StyledOpacity
@@ -478,6 +519,24 @@ export const Post = (post) => {
 		bottomSheetModalRef.current?.dismiss();
 	}
 
+	async function reportPost(reason) {
+		let reportData = {
+			reporter: userData.uid,
+			reason: reason,
+			timestamp: Date.now(),
+			title: title,
+			body: content
+		};
+		writeData(`prayer_circle/posts/${post.id}/reports/`, reportData);
+		writeData(
+			`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+			true,
+			true
+		);
+		alert('Post has been reported.');
+		bottomSheetModalRef.current?.dismiss();
+	}
+
 	// post setup
 	const setUp = async (postId) => {
 		try {
@@ -521,6 +580,10 @@ export const Post = (post) => {
 			}
 			setInteractions(interactionsData);
 		}
+
+		setReported(
+			Object.values(post.reports || {})[0]?.reporter === userData.uid
+		);
 	};
 
 	const getEventDate = () => {
@@ -618,7 +681,10 @@ export const Post = (post) => {
 	}, [auth]);
 
 	useEffect(() => {
-	setIsToggleVisible(title.length > titleCharThreshold || content.length > contentCharThreshold);
+		setIsToggleVisible(
+			title.length > titleCharThreshold ||
+				content.length > contentCharThreshold
+		);
 	}, [title, content]);
 
 	return (
@@ -631,6 +697,7 @@ export const Post = (post) => {
 							clearTimeout(timer.current);
 							if (post.owned || post.ownedToolBar) {
 								setBottomSheetType('Interactions');
+								setSnapPoints(['85%']);
 								handlePresentModalPress();
 							} else {
 								toggleIcon();
@@ -665,11 +732,23 @@ export const Post = (post) => {
 										post.owned ? 'ml-[10px]' : 'ml-2'
 									}`}
 								>
-								<View className ={`${post.owned? "ml-[10px]" : "ml-[2px]"} max-w-[95%]`} > 
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{isExpanded || title.length <= titleCharThreshold ? title : `${title.substring(0, titleCharThreshold)}...`}
-									</StyledText>
-								</View>
+									<View
+										className={`${
+											post.owned
+												? 'ml-[10px]'
+												: 'ml-[2px]'
+										} max-w-[95%]`}
+									>
+										<StyledText className='text-offwhite font-bold text-[20px]'>
+											{isExpanded ||
+											title.length <= titleCharThreshold
+												? title
+												: `${title.substring(
+														0,
+														titleCharThreshold
+												  )}...`}
+										</StyledText>
+									</View>
 									<StyledView className='flex flex-row'>
 										<StyledText
 											className={`${
@@ -712,7 +791,13 @@ export const Post = (post) => {
 											: 'text-white mt-[2px] pb-[10px]'
 									}`}
 								>
-									{isExpanded || content.length <= contentCharThreshold ? content : `${content.substring(0, contentCharThreshold)}...`}
+									{isExpanded ||
+									content.length <= contentCharThreshold
+										? content
+										: `${content.substring(
+												0,
+												contentCharThreshold
+										  )}...`}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -724,6 +809,7 @@ export const Post = (post) => {
 										toggleIcon();
 									} else {
 										setBottomSheetType('Interactions');
+										setSnapPoints(['85%']);
 										handlePresentModalPress();
 									}
 								}}
@@ -738,8 +824,19 @@ export const Post = (post) => {
 								/>
 							</StyledPressable>
 							{isToggleVisible && (
-								<StyledOpacity onPress={handleExpanded} className='self-center pt-2'>
-									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
+								<StyledOpacity
+									onPress={handleExpanded}
+									className='self-center pt-2'
+								>
+									<Ionicons
+										name={
+											isExpanded
+												? 'chevron-up'
+												: 'chevron-down'
+										}
+										size={24}
+										color='#3D3D3D'
+									/>
 								</StyledOpacity>
 							)}
 							<StyledPressable
@@ -785,6 +882,7 @@ export const Post = (post) => {
 										color='#00A55E'
 										onPress={() => {
 											setBottomSheetType('Edit');
+											setSnapPoints(['85%']);
 											handlePresentModalPress();
 										}}
 									/>
@@ -792,10 +890,16 @@ export const Post = (post) => {
 							) : (
 								<>
 									<ToolbarButton
-										icon={'flag-outline'}
+										icon={
+											reported ? 'flag' : 'flag-outline'
+										}
 										size={29}
 										color='#CC2500'
-										onPress={() => {}}
+										onPress={() => {
+											setBottomSheetType('Report');
+											setSnapPoints(['65%', '85%']);
+											handlePresentModalPress();
+										}}
 									/>
 									<ToolbarButton
 										icon={'eye-off-outline'}
@@ -826,6 +930,7 @@ export const Post = (post) => {
 								onPress={async () => {
 									populateComments();
 									setBottomSheetType('Comments');
+									setSnapPoints(['65%']);
 									handlePresentModalPress();
 								}}
 							/>
@@ -847,7 +952,7 @@ export const Post = (post) => {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={SnapPoints(['85%'])}
+				snapPoints={snapPoints}
 				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
@@ -855,6 +960,7 @@ export const Post = (post) => {
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
 				{bottomSheetType === 'Interactions' && interactionsView()}
+				{bottomSheetType === 'Report' && reportView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);
