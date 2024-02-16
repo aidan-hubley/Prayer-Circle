@@ -1,13 +1,16 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useState, useRef, forwardRef } from 'react';
 import { View, Animated, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
+import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
 
 const StyledView = styled(View);
 
 export const Toggle = forwardRef(
-	({ width, height, offColor, onColor, toggle }, ref) => {
+	({ width, height, offColor, onColor, toggle, onFunc, offFunc }, ref) => {
 		const [isEnabled, setIsEnabled] = useState(toggle || false);
-		const position = useRef(new Animated.Value(0)).current;
+		const position = useRef(new Animated.Value(toggle ? 1 : 0)).current;
+		const haptics = useStore((state) => state.haptics);
 
 		const positionInter = position.interpolate({
 			inputRange: [0, 1],
@@ -18,12 +21,20 @@ export const Toggle = forwardRef(
 		};
 
 		const togglePosition = () => {
-			setIsEnabled(!isEnabled);
+			if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+			let direction = !isEnabled;
+			setIsEnabled(direction);
 			Animated.timing(position, {
 				toValue: isEnabled ? 0 : 1,
 				duration: 200,
 				useNativeDriver: false
-			}).start();
+			}).start(() => {
+				if (direction && onFunc) {
+					onFunc();
+				} else if (offFunc) {
+					offFunc();
+				}
+			});
 		};
 
 		return (
