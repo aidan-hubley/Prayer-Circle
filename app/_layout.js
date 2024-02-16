@@ -25,8 +25,8 @@ export default function RootLayout() {
 				let settings = await readData(
 					`prayer_circle/users/${auth.currentUser.uid}/private/settings`
 				);
-				setHaptics(settings.haptics);
-				setNotifications(settings.notifications);
+				setHaptics(settings?.haptics);
+				setNotifications(settings?.notifications);
 			}, 1000);
 
 			let latestVersion = await readData(

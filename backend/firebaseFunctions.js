@@ -174,7 +174,6 @@ export async function getFilterCircles() {
 			color: circleData.color,
 			icon: circleData.icon,
 			description: circleData.description,
-			iconColor: circleData.iconColor,
 			role
 		};
 		circlesData.push(circleStruct);
