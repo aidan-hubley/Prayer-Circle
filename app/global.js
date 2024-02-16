@@ -5,6 +5,7 @@ export const useStore = create((set) => ({
 	currentFilterName: 'Prayer Circle',
 	currentFilterIcon: 'musical-notes',
 	currentFilterColor: '#FFFFFF',
+	currentCircleRole: 'member',
 	currentFilterIconColor: '#FFFFFF',
 	globalReload: false,
 	journalReload: false,
@@ -17,6 +18,8 @@ export const useStore = create((set) => ({
 	setFilterName: (newVal) => set(() => ({ currentFilterName: newVal })),
 	setFilterIcon: (newVal) => set(() => ({ currentFilterIcon: newVal })),
 	setFilterColor: (newVal) => set(() => ({ currentFilterColor: newVal })),
+	setCurrentCircleRole: (newVal) =>
+		set(() => ({ currentCircleRole: newVal })),
 	setFilterIconColor: (newVal) =>
 		set(() => ({ currentFilterIconColor: newVal })),
 	setGlobalReload: (newVal) => set(() => ({ globalReload: newVal })),
