@@ -756,7 +756,7 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`border border-green flex-1 ${
+									className={`flex-1 ${
 										post.owned ? 'ml-[10px]' : 'ml-2'
 									}`}
 								>
@@ -765,7 +765,7 @@ export const Post = (post) => {
 											post.owned
 												? 'ml-[10px]'
 												: 'ml-[2px]'
-										} flex-1 border border-red`}
+										} flex-1`}
 									>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
