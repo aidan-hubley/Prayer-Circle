@@ -1,5 +1,10 @@
-import React, { useRef, useState } from 'react';
-import { Pressable, View, Animated, Dimensions } from 'react-native';
+import React, {
+	useImperativeHandle,
+	useRef,
+	useState,
+	forwardRef
+} from 'react';
+import { Pressable, View, Animated } from 'react-native';
 import { styled } from 'nativewind';
 import { Button } from './Buttons';
 /* import { Timer } from './Timer'; */
@@ -10,7 +15,7 @@ const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledView = styled(View);
 
-export function Circle({ filter, press, toggleSwiping }) {
+const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 	const [pressed, setPressed] = useState('none');
 	const scale = useRef(new Animated.Value(1)).current;
 	const longOpacity = useRef(new Animated.Value(0)).current;
@@ -41,9 +46,6 @@ export function Circle({ filter, press, toggleSwiping }) {
 	const longPressedStyle = {
 		opacity: longOpacityInter,
 		bottom: insets.bottom < 15 ? insets.bottom + 90 : insets.bottom + 60
-	};
-	const shortPressedStyle = {
-		opacity: shortOpacityInter
 	};
 	const pressedStyle = { opacity: bgOpacityInter };
 
@@ -76,6 +78,10 @@ export function Circle({ filter, press, toggleSwiping }) {
 			useNativeDriver: true
 		}).start();
 	}
+
+	useImperativeHandle(ref, () => ({
+		setPressed
+	}));
 
 	return (
 		<>
@@ -160,4 +166,6 @@ export function Circle({ filter, press, toggleSwiping }) {
 			></AnimatedPressable>
 		</>
 	);
-}
+});
+
+export { Circle };

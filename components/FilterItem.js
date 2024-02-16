@@ -36,13 +36,7 @@ const FilterItem = forwardRef((props, ref) => {
 	const setFilterName = useStore((state) => state.setFilterName);
 	const setFilterIcon = useStore((state) => state.setFilterIcon);
 	const setFilterColor = useStore((state) => state.setFilterColor);
-	const setFilterDescription = useStore(
-		(state) => state.setFilterDescription
-	);
 	const setFilterIconColor = useStore((state) => state.setFilterIconColor);
-	const setCircleMembersData = useStore(
-		(state) => state.setCircleMembersData
-	); //NRA
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -163,6 +157,7 @@ const FilterItem = forwardRef((props, ref) => {
 						onPress={() => {
 							bottomSheetModalRef.current.present();
 							props.toggleShown();
+							props.setPressed('none');
 						}}
 					>
 						<StyledView className='flex items-center justify-center'>
@@ -218,18 +213,14 @@ const FilterItem = forwardRef((props, ref) => {
 												className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
 												onPress={() => {
 													bottomSheetModalRef.current.dismiss();
+													props.toggleShown();
+													props.setPressed('none');
 													setFilter(item.id);
 													setFilterName(item.title);
 													setFilterIcon(item.icon);
 													setFilterColor(item.color);
-													setFilterDescription(
-														item.description
-													);
 													setFilterIconColor(
 														item.iconColor
-													);
-													setCircleMembersData(
-														item.circleMembersData
 													);
 												}}
 											>
@@ -266,13 +257,12 @@ const FilterItem = forwardRef((props, ref) => {
 					className='flex border-[6px] items-center justify-center rounded-full'
 					onPress={() => {
 						props.toggleShown();
+						props.setPressed('none');
 						setFilter(props.data.id);
 						setFilterName(props.data.title);
 						setFilterIcon(props.data.icon);
 						setFilterColor(props.data.color);
-						setFilterDescription(props.data.description); //NRA
 						setFilterIconColor(props.data.iconColor);
-						setCircleMembersData(props.data.circleMembersData);
 					}}
 				>
 					<>

@@ -170,8 +170,7 @@ export async function getFilterCircles() {
 			title: circleData.title,
 			color: circleData.color,
 			icon: circleData.icon,
-			description: circleData.description,
-			iconColor: circleData.iconColor,
+			description: circleData.description
 		};
 		circlesData.push(circleStruct);
 	}
@@ -212,6 +211,19 @@ export async function getPosts(circleId) {
 	}
 
 	return filteredPosts;
+}
+
+export async function getProfilePosts() {
+	let uid = await getUID();
+	let posts = Object.entries(
+		(await readData(`prayer_circle/users/${uid}/private/posts`)) || {}
+	);
+
+	posts.sort((a, b) => {
+		return b[1] - a[1];
+	});
+
+	return posts;
 }
 
 export async function getHiddenPosts() {
