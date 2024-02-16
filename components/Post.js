@@ -1083,6 +1083,7 @@ export const Post = (post) => {
 											Haptics.ImpactFeedbackStyle.Light
 										);
 									setBottomSheetType('All Circles');
+									setSnapPoints(['85%']);
 									handlePresentModalPress();
 								}}
 							/>
