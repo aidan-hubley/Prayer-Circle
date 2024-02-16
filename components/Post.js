@@ -47,9 +47,6 @@ const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
-const titleCharThreshold = 20;
-const contentCharThreshold = 300;
-
 export const Post = (post) => {
 	// variables
 	const [title, setTitle] = useState(decrypt(post.id, post.title));
@@ -121,6 +118,8 @@ export const Post = (post) => {
 		}
 	};
 	const tS = timeSince(post.timestamp);
+	const titleCharThreshold = 21;
+	const contentCharThreshold = 300;
 
 	const isTextTruncated = (text) => {
 		return text && text.length > 300;
@@ -202,7 +201,6 @@ export const Post = (post) => {
 					contentContainerStyle={{
 						display: 'flex',
 						flexDirection: 'column',
-						justifyContent: 'center',
 						alignItems: 'center',
 						width: '100%'
 					}}
@@ -867,7 +865,7 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${
+									className={`flex-1 ${
 										post.owned ? 'ml-[10px]' : 'ml-2'
 									}`}
 								>
@@ -876,7 +874,7 @@ export const Post = (post) => {
 											post.owned
 												? 'ml-[10px]'
 												: 'ml-[2px]'
-										} max-w-[95%]`}
+										} flex-1`}
 									>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
