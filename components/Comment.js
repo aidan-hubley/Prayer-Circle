@@ -26,7 +26,7 @@ export const Comment = (comment) => {
 			<StyledView className='flex-1 ml-[8px]'>
 				<StyledView className=' flex flex-row items-center'>
 					<StyledText className='font-bold text-[18px] text-white'>
-						{comment.username}
+						{comment.name}
 					</StyledText>
 					<StyledText className='text-[14px] text-outline'>
 						{`${comment.edited ? ' (edited)' : ''}`}
@@ -36,7 +36,7 @@ export const Comment = (comment) => {
 					{comment.content}
 				</StyledText>
 			</StyledView>
-			<StyledView className='w-[35px] flex flex-col items-end justify-center'>
+			<StyledView className='w-[35px] flex flex-col h-full items-end justify-center'>
 				<StyledText className='text-[13px] text-white'>
 					{timeSince(comment.timestamp)}
 				</StyledText>

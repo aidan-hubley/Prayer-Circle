@@ -84,7 +84,7 @@ export default function JournalPage() {
 							img={item.data.profile_img}
 							title={item.data.title}
 							timestamp={`${item.data.timestamp}`}
-							content={item.data.text}
+							content={item.data.body}
 							icon={item.data.type}
 							id={item.id}
 							edited={item.data.edited}

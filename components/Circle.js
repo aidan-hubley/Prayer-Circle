@@ -1,21 +1,28 @@
-import React, { useRef, useState } from 'react';
-import { Pressable, View, Animated, Dimensions } from 'react-native';
+import React, {
+	useImperativeHandle,
+	useRef,
+	useState,
+	forwardRef
+} from 'react';
+import { Pressable, View, Animated } from 'react-native';
 import { styled } from 'nativewind';
 import { Button } from './Buttons';
 /* import { Timer } from './Timer'; */
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledView = styled(View);
 
-export function Circle({ filter, press, toggleSwiping }) {
+const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 	const [pressed, setPressed] = useState('none');
 	const scale = useRef(new Animated.Value(1)).current;
 	const longOpacity = useRef(new Animated.Value(0)).current;
 	const shortOpacity = useRef(new Animated.Value(0)).current;
 	const bgOpacity = useRef(new Animated.Value(0)).current;
+	const haptics = useStore((state) => state.haptics);
 
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
@@ -41,9 +48,6 @@ export function Circle({ filter, press, toggleSwiping }) {
 	const longPressedStyle = {
 		opacity: longOpacityInter,
 		bottom: insets.bottom < 15 ? insets.bottom + 90 : insets.bottom + 60
-	};
-	const shortPressedStyle = {
-		opacity: shortOpacityInter
 	};
 	const pressedStyle = { opacity: bgOpacityInter };
 
@@ -77,6 +81,10 @@ export function Circle({ filter, press, toggleSwiping }) {
 		}).start();
 	}
 
+	useImperativeHandle(ref, () => ({
+		setPressed
+	}));
+
 	return (
 		<>
 			<AnimatedPressable
@@ -84,7 +92,7 @@ export function Circle({ filter, press, toggleSwiping }) {
 				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
 				className={`absolute bottom-[-40px] left-[-100px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
-					Haptics.selectionAsync();
+					if (haptics) Haptics.selectionAsync();
 					toggleLongOptions();
 					toggleShortOptions();
 				}}
@@ -142,9 +150,10 @@ export function Circle({ filter, press, toggleSwiping }) {
 					}
 					resize(1);
 
-					Haptics.notificationAsync(
-						Haptics.NotificationFeedbackType.Success
-					);
+					if (haptics)
+						Haptics.notificationAsync(
+							Haptics.NotificationFeedbackType.Success
+						);
 				}}
 				onPress={() => {
 					resize(1);
@@ -155,9 +164,12 @@ export function Circle({ filter, press, toggleSwiping }) {
 						toggleShortOptions(false);
 					}
 					if (press) press();
-					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (haptics)
+						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 				}}
 			></AnimatedPressable>
 		</>
 	);
-}
+});
+
+export { Circle };

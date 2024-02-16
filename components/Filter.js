@@ -6,6 +6,7 @@ import { FilterItem } from './FilterItem';
 /* import { Timer } from './Timer'; */
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
 
 const StyledView = styled(View);
 const AnimatedView = Animated.createAnimatedComponent(StyledView);
@@ -21,6 +22,7 @@ const Filter = forwardRef((props, ref) => {
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
 	const contentOffset = useSharedValue(0);
+	const haptics = useStore((state) => state.haptics);
 
 	const opacityInter = opacity.interpolate({
 		inputRange: [0, 1],
@@ -40,7 +42,7 @@ const Filter = forwardRef((props, ref) => {
 	};
 
 	function toggleShown(toggle) {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		if (props.toggleSwiping) props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
 			toValue: toggle ? 1 : 0,
@@ -62,6 +64,7 @@ const Filter = forwardRef((props, ref) => {
 					className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 					onPress={() => {
 						toggleShown();
+						props.setPressed('none');
 					}}
 				/>
 			)}
@@ -96,6 +99,7 @@ const Filter = forwardRef((props, ref) => {
 								itemMargin={itemMargin}
 								toggleShown={toggleShown}
 								multiselect={props.multiselect}
+								setPressed={props.setPressed}
 								circles={
 									item.id === 'Gridview' ? props.data : []
 								}

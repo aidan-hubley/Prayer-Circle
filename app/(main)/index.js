@@ -23,6 +23,7 @@ export default function Layout() {
 	const pagerRef = useRef();
 	const circleNameRef = useRef();
 	const filterRef = useRef();
+	const circleRef = useRef();
 	const [
 		filterName,
 		globalReload,
@@ -32,7 +33,6 @@ export default function Layout() {
 		setFilterReload,
 		setFilterIcon,
 		setFilterColor,
-		setFilterDescription,
 		setFilterIconColor,
 		setUid,
 		setName,
@@ -47,7 +47,6 @@ export default function Layout() {
 		state.setFilterReload,
 		state.setFilterIcon,
 		state.setFilterColor,
-		state.setFilterDescription,
 		state.setFilterIconColor,
 		state.setUid,
 		state.setName,
@@ -116,6 +115,7 @@ export default function Layout() {
 			<Filter
 				data={circles}
 				ref={filterRef}
+				setPressed={circleRef?.current?.setPressed}
 				touchEvents={swipingEnabled}
 				toggleSwiping={setSwipingEnabled}
 			/>
@@ -127,7 +127,11 @@ export default function Layout() {
 				}}
 				className='absolute flex flex-row mx-[100px] justify-center z-0'
 			>
-				<Circle toggleSwiping={setSwipingEnabled} filter={filterRef} />
+				<Circle
+					ref={circleRef}
+					toggleSwiping={setSwipingEnabled}
+					filter={filterRef}
+				/>
 			</StyledView>
 
 			<StyledView
