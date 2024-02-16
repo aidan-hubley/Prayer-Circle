@@ -12,6 +12,8 @@ export const useStore = create((set) => ({
 	filterReload: false,
 	circles: [],
 	addCircles: [],
+	haptics: false,
+	notifications: false,
 	setFilter: (newVal) => set(() => ({ filter: newVal })),
 	setFilterName: (newVal) => set(() => ({ currentFilterName: newVal })),
 	setFilterIcon: (newVal) => set(() => ({ currentFilterIcon: newVal })),
@@ -24,5 +26,7 @@ export const useStore = create((set) => ({
 	setJournalReload: (newVal) => set(() => ({ journalReload: newVal })),
 	setFilterReload: (newVal) => set(() => ({ filterReload: newVal })),
 	setCircles: (newVal) => set(() => ({ circles: newVal })),
-	setAddCircles: (newVal) => set(() => ({ addCircles: newVal }))
+	setAddCircles: (newVal) => set(() => ({ addCircles: newVal })),
+	setHaptics: (newVal) => set(() => ({ haptics: newVal })),
+	setNotifications: (newVal) => set(() => ({ notifications: newVal }))
 }));

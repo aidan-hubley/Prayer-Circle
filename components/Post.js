@@ -63,6 +63,7 @@ export const Post = (post) => {
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
 	const [
+		haptics,
 		setGlobalReload,
 		setJournalReload,
 		setFilter,
@@ -71,6 +72,7 @@ export const Post = (post) => {
 		setFilterColor,
 		setFilterIconColor
 	] = useStore((state) => [
+		state.haptics,
 		state.setGlobalReload,
 		state.setJournalReload,
 		state.setFilter,
@@ -409,7 +411,8 @@ export const Post = (post) => {
 				className='flex items-center justify-center w-[30px] h-[30px]'
 				activeOpacity={0.4}
 				onPress={() => {
-					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (haptics)
+						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					if (props.onPress) props.onPress();
 				}}
 			>
@@ -439,7 +442,7 @@ export const Post = (post) => {
 
 	function toggleIcon() {
 		let now = Date.now();
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		Animated.spring(iconAnimation, {
 			toValue: interacted ? 1 : 0,
 			duration: 100,
@@ -454,7 +457,7 @@ export const Post = (post) => {
 	}
 
 	function toggleToolbar() {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		setToolbar(!toolbarShown);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
@@ -954,10 +957,11 @@ export const Post = (post) => {
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
-								onPress={async () => {
-									Haptics.impactAsync(
-										Haptics.ImpactFeedbackStyle.Light
-									);
+								onPress={() => {
+									if (haptics)
+										Haptics.impactAsync(
+											Haptics.ImpactFeedbackStyle.Light
+										);
 									setBottomSheetType('All Circles');
 									handlePresentModalPress();
 								}}

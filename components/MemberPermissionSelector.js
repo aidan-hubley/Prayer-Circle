@@ -59,7 +59,7 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 			duration: 350,
 			useNativeDriver: false
 		}).start();
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		setOpen(!open);
 	};
 

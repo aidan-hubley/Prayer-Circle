@@ -7,25 +7,28 @@ import AnimatedSplash from 'react-native-animated-splash-screen';
 import { readData, writeData } from '../backend/firebaseFunctions';
 import { encrypt, decrypt } from 'react-native-simple-encryption';
 import * as Config from '../app.config';
+import { auth } from '../backend/config.js';
+import { useStore } from './global.js';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 	const [loaded, setLoaded] = useState(false);
+	const [setHaptics, setNotifications] = useStore((state) => [
+		state.setHaptics,
+		state.setNotifications
+	]);
 
 	useEffect(() => {
 		(async () => {
-			/* let posts = await Object.entries(
-				(await readData('prayer_circle/posts')) || {}
-			);
+			setTimeout(async () => {
+				let settings = await readData(
+					`prayer_circle/users/${auth.currentUser.uid}/private/settings`
+				);
+				setHaptics(settings.haptics);
+				setNotifications(settings.notifications);
+			}, 1000);
 
-			posts.forEach(([id, post]) => {
-				let encrypted = post;
-
-				encrypted.text = null;
-
-				writeData(`prayer_circle/posts/${id}`, encrypted, true);
-			}); */
 			let latestVersion = await readData(
 				'prayer_circle/constants/minimum_stable_version'
 			);

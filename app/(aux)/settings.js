@@ -41,6 +41,7 @@ import {
 	readData,
 	uploadImage
 } from '../../backend/firebaseFunctions';
+import { useStore } from '../global';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -76,6 +77,14 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
+	const [haptics, notifications, setHaptics, setNotifications] = useStore(
+		(state) => [
+			state.haptics,
+			state.notifications,
+			state.setHaptics,
+			state.setNotifications
+		]
+	);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
@@ -1076,7 +1085,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={notifications}
+										onFunc={() => {
+											setNotifications(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setNotifications(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>
@@ -1092,7 +1119,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={haptics}
+										onFunc={() => {
+											setHaptics(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setHaptics(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>
