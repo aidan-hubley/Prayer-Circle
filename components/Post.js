@@ -199,7 +199,6 @@ export const Post = (post) => {
 					contentContainerStyle={{
 						display: 'flex',
 						flexDirection: 'column',
-						justifyContent: 'center',
 						alignItems: 'center',
 						width: '100%'
 					}}
