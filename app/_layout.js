@@ -14,15 +14,19 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 	const [loaded, setLoaded] = useState(false);
-	const setHaptics = useStore((state) => state.setHaptics);
+	const [setHaptics, setNotifications] = useStore((state) => [
+		state.setHaptics,
+		state.setNotifications
+	]);
 
 	useEffect(() => {
 		(async () => {
 			setTimeout(async () => {
-				let haptics = await readData(
-					`prayer_circle/users/${auth.currentUser.uid}/private/settings/haptics`
+				let settings = await readData(
+					`prayer_circle/users/${auth.currentUser.uid}/private/settings`
 				);
-				setHaptics(haptics);
+				setHaptics(settings.haptics);
+				setNotifications(settings.notifications);
 			}, 1000);
 
 			let latestVersion = await readData(
