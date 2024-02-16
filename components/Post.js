@@ -38,7 +38,7 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
-const titleCharThreshold = 20; 
+const titleCharThreshold = 20;
 const contentCharThreshold = 300;
 
 export const Post = (post) => {
@@ -53,9 +53,10 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const [setGlobalReload, setJournalReload] = useStore((state) => [
+	const [setGlobalReload, setJournalReload, haptics] = useStore((state) => [
 		state.setGlobalReload,
-		state.setJournalReload
+		state.setJournalReload,
+		state.haptics
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(decrypt(post.id, post.title));
@@ -68,7 +69,10 @@ export const Post = (post) => {
 	const [eventDate, setEventDate] = useState('');
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isToggleVisible, setIsToggleVisible] = useState(title.length > titleCharThreshold || content.length > contentCharThreshold);
+	const [isToggleVisible, setIsToggleVisible] = useState(
+		title.length > titleCharThreshold ||
+			content.length > contentCharThreshold
+	);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -93,7 +97,7 @@ export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 
 	const isTextTruncated = (text) => {
-    return text && text.length > 300;
+		return text && text.length > 300;
 	};
 
 	// bottom sheet modal
@@ -135,8 +139,8 @@ export const Post = (post) => {
 	};
 
 	const handleExpanded = () => {
-		setIsExpanded(prevState => !prevState);
-	}
+		setIsExpanded((prevState) => !prevState);
+	};
 
 	const commentsView = () => {
 		return (
@@ -331,7 +335,8 @@ export const Post = (post) => {
 				className='flex items-center justify-center w-[30px] h-[30px]'
 				activeOpacity={0.4}
 				onPress={() => {
-					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (haptics)
+						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					if (props.onPress) props.onPress();
 				}}
 			>
@@ -361,7 +366,7 @@ export const Post = (post) => {
 
 	function toggleIcon() {
 		let now = Date.now();
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		Animated.spring(iconAnimation, {
 			toValue: interacted ? 1 : 0,
 			duration: 100,
@@ -376,7 +381,7 @@ export const Post = (post) => {
 	}
 
 	function toggleToolbar() {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		setToolbar(!toolbarShown);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
@@ -618,7 +623,10 @@ export const Post = (post) => {
 	}, [auth]);
 
 	useEffect(() => {
-	setIsToggleVisible(title.length > titleCharThreshold || content.length > contentCharThreshold);
+		setIsToggleVisible(
+			title.length > titleCharThreshold ||
+				content.length > contentCharThreshold
+		);
 	}, [title, content]);
 
 	return (
@@ -665,11 +673,23 @@ export const Post = (post) => {
 										post.owned ? 'ml-[10px]' : 'ml-2'
 									}`}
 								>
-								<View className ={`${post.owned? "ml-[10px]" : "ml-[2px]"} max-w-[95%]`} > 
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{isExpanded || title.length <= titleCharThreshold ? title : `${title.substring(0, titleCharThreshold)}...`}
-									</StyledText>
-								</View>
+									<View
+										className={`${
+											post.owned
+												? 'ml-[10px]'
+												: 'ml-[2px]'
+										} max-w-[95%]`}
+									>
+										<StyledText className='text-offwhite font-bold text-[20px]'>
+											{isExpanded ||
+											title.length <= titleCharThreshold
+												? title
+												: `${title.substring(
+														0,
+														titleCharThreshold
+												  )}...`}
+										</StyledText>
+									</View>
 									<StyledView className='flex flex-row'>
 										<StyledText
 											className={`${
@@ -712,7 +732,13 @@ export const Post = (post) => {
 											: 'text-white mt-[2px] pb-[10px]'
 									}`}
 								>
-									{isExpanded || content.length <= contentCharThreshold ? content : `${content.substring(0, contentCharThreshold)}...`}
+									{isExpanded ||
+									content.length <= contentCharThreshold
+										? content
+										: `${content.substring(
+												0,
+												contentCharThreshold
+										  )}...`}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -738,8 +764,19 @@ export const Post = (post) => {
 								/>
 							</StyledPressable>
 							{isToggleVisible && (
-								<StyledOpacity onPress={handleExpanded} className='self-center pt-2'>
-									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
+								<StyledOpacity
+									onPress={handleExpanded}
+									className='self-center pt-2'
+								>
+									<Ionicons
+										name={
+											isExpanded
+												? 'chevron-up'
+												: 'chevron-down'
+										}
+										size={24}
+										color='#3D3D3D'
+									/>
 								</StyledOpacity>
 							)}
 							<StyledPressable
@@ -833,9 +870,10 @@ export const Post = (post) => {
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
 								onPress={() => {
-									Haptics.impactAsync(
-										Haptics.ImpactFeedbackStyle.Light
-									);
+									if (haptics)
+										Haptics.impactAsync(
+											Haptics.ImpactFeedbackStyle.Light
+										);
 									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
 								}}
 							/>

@@ -9,6 +9,7 @@ import { View, TouchableOpacity, Animated } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
 
 const StyledView = styled(View);
 
@@ -16,6 +17,7 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	const animationValue = useRef(new Animated.Value(0)).current;
 	const [open, setOpen] = useState(false);
 	const [permission, setPermission] = useState('');
+	const haptics = useStore((state) => state.haptics);
 
 	/* TODO: Implement DB update on permission change */
 
@@ -51,7 +53,7 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 			duration: 350,
 			useNativeDriver: false
 		}).start();
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		setOpen(!open);
 	};
 

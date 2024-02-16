@@ -41,6 +41,8 @@ import {
 	readData,
 	uploadImage
 } from '../../backend/firebaseFunctions';
+import { useStore } from '../global';
+import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -76,6 +78,10 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
+	const [haptics, setHaptics] = useStore((state) => [
+		state.haptics,
+		state.setHaptics
+	]);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
@@ -1092,7 +1098,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={haptics}
+										onFunc={() => {
+											setHaptics(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setHaptics(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>
