@@ -9,12 +9,19 @@ import {
 	TextInput,
 	Keyboard,
 	TouchableWithoutFeedback,
-	Dimensions
+	Dimensions,
+	TouchableHighlight
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince, formatDateAndTime } from '../backend/functions';
-import { writeData, readData, generateId } from '../backend/firebaseFunctions';
+import {
+	writeData,
+	readData,
+	generateId,
+	getFilterCircles,
+	getCircles
+} from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -38,7 +45,9 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
-const titleCharThreshold = 20; 
+const StyledAnimatedHighlight =
+	Animated.createAnimatedComponent(TouchableHighlight);
+const titleCharThreshold = 20;
 const contentCharThreshold = 300;
 
 export const Post = (post) => {
@@ -53,9 +62,22 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const [setGlobalReload, setJournalReload] = useStore((state) => [
+	const [
+		setGlobalReload,
+		setJournalReload,
+		setFilter,
+		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterIconColor
+	] = useStore((state) => [
 		state.setGlobalReload,
-		state.setJournalReload
+		state.setJournalReload,
+		state.setFilter,
+		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterIconColor
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(decrypt(post.id, post.title));
@@ -66,9 +88,13 @@ export const Post = (post) => {
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
+	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isToggleVisible, setIsToggleVisible] = useState(title.length > titleCharThreshold || content.length > contentCharThreshold);
+	const [isToggleVisible, setIsToggleVisible] = useState(
+		title.length > titleCharThreshold ||
+			content.length > contentCharThreshold
+	);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -93,7 +119,7 @@ export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 
 	const isTextTruncated = (text) => {
-    return text && text.length > 300;
+		return text && text.length > 300;
 	};
 
 	// bottom sheet modal
@@ -135,8 +161,8 @@ export const Post = (post) => {
 	};
 
 	const handleExpanded = () => {
-		setIsExpanded(prevState => !prevState);
-	}
+		setIsExpanded((prevState) => !prevState);
+	};
 
 	const commentsView = () => {
 		return (
@@ -276,6 +302,58 @@ export const Post = (post) => {
 					</StyledView>
 				</StyledView>
 			</TouchableWithoutFeedback>
+		);
+	};
+
+	const circlesView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<BottomSheetFlatList
+					data={circles}
+					keyExtractor={(item) => item.id}
+					contentContainerStyle={{
+						paddingVertical: 20,
+						paddingHorizontal: 12,
+						alignItems: 'center'
+					}}
+					numColumns={3}
+					renderItem={({ item }) => {
+						const vw = Dimensions.get('window').width;
+						return (
+							<StyledView
+								className='items-center justify-around my-[10px]'
+								style={{ width: vw / 3 - 8 }}
+							>
+								<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
+									{item.title}
+								</StyledText>
+								<StyledAnimatedHighlight
+									style={[
+										{
+											borderColor: item.color
+										}
+									]}
+									className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
+									onPress={() => {
+										bottomSheetModalRef.current.dismiss();
+										setFilter(item.id);
+										setFilterName(item.title);
+										setFilterIcon(item.icon);
+										setFilterColor(item.color);
+										setFilterIconColor(item.iconColor);
+									}}
+								>
+									<StyledIcon
+										name={item.icon}
+										size={45}
+										color={item.iconColor || item.color}
+									/>
+								</StyledAnimatedHighlight>
+							</StyledView>
+						);
+					}}
+				/>
+			</StyledView>
 		);
 	};
 
@@ -500,6 +578,8 @@ export const Post = (post) => {
 
 		if (post.icon === 'event') getEventDate();
 
+		await populateComments(post.comments);
+
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
 
@@ -521,6 +601,16 @@ export const Post = (post) => {
 			}
 			setInteractions(interactionsData);
 		}
+
+		let circlesData = [];
+		let userCircles = await getCircles();
+		for (let circle of Object.keys(post.data.circles)) {
+			if (!userCircles.includes(circle)) continue;
+			let circleData = await readData(`prayer_circle/circles/${circle}`);
+			circleData.id = circle;
+			circlesData.push(circleData);
+		}
+		setCircles(circlesData);
 	};
 
 	const getEventDate = () => {
@@ -618,7 +708,10 @@ export const Post = (post) => {
 	}, [auth]);
 
 	useEffect(() => {
-	setIsToggleVisible(title.length > titleCharThreshold || content.length > contentCharThreshold);
+		setIsToggleVisible(
+			title.length > titleCharThreshold ||
+				content.length > contentCharThreshold
+		);
 	}, [title, content]);
 
 	return (
@@ -665,11 +758,23 @@ export const Post = (post) => {
 										post.owned ? 'ml-[10px]' : 'ml-2'
 									}`}
 								>
-								<View className ={`${post.owned? "ml-[10px]" : "ml-[2px]"} max-w-[95%]`} > 
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{isExpanded || title.length <= titleCharThreshold ? title : `${title.substring(0, titleCharThreshold)}...`}
-									</StyledText>
-								</View>
+									<View
+										className={`${
+											post.owned
+												? 'ml-[10px]'
+												: 'ml-[2px]'
+										} max-w-[95%]`}
+									>
+										<StyledText className='text-offwhite font-bold text-[20px]'>
+											{isExpanded ||
+											title.length <= titleCharThreshold
+												? title
+												: `${title.substring(
+														0,
+														titleCharThreshold
+												  )}...`}
+										</StyledText>
+									</View>
 									<StyledView className='flex flex-row'>
 										<StyledText
 											className={`${
@@ -712,7 +817,13 @@ export const Post = (post) => {
 											: 'text-white mt-[2px] pb-[10px]'
 									}`}
 								>
-									{isExpanded || content.length <= contentCharThreshold ? content : `${content.substring(0, contentCharThreshold)}...`}
+									{isExpanded ||
+									content.length <= contentCharThreshold
+										? content
+										: `${content.substring(
+												0,
+												contentCharThreshold
+										  )}...`}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -738,8 +849,19 @@ export const Post = (post) => {
 								/>
 							</StyledPressable>
 							{isToggleVisible && (
-								<StyledOpacity onPress={handleExpanded} className='self-center pt-2'>
-									<Ionicons name={isExpanded ? 'chevron-up' : 'chevron-down'} size={24} color="#3D3D3D"/>
+								<StyledOpacity
+									onPress={handleExpanded}
+									className='self-center pt-2'
+								>
+									<Ionicons
+										name={
+											isExpanded
+												? 'chevron-up'
+												: 'chevron-down'
+										}
+										size={24}
+										color='#3D3D3D'
+									/>
 								</StyledOpacity>
 							)}
 							<StyledPressable
@@ -832,11 +954,12 @@ export const Post = (post) => {
 							<StyledOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
-								onPress={() => {
+								onPress={async () => {
 									Haptics.impactAsync(
 										Haptics.ImpactFeedbackStyle.Light
 									);
-									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
+									setBottomSheetType('All Circles');
+									handlePresentModalPress();
 								}}
 							/>
 						</StyledView>
@@ -854,6 +977,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'All Circles' && circlesView()}
 				{bottomSheetType === 'Interactions' && interactionsView()}
 			</BottomSheetModal>
 		</StyledPressable>

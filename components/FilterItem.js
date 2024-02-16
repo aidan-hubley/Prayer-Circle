@@ -36,9 +36,6 @@ const FilterItem = forwardRef((props, ref) => {
 	const setFilterName = useStore((state) => state.setFilterName);
 	const setFilterIcon = useStore((state) => state.setFilterIcon);
 	const setFilterColor = useStore((state) => state.setFilterColor);
-	const setFilterDescription = useStore(
-		(state) => state.setFilterDescription
-	);
 	const setFilterIconColor = useStore((state) => state.setFilterIconColor);
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
