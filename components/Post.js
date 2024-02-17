@@ -87,6 +87,7 @@ export const Post = (post) => {
 		decrypt(post.id, post.content)
 	);
 	const [edited, setEdited] = useState(post.edited);
+	const [reported, setReported] = useState(false);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
@@ -97,6 +98,7 @@ export const Post = (post) => {
 		title.length > titleCharThreshold ||
 			content.length > contentCharThreshold
 	);
+	const [snapPoints, setSnapPoints] = useState([]);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -405,6 +407,72 @@ export const Post = (post) => {
 		);
 	};
 
+	const reportView = () => {
+		const reportItem = (text, first, last, onPress) => {
+			return (
+				<TouchableHighlight
+					activeOpacity={0.6}
+					underlayColor='#3D3D3D'
+					onPress={() => {
+						if (onPress) onPress();
+						else reportPost(text);
+						setReported(text);
+					}}
+					className={`w-full h-[60px] justify-center pl-4 ${
+						first && 'rounded-t-[20px]'
+					} ${last ? 'rounded-b-[20px]' : 'border-b border-outline'}`}
+				>
+					<Text className='text-offwhite text-[18px]'>{text}</Text>
+				</TouchableHighlight>
+			);
+		};
+
+		return (
+			<StyledView className='flex-1 bg-grey px-[20px] pt-[10px]'>
+				{reported && (
+					<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
+						<Text className='text-offwhite text-[16px] text-left w-full'>
+							You have already reported this post.
+						</Text>
+						<Text className='text-offwhite text-[16px] text-left w-full'>
+							Reason: {reported}
+						</Text>
+						<Button
+							title='Cancel Report'
+							btnStyles='mt-2'
+							width='w-[75%]'
+							height='h-[36px]'
+							textStyles='text-[16px]'
+							press={() => {
+								bottomSheetModalRef.current?.dismiss();
+								alert('Report has been cancelled.');
+								writeData(
+									`prayer_circle/posts/${post.id}/reports/${userData.uid}`,
+									null,
+									true
+								);
+								writeData(
+									`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+									null,
+									true
+								);
+								setReported(false);
+							}}
+						/>
+					</View>
+				)}
+				<View className='w-full bg-[#292929] rounded-[20px]'>
+					{reportItem("I don't like this post", true)}
+					{reportItem("It's spam")}
+					{reportItem("It's inappropriate")}
+					{reportItem('Hate speech or symbols')}
+					{reportItem('Bullying or harassment')}
+					{reportItem('Other', false, true)}
+				</View>
+			</StyledView>
+		);
+	};
+
 	const ToolbarButton = (props) => {
 		return (
 			<StyledOpacity
@@ -559,8 +627,31 @@ export const Post = (post) => {
 		bottomSheetModalRef.current?.dismiss();
 	}
 
+	async function reportPost(reason) {
+		bottomSheetModalRef.current?.dismiss();
+		alert(reported ? 'Report reason updated' : 'Post has been reported.');
+		let reportData = {
+			reporter: userData.uid,
+			reason: reason,
+			timestamp: Date.now(),
+			title: title,
+			body: content
+		};
+		writeData(
+			`prayer_circle/posts/${post.id}/reports/${userData.uid}`,
+			reportData,
+			true
+		);
+		writeData(
+			`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+			true,
+			true
+		);
+	}
+
 	// post setup
 	const setUp = async (postId) => {
+		// set up bookmark
 		try {
 			// Check if the post ID already exists in AsyncStorage
 			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
@@ -579,10 +670,16 @@ export const Post = (post) => {
 			console.error('Error toggling bookmark:', error.message);
 		}
 
+		// set up event date
 		if (post.icon === 'event') getEventDate();
 
+		// set up comments
 		await populateComments(post.comments);
 
+		// set up reports
+		await populateReports(postId);
+
+		// set up interactions
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
 
@@ -605,6 +702,7 @@ export const Post = (post) => {
 			setInteractions(interactionsData);
 		}
 
+		// set up view circles
 		let circlesData = [];
 		let userCircles = await getCircles();
 		for (let circle of Object.keys(post.data.circles)) {
@@ -656,6 +754,17 @@ export const Post = (post) => {
 			commentList.push([comment[0], data]);
 		}
 		await setCommentData(commentList);
+	};
+
+	const populateReports = async (postId) => {
+		// set up report
+		let reports =
+			(await readData(`prayer_circle/posts/${postId}/reports`)) || {};
+		for (let report of Object.keys(reports)) {
+			if (report === userData.uid) {
+				setReported(reports[report].reason);
+			}
+		}
 	};
 
 	const postComment = async () => {
@@ -727,6 +836,7 @@ export const Post = (post) => {
 							clearTimeout(timer.current);
 							if (post.owned || post.ownedToolBar) {
 								setBottomSheetType('Interactions');
+								setSnapPoints(['85%']);
 								handlePresentModalPress();
 							} else {
 								toggleIcon();
@@ -838,6 +948,7 @@ export const Post = (post) => {
 										toggleIcon();
 									} else {
 										setBottomSheetType('Interactions');
+										setSnapPoints(['85%']);
 										handlePresentModalPress();
 									}
 								}}
@@ -910,6 +1021,7 @@ export const Post = (post) => {
 										color='#00A55E'
 										onPress={() => {
 											setBottomSheetType('Edit');
+											setSnapPoints(['85%']);
 											handlePresentModalPress();
 										}}
 									/>
@@ -917,10 +1029,17 @@ export const Post = (post) => {
 							) : (
 								<>
 									<ToolbarButton
-										icon={'flag-outline'}
+										icon={
+											reported ? 'flag' : 'flag-outline'
+										}
 										size={29}
 										color='#CC2500'
-										onPress={() => {}}
+										onPress={() => {
+											populateReports(post.id);
+											setBottomSheetType('Report');
+											setSnapPoints(['65%', '85%']);
+											handlePresentModalPress();
+										}}
 									/>
 									<ToolbarButton
 										icon={'eye-off-outline'}
@@ -951,6 +1070,7 @@ export const Post = (post) => {
 								onPress={async () => {
 									populateComments();
 									setBottomSheetType('Comments');
+									setSnapPoints(['65%']);
 									handlePresentModalPress();
 								}}
 							/>
@@ -974,7 +1094,7 @@ export const Post = (post) => {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={SnapPoints(['85%'])}
+				snapPoints={snapPoints}
 				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
@@ -983,6 +1103,7 @@ export const Post = (post) => {
 				{bottomSheetType === 'Edit' && editView()}
 				{bottomSheetType === 'All Circles' && circlesView()}
 				{bottomSheetType === 'Interactions' && interactionsView()}
+				{bottomSheetType === 'Report' && reportView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);
