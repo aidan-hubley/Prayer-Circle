@@ -100,7 +100,18 @@ export default function Page() {
 						<StyledText className='text-offwhite font-bold text-4xl'>
 							Sketch a Post
 						</StyledText>
-						<View className={'w-[40px] h-[40px] '}></View>
+						<TouchableOpacity
+							className={'w-[40px]'}
+							onPress={() => {
+								router.back();
+							}}
+						>
+							<Ionicons
+								name={'help'}
+								size={34}
+								color={'white'}
+							/>
+						</TouchableOpacity>
 					</StyledView>
 					<StyledView className='flex flex-col w-screen items-center py-3 px-[20px]'>
 						<PostTypeSelector

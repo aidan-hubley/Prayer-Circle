@@ -51,16 +51,34 @@ export default function Page() {
 				keyboardShouldPersistTaps='handled'
 			>
 				<StyledView className='bg-offblack flex-1 flex flex-col items-center'>
-					<StyledView className='flex items-center justify-center text-center w-screen'>
+					<StyledView className='flex items-center flex-row justify-between text-center w-screen pt-[20px] px-[15px]'>
+						<TouchableOpacity
+							className={'w-[40px]'}
+							onPress={() => {
+								router.back();
+							}}
+						>
+							<Ionicons
+								name={'chevron-back'}
+								size={34}
+								color={'white'}
+							/>
+						</TouchableOpacity>
 						<StyledText className='text-offwhite font-bold text-4xl'>
 							Form a Circle
-						</StyledText>
-						<StyledText className='text-offwhite text-2xl'>
-							Select a Color and Icon!
-						</StyledText>
-						<StyledText className='text-offwhite text-[15px]'>
-							To select an icon, click the circle below!
-						</StyledText>
+						</StyledText>		
+						<TouchableOpacity
+							className={'w-[40px]'}
+							onPress={() => {
+								router.back();
+							}}
+						>
+							<Ionicons
+								name={'help'}
+								size={34}
+								color={'white'}
+							/>
+						</TouchableOpacity>
 					</StyledView>
 					<StyledView className='relative  flex w-screen aspect-square justify-center items-center mt-4 mb-2'>
 						<StyledColorPicker
@@ -118,19 +136,9 @@ export default function Page() {
 				</StyledView>
 			</KeyboardAwareScrollView>
 			<StyledView
-				className='absolute flex flex-row w-screen px-[15px] justify-between bg-offblack pb-5'
+				className='flex w-screen px-[15px] items-center bg-offblack pb-5'
 				style={{ bottom: insets.bottom }}
-			>
-				<Button
-					title='Erase'
-					width='w-[125px]'
-					height='h-[60px]'
-					href='/'
-					bgColor={'bg-offblack'}
-					borderColor={'#FFFBFC'}
-					borderWidth={'border-2'}
-					textColor={'text-offwhite'}
-				/>
+			>				
 				<Button
 					title='Draw'
 					height='h-[60px]'
