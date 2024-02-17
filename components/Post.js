@@ -19,7 +19,6 @@ import {
 	writeData,
 	readData,
 	generateId,
-	getFilterCircles,
 	getCircles
 } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,6 +34,8 @@ import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
+import { Notifier } from 'react-native-notifier';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -121,6 +122,7 @@ export const Post = (post) => {
 		}
 	};
 	const tS = timeSince(post.timestamp);
+	let insets = useSafeAreaInsets();
 
 	const isTextTruncated = (text) => {
 		return text && text.length > 300;

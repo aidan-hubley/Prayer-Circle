@@ -8,7 +8,8 @@ import { readData, writeData } from '../backend/firebaseFunctions';
 import { encrypt, decrypt } from 'react-native-simple-encryption';
 import * as Config from '../app.config';
 import { auth } from '../backend/config.js';
-import { useStore } from './global.js';
+import { useStore, notify } from './global.js';
+import { NotifierWrapper } from 'react-native-notifier';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,8 +34,10 @@ export default function RootLayout() {
 				'prayer_circle/constants/minimum_stable_version'
 			);
 			if (latestVersion > Config.default.expo.version) {
-				alert(
-					'A new version of Prayer Circle is available. Please update to the latest version to continue using the app.'
+				notify(
+					'App Update Available',
+					'A new version of Prayer Circle is available. Please update to the latest version to continue using the app.',
+					0
 				);
 			} else {
 				setLoaded(true);
@@ -72,19 +75,24 @@ function RootLayoutNavigation() {
 	if (!authInitialized && !user) return null;
 
 	return (
-		<BottomSheetModalProvider>
-			<Stack
-				screenOptions={{ headerShown: false, gestureEnabled: false }}
-			>
-				<Stack.Screen
-					name='(aux)/circleSettings'
-					options={{ presentation: 'modal' }}
-				/>
-				<Stack.Screen
-					name='(aux)/shareCircle'
-					options={{ presentation: 'modal' }}
-				/>
-			</Stack>
-		</BottomSheetModalProvider>
+		<NotifierWrapper>
+			<BottomSheetModalProvider>
+				<Stack
+					screenOptions={{
+						headerShown: false,
+						gestureEnabled: false
+					}}
+				>
+					<Stack.Screen
+						name='(aux)/circleSettings'
+						options={{ presentation: 'modal' }}
+					/>
+					<Stack.Screen
+						name='(aux)/shareCircle'
+						options={{ presentation: 'modal' }}
+					/>
+				</Stack>
+			</BottomSheetModalProvider>
+		</NotifierWrapper>
 	);
 }
