@@ -1,3 +1,4 @@
+import { Notifier } from 'react-native-notifier';
 import { create } from 'zustand';
 
 export const useStore = create((set) => ({
@@ -30,3 +31,45 @@ export const useStore = create((set) => ({
 	setHaptics: (newVal) => set(() => ({ haptics: newVal })),
 	setNotifications: (newVal) => set(() => ({ notifications: newVal }))
 }));
+
+export const notify = (
+	title,
+	description,
+	borderColor,
+	duration,
+	onPress,
+	onHide
+) => {
+	Notifier.showNotification({
+		title: title || '',
+		description: description || '',
+		hideOnPress: false,
+		duration: duration || 6000,
+		containerStyle: (translateY) => ({
+			// add safe area inset to the container
+			marginTop: -15
+			// ...
+		}),
+		onPress: () => {
+			if (onPress) onPress();
+		},
+		onHidden: () => {
+			if (onHide) onHide();
+		},
+		componentProps: {
+			containerStyle: {
+				backgroundColor: '#121212',
+				borderRadius: 20,
+				padding: 20,
+				borderWidth: 1,
+				borderColor: borderColor || '#3D3D3D'
+			},
+			titleStyle: {
+				color: borderColor || '#ffffff'
+			},
+			descriptionStyle: {
+				color: '#ffffffa0'
+			}
+		}
+	});
+};

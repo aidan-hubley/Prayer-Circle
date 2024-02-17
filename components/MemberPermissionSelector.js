@@ -9,7 +9,7 @@ import { View, TouchableOpacity, Animated, Alert } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
-import { useStore } from '../app/global';
+import { useStore, notify } from '../app/global';
 import { writeData } from '../backend/firebaseFunctions';
 import { auth } from '../backend/config';
 
@@ -125,8 +125,9 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 		}
 	};
 
-	const changeOwnership = (uid) => {
+	const changeOwnership = () => {
 		Alert.alert(
+			//TODO: convert to new notification type
 			'Change Ownership',
 			'Are you sure you want to transfer Circle ownership to this user?\n\nYou will be replaced as the owner of this Circle.',
 			[
@@ -139,9 +140,10 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 				{
 					text: 'Transfer',
 					onPress: () => {
-						Alert.alert(
-							'Transfered Ownership',
-							'You are no longer the owner of this circle.'
+						notify(
+							'Ownership Transferred',
+							'You are no longer the owner of this circle.',
+							'#F9A826'
 						);
 						setPermission((prevPerm) =>
 							updatePermission(prevPerm, 'owner')
