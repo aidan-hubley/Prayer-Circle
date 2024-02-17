@@ -94,11 +94,22 @@ export default function Page() {
 								iconSelectorRef.current.toggleSelector(true);
 							}}
 						>
-							<StyledIcon
-								name={icon}
-								size={85}
-								color={iconColor}
-							/>
+							{icon ?
+								(
+									<StyledIcon
+										name={icon}
+										size={85}
+										color={iconColor}
+									/>
+								) : (									
+									<StyledIcon
+										name='sunny'
+										size={55}
+										color='#FFFBFC'											
+										className="motion-safe:animate-spin"
+									/>	
+								)
+							}
 						</StyledOpacity>
 					</StyledView>
 					<StyledView className='w-full h-auto flex items-center justify-between px-[15px]'>
