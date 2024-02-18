@@ -9,7 +9,7 @@ import { Member } from '../../components/Member.js';
 import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../global';
-import { readData } from '../../backend/firebaseFunctions.js';
+import { readData, deleteData } from '../../backend/firebaseFunctions.js';
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
@@ -20,6 +20,7 @@ import {
 	backdrop,
 	SnapPoints
 } from '../../components/BottomSheetModalHelpers.js';
+import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -27,6 +28,41 @@ const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
+
+	const [user] = useState(null);
+	console.log("--")
+	console.log(user);
+	console.log("--")
+
+	async function leaveCircle(circle, user) { // Database call to remove user from circle
+		let x = await readData(`prayer_circle/circles/${circle}/members/`)
+		console.log(x);
+		// deleteData(`prayer_circle/circles/${circle}/members/${user}`);
+	}
+	async function deleteCircle(circle) { // Database call to remove circle from database
+		
+		membersList = Object.entries(
+			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
+		); // Get list of members in circle; consider combining this with the identical call in another function below
+		console.log(membersList); // Log list of members in circle
+		// for (i = 0; i < membersList.length; i++) {
+		// 	deleteData(`prayer_circle/users/${membersList[i]}/private/${circle}`); //Removes circle from users' circles list; don't fire
+		// };
+	
+		postList = Object.entries(
+			(await readData(`prayer_circle/circles/${circle}/posts/`)) || {}
+		); // Get list of members in circle; consider combining this with the identical call in another function below
+	// for (j = 0; j < postList.length; j++) { // Cycles through every post
+		// localPost = postList[j]; // currently observed post in the loop
+		// deleteData(`prayer_circle/posts/${localPost}/circles/${circle}`); //Removes circle from posts' circles list; don't fire
+	
+		// if (prayer_circle/posts/localPost/circles == null) { // delete prayer_circle/posts/${post}
+		// 	deleteData(`prayer_circle/posts/${localPost}`);
+		// }
+	// }
+		// deleteData(`prayer_circle/circles/${circle}`); // Removes circle from list of circles. Should this be fired last?
+	}
+	
 	const [memberData, setMemberData] = useState([]);
 	const [
 		filter,
@@ -44,6 +80,7 @@ export default function Page() {
 		state.currentFilterIconColor
 	]);
 	let insets = useSafeAreaInsets();
+	const [handleText, setHandleText] = useState('');
 
 	const [isModalVisible1, setModalVisible1] = useState(false); //NRA replace
 	const toggleModal1 = () => {
@@ -75,9 +112,20 @@ export default function Page() {
 	}, [isEnabled]);
 
 	const handleQueuePress = () => {
+		setHandleText('User Queue');
 		setModalContent('queue');
 		handlePresentModalPress();
 	}; //NRA imitate
+	const handleLeavePress = () => {
+		setHandleText('');
+		setModalContent('leave');
+		handlePresentModalPress();
+	}; //NRA made
+	const handleDeletePress = () => {
+		setHandleText('');
+		setModalContent('delete');
+		handlePresentModalPress();
+	}; //NRA made
 
 	const renderContent = () => {
 		switch (modalContent) {
@@ -95,6 +143,64 @@ export default function Page() {
 									/>
 								);
 							}}
+						/>
+					</StyledView>
+				);
+			case 'leave': //NRA made
+				return (
+					// <StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
+						<StyledView className='flex-1 items-center h-[60%]'>
+							<Button
+								btnStyles='top-[15%] bg-grey border-4 border-purple'
+								height={'h-[90px]'}
+								width={'w-[90px]'}
+								iconSize={60}
+								icon={currentFilterIcon}
+								iconColor={currentFilterIconColor}
+								href='/'
+								borderColor={currentFilterColor}
+							/>
+
+							<StyledText className='top-[20%] text-3xl text-offwhite'>
+								{currentFilterName}
+							</StyledText>
+							{/* Database call to remove from Circle  */}
+							<Button
+								title='Leave this Circle'
+								btnStyles={'top-[31%] border-2 border-yellow'}
+								bgColor={'bg-offblack'}
+								textStyles={'text-yellow'}
+								width='w-[70%]'
+								press={leaveCircle(filter)}
+							/>
+						</StyledView>
+					// </StyledView>
+				);
+			case 'delete': //NRA made
+				return (
+					<StyledView className='flex-1 items-center h-[60%]'>
+						<Button
+							btnStyles='top-[15%] bg-grey border-4 border-purple'
+							height={'h-[90px]'}
+							width={'w-[90px]'}
+							iconSize={60}
+							icon={currentFilterIcon}
+							iconColor={currentFilterIconColor}
+							href='/'
+							borderColor={currentFilterColor}
+						/>
+
+						<StyledText className='top-[20%] text-3xl text-offwhite'>
+							{currentFilterName}
+						</StyledText>
+						{/* Database call to remove from Circle  */}
+						<Button
+							title='Delete this Circle'
+							btnStyles={'top-[31%] border-2 border-red'}
+							bgColor={'bg-offblack'}
+							textStyles={'text-red'}
+							width='w-[70%]'
+							press={deleteCircle(filter)}
 						/>
 					</StyledView>
 				);
@@ -220,7 +326,7 @@ export default function Page() {
 						iconSize={30}
 						icon='log-out-outline'
 						iconColor='#F9A826'
-						press={toggleModal1}
+						press={handleLeavePress} //NRA replaced
 					/>
 					<StyledText className='text-4xl font-bold text-offwhite'>
 						Settings
@@ -234,7 +340,7 @@ export default function Page() {
 						iconSize={30}
 						icon='trash-outline'
 						iconColor='#CC2500'
-						press={toggleModal2}
+						press={handleDeletePress} //NRA replaced
 					/>
 				</StyledView>
 
@@ -296,13 +402,13 @@ export default function Page() {
 								bgColor={'bg-offblack'}
 								textStyles={'text-yellow'}
 								width='w-[70%]'
-								press={toggleModal1}
+								press={leaveCircle(filter)}
 							/>
 							<Button
 								title='Cancel'
 								btnStyles={'top-[37%]'}
 								width='w-[70%]'
-								press={toggleModal1}
+								press={leaveCircle(filter)}
 							/>
 						</StyledView>
 					</StyledView>
@@ -340,13 +446,13 @@ export default function Page() {
 								bgColor={'bg-offblack'}
 								textStyles={'text-red'}
 								width='w-[70%]'
-								press={toggleModal2}
+								press={deleteCircle(filter)}
 							/>
 							<Button
 								title='Cancel'
 								btnStyles={'top-[37%]'}
 								width='w-[70%]'
-								press={toggleModal2}
+								press={leaveCircle(filter)}
 							/>
 						</StyledView>
 					</StyledView>
@@ -357,7 +463,7 @@ export default function Page() {
 					ref={bottomSheetModalRef}
 					index={0}
 					snapPoints={SnapPoints(['65%'])}
-					handleComponent={() => handle('User Queue')} //NRA what does this line mean exactly?
+					handleComponent={() => handle(handleText)} //NRA this line means smth
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}
