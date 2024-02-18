@@ -207,6 +207,13 @@ export default function Page() {
 	}
 
 	const openImagePicker = async () => {
+
+		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+		if (status !== 'granted') {
+			alert('Sorry, we need camera roll permissions to make this work!');
+			return; // Early return if permission is not granted
+		}
+
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -974,15 +981,6 @@ export default function Page() {
 
 	const handleToggleInfinite = (newState) => {
 		console.log('Infinite toggle state is now: ', newState);
-	};
-
-	const getPermissionAsync = async () => {
-	if (Platform.OS !== 'web') {
-		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-		if (status !== 'granted') {
-		alert('Sorry, we need camera roll permissions to make this work!');
-		}
-	}
 	};
 
 
