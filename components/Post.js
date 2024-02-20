@@ -170,33 +170,60 @@ export const Post = (post) => {
 		setIsExpanded((prevState) => !prevState);
 	};
 
-	const selected = useRef(new Animated.Value(0)).current;
+	const selectedComment = useRef(new Animated.Value(0)).current;
 
-	const selectedDualInter = selected.interpolate({
+	const selectedInteraction = useRef(new Animated.Value(0)).current;
+
+	const selectedEventInteraction = useRef(new Animated.Value(0)).current;
+
+	const selectedDualComment = selectedComment.interpolate({
 		inputRange: [0, 1],
-		outputRange: ['21%', '71%']
+		outputRange: ['18%', '68%']
 	});
 
-	const selectedTripleInter = selected.interpolate({
+	const selectedDualInter = selectedInteraction.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['18%', '68%']
+	});
+
+	const selectedTripleInter = selectedEventInteraction.interpolate({
 		inputRange: [0, 1, 2],
-		outputRange: ['21%', '46%', '71%']
+		outputRange: ['10%', '43%', '76%']
 	});
 
-	const handlePress = (index) => {
-		Animated.spring(selected, {
+	const handlePressComment = (index) => {
+		Animated.spring(selectedComment, {
 			toValue: index,
 			duration: 200,
 			useNativeDriver: false
 		}).start();
-
-		//if (props.onSelect) props.onSelect(index);
 	};
 
-	const highlightDualPosition = {
+	const handlePressInteraction = (index) => {
+		Animated.spring(selectedInteraction, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+	};
+
+	const handlePressEventInteraction = (index) => {
+		Animated.spring(selectedEventInteraction, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+	};
+
+	const highlightDualComment = {
+		left: selectedDualComment
+	};
+
+	const highlightDualInteraction = {
 		left: selectedDualInter
 	};
 
-	const highlightTriplePosition = {
+	const highlightTripleInteraction = {
 		left: selectedTripleInter
 	};
 
@@ -508,35 +535,104 @@ export const Post = (post) => {
 	const settingsView = () => {
 		return (
 			<StyledView className='flex-1 bg-grey'>
-				<StyledView className='flex flex-col w-screen items-center border border-outline border-offwhite py-4 px-[20px]'>
-					<StyledText className='text-offwhite'>Comments</StyledText>
-					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
+				<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
+					<StyledText className='text-offwhite text-[18px]'>
+						Public Comments
+					</StyledText>
+					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
 						<StyledAnimatedView
-							style={highlightDualPosition}
-							className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[55px] h-[36px]'
+							style={highlightDualComment}
+							className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
 						></StyledAnimatedView>
 						<StyledOpacity
-							className='flex items-center justify-center w-[50px] h-[50px]'
-							onPress={() => handlePress(0)}
+							className='flex items-center justify-center w-[70px] h-[50px]'
+							onPress={() => handlePressComment(0)}
 						>
-							<StyledText className='text-offwhite'>
+							<StyledText className='text-offwhite text-[16px]'>
 								Display
 							</StyledText>
 						</StyledOpacity>
 						<StyledOpacity
-							className='flex items-center justify-center w-[50px] h-[50px]'
-							onPress={() => handlePress(1)}
+							className='flex items-center justify-center w-[70px] h-[50px]'
+							onPress={() => handlePressComment(1)}
 						>
-							<StyledText className='text-offwhite'>
+							<StyledText className='text-offwhite text-[16px]'>
 								Hide
 							</StyledText>
 						</StyledOpacity>
 					</StyledView>
 				</StyledView>
-				<StyledView className='flex flex-col w-screen items-center border border-outline border-offwhite py-4 px-[20px]'>
-					<StyledText className='text-offwhite'>
-						Interactions
+				<StyledView className='flex flex-col w-screen items-center px-[20px]'>
+					<StyledText className='text-offwhite text-[18px]'>
+						Interaction Count
 					</StyledText>
+					{post.icon === 'event' ? (
+						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+							<StyledAnimatedView
+								style={highlightTripleInteraction}
+								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
+							></StyledAnimatedView>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressEventInteraction(0)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Public
+								</StyledText>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressEventInteraction(1)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Private
+								</StyledText>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressEventInteraction(2)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Hidden
+								</StyledText>
+							</StyledOpacity>
+						</StyledView>
+					) : (
+						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+							<StyledAnimatedView
+								style={highlightDualInteraction}
+								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
+							></StyledAnimatedView>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressInteraction(0)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Display
+								</StyledText>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressInteraction(1)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Hide
+								</StyledText>
+							</StyledOpacity>
+						</StyledView>
+					)}
+				</StyledView>
+				<StyledView
+					className='absolute flex flex-row w-screen px-[15px] justify-center bg-grey pb-5'
+					style={{ bottom: insets.bottom }}
+				>
+					<Button
+						title='Save'
+						width={'w-[48%]'}
+						press={() => {
+							bottomSheetModalRef.current?.dismiss();
+						}}
+					/>
 				</StyledView>
 			</StyledView>
 		);
@@ -1084,6 +1180,7 @@ export const Post = (post) => {
 										color='#F9A826'
 										onPress={() => {
 											setBottomSheetType('Settings');
+											setSnapPoints(['55%']);
 											handlePresentModalPress();
 										}}
 									/>
