@@ -988,9 +988,6 @@ export default function Page() {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
-	useEffect(() => {
-		getPermissionAsync();
-	}, []);
 
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
