@@ -4,7 +4,8 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Keyboard
+	Keyboard,
+	Image
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -24,6 +25,7 @@ import { useStore } from '../global';
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledImage = styled(Image);
 const StyledInput = styled(TextInput);
 const StyledOpacity = styled(TouchableOpacity);
 const StyledIcon = styled(Ionicons);
@@ -102,12 +104,10 @@ export default function Page() {
 										color={iconColor}
 									/>
 								) : (									
-									<StyledIcon
-										name='sunny'
-										size={55}
-										color='#FFFBFC'											
-										className="animate-spin"
-									/>	
+									<StyledImage
+										className='h-[52px] w-[45px]'
+										source={require('../../assets/pointer.png')}
+									/>
 								)
 							}
 						</StyledOpacity>

@@ -116,6 +116,10 @@ export default function Register() {
 											}
 											resizeMode='contain'
 										/>
+										<StyledImage
+											className='absolute h-[52px] w-[45px]'
+											source={require('../../assets/pointer.png')}
+										/>
 									</TouchableOpacity>
 									<StyledText className='text-offwhite text-center text-[18px] mt-2'>
 										{profileImage
