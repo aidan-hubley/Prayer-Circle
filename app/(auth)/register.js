@@ -116,10 +116,13 @@ export default function Register() {
 											}
 											resizeMode='contain'
 										/>
-										<StyledImage
-											className='absolute h-[52px] w-[45px]'
-											source={require('../../assets/pointer.png')}
-										/>
+										{profileImage ? null : (
+											<StyledImage
+												className='absolute h-[52px] w-[45px]'
+												style={{ position: 'absolute', top: '45%', left: '43%' }}
+												source={require('../../assets/pointer.png')}
+											/>
+										)}
 									</TouchableOpacity>
 									<StyledText className='text-offwhite text-center text-[18px] mt-2'>
 										{profileImage
@@ -217,6 +220,7 @@ export default function Register() {
 								textColor='#F7F1E3'
 								backgroundColor='#121212'
 								borderColor='#F9A826'
+								btnStyles='border-2'
 								press={() => {
 									Keyboard.dismiss();
 									createUserData(

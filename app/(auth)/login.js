@@ -98,6 +98,8 @@ export default function Login() {
 							</StyledView>
 							<Button
 								title='Login'
+								borderColor='#F9A826'
+								btnStyles='border-2'
 								press={() => {
 									Keyboard.dismiss();
 									if (email.length == 0 || pass.length == 0)
