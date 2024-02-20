@@ -106,7 +106,7 @@ export default function Page() {
 										name='sunny'
 										size={55}
 										color='#FFFBFC'											
-										className="motion-safe:animate-spin"
+										className="animate-spin"
 									/>	
 								)
 							}
