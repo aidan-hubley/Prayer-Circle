@@ -6,27 +6,36 @@ import {
 	Pressable,
 	TouchableOpacity,
 	Animated,
-	RefreshControl,
 	TextInput,
 	Keyboard,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	Dimensions,
+	TouchableHighlight
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { timeSince } from '../backend/functions';
-import { writeData, readData, generateId } from '../backend/firebaseFunctions';
+import { timeSince, formatDateAndTime } from '../backend/functions';
+import {
+	writeData,
+	readData,
+	generateId,
+	getCircles
+} from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useStore } from '../app/global';
-/* import { PostTypeSelector } from './PostTypeSelector'; */
+import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
-import { formatDateAndTime } from '../backend/functions';
+import { Interaction } from '../components/Interaction';
+import { decrypt, encrypt } from 'react-native-simple-encryption';
+import { Notifier } from 'react-native-notifier';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -37,29 +46,60 @@ const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
 const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
 const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
+const StyledAnimatedHighlight =
+	Animated.createAnimatedComponent(TouchableHighlight);
+const titleCharThreshold = 20;
+const contentCharThreshold = 300;
 
 export const Post = (post) => {
 	// variables
-	const [iconType, setIconType] = useState(`${post.icon}_outline`);
+	const [title, setTitle] = useState(decrypt(post.id, post.title));
+	const [content, setContent] = useState(decrypt(post.id, post.content));
+	const [icon, setIcon] = useState(post.icon);
+	const [interacted, setInteracted] = useState(false);
+	const [interactions, setInteractions] = useState([]);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const [setGlobalReload, setJournalReload] = useStore((state) => [
+	const [
+		haptics,
+		setGlobalReload,
+		setJournalReload,
+		setFilter,
+		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterIconColor
+	] = useStore((state) => [
+		state.haptics,
 		state.setGlobalReload,
-		state.setJournalReload
+		state.setJournalReload,
+		state.setFilter,
+		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterIconColor
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
-	const [editTitle, setEditTitle] = useState(post.title);
-	const [editContent, setEditContent] = useState(post.content);
-	const [title, setTitle] = useState(post.title);
-	const [content, setContent] = useState(post.content);
+	const [editTitle, setEditTitle] = useState(decrypt(post.id, post.title));
+	const [editContent, setEditContent] = useState(
+		decrypt(post.id, post.content)
+	);
 	const [edited, setEdited] = useState(post.edited);
+	const [reported, setReported] = useState(false);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
+	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
+	const [isExpanded, setIsExpanded] = useState(false);
+	const [isToggleVisible, setIsToggleVisible] = useState(
+		title.length > titleCharThreshold ||
+			content.length > contentCharThreshold
+	);
+	const [snapPoints, setSnapPoints] = useState([]);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -82,6 +122,11 @@ export const Post = (post) => {
 		}
 	};
 	const tS = timeSince(post.timestamp);
+	let insets = useSafeAreaInsets();
+
+	const isTextTruncated = (text) => {
+		return text && text.length > 300;
+	};
 
 	// bottom sheet modal
 	const handlePresentModalPress = useCallback(() => {
@@ -112,9 +157,17 @@ export const Post = (post) => {
 		inputRange: [0, 1],
 		outputRange: ['0deg', '180deg']
 	});
+	const iconInter = iconAnimation.interpolate({
+		inputRange: [0, 0.5, 1],
+		outputRange: [1, 1.6, 1]
+	});
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
+	};
+
+	const handleExpanded = () => {
+		setIsExpanded((prevState) => !prevState);
 	};
 
 	const selected = useRef(new Animated.Value(0)).current;
@@ -185,28 +238,32 @@ export const Post = (post) => {
 						alignItems: 'center',
 						width: '100%'
 					}}
-					refreshControl={
-						<RefreshControl
-							onRefresh={() => {
-								{
-									/* TODO: add refresh button that will pull new comments from db */
-								}
-							}}
-							refreshing={false}
-							tintColor='#ebebeb'
-						/>
-					}
 					renderItem={({ item }) => {
 						return (
 							<Comment
 								id={item[0]}
 								user={item[1].user}
-								username={item[1].username}
+								name={item[1].name}
 								content={item[1].content}
 								edited={item[1].edited}
 								timestamp={item[1].timestamp}
 								img={item[1].profile_img}
 							/>
+						);
+					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 350
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Comments
+								</StyledText>
+							</StyledView>
 						);
 					}}
 					keyExtractor={(item) => item[0]}
@@ -220,6 +277,19 @@ export const Post = (post) => {
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 				<StyledView className='flex-1 bg-grey'>
 					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
+						<StyledView className='bg-offblack rounded-full mx-[10px] mb-3'>
+							<PostTypeSelector
+								noYMargin
+								initialValue={
+									post?.data?.type === 'praise'
+										? 0
+										: post?.data?.type === 'request'
+										? 1
+										: 2
+								}
+								ref={typeRef}
+							/>
+						</StyledView>
 						<StyledInput
 							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 							placeholder={'Title'}
@@ -271,6 +341,170 @@ export const Post = (post) => {
 		);
 	};
 
+	const circlesView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<BottomSheetFlatList
+					data={circles}
+					keyExtractor={(item) => item.id}
+					contentContainerStyle={{
+						paddingVertical: 20,
+						paddingHorizontal: 12,
+						alignItems: 'center'
+					}}
+					numColumns={3}
+					renderItem={({ item }) => {
+						const vw = Dimensions.get('window').width;
+						return (
+							<StyledView
+								className='items-center justify-around my-[10px]'
+								style={{ width: vw / 3 - 8 }}
+							>
+								<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
+									{item.title}
+								</StyledText>
+								<StyledAnimatedHighlight
+									style={[
+										{
+											borderColor: item.color
+										}
+									]}
+									className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
+									onPress={() => {
+										bottomSheetModalRef.current.dismiss();
+										setFilter(item.id);
+										setFilterName(item.title);
+										setFilterIcon(item.icon);
+										setFilterColor(item.color);
+										setFilterIconColor(item.iconColor);
+									}}
+								>
+									<StyledIcon
+										name={item.icon}
+										size={45}
+										color={item.iconColor || item.color}
+									/>
+								</StyledAnimatedHighlight>
+							</StyledView>
+						);
+					}}
+				/>
+			</StyledView>
+		);
+	};
+
+	const interactionsView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<BottomSheetFlatList
+					data={interactions}
+					contentContainerStyle={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+						width: '100%'
+					}}
+					ItemSeparatorComponent={() => {
+						return (
+							<StyledView className='w-[90%] h-[1px] bg-offwhite' />
+						);
+					}}
+					renderItem={({ item }) => {
+						return (
+							<Interaction
+								name={item.fname + ' ' + item.lname}
+								image={item.profile_img}
+							/>
+						);
+					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 250
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Interactions
+								</StyledText>
+							</StyledView>
+						);
+					}}
+					keyExtractor={(item) => item.profile_img}
+				/>
+			</StyledView>
+		);
+	};
+
+	const reportView = () => {
+		const reportItem = (text, first, last, onPress) => {
+			return (
+				<TouchableHighlight
+					activeOpacity={0.6}
+					underlayColor='#3D3D3D'
+					onPress={() => {
+						if (onPress) onPress();
+						else reportPost(text);
+						setReported(text);
+					}}
+					className={`w-full h-[60px] justify-center pl-4 ${
+						first && 'rounded-t-[20px]'
+					} ${last ? 'rounded-b-[20px]' : 'border-b border-outline'}`}
+				>
+					<Text className='text-offwhite text-[18px]'>{text}</Text>
+				</TouchableHighlight>
+			);
+		};
+
+		return (
+			<StyledView className='flex-1 bg-grey px-[20px] pt-[10px]'>
+				{reported && (
+					<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
+						<Text className='text-offwhite text-[16px] text-left w-full'>
+							You have already reported this post.
+						</Text>
+						<Text className='text-offwhite text-[16px] text-left w-full'>
+							Reason: {reported}
+						</Text>
+						<Button
+							title='Cancel Report'
+							btnStyles='mt-2'
+							width='w-[75%]'
+							height='h-[36px]'
+							textStyles='text-[16px]'
+							press={() => {
+								bottomSheetModalRef.current?.dismiss();
+								alert('Report has been cancelled.');
+								writeData(
+									`prayer_circle/posts/${post.id}/reports/${userData.uid}`,
+									null,
+									true
+								);
+								writeData(
+									`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+									null,
+									true
+								);
+								setReported(false);
+							}}
+						/>
+					</View>
+				)}
+				<View className='w-full bg-[#292929] rounded-[20px]'>
+					{reportItem("I don't like this post", true)}
+					{reportItem("It's spam")}
+					{reportItem("It's inappropriate")}
+					{reportItem('Hate speech or symbols')}
+					{reportItem('Bullying or harassment')}
+					{reportItem('Other', false, true)}
+				</View>
+			</StyledView>
+		);
+	};
+
 	const settingsView = () => {
 		return (
 			<StyledView className='flex-1 bg-grey'>
@@ -314,7 +548,8 @@ export const Post = (post) => {
 				className='flex items-center justify-center w-[30px] h-[30px]'
 				activeOpacity={0.4}
 				onPress={() => {
-					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (haptics)
+						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 					if (props.onPress) props.onPress();
 				}}
 			>
@@ -328,43 +563,38 @@ export const Post = (post) => {
 	};
 
 	//functions
-	function getTypeSource(iconType, isOutline) {
+	function getIconSource(iconType, interacted) {
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
-		if (post.owned) {
+		if (post.owned || post.ownedToolBar) {
 			return images[iconKey].nonOutline;
 		}
-		return isOutline ? images[iconKey].outline : images[iconKey].nonOutline;
+		return !interacted
+			? images[iconKey].outline
+			: images[iconKey].nonOutline;
 	}
 
 	function toggleIcon() {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-		const iconKey = iconType.replace('_outline', '');
-		if (['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
-			setIconType(
-				iconType.includes('outline') ? iconKey : iconKey + '_outline'
-			);
-
-			Animated.sequence([
-				Animated.timing(iconAnimation, {
-					toValue: 1.5,
-					duration: 100,
-					useNativeDriver: true
-				}),
-				Animated.timing(iconAnimation, {
-					toValue: 1,
-					duration: 100,
-					useNativeDriver: true
-				})
-			]).start();
-		}
+		let now = Date.now();
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+		Animated.spring(iconAnimation, {
+			toValue: interacted ? 1 : 0,
+			duration: 100,
+			useNativeDriver: false
+		}).start();
+		writeData(
+			`prayer_circle/posts/${post.id}/interacted/${userData.uid}`,
+			!interacted ? now : null,
+			true
+		);
+		setInteracted(!interacted);
 	}
 
 	function toggleToolbar() {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		setToolbar(!toolbarShown);
 		Animated.spring(toolbarVal, {
 			toValue: toolbarShown ? 0 : 1,
@@ -446,25 +676,51 @@ export const Post = (post) => {
 	async function editPost() {
 		let updatedData = post.data;
 
-		updatedData.title = editTitle;
+		updatedData.title = encrypt(post.id, editTitle);
 		setTitle(editTitle);
 
-		updatedData.text = editContent;
+		updatedData.body = encrypt(post.id, editContent);
 		setContent(editContent);
 
 		updatedData.edited = true;
 		setEdited(true);
 
+		let typeVal = Math.round(Math.abs(typeRef.current.selected._value));
+		if (typeVal == 0) updatedData.type = 'praise';
+		else if (typeVal == 1) updatedData.type = 'request';
+		else if (typeVal == 2) updatedData.type = 'event';
+		setIcon(updatedData.type);
+
 		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
 
 		bottomSheetModalRef.current?.dismiss();
-		setTimeout(() => {
-			setGlobalReload(true);
-		}, 100);
+	}
+
+	async function reportPost(reason) {
+		bottomSheetModalRef.current?.dismiss();
+		alert(reported ? 'Report reason updated' : 'Post has been reported.');
+		let reportData = {
+			reporter: userData.uid,
+			reason: reason,
+			timestamp: Date.now(),
+			title: title,
+			body: content
+		};
+		writeData(
+			`prayer_circle/posts/${post.id}/reports/${userData.uid}`,
+			reportData,
+			true
+		);
+		writeData(
+			`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+			true,
+			true
+		);
 	}
 
 	// post setup
 	const setUp = async (postId) => {
+		// set up bookmark
 		try {
 			// Check if the post ID already exists in AsyncStorage
 			const storedPosts = await AsyncStorage.getItem('bookmarkedPosts');
@@ -483,28 +739,74 @@ export const Post = (post) => {
 			console.error('Error toggling bookmark:', error.message);
 		}
 
-		if (post.icon == 'event') getEventDate();
+		// set up event date
+		if (post.icon === 'event') getEventDate();
+
+		// set up comments
 		await populateComments(post.comments);
+
+		// set up reports
+		await populateReports(postId);
+
+		// set up interactions
+		let interactions =
+			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
+
+		if (!post.owned && !post.ownedToolBar) {
+			if (interactions[userData.uid]) {
+				setInteracted(true);
+			}
+		} else {
+			interactions = Object.keys(interactions);
+			interactions.sort((a, b) => {
+				return b[1] - a[1];
+			});
+			let interactionsData = [];
+			for (let interaction of interactions) {
+				let data = await readData(
+					`prayer_circle/users/${interaction}/public`
+				);
+				interactionsData.push(data);
+			}
+			setInteractions(interactionsData);
+		}
+
+		// set up view circles
+		let circlesData = [];
+		let userCircles = await getCircles();
+		for (let circle of Object.keys(post.data.circles)) {
+			if (!userCircles.includes(circle)) continue;
+			let circleData = await readData(`prayer_circle/circles/${circle}`);
+			circleData.id = circle;
+			circlesData.push(circleData);
+		}
+		setCircles(circlesData);
 	};
 
 	const getEventDate = () => {
-		const start = formatDateAndTime(post?.data?.metadata?.start);
-		const end = formatDateAndTime(post?.data?.metadata?.end);
+		const start = formatDateAndTime(post?.metadata?.start);
+		const end = formatDateAndTime(post?.metadata?.end);
 		let date = '';
 
-		console.log(start.split(', ')[0]);
 		if (start === end) {
 			date = start;
 		} else if (start.split(', ')[0] === end.split(', ')[0]) {
-			date = `${start.split(', ')[0]}, ${start.split(', ')[1]} - ${
+			date = `${start.split(', ')[0]}, ${start.split(', ')[1]}-${
 				end.split(', ')[1]
 			}`;
+		} else {
+			date = `${start} - ${end}`;
 		}
 
 		setEventDate(date);
 	};
 
-	const populateComments = async (comments) => {
+	const populateComments = async () => {
+		let comments = await readData(
+			`prayer_circle/posts/${post.id}/comments`
+		);
+		if (!comments) return;
+
 		if (typeof comments == 'undefined' || comments == false) return;
 		comments = Object.entries(comments);
 
@@ -521,6 +823,17 @@ export const Post = (post) => {
 			commentList.push([comment[0], data]);
 		}
 		await setCommentData(commentList);
+	};
+
+	const populateReports = async (postId) => {
+		// set up report
+		let reports =
+			(await readData(`prayer_circle/posts/${postId}/reports`)) || {};
+		for (let report of Object.keys(reports)) {
+			if (report === userData.uid) {
+				setReported(reports[report].reason);
+			}
+		}
 	};
 
 	const postComment = async () => {
@@ -575,15 +888,28 @@ export const Post = (post) => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
+	useEffect(() => {
+		setIsToggleVisible(
+			title.length > titleCharThreshold ||
+				content.length > contentCharThreshold
+		);
+	}, [title, content]);
+
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[10px] my-[5px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
 				<StyledPressable
 					onPressIn={() => {
 						const now = Date.now();
 						if (lastTap && now - lastTap < 300) {
 							clearTimeout(timer.current);
-							toggleIcon();
+							if (post.owned || post.ownedToolBar) {
+								setBottomSheetType('Interactions');
+								setSnapPoints(['85%']);
+								handlePresentModalPress();
+							} else {
+								toggleIcon();
+							}
 						} else {
 							setLastTap(now);
 							timer.current = setTimeout(() => {}, 300);
@@ -593,9 +919,9 @@ export const Post = (post) => {
 						toggleToolbar();
 					}}
 				>
-					<StyledView className='w-full flex flex-row justify-between px-[10px]'>
-						<StyledView className=' w-[88%]'>
-							<StyledView className='flex flex-row mb-2 '>
+					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
+						<StyledView className='w-[90%]'>
+							<StyledView className='flex flex-row mb-2'>
 								<CachedImage
 									cacheKey={shorthash.unique(post.img)}
 									style={{
@@ -610,13 +936,27 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${post.owned ? '' : 'ml-2'}`}
+									className={`${
+										post.owned ? 'ml-[10px]' : 'ml-2'
+									}`}
 								>
-									<StyledText className='text-offwhite font-bold text-[20px]'>
-										{title?.length > 21
-											? title.substring(0, 21) + '...'
-											: title}
-									</StyledText>
+									<View
+										className={`${
+											post.owned
+												? 'ml-[10px]'
+												: 'ml-[2px]'
+										} max-w-[95%]`}
+									>
+										<StyledText className='text-offwhite font-bold text-[20px]'>
+											{isExpanded ||
+											title.length <= titleCharThreshold
+												? title
+												: `${title.substring(
+														0,
+														titleCharThreshold
+												  )}...`}
+										</StyledText>
+									</View>
 									<StyledView className='flex flex-row'>
 										<StyledText
 											className={`${
@@ -640,45 +980,81 @@ export const Post = (post) => {
 							</StyledView>
 							{post.icon == 'event' && (
 								<StyledView className='flex flex-row items-center mb-2'>
-									<StyledText className='text-white font-bold text-[16px]'>
+									<StyledText
+										className={`${
+											post.owned
+												? 'ml-[10px] text-white font-bold text-[16px]'
+												: 'text-white font-bold text-[16px]'
+										}`}
+									>
 										{eventDate}
 									</StyledText>
 								</StyledView>
 							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText className='text-white mt-[2px] pb-[10px]'>
-									{content?.length > 300
-										? content.substring(0, 297) + '...'
-										: content}
+								<StyledText
+									className={`${
+										post.owned
+											? 'ml-[10px] text-white mt-[2px] pb-[10px]'
+											: 'text-white mt-[2px] pb-[10px]'
+									}`}
+								>
+									{isExpanded ||
+									content.length <= contentCharThreshold
+										? content
+										: `${content.substring(
+												0,
+												contentCharThreshold
+										  )}...`}
 								</StyledText>
 							</StyledView>
 						</StyledView>
-						<StyledView className='flex flex-col w-[15%] items-center justify-between'>
+						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
 							<StyledPressable
-								className='rounded-full aspect-square flex items-center justify-center'
-								onPress={toggleIcon}
+								className='flex aspect-square w-[30px] self-end'
+								onPress={() => {
+									if (!post.owned && !post.ownedToolBar) {
+										toggleIcon();
+									} else {
+										setBottomSheetType('Interactions');
+										setSnapPoints(['85%']);
+										handlePresentModalPress();
+									}
+								}}
 							>
 								<AnimatedImage
-									className='w-[26px] h-[26px]'
+									source={getIconSource(icon, interacted)}
 									style={{
-										transform: [{ scale: iconAnimation }]
+										width: 26,
+										height: 26,
+										transform: [{ scale: iconInter }]
 									}}
-									source={getTypeSource(
-										iconType,
-										post.owned
-											? false
-											: iconType.includes('outline')
-									)}
 								/>
 							</StyledPressable>
+							{isToggleVisible && (
+								<StyledOpacity
+									onPress={handleExpanded}
+									className='self-center pt-2'
+								>
+									<Ionicons
+										name={
+											isExpanded
+												? 'chevron-up'
+												: 'chevron-down'
+										}
+										size={24}
+										color='#3D3D3D'
+									/>
+								</StyledOpacity>
+							)}
 							<StyledPressable
-								className='flex items-center justify-center w-[39px] aspect-square mb-[2px]'
+								className='flex w-[30px] aspect-square justify-end mb-[2px]'
 								onPress={() => {
 									toggleToolbar();
 								}}
 							>
 								<AnimatedImage
-									className='w-[32px] h-[32px]'
+									className='w-[28px] h-[28px]'
 									style={spiralStyle}
 									source={require('../assets/spiral/spiral.png')}
 								/>
@@ -717,6 +1093,7 @@ export const Post = (post) => {
 										color='#00A55E'
 										onPress={() => {
 											setBottomSheetType('Edit');
+											setSnapPoints(['85%']);
 											handlePresentModalPress();
 										}}
 									/>
@@ -724,10 +1101,17 @@ export const Post = (post) => {
 							) : (
 								<>
 									<ToolbarButton
-										icon={'flag-outline'}
+										icon={
+											reported ? 'flag' : 'flag-outline'
+										}
 										size={29}
 										color='#CC2500'
-										onPress={() => {}}
+										onPress={() => {
+											populateReports(post.id);
+											setBottomSheetType('Report');
+											setSnapPoints(['65%', '85%']);
+											handlePresentModalPress();
+										}}
 									/>
 									<ToolbarButton
 										icon={'eye-off-outline'}
@@ -755,8 +1139,10 @@ export const Post = (post) => {
 								icon={'chatbubble-outline'}
 								size={29}
 								color='#5946B2'
-								onPress={() => {
+								onPress={async () => {
+									populateComments();
 									setBottomSheetType('Comments');
+									setSnapPoints(['65%']);
 									handlePresentModalPress();
 								}}
 							/>
@@ -764,10 +1150,12 @@ export const Post = (post) => {
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
 								onPress={() => {
-									Haptics.impactAsync(
-										Haptics.ImpactFeedbackStyle.Light
-									);
-									/* TODO: Implment modal on press that displays all the circles a post is in OR filter to circle */
+									if (haptics)
+										Haptics.impactAsync(
+											Haptics.ImpactFeedbackStyle.Light
+										);
+									setBottomSheetType('All Circles');
+									handlePresentModalPress();
 								}}
 							/>
 						</StyledView>
@@ -778,13 +1166,16 @@ export const Post = (post) => {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={SnapPoints(['85%'])}
+				snapPoints={snapPoints}
 				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'All Circles' && circlesView()}
+				{bottomSheetType === 'Interactions' && interactionsView()}
+				{bottomSheetType === 'Report' && reportView()}
 				{bottomSheetType === 'Settings' && settingsView()}
 			</BottomSheetModal>
 		</StyledPressable>

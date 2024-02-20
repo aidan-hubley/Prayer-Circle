@@ -158,18 +158,23 @@ export async function getCircles() {
 }
 
 export async function getFilterCircles() {
+	let uid = await getUID();
 	let circles = await getCircles();
 	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
 
 	for (const circle of circles) {
 		let circleData =
 			(await readData(`prayer_circle/circles/${circle}`)) || {};
+
+		let role = circleData.members[uid];
 		let circleStruct = {
 			id: circle,
 			iconColor: circleData.iconColor,
 			title: circleData.title,
 			color: circleData.color,
-			icon: circleData.icon
+			icon: circleData.icon,
+			description: circleData.description,
+			role
 		};
 		circlesData.push(circleStruct);
 	}
@@ -210,6 +215,19 @@ export async function getPosts(circleId) {
 	}
 
 	return filteredPosts;
+}
+
+export async function getProfilePosts() {
+	let uid = await getUID();
+	let posts = Object.entries(
+		(await readData(`prayer_circle/users/${uid}/private/posts`)) || {}
+	);
+
+	posts.sort((a, b) => {
+		return b[1] - a[1];
+	});
+
+	return posts;
 }
 
 export async function getHiddenPosts() {

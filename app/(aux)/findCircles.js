@@ -14,7 +14,7 @@ import {
 	addUserToQueue,
 	checkIfUserIsInCircle
 } from '../../backend/firebaseFunctions';
-import { useStore } from '../../app/global';
+import { useStore, notify } from '../../app/global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -39,20 +39,28 @@ async function searchForCircle(code) {
 		}
 	}
 	if (!(adminCode || publicCode)) {
-		alert('No circles have this code.');
+		notify('Error Finding Circle', 'No circles have this code.', '#CC2500');
 	} else {
 		let inCircle = await checkIfUserIsInCircle(circle);
 		if (!inCircle) {
 			if (adminCode) {
 				addUserToCircle(circle);
-				alert('You have been added to the circle.');
+				notify(
+					'Added to Circle',
+					'You have been added to the circle.',
+					'#00A55E'
+				);
 			} else {
 				addUserToQueue(circle);
-				alert("You have been added this circle's waiting queue.");
+				notify(
+					'Added to Circle',
+					"You have been added this circle's waiting queue.",
+					'#00A55E'
+				);
 			}
 			setFilterReload(true);
 		} else {
-			alert('Already in circle.');
+			notify('Invalid code', 'You are already in this circle.');
 		}
 	}
 }
@@ -79,7 +87,7 @@ export default function Page() {
 		if (type == 'org.iso.QRCode') {
 			searchForCircle(data);
 		} else {
-			alert('Invalid code type!');
+			notify('Error', 'Invalid code type!', '#CC2500');
 		}
 	};
 
@@ -157,7 +165,7 @@ export default function Page() {
 					icon='search-outline'
 					press={async () => {
 						if (code.length < 8) {
-							alert('Please enter 8 digits');
+							notify('Error', 'Please enter 8 digits', '#CC2500');
 							return;
 						} else {
 							searchForCircle(code);

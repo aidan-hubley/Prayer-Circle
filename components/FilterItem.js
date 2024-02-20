@@ -32,8 +32,22 @@ const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
 
 const FilterItem = forwardRef((props, ref) => {
-	const updateFilter = useStore((state) => state.updateFilter);
-	const updateFilterName = useStore((state) => state.updateFilterName);
+	const [
+		setFilter,
+		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterIconColor,
+		setCurrentCircleRole
+	] = useStore((state) => [
+		state.setFilter,
+		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterIconColor,
+		state.setCurrentCircleRole
+	]);
+
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -154,6 +168,7 @@ const FilterItem = forwardRef((props, ref) => {
 						onPress={() => {
 							bottomSheetModalRef.current.present();
 							props.toggleShown();
+							props.setPressed('none');
 						}}
 					>
 						<StyledView className='flex items-center justify-center'>
@@ -209,9 +224,14 @@ const FilterItem = forwardRef((props, ref) => {
 												className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
 												onPress={() => {
 													bottomSheetModalRef.current.dismiss();
-													updateFilter(item.id);
-													updateFilterName(
-														item.title
+													props.toggleShown();
+													props.setPressed('none');
+													setFilter(item.id);
+													setFilterName(item.title);
+													setFilterIcon(item.icon);
+													setFilterColor(item.color);
+													setFilterIconColor(
+														item.iconColor
 													);
 												}}
 											>
@@ -248,8 +268,13 @@ const FilterItem = forwardRef((props, ref) => {
 					className='flex border-[6px] items-center justify-center rounded-full'
 					onPress={() => {
 						props.toggleShown();
-						updateFilter(props.data.id);
-						updateFilterName(props.data.title);
+						props.setPressed('none');
+						setFilter(props.data.id);
+						setFilterName(props.data.title);
+						setFilterIcon(props.data.icon);
+						setFilterColor(props.data.color);
+						setFilterIconColor(props.data.iconColor);
+						setCurrentCircleRole(props.data.role);
 					}}
 				>
 					<>
