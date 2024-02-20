@@ -124,6 +124,11 @@ export const Post = (post) => {
 		outputRange: ['21%', '71%']
 	});
 
+	const selectedTripleInter = selected.interpolate({
+		inputRange: [0, 1, 2],
+		outputRange: ['21%', '46%', '71%']
+	});
+
 	const handlePress = (index) => {
 		Animated.spring(selected, {
 			toValue: index,
@@ -136,6 +141,10 @@ export const Post = (post) => {
 
 	const highlightDualPosition = {
 		left: selectedDualInter
+	};
+
+	const highlightTriplePosition = {
+		left: selectedTripleInter
 	};
 
 	const commentsView = () => {
@@ -289,6 +298,11 @@ export const Post = (post) => {
 							</StyledText>
 						</StyledOpacity>
 					</StyledView>
+				</StyledView>
+				<StyledView className='flex flex-col w-screen items-center border border-outline border-offwhite py-4 px-[20px]'>
+					<StyledText className='text-offwhite'>
+						Interactions
+					</StyledText>
 				</StyledView>
 			</StyledView>
 		);
