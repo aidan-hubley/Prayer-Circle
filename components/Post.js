@@ -740,11 +740,9 @@ export const Post = (post) => {
 								<StyledView
 									className={`flex-1 ${
 										post.owned ? 'ml-[4px]' : 'ml-2'
-									} border border-green`}
+									}`}
 								>
-									<View
-										className={`mr-[10px] border border-red`}
-									>
+									<View className={`mr-[10px]`}>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
 											title.length <= titleCharThreshold
