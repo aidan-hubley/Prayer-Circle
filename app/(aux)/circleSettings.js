@@ -20,7 +20,7 @@ import {
 	backdrop,
 	SnapPoints
 } from '../../components/BottomSheetModalHelpers.js';
-import { set } from 'firebase/database';
+import { auth } from '../../backend/config';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -29,37 +29,45 @@ const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 
-	const [user] = useState(null);
-	console.log("--")
-	console.log(user);
-	console.log("--")
+	useEffect(() => {
+		setUserData(auth.currentUser);
+	}, [auth.currentUser]);
+	const [userData, setUserData] = useState(auth.currentUser);
 
 	async function leaveCircle(circle, user) { // Database call to remove user from circle
-		let x = await readData(`prayer_circle/circles/${circle}/members/`)
-		console.log(x);
+		console.log("leave");
+		console.log(circle);
+		console.log(user);
+		x = Object.entries(
+			(await readData(`prayer_circle/circles/${circle}/members/${user}`)) || {} //this call needs to be rewritten for the array structure
+		);
+		console.log(x); //NRA why is this empty?
 		// deleteData(`prayer_circle/circles/${circle}/members/${user}`);
 	}
 	async function deleteCircle(circle) { // Database call to remove circle from database
+		console.log("delete");
+		console.log(circle);
 		
 		membersList = Object.entries(
 			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
 		); // Get list of members in circle; consider combining this with the identical call in another function below
-		console.log(membersList); // Log list of members in circle
-		// for (i = 0; i < membersList.length; i++) {
+		for (i = 0; i < membersList.length; i++) {
+			console.log(membersList[i]);
 		// 	deleteData(`prayer_circle/users/${membersList[i]}/private/${circle}`); //Removes circle from users' circles list; don't fire
-		// };
+		};
 	
 		postList = Object.entries(
 			(await readData(`prayer_circle/circles/${circle}/posts/`)) || {}
 		); // Get list of members in circle; consider combining this with the identical call in another function below
-	// for (j = 0; j < postList.length; j++) { // Cycles through every post
-		// localPost = postList[j]; // currently observed post in the loop
-		// deleteData(`prayer_circle/posts/${localPost}/circles/${circle}`); //Removes circle from posts' circles list; don't fire
-	
-		// if (prayer_circle/posts/localPost/circles == null) { // delete prayer_circle/posts/${post}
-		// 	deleteData(`prayer_circle/posts/${localPost}`);
-		// }
-	// }
+		for (j = 0; j < postList.length; j++) { // Cycles through every post
+			localPost = postList[j]; // currently observed post in the loop
+			console.log(localPost);
+			// deleteData(`prayer_circle/posts/${localPost}/circles/${circle}`); //Removes circle from posts' circles list; don't fire
+		
+			// if (prayer_circle/posts/localPost/circles == null) {
+			// 	deleteData(`prayer_circle/posts/${localPost}`);
+			// }
+		}
 		// deleteData(`prayer_circle/circles/${circle}`); // Removes circle from list of circles. Should this be fired last?
 	}
 	
@@ -81,16 +89,6 @@ export default function Page() {
 	]);
 	let insets = useSafeAreaInsets();
 	const [handleText, setHandleText] = useState('');
-
-	const [isModalVisible1, setModalVisible1] = useState(false); //NRA replace
-	const toggleModal1 = () => {
-		setModalVisible1(!isModalVisible1);
-	};
-
-	const [isModalVisible2, setModalVisible2] = useState(false);
-	const toggleModal2 = () => {
-		setModalVisible2(!isModalVisible2);
-	};
 
 	// bottom sheet modal //NRA use
 	const bottomSheetModalRef = useRef(null);
@@ -171,7 +169,7 @@ export default function Page() {
 								bgColor={'bg-offblack'}
 								textStyles={'text-yellow'}
 								width='w-[70%]'
-								press={leaveCircle(filter)}
+								press={leaveCircle(filter, userData.uid)}
 							/>
 						</StyledView>
 					// </StyledView>
@@ -370,100 +368,12 @@ export default function Page() {
 					/>
 				</StyledView>
 
-				{/* NRA replace */}
-				<StyledModal
-					className='w-[80%] self-center'
-					isVisible={isModalVisible1}
-				>
-					<StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<StyledText className='top-[6%] text-3xl text-offwhite'>
-								Leave this circle?
-							</StyledText>
-
-							<Button
-								btnStyles='top-[15%] bg-grey border-4 border-purple'
-								height={'h-[90px]'}
-								width={'w-[90px]'}
-								iconSize={60}
-								icon={currentFilterIcon}
-								iconColor={currentFilterIconColor}
-								href='/'
-								borderColor={currentFilterColor}
-							/>
-
-							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								{currentFilterName}
-							</StyledText>
-							{/* Database call to remove from Circle  */}
-							<Button
-								title='Leave'
-								btnStyles={'top-[31%] border-2 border-yellow'}
-								bgColor={'bg-offblack'}
-								textStyles={'text-yellow'}
-								width='w-[70%]'
-								press={leaveCircle(filter)}
-							/>
-							<Button
-								title='Cancel'
-								btnStyles={'top-[37%]'}
-								width='w-[70%]'
-								press={leaveCircle(filter)}
-							/>
-						</StyledView>
-					</StyledView>
-				</StyledModal>
-
-				{/* NRA replace */}
-				<StyledModal
-					className='w-[80%] self-center'
-					isVisible={isModalVisible2}
-				>
-					<StyledView className='bg-offblack border-[5px] border-red rounded-2xl h-[60%]'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<StyledText className='top-[6%] text-3xl text-offwhite'>
-								Delete this circle?
-							</StyledText>
-
-							<Button
-								btnStyles='top-[15%] bg-grey border-4 border-purple'
-								height={'h-[90px]'}
-								width={'w-[90px]'}
-								iconSize={60}
-								icon={currentFilterIcon}
-								iconColor={currentFilterIconColor}
-								href='/'
-								borderColor={currentFilterColor}
-							/>
-
-							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								{currentFilterName}
-							</StyledText>
-							{/* Database call to remove from Circle  */}
-							<Button
-								title='Delete'
-								btnStyles={'top-[31%] border-2 border-red'}
-								bgColor={'bg-offblack'}
-								textStyles={'text-red'}
-								width='w-[70%]'
-								press={deleteCircle(filter)}
-							/>
-							<Button
-								title='Cancel'
-								btnStyles={'top-[37%]'}
-								width='w-[70%]'
-								press={leaveCircle(filter)}
-							/>
-						</StyledView>
-					</StyledView>
-				</StyledModal>
-
 				<BottomSheetModal
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
 					index={0}
 					snapPoints={SnapPoints(['65%'])}
-					handleComponent={() => handle(handleText)} //NRA this line means smth
+					handleComponent={() => handle(handleText)}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}
