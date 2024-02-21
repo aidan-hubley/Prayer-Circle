@@ -90,10 +90,6 @@ export const Post = (post) => {
 	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isToggleVisible, setIsToggleVisible] = useState(
-		title.length > titleCharThreshold ||
-			content.length > contentCharThreshold
-	);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -116,14 +112,10 @@ export const Post = (post) => {
 		}
 	};
 	const tS = timeSince(post.timestamp);
-	
-	// These need to be dynamic based on screen width available and a static max-height for content before truncation 
-	const titleCharThreshold = 25;
-	const contentCharThreshold = 300;
 
-	const isTextTruncated = (text) => {
-		return text && text.length > 300;
-	};
+	// These need to be dynamic based on screen width available and a static max-height for content before truncation
+	const titleCharThreshold = Dimensions.get('window').width / 17;
+	const contentCharThreshold = 300;
 
 	// bottom sheet modal
 	const handlePresentModalPress = useCallback(() => {
@@ -161,10 +153,6 @@ export const Post = (post) => {
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
-	};
-
-	const handleExpanded = () => {
-		setIsExpanded((prevState) => !prevState);
 	};
 
 	const commentsView = () => {
@@ -710,13 +698,6 @@ export const Post = (post) => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
-	useEffect(() => {
-		setIsToggleVisible(
-			title.length > titleCharThreshold ||
-				content.length > contentCharThreshold
-		);
-	}, [title, content]);
-
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
@@ -758,15 +739,11 @@ export const Post = (post) => {
 								/>
 								<StyledView
 									className={`flex-1 ${
-										post.owned ? 'ml-[10px]' : 'ml-2'
-									}`}
+										post.owned ? 'ml-[4px]' : 'ml-2'
+									} border border-green`}
 								>
 									<View
-										className={`${
-											post.owned
-												? 'ml-[10px]'
-												: 'ml-[2px]'
-										} flex-1`}
+										className={`mr-[10px] border border-red`}
 									>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
@@ -775,7 +752,7 @@ export const Post = (post) => {
 												: `${title.substring(
 														0,
 														titleCharThreshold
-												  )} -`}
+												  )}...`}
 										</StyledText>
 									</View>
 									<StyledView className='flex flex-row'>
@@ -815,10 +792,8 @@ export const Post = (post) => {
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText
 									className={`${
-										post.owned
-											? 'ml-[10px] text-white mt-[2px] pb-[10px]'
-											: 'text-white mt-[2px] pb-[10px]'
-									}`}
+										post.owned ? 'ml-[4px]' : ''
+									} text-white mt-[2px] pb-[10px]`}
 								>
 									{isExpanded ||
 									content.length <= contentCharThreshold
@@ -851,9 +826,12 @@ export const Post = (post) => {
 									}}
 								/>
 							</StyledPressable>
-							{isToggleVisible && (
+							{(title.length > titleCharThreshold ||
+								content.length > contentCharThreshold) && (
 								<StyledOpacity
-									onPress={handleExpanded}
+									onPress={() => {
+										setIsExpanded(!isExpanded);
+									}}
 									className='self-center pt-2'
 								>
 									<Ionicons
