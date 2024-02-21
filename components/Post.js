@@ -116,7 +116,9 @@ export const Post = (post) => {
 		}
 	};
 	const tS = timeSince(post.timestamp);
-	const titleCharThreshold = 21;
+	
+	// These need to be dynamic based on screen width available and a static max-height for content before truncation 
+	const titleCharThreshold = 25;
 	const contentCharThreshold = 300;
 
 	const isTextTruncated = (text) => {
@@ -773,7 +775,7 @@ export const Post = (post) => {
 												: `${title.substring(
 														0,
 														titleCharThreshold
-												  )}...`}
+												  )} -`}
 										</StyledText>
 									</View>
 									<StyledView className='flex flex-row'>
