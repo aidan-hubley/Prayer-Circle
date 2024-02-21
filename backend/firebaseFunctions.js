@@ -246,11 +246,10 @@ export async function getHiddenPosts() {
 }
 
 export async function uploadImage(path, uri) {
-	let id = generateId();
 	const img = await fetch(uri);
 	const blob = await img.blob();
 
-	const storageRef = sRef(storage, path + '/' + id);
+	const storageRef = sRef(storage, path + '/profile');
 	await uploadBytesResumable(storageRef, blob);
 
 	const downloadURL = await getDownloadURL(storageRef);

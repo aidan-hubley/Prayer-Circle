@@ -168,38 +168,22 @@ export default function Page() {
 					photo.uri
 				);
 				updateProfile(auth.currentUser, {
-				photoURL: imgURL,
-				}).then(() => {
-				Alert.alert("Success", "Profile picture has been updated.");
-				}).catch((error) => {
-				console.error("Error updating profile picture:", error);
-			
-			updateProfile(auth.currentUser, {
-			photoURL: imgURL,
-			}).then(() => {
-			Alert.alert("Success", "Profile picture has been updated.");
-			}).catch((error) => {
-			console.error("Error updating profile picture:", error);
-			});
-
-				
-			updateProfile(auth?.currentUser, { photoURL: imgURL });
-			writeData(
-				`prayer_circle/users/${userData.uid}/public/profile_img`,
-				imgURL,
-				true
-			);
-
-			Alert.alert('Success', 'Profile picture has been updated.');				});
-
-				updateProfile(auth?.currentUser, { photoURL: imgURL });
-				writeData(
-					`prayer_circle/users/${userData.uid}/public/profile_img`,
-					imgURL,
-					true
-				);
-
-				Alert.alert('Success', 'Profile picture has been updated.');
+					photoURL: imgURL
+				})
+					.then(() => {
+						writeData(
+							`prayer_circle/users/${userData.uid}/public/profile_img`,
+							imgURL,
+							true
+						);
+						Alert.alert(
+							'Success',
+							'Profile picture has been updated.'
+						);
+					})
+					.catch((error) => {
+						console.error('Error updating profile picture:', error);
+					});
 			} catch (error) {
 				console.error('Error taking picture:', error);
 			}
@@ -207,12 +191,12 @@ export default function Page() {
 	}
 
 	const openImagePicker = async () => {
-
-		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+		/* const { status } =
+			await ImagePicker.requestMediaLibraryPermissionsAsync();
 		if (status !== 'granted') {
 			alert('Sorry, we need camera roll permissions to make this work!');
 			return; // Early return if permission is not granted
-		}
+		} */
 
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -222,14 +206,18 @@ export default function Page() {
 		});
 
 		if (!result.canceled && result.assets && result.assets.length > 0) {
+			bottomSheetModalRef.current?.dismiss();
 			const selectedAsset = result.assets[0];
 			try {
-				const imgURL = await uploadImage(`prayer_circle/users/${userData.uid}`, selectedAsset.uri);
+				const imgURL = await uploadImage(
+					`prayer_circle/users/${userData.uid}`,
+					selectedAsset.uri
+				);
 				await updateProfile(auth.currentUser, { photoURL: imgURL });
-				Alert.alert("Success", "Profile picture has been updated.");
+				Alert.alert('Success', 'Profile picture has been updated.');
 			} catch (error) {
-				console.error("Error updating profile picture:", error);
-				Alert.alert("Error", "Failed to update profile picture.");
+				console.error('Error updating profile picture:', error);
+				Alert.alert('Error', 'Failed to update profile picture.');
 			}
 		}
 	};
@@ -983,11 +971,9 @@ export default function Page() {
 		console.log('Infinite toggle state is now: ', newState);
 	};
 
-
 	useEffect(() => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
-
 
 	return (
 		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
