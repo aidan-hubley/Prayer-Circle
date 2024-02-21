@@ -19,7 +19,7 @@ import { createCircle } from '../../backend/firebaseFunctions';
 import { ColorPicker, fromHsv } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
 import { router } from 'expo-router';
-import { useStore } from '../global';
+import { useStore, notify } from '../global';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -137,7 +137,7 @@ export default function Page() {
 					width='w-[125px]'
 					press={async () => {
 						if (title.length == 0) {
-							alert('Please enter a title');
+							notify('Error', 'Please enter a title', '#CC2500');
 							return;
 						}
 
@@ -159,7 +159,11 @@ export default function Page() {
 							owner: false
 						};
 						await createCircle(data);
-						alert('Circle Successfully Created');
+						notify(
+							'Circle Successfully Created',
+							'You can access your new circle from the filter.',
+							'#00A55E'
+						);
 						setFilterReload(true);
 
 						router.push('/');

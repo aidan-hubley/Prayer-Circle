@@ -5,7 +5,6 @@ import {
 	TouchableOpacity,
 	Animated,
 	Image,
-	Alert,
 	TextInput,
 	ScrollView
 } from 'react-native';
@@ -41,6 +40,7 @@ import {
 	readData,
 	uploadImage
 } from '../../backend/firebaseFunctions';
+import { useStore, notify } from '../global';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -76,33 +76,35 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
+	const [haptics, notifications, setHaptics, setNotifications] = useStore(
+		(state) => [
+			state.haptics,
+			state.notifications,
+			state.setHaptics,
+			state.setNotifications
+		]
+	);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
 			try {
 				await sendPasswordResetEmail(auth, userData?.email);
-				Alert.alert(
-					'Check your email',
+				notify(
+					'Email Sent',
 					'A link to reset your password has been sent to your email address.',
-					[
-						{
-							text: 'OK',
-							onPress: () =>
-								bottomSheetModalRef.current?.dismiss()
-						}
-					]
+					'#00A55E'
 				);
 			} catch (error) {
-				Alert.alert('Error', error.message);
+				notify('Error', error.message, '#CC2500');
 			}
 		} else {
-			Alert.alert('Error', 'No user is currently signed in.');
+			notify('Error', 'No user is currently signed in.', '#CC2500');
 		}
 	};
 
 	const hanleChangeName = async () => {
 		if (newFName === '' || newLName === '') {
-			Alert.alert('Error', 'Please enter a valid name.');
+			notify('Error', 'Please enter a valid name.', '#CC2500');
 			return;
 		}
 		writeData(
@@ -131,9 +133,10 @@ export default function Page() {
 			});
 		}
 
-		Alert.alert(
+		notify(
 			'Success',
-			'Name has been updated to: ' + newFName + ' ' + newLName
+			'Name has been updated to: ' + newFName + ' ' + newLName,
+			'#00A55E'
 		);
 
 		bottomSheetModalRef.current?.dismiss();
@@ -154,8 +157,11 @@ export default function Page() {
 	async function takePicture() {
 		const { status } = await Camera.requestCameraPermissionsAsync();
 		if (status !== 'granted') {
-			alert('Permission to access the camera was denied.');
-			return;
+			return notify(
+				'Permission Denied',
+				'Could not access camera',
+				'#CC2500'
+			);
 		}
 
 		if (cameraRef.current) {
@@ -167,25 +173,21 @@ export default function Page() {
 					`prayer_circle/users/${userData.uid}`,
 					photo.uri
 				);
-				updateProfile(auth.currentUser, {
-					photoURL: imgURL
-				})
-					.then(() => {
-						writeData(
-							`prayer_circle/users/${userData.uid}/public/profile_img`,
-							imgURL,
-							true
-						);
-						Alert.alert(
-							'Success',
-							'Profile picture has been updated.'
-						);
-					})
-					.catch((error) => {
-						console.error('Error updating profile picture:', error);
-					});
+
+				updateProfile(auth?.currentUser, { photoURL: imgURL });
+				writeData(
+					`prayer_circle/users/${userData.uid}/public/profile_img`,
+					imgURL,
+					true
+				);
+
+				notify(
+					'Success',
+					'Profile picture has been updated.',
+					'#00A55E'
+				);
 			} catch (error) {
-				console.error('Error taking picture:', error);
+				notify('Error', 'Profile image upload unsuccessful', '#CC2500');
 			}
 		}
 	}
@@ -214,10 +216,14 @@ export default function Page() {
 					selectedAsset.uri
 				);
 				await updateProfile(auth.currentUser, { photoURL: imgURL });
-				Alert.alert('Success', 'Profile picture has been updated.');
+				notify(
+					'Success',
+					'Profile picture has been updated.',
+					'#00A55E'
+				);
 			} catch (error) {
 				console.error('Error updating profile picture:', error);
-				Alert.alert('Error', 'Failed to update profile picture.');
+				notify('Error', 'Failed to update profile picture.', '#CC2500');
 			}
 		}
 	};
@@ -245,14 +251,15 @@ export default function Page() {
 
 	const ChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
-			Alert.alert('Error', 'The new passwords do not match.');
+			notify('Error', 'The new passwords do not match.', '#CC2500');
 			return;
 		}
 
 		if (!passwordValidation(newPassword)) {
-			Alert.alert(
+			notify(
 				'Invalid Password',
-				'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
+				'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character',
+				'#CC2500'
 			);
 			return;
 		}
@@ -267,40 +274,36 @@ export default function Page() {
 				await reauthenticateWithCredential(user, credential);
 
 				await updatePassword(user, newPassword);
-				Alert.alert(
+				notify(
 					'Success',
-					'Password has been updated successfully.'
+					'Password has been updated successfully.',
+					'#00A55E'
 				);
 				bottomSheetModalRef.current?.dismiss();
 				setCurrentPassword('');
 				setNewPassword('');
 				setConfirmPassword('');
 			} catch (error) {
-				Alert.alert('Error', error.message);
+				notify('Error', error.message, '#CC2500');
 			}
 		} else {
-			Alert.alert('Error', 'No user is currently signed in.');
+			notify('Error', 'No user is currently signed in.', '#CC2500');
 		}
 	};
 
 	const ChangeEmail = async () => {
 		if (newEmail !== confirmEmail) {
-			Alert.alert('Error', 'The new emails do not match.');
-			return;
+			return notify('Error', 'The new emails do not match.', '#CC2500');
 		}
 
-		let approvedEmailProviders = [
-			'gmail.com',
-			'yahoo.com',
-			'outlook.com',
-			'icloud.com',
-			'aol.com'
-		];
-
-		let confirmEmailCheck = confirmEmail.split('@');
-		if (confirmEmailCheck.length !== 2) return alert('Invalid Email');
-		else if (!approvedEmailProviders.includes(confirmEmailCheck[1]))
-			return alert('Email provider not supported');
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		let emailCheck = email.split('@');
+		if (emailCheck.length !== 2 || !emailRegex.test(email))
+			return notify(
+				'Invalid Email',
+				'Please enter a valid email.',
+				'#CC2500'
+			);
 
 		writeData(
 			`prayer_circle/users/${userData.uid}/private/email`,
@@ -309,7 +312,11 @@ export default function Page() {
 		);
 		updateProfile(auth?.currentUser, { email: confirmEmail });
 
-		Alert.alert('Success', 'Email has been updated to: ' + confirmEmail);
+		notify(
+			'Success',
+			'Email has been updated to: ' + confirmEmail,
+			'#00A55E'
+		);
 		bottomSheetModalRef.current?.dismiss();
 
 		authContext.signOut();
@@ -318,19 +325,20 @@ export default function Page() {
 	const EmptyCache = async () => {
 		// TODO: need to only remove bookmars and timers
 
-		Alert.alert('Success', 'Cache has been emptied.');
+		notify('Success', 'Cache has been emptied.', '#00A55E');
 		bottomSheetModalRef.current?.dismiss();
 	};
 
 	const DeleteAccount = async () => {
 		// TODO: throughly test this
 		if (deletionName !== userData.displayName) {
-			Alert.alert(
+			notify(
 				'Error',
 				'The name does not match. Deletion name: ' +
 					deletionName +
 					' Name: ' +
-					userData.displayName
+					userData.displayName,
+				'#CC2500'
 			);
 			return;
 		}
@@ -359,9 +367,10 @@ export default function Page() {
 						return;
 					} else if (circleData.owner === userData.uid) {
 						// if user is the owner of the circle
-						Alert.alert(
+						notify(
 							'Error',
-							'You are the owner of a circle. Please transfer ownership or delete / leave the circle before deleting your profile.'
+							'You are the owner of a circle. Please transfer ownership or delete / leave the circle before deleting your profile.',
+							'#CC2500'
 						);
 						return;
 					} else {
@@ -1088,7 +1097,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={notifications}
+										onFunc={() => {
+											setNotifications(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setNotifications(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>
@@ -1104,7 +1131,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={haptics}
+										onFunc={() => {
+											setHaptics(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setHaptics(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>

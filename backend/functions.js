@@ -102,3 +102,25 @@ export function isTimeBefore(firstTime, secondTime) {
 	// Check if second time is before first time
 	return secondMinutesSinceMidnight < firstMinutesSinceMidnight;
 }
+
+export function formatDate(epochTimestamp) {
+	const date = new Date(epochTimestamp * 1000); // Convert epoch timestamp to milliseconds
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+	const month = months[date.getMonth()];
+	const day = date.getDate();
+	const year = date.getFullYear();
+	return `${month} ${day}, ${year}`;
+}

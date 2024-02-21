@@ -10,6 +10,7 @@ import { Button } from './Buttons';
 /* import { Timer } from './Timer'; */
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
@@ -21,6 +22,7 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 	const longOpacity = useRef(new Animated.Value(0)).current;
 	const shortOpacity = useRef(new Animated.Value(0)).current;
 	const bgOpacity = useRef(new Animated.Value(0)).current;
+	const haptics = useStore((state) => state.haptics);
 
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
@@ -90,7 +92,7 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 				pointerEvents={pressed == 'long' ? 'auto' : 'none'}
 				className={`absolute bottom-[-40px] left-[-100px] h-screen w-screen bg-[#121212]`}
 				onPress={() => {
-					Haptics.selectionAsync();
+					if (haptics) Haptics.selectionAsync();
 					toggleLongOptions();
 					toggleShortOptions();
 				}}
@@ -148,9 +150,10 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 					}
 					resize(1);
 
-					Haptics.notificationAsync(
-						Haptics.NotificationFeedbackType.Success
-					);
+					if (haptics)
+						Haptics.notificationAsync(
+							Haptics.NotificationFeedbackType.Success
+						);
 				}}
 				onPress={() => {
 					resize(1);
@@ -161,7 +164,8 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 						toggleShortOptions(false);
 					}
 					if (press) press();
-					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					if (haptics)
+						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 				}}
 			></AnimatedPressable>
 		</>
