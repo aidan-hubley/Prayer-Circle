@@ -160,7 +160,11 @@ export async function getCircles() {
 export async function getFilterCircles() {
 	let uid = await getUID();
 	let circles = await getCircles();
-	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
+	let circlesData = [
+		{ id: 'addCircles' },
+		{ id: 'Gridview' },
+		{ id: 'allCircles' }
+	];
 
 	for (const circle of circles) {
 		let circleData =
@@ -250,11 +254,10 @@ export async function getHiddenPosts() {
 }
 
 export async function uploadImage(path, uri) {
-	let id = generateId();
 	const img = await fetch(uri);
 	const blob = await img.blob();
 
-	const storageRef = sRef(storage, path + '/' + id);
+	const storageRef = sRef(storage, path + '/profile');
 	await uploadBytesResumable(storageRef, blob);
 
 	const downloadURL = await getDownloadURL(storageRef);

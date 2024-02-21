@@ -187,12 +187,19 @@ export default function Page() {
 					'#00A55E'
 				);
 			} catch (error) {
-				console.error('Error taking picture:', error);
+				notify('Error', 'Profile image upload unsuccessful', '#CC2500');
 			}
 		}
 	}
 
 	const openImagePicker = async () => {
+		/* const { status } =
+			await ImagePicker.requestMediaLibraryPermissionsAsync();
+		if (status !== 'granted') {
+			alert('Sorry, we need camera roll permissions to make this work!');
+			return; // Early return if permission is not granted
+		} */
+
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -200,23 +207,24 @@ export default function Page() {
 			quality: 0.2
 		});
 
-		if (!result.canceled) {
-			const selectedAsset = result.assets[0];
-			// TODO: SVG animation here
+		if (!result.canceled && result.assets && result.assets.length > 0) {
 			bottomSheetModalRef.current?.dismiss();
-			let imgURL = await uploadImage(
-				`prayer_circle/users/${userData.photoURL}`,
-				selectedAsset
-			);
-
-			updateProfile(auth?.currentUser, { photoURL: imgURL });
-			writeData(
-				`prayer_circle/users/${userData.uid}/public/profile_img`,
-				imgURL,
-				true
-			);
-
-			notify('Success', 'Profile picture has been updated.', '#00A55E');
+			const selectedAsset = result.assets[0];
+			try {
+				const imgURL = await uploadImage(
+					`prayer_circle/users/${userData.uid}`,
+					selectedAsset.uri
+				);
+				await updateProfile(auth.currentUser, { photoURL: imgURL });
+				notify(
+					'Success',
+					'Profile picture has been updated.',
+					'#00A55E'
+				);
+			} catch (error) {
+				console.error('Error updating profile picture:', error);
+				notify('Error', 'Failed to update profile picture.', '#CC2500');
+			}
 		}
 	};
 
@@ -485,17 +493,6 @@ export default function Page() {
 
 	const renderContent = () => {
 		switch (modalContent) {
-			case 'tos':
-				return (
-					<StyledView className='w-[90%] flex-1'>
-						<BottomSheetFlatList
-							data={[{ key: 'terms' }]}
-							renderItem={({ item }) => <Terms />}
-							keyExtractor={(item) => item.key}
-							showsVerticalScrollIndicator={false}
-						/>
-					</StyledView>
-				);
 			case 'updProfileInfo':
 				return (
 					<StyledView className='w-[85%] items-center'>
@@ -982,7 +979,6 @@ export default function Page() {
 				<ScrollView>
 					<StyledView className='w-full flex items-center'>
 						<View className='relative pt-[100px]'></View>
-
 						<View className='flex-row items-center mt-5 px-5'>
 							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
 								<Text className='mr-3 text-lg text-offwhite'>
