@@ -493,17 +493,6 @@ export default function Page() {
 
 	const renderContent = () => {
 		switch (modalContent) {
-			case 'tos':
-				return (
-					<StyledView className='w-[90%] flex-1'>
-						<BottomSheetFlatList
-							data={[{ key: 'terms' }]}
-							renderItem={({ item }) => <Terms />}
-							keyExtractor={(item) => item.key}
-							showsVerticalScrollIndicator={false}
-						/>
-					</StyledView>
-				);
 			case 'updProfileInfo':
 				return (
 					<StyledView className='w-[85%] items-center'>
@@ -990,7 +979,6 @@ export default function Page() {
 				<ScrollView>
 					<StyledView className='w-full flex items-center'>
 						<View className='relative pt-[100px]'></View>
-
 						<View className='flex-row items-center mt-5 px-5'>
 							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
 								<Text className='mr-3 text-lg text-offwhite'>

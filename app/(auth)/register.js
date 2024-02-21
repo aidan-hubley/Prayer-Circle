@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
 	Text,
 	View,
@@ -15,11 +15,13 @@ import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
 import { uploadImage } from '../../backend/firebaseFunctions';
 import { passwordValidation } from '../../backend/functions';
-import Modal from 'react-native-modal';
+import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-/* import { Terms } from '../../components/Terms'; */
+import Modal from 'react-native-modal';
+import { Terms } from '../../components/Terms';
 import { useAuth } from '../context/auth';
 import { notify } from '../global';
 
@@ -28,13 +30,15 @@ const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
-const StyledCamera = styled(Camera);
 const StyledModal = styled(Modal);
+const StyledCamera = styled(Camera);
 
 export default function Register() {
+	const [handles, setHandles] = useState('');
+	const [snapPoints, setSnapPoints] = useState([]);
+	const [modalContent, setModalContent] = useState(null);
 	const [type, setType] = useState(CameraType.front);
 	const [isModalVisible, setModalVisible] = useState(false);
-	const [isTOSModalVisible, setTOSModalVisible] = useState(false);
 	const [flashMode, setFlashMode] = useState('off');
 	const [profileImage, setProfileImage] = useState(null);
 	const [fname, setFName] = useState('');
@@ -45,13 +49,12 @@ export default function Register() {
 	const [permission, requestPermission] = Camera.useCameraPermissions();
 	const cameraRef = useRef(null);
 	const authContext = useAuth();
+	const bottomSheetModalRef = useRef(null);
 
 	const toggleModal = () => {
 		setModalVisible(!isModalVisible);
 	};
-	const toggleTOSModal = () => {
-		/* setTOSModalVisible(!isTOSModalVisible); */
-	};
+
 
 	function toggleCameraType() {
 		setType((current) =>
@@ -96,6 +99,41 @@ export default function Register() {
 			const selectedAsset = result.assets[0];
 			setProfileImage(selectedAsset.uri);
 			toggleModal();
+		}
+	};
+
+	
+	const handleModalPress = (
+		modalContent,
+		snapPoints,
+		handleText,
+		handleColor,
+		extra = () => {}
+	) => {
+		extra();
+		setModalContent(modalContent);
+		setSnapPoints(snapPoints);
+		setHandles(handle(handleText, handleColor));
+		bottomSheetModalRef.current?.present();
+	};
+
+	const renderContent = () => {
+		switch (modalContent) {
+			case 'tos':
+				return (
+					<StyledView className='w-[90%] flex-1'>
+						<BottomSheetFlatList
+							data={[{ key: 'terms' }]}
+							renderItem={({ item }) => <Terms />}
+							keyExtractor={(item) => item.key}
+							showsVerticalScrollIndicator={false}
+						/>
+					</StyledView>
+				);
+			default:
+				return (
+					<></>
+				)			
 		}
 	};
 
@@ -189,27 +227,19 @@ export default function Register() {
 						</StyledView>
 						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
 							Read the{' '}
-							<TouchableWithoutFeedback onPress={toggleTOSModal}>
+							<TouchableWithoutFeedback 
+								onPress={() => handleModalPress(
+									'tos',
+									['65%', '85%'],
+									'Terms of Service',
+									''
+								)}
+							> 
 								<StyledText className='text-yellow font-bold'>
 									Terms and Conditions
 								</StyledText>
 							</TouchableWithoutFeedback>
 						</StyledText>
-						<StyledModal
-							className='w-[90%] self-center'
-							isVisible={isTOSModalVisible}
-						>
-							{/* <Terms></Terms> */}
-							<StyledView className='w-full flex flex-row justify-between absolute bottom-[100px] items-center'>
-								<Button
-									icon='arrow-back-outline'
-									btnStyles={'left-10'}
-									width='w-[50px]'
-									height='h-[50px]'
-									press={toggleTOSModal}
-								/>
-							</StyledView>
-						</StyledModal>
 						<StyledView className='flex flex-col items-center'>
 							<Button
 								width='w-[85%]'
@@ -319,6 +349,19 @@ export default function Register() {
 					</StyledView>
 				</StyledSafeArea>
 			</StyledModal>
+			
+			<BottomSheetModal
+				ref={bottomSheetModalRef}
+				index={0}
+				snapPoints={snapPoints}
+				handleComponent={() => handles}
+				backdropComponent={(backdropProps) => backdrop(backdropProps)}
+				keyboardBehavior='extend'
+			>
+				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+					{renderContent()}
+				</StyledView>
+			</BottomSheetModal>
 		</StyledSafeArea>
 	);
 }

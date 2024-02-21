@@ -89,6 +89,13 @@ const Filter = forwardRef((props, ref) => {
 					snapToInterval={itemSize + itemMargin}
 					decelerationRate={'fast'}
 					contentContainerStyle={{ paddingHorizontal: paddingH }}
+					// getItemLayout={(data, index) => ({
+					// 	length: itemSize + itemMargin,
+					// 	offset: (itemSize + itemMargin) * index,
+					// 	index
+					//   })}
+					// initialScrollIndex={2}
+					// scrollToIndex={2}
 					renderItem={({ item, index }) => {
 						return (
 							<FilterItem

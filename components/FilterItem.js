@@ -141,6 +141,9 @@ const FilterItem = forwardRef((props, ref) => {
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
 						/>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							Search Circles
+						</StyledText>
 						<StyledIcon
 							name={'search-outline'}
 							size={45}
@@ -176,6 +179,9 @@ const FilterItem = forwardRef((props, ref) => {
 								source={require('../assets/spiral/thin.png')}
 								style={{ width: 80, height: 80 }}
 							/>
+							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+								View Circles
+							</StyledText>
 							<StyledIcon
 								name={'apps-outline'}
 								size={35}
@@ -197,7 +203,7 @@ const FilterItem = forwardRef((props, ref) => {
 					>
 						<StyledView className='flex-1 bg-grey'>
 							<BottomSheetFlatList
-								data={props.circles.slice(2)}
+								data={props.circles.slice(3)}
 								keyExtractor={(item) => item.id}
 								contentContainerStyle={{
 									paddingVertical: 20,
@@ -251,6 +257,38 @@ const FilterItem = forwardRef((props, ref) => {
 						</StyledView>
 					</BottomSheetModal>
 				</>
+			);
+		} else if (props.data.id == 'allCircles') {
+			return (
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: props.data.color,
+							width: props.itemSize,
+							height: props.itemSize,
+							marginHorizontal: props.itemMargin / 2,
+							top: 60
+						},
+						itemStyle
+					]}
+					className='justify-center'
+					onPress={() => {
+						props.toggleShown();
+						props.setPressed('none');
+						setFilter('unfiltered');
+						setFilterName('Prayer Circle');
+					}}
+				>
+					<StyledView className='flex items-center justify-center'>
+						<StyledImage
+							source={require('../assets/spiral/thin.png')}
+							style={{ width: 80, height: 80 }}
+						/>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							All Circles
+						</StyledText>
+					</StyledView>
+				</StyledAnimatedHighlight>
 			);
 		} else {
 			return (

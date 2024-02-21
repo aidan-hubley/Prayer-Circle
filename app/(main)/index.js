@@ -113,6 +113,7 @@ export default function Layout() {
 			</StyledView>
 
 			<Filter
+				index={2}
 				data={circles}
 				ref={filterRef}
 				setPressed={circleRef?.current?.setPressed}
@@ -139,10 +140,10 @@ export default function Layout() {
 				className='absolute mx-[85px]'
 			>
 				<Button
-					title={filterName}
+					title={filterName || 'Prayer Circle'}
 					height='h-[50]'
 					width='w-full'
-					href='/circleSettings'
+					href={filterName == 'Prayer Circle' ? '/prayerCircleInfo' : '/circleSettings'}
 					ref={circleNameRef}
 				/>
 			</StyledView>
