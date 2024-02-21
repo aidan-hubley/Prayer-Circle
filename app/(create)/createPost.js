@@ -14,7 +14,7 @@ import { Button } from '../../components/Buttons';
 import { writeData, generateId } from '../../backend/firebaseFunctions';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useStore } from '../global';
+import { useStore, notify } from '../global';
 import { Filter } from '../../components/Filter';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../backend/config';
@@ -179,7 +179,7 @@ export default function Page() {
 				</>
 			</KeyboardAwareScrollView>
 
-			<Filter open data={circles.slice(2)} multiselect backdropHidden />
+			<Filter open data={circles.slice(3)} multiselect backdropHidden />
 			<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
 				<Button
 					title='Draw'
@@ -187,12 +187,16 @@ export default function Page() {
 					width='w-[125px]'
 					press={async () => {
 						if (title.length == 0 || body.length == 0)
-							return alert(
-								'Please enter a title and body for your post.'
+							return notify(
+								'Error Posting',
+								'Please enter a title and body for your post.',
+								'#CC2500'
 							);
 						if (addCircles.length == 0)
-							return alert(
-								'Please select 1 or more circles to post to.'
+							return notify(
+								'Error Posting',
+								'Please select 1 or more circles to post to.',
+								'#CC2500'
 							);
 
 						let newPostId = generateId();
@@ -214,8 +218,10 @@ export default function Page() {
 							typeSelected === 'event' &&
 							(!startDate || !endDate)
 						)
-							return alert(
-								'Please select a start and end date for your event.'
+							return notify(
+								'Error Posting',
+								'Please select a start and end date for your event.',
+								'#CC2500'
 							);
 
 						let newPost = {
@@ -270,7 +276,11 @@ export default function Page() {
 							start[0] === end[0] &&
 							isTimeBefore(start[1], end[1])
 						) {
-							return alert('Please select a valid end time.');
+							return notify(
+								'Invalid Date',
+								'Please select a valid end time.',
+								'#CC2500'
+							);
 						} else {
 							setEndDate(getDate);
 							toggleDateTimePicker();
