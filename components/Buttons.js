@@ -9,6 +9,7 @@ import { styled } from 'nativewind';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
+import { useStore } from '../app/global';
 
 const StyledText = styled(Text);
 const StyledTouchableHighlight = Animated.createAnimatedComponent(
@@ -21,6 +22,7 @@ const AnimatedHighlight = styled(
 
 const Button = forwardRef((props, ref) => {
 	const opacity = useRef(new Animated.Value(1)).current;
+	const haptics = useStore((state) => state.haptics);
 
 	const opacityInter = opacity.interpolate({
 		inputRange: [0, 1],
@@ -45,18 +47,17 @@ const Button = forwardRef((props, ref) => {
 	}));
 	return (
 		<StyledTouchableHighlight
-			style={opacityStyle}
+			style={[opacityStyle, { borderColor: props.borderColor }]}
 			activeOpacity={0.6}
 			underlayColor={`${props.bgColor || '#DDDDDD'}`}
 			className={`flex items-center justify-center rounded-full ${
 				props.bgColor || 'bg-offwhite'
 			} ${props.width || 'w-11/12'} ${props.height || 'h-[50px]'} ${
-				props.borderColor
-					? `border ${props.borderColor}`
-					: 'border-none'
-			} ${props.btnStyles || ''} `}
+				props.borderColor ? `border` : 'border-none'
+			} ${props.borderWidth || ''} ${props.btnStyles || ''} `}
 			onPress={() => {
-				Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+				if (haptics)
+					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 				if (props.press) props.press();
 				if (props.href) router.push(props.href);
 			}}
@@ -108,6 +109,7 @@ const ExpandableButton = forwardRef(
 	) => {
 		const [pressed, setPressed] = useState(expanded || false);
 		const [wi, setWi] = useState(new Animated.Value(expanded ? 1 : 0));
+		const haptics = useStore((state) => state.haptics);
 
 		const deviceWidth = Dimensions.get('window').width;
 
@@ -132,7 +134,7 @@ const ExpandableButton = forwardRef(
 		};
 
 		function toggleButton(direction) {
-			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+			if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 			if (direction == 'expand') {
 				setPressed(true);
 				Animated.spring(wi, {

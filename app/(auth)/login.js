@@ -7,8 +7,7 @@ import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	Image,
-	TouchableOpacity,
-	Alert
+	TouchableOpacity
 } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -24,6 +23,7 @@ import {
 	SnapPoints
 } from '../../components/BottomSheetModalHelpers';
 import { router } from 'expo-router';
+import { notify } from '../global';
 
 const StyledImage = styled(Image);
 const StyledOpacity = styled(TouchableOpacity);
@@ -44,14 +44,14 @@ export default function Login() {
 	const handlePasswordReset = async () => {
 		try {
 			await sendPasswordResetEmail(auth, resetEmail);
-			Alert.alert(
-				'Check your email',
+			notify(
+				'Email Sent',
 				'A link to reset your password has been sent to your email address.',
-				[{ text: 'OK' }]
+				'#00A55E'
 			);
 			setResetEmail('');
 		} catch (error) {
-			Alert.alert('Error', error.message);
+			notify('Error', error.message, '#CC2500');
 		}
 	};
 
@@ -101,8 +101,10 @@ export default function Login() {
 								press={() => {
 									Keyboard.dismiss();
 									if (email.length == 0 || pass.length == 0)
-										return alert(
-											'Please fill out all fields'
+										return notify(
+											'Error',
+											'Please fill out all fields',
+											'#CC2500'
 										);
 									authContext.signIn(email, pass);
 								}}

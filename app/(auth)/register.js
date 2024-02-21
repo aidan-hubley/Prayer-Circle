@@ -23,6 +23,7 @@ import { router } from 'expo-router';
 import Modal from 'react-native-modal';
 import { Terms } from '../../components/Terms';
 import { useAuth } from '../context/auth';
+import { notify } from '../global';
 
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -68,8 +69,11 @@ export default function Register() {
 	async function takePicture() {
 		const { status } = await Camera.requestCameraPermissionsAsync();
 		if (status !== 'granted') {
-			alert('Permission to access the camera was denied.');
-			return;
+			return notify(
+				'Permission Denied',
+				'Could not access camera',
+				'#CC2500'
+			);
 		}
 
 		if (cameraRef.current) {
@@ -371,21 +375,38 @@ async function createUserData(
 	image,
 	authContext
 ) {
-	if (fname.length < 1 || lname.length < 1) return alert('Invalid Name'); // check name length
+	if (fname.length < 1 || lname.length < 1)
+		return notify('Registration Error', 'Invalid Name', '#CC2500'); // check name length
 
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	let emailCheck = email.split('@');
 	if (emailCheck.length !== 2 || !emailRegex.test(email))
-		return alert('Invalid Email'); // check email format
+		return notify(
+			'Registration Error',
+			'Please enter a valid email.',
+			'#CC2500'
+		); // check email format
 
 	if (!passwordValidation(password)) {
-		return alert(
-			'Invalid Password\nPassword must be at least 12 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
+		return notify(
+			'Registration Error',
+			'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character',
+			'#CC2500'
 		);
 	}
-	if (password !== confirmPassword) return alert('Passwords do not match');
+	if (password !== confirmPassword)
+		return notify(
+			'Registration Error',
+			'Passwords do not match',
+			'#CC2500'
+		);
 
-	if (!image) return alert('You need to upload a profile picture');
+	if (!image)
+		return notify(
+			'Registration Error',
+			'You need to upload a profile picture',
+			'#CC2500'
+		);
 
 	let userData = {
 		public: {
