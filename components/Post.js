@@ -35,7 +35,6 @@ import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { set } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -221,85 +220,74 @@ export const Post = (post) => {
 	};
 
 	const commentsView = () => {
-		if (viewComments) {
-			return (
-				<StyledView className='flex-1 bg-grey'>
-					<StyledView className='w-full h-auto flex items-center my-3'>
-						<StyledInput
-							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
-							placeholder='Write a comment...'
-							placeholderTextColor='#ffffff66'
-							multiline={true}
-							scrollEnabled={false}
-							ref={newCommentRef}
-							onChangeText={(text) => {
-								setNewComment(text);
-							}}
-						/>
-						<StyledOpacity
-							className='absolute top-[10px] right-[8%]'
-							onPress={async () => {
-								Keyboard.dismiss();
-								await postComment();
-							}}
-						>
-							<StyledIcon
-								name='send'
-								size={30}
-								className='text-green'
-							/>
-						</StyledOpacity>
-					</StyledView>
-					<BottomSheetFlatList
-						data={commentData}
-						contentContainerStyle={{
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							width: '100%'
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<StyledView className='w-full h-auto flex items-center my-3'>
+					<StyledInput
+						className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+						placeholder='Write a comment...'
+						placeholderTextColor='#ffffff66'
+						multiline={true}
+						scrollEnabled={false}
+						ref={newCommentRef}
+						onChangeText={(text) => {
+							setNewComment(text);
 						}}
-						renderItem={({ item }) => {
-							return (
-								<Comment
-									id={item[0]}
-									user={item[1].user}
-									name={item[1].name}
-									content={item[1].content}
-									edited={item[1].edited}
-									timestamp={item[1].timestamp}
-									img={item[1].profile_img}
-								/>
-							);
-						}}
-						ListEmptyComponent={() => {
-							return (
-								<StyledView
-									className='flex-1 justify-center items-center'
-									style={{
-										height:
-											Dimensions.get('window').height -
-											350
-									}}
-								>
-									<StyledText className='text-white text-[24px]'>
-										No Comments
-									</StyledText>
-								</StyledView>
-							);
-						}}
-						keyExtractor={(item) => item[0]}
 					/>
+					<StyledOpacity
+						className='absolute top-[10px] right-[8%]'
+						onPress={async () => {
+							Keyboard.dismiss();
+							await postComment();
+						}}
+					>
+						<StyledIcon
+							name='send'
+							size={30}
+							className='text-green'
+						/>
+					</StyledOpacity>
 				</StyledView>
-			);
-		} else {
-			return (
-				<StyledView className='flex-1 bg-grey justify-center items-center'>
-					<StyledText className='text-white text-[24px]'>
-						The owner of this post has disabled comments.
-					</StyledText>
-				</StyledView>
-			);
-		}
+				<BottomSheetFlatList
+					data={commentData}
+					contentContainerStyle={{
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						width: '100%'
+					}}
+					renderItem={({ item }) => {
+						return (
+							<Comment
+								id={item[0]}
+								user={item[1].user}
+								name={item[1].name}
+								content={item[1].content}
+								edited={item[1].edited}
+								timestamp={item[1].timestamp}
+								img={item[1].profile_img}
+							/>
+						);
+					}}
+					ListEmptyComponent={() => {
+						return (
+							<StyledView
+								className='flex-1 justify-center items-center'
+								style={{
+									height:
+										Dimensions.get('window').height - 350
+								}}
+							>
+								<StyledText className='text-white text-[24px]'>
+									No Comments
+								</StyledText>
+							</StyledView>
+						);
+					}}
+					keyExtractor={(item) => item[0]}
+				/>
+			</StyledView>
+		);
 	};
 
 	const editView = () => {
@@ -781,23 +769,24 @@ export const Post = (post) => {
 
 	async function hidePost() {
 		await toggleToolbar();
-		await writeData(
-			`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
-			true,
-			true
-		);
-		await writeData(
-			`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
-			true,
-			true
-		);
-		await setGlobalReload(true);
-
-		notify(
-			'Post Hidden',
-			'This action can be reverted from the settings page.',
-			'#F9A826'
-		);
+		setTimeout(async () => {
+			await writeData(
+				`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
+				true,
+				true
+			);
+			await writeData(
+				`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
+				true,
+				true
+			);
+			await setGlobalReload(true);
+			notify(
+				'Post Hidden',
+				'This action can be reverted from the settings page.',
+				'#F9A826'
+			);
+		}, 200);
 	}
 
 	const toggleBookmark = async (postId, postData) => {
@@ -1311,12 +1300,21 @@ export const Post = (post) => {
 							<ToolbarButton
 								icon={'chatbubble-outline'}
 								size={29}
-								color='#5946B2'
+								color={viewComments ? '#5946B2' : '#3D3D3D'}
 								onPress={async () => {
-									populateComments();
-									setBottomSheetType('Comments');
-									setSnapPoints(['85%']);
-									handlePresentModalPress();
+									if (!post.owned && !post.ownedToolBar) {
+										if (viewComments) {
+											populateComments();
+											setBottomSheetType('Comments');
+											setSnapPoints(['85%']);
+											handlePresentModalPress();
+										}
+									} else {
+										populateComments();
+										setBottomSheetType('Comments');
+										setSnapPoints(['85%']);
+										handlePresentModalPress();
+									}
 								}}
 							/>
 							<StyledOpacity

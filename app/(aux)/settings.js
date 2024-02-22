@@ -41,7 +41,6 @@ import {
 	uploadImage
 } from '../../backend/firebaseFunctions';
 import { useStore, notify } from '../global';
-import { get } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
