@@ -41,6 +41,7 @@ import {
 	uploadImage
 } from '../../backend/firebaseFunctions';
 import { useStore, notify } from '../global';
+import { get } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -73,6 +74,9 @@ export default function Page() {
 	const [deletionName, setDeletionName] = useState('');
 	const [modalContent, setModalContent] = useState(null);
 	const [userData, setUserData] = useState(auth?.currentUser);
+	const [commentPref, setCommentPref] = useState(true);
+	const [interactionPref, setInteractionPref] = useState('public');
+	const [viewPref, setViewPref] = useState(false);
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
@@ -247,6 +251,24 @@ export default function Page() {
 		);
 
 		bottomSheetModalRef.current?.dismiss();
+	}
+
+	async function getPostPreferances() {
+		let commentPref = await readData(
+			`prayer_circle/users/${userData.uid}/private/post_preferances/comments`
+		);
+		if (commentPref == undefined) {
+			commentPref = true;
+		}
+		setCommentPref(commentPref);
+
+		let interactionPref = await readData(
+			`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`
+		);
+		if (interactionPref == undefined) {
+			interactionPref = 'public';
+		}
+		setInteractionPref(interactionPref);
 	}
 
 	const ChangePassword = async () => {
@@ -1290,6 +1312,156 @@ export default function Page() {
 										</StyledText>
 									</StyledOpacity>
 								</StyledView>
+							</View>
+						</View>
+						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+						<View className='flex-row items-center mt-5 px-5'>
+							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
+								<StyledView className='flex-row justify-between pb-5 w-full'>
+									<Text className='text-lg text-offwhite'>
+										Post Preferances
+									</Text>
+									<Button
+										icon={
+											viewPref
+												? 'chevron-down-outline'
+												: 'chevron-up-outline'
+										}
+										width={'w-[65px]'}
+										height={'h-[35px]'}
+										bgColor={'bg-transparent'}
+										iconSize={30}
+										iconColor={'#FFFBFC'}
+										btnStyles='border-2'
+										borderColor={'#FFFBFC'}
+										press={() => {
+											if (!viewPref) {
+												getPostPreferances();
+											}
+											setViewPref(!viewPref);
+										}}
+									></Button>
+								</StyledView>
+								{viewPref && (
+									<View>
+										<StyledView className='flex-row justify-between'>
+											<Text className='text-lg text-offwhite'>
+												Comments:
+											</Text>
+											{commentPref && (
+												<Button
+													icon='eye'
+													iconColor={'#FFFBFC'}
+													iconSize={26}
+													width={'w-[65px]'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'#FFFBFC'}
+													btnStyles='border-2'
+													press={() => {
+														setCommentPref(false);
+														writeData(
+															`prayer_circle/users/${userData.uid}/private/post_preferances/comments`,
+															false,
+															true
+														);
+													}}
+												></Button>
+											)}
+											{!commentPref && (
+												<Button
+													icon='eye-off-outline'
+													iconColor={'#FFFBFC'}
+													iconSize={26}
+													width={'w-[65px]'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'#FFFBFC'}
+													btnStyles='border-2'
+													press={() => {
+														setCommentPref(true);
+														writeData(
+															`prayer_circle/users/${userData.uid}/private/post_preferances/comments`,
+															true,
+															true
+														);
+													}}
+												></Button>
+											)}
+										</StyledView>
+										<StyledView className='flex-row justify-between py-2'>
+											<Text className='text-lg text-offwhite'>
+												Interactions:
+											</Text>
+											{interactionPref === 'public' && (
+												<Button
+													icon='people'
+													iconColor={'#FFFBFC'}
+													iconSize={26}
+													width={'w-[65px]'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'#FFFBFC'}
+													btnStyles='border-2'
+													press={() => {
+														setInteractionPref(
+															'private'
+														);
+														writeData(
+															`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`,
+															'private',
+															true
+														);
+													}}
+												></Button>
+											)}
+											{interactionPref === 'private' && (
+												<Button
+													icon='person'
+													iconColor={'#FFFBFC'}
+													iconSize={26}
+													width={'w-[65px]'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'#FFFBFC'}
+													btnStyles='border-2'
+													press={() => {
+														setInteractionPref(
+															'hidden'
+														);
+														writeData(
+															`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`,
+															'hidden',
+															true
+														);
+													}}
+												></Button>
+											)}
+											{interactionPref === 'hidden' && (
+												<Button
+													icon='eye-off-outline'
+													iconColor={'#FFFBFC'}
+													iconSize={26}
+													width={'w-[65px]'}
+													height={'h-[35px]'}
+													bgColor={'bg-transparent'}
+													borderColor={'#FFFBFC'}
+													btnStyles='border-2'
+													press={() => {
+														setInteractionPref(
+															'public'
+														);
+														writeData(
+															`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`,
+															'public',
+															true
+														);
+													}}
+												></Button>
+											)}
+										</StyledView>
+									</View>
+								)}
 							</View>
 						</View>
 						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />

@@ -31,6 +31,10 @@
 					},
 					"posts": {
 						"_pushId_": true
+					},
+					"post_preferances": {
+						"comments": true,
+						"interactions": "private"
 					}
 				}
 			}

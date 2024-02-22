@@ -36,6 +36,7 @@ import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
 import { Notifier } from 'react-native-notifier';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { set } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -63,6 +64,10 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
+	const [viewInteractions, setViewInteractions] = useState(
+		post.viewInteractions
+	);
+	const [viewComments, setViewComments] = useState(post.viewComments);
 	const [
 		haptics,
 		setGlobalReload,
@@ -228,75 +233,86 @@ export const Post = (post) => {
 	};
 
 	const commentsView = () => {
-		return (
-			<StyledView className='flex-1 bg-grey'>
-				<StyledView className='w-full h-auto flex items-center my-3'>
-					<StyledInput
-						className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
-						placeholder='Write a comment...'
-						placeholderTextColor='#ffffff66'
-						multiline={true}
-						scrollEnabled={false}
-						ref={newCommentRef}
-						onChangeText={(text) => {
-							setNewComment(text);
-						}}
-					/>
-					<StyledOpacity
-						className='absolute top-[10px] right-[8%]'
-						onPress={async () => {
-							Keyboard.dismiss();
-							await postComment();
-						}}
-					>
-						<StyledIcon
-							name='send'
-							size={30}
-							className='text-green'
+		if (viewComments) {
+			return (
+				<StyledView className='flex-1 bg-grey'>
+					<StyledView className='w-full h-auto flex items-center my-3'>
+						<StyledInput
+							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+							placeholder='Write a comment...'
+							placeholderTextColor='#ffffff66'
+							multiline={true}
+							scrollEnabled={false}
+							ref={newCommentRef}
+							onChangeText={(text) => {
+								setNewComment(text);
+							}}
 						/>
-					</StyledOpacity>
-				</StyledView>
-				<BottomSheetFlatList
-					data={commentData}
-					contentContainerStyle={{
-						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'center',
-						alignItems: 'center',
-						width: '100%'
-					}}
-					renderItem={({ item }) => {
-						return (
-							<Comment
-								id={item[0]}
-								user={item[1].user}
-								name={item[1].name}
-								content={item[1].content}
-								edited={item[1].edited}
-								timestamp={item[1].timestamp}
-								img={item[1].profile_img}
+						<StyledOpacity
+							className='absolute top-[10px] right-[8%]'
+							onPress={async () => {
+								Keyboard.dismiss();
+								await postComment();
+							}}
+						>
+							<StyledIcon
+								name='send'
+								size={30}
+								className='text-green'
 							/>
-						);
-					}}
-					ListEmptyComponent={() => {
-						return (
-							<StyledView
-								className='flex-1 justify-center items-center'
-								style={{
-									height:
-										Dimensions.get('window').height - 350
-								}}
-							>
-								<StyledText className='text-white text-[24px]'>
-									No Comments
-								</StyledText>
-							</StyledView>
-						);
-					}}
-					keyExtractor={(item) => item[0]}
-				/>
-			</StyledView>
-		);
+						</StyledOpacity>
+					</StyledView>
+					<BottomSheetFlatList
+						data={commentData}
+						contentContainerStyle={{
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'center',
+							alignItems: 'center',
+							width: '100%'
+						}}
+						renderItem={({ item }) => {
+							return (
+								<Comment
+									id={item[0]}
+									user={item[1].user}
+									name={item[1].name}
+									content={item[1].content}
+									edited={item[1].edited}
+									timestamp={item[1].timestamp}
+									img={item[1].profile_img}
+								/>
+							);
+						}}
+						ListEmptyComponent={() => {
+							return (
+								<StyledView
+									className='flex-1 justify-center items-center'
+									style={{
+										height:
+											Dimensions.get('window').height -
+											350
+									}}
+								>
+									<StyledText className='text-white text-[24px]'>
+										No Comments
+									</StyledText>
+								</StyledView>
+							);
+						}}
+						keyExtractor={(item) => item[0]}
+					/>
+				</StyledView>
+			);
+		} else {
+			return (
+				<StyledView className='flex-1 bg-grey justify-center items-center'>
+					<StyledText className='text-white text-[24px]'>
+						The owner of this post has disabled comments.
+					</StyledText>
+				</StyledView>
+			);
+		}
 	};
 
 	const editView = () => {
@@ -630,6 +646,63 @@ export const Post = (post) => {
 						title='Save'
 						width={'w-[48%]'}
 						press={() => {
+							if (selectedComment._value < 0.5) {
+								writeData(
+									`prayer_circle/posts/${post.id}/settings/viewable_comments`,
+									true,
+									true
+								);
+								setViewComments(true);
+							} else {
+								writeData(
+									`prayer_circle/posts/${post.id}/settings/viewable_comments`,
+									false,
+									true
+								);
+								setViewComments(false);
+							}
+							if (post.icon === 'event') {
+								if (selectedEventInteraction._value < 0.33) {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'public',
+										true
+									);
+									setViewInteractions('public');
+								} else if (
+									selectedEventInteraction._value < 0.66
+								) {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'private',
+										true
+									);
+									setViewInteractions('private');
+								} else {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'hidden',
+										true
+									);
+									setViewInteractions('hidden');
+								}
+							} else {
+								if (selectedInteraction._value < 0.5) {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'private',
+										true
+									);
+									setViewInteractions('private');
+								} else {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'hidden',
+										true
+									);
+									setViewInteractions('hidden');
+								}
+							}
 							bottomSheetModalRef.current?.dismiss();
 						}}
 					/>
@@ -840,6 +913,13 @@ export const Post = (post) => {
 
 		// set up comments
 		await populateComments(post.comments);
+		let viewableComments = await readData(
+			`prayer_circle/posts/${postId}/settings/viewable_comments`
+		);
+		if (viewableComments == undefined) {
+			viewableComments = true;
+		}
+		setViewComments(viewableComments);
 
 		// set up reports
 		await populateReports(postId);
@@ -847,6 +927,14 @@ export const Post = (post) => {
 		// set up interactions
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
+		let viewableInteractions = await readData(
+			`prayer_circle/posts/${postId}/settings/viewable_interactions`
+		);
+		if (viewableInteractions == undefined) {
+			if (post.icon === 'event') viewableInteractions = 'public';
+			else viewableInteractions = 'private';
+		}
+		setViewInteractions(viewableInteractions);
 
 		if (!post.owned && !post.ownedToolBar) {
 			if (interactions[userData.uid]) {
@@ -1012,6 +1100,14 @@ export const Post = (post) => {
 						}
 					}}
 					onLongPress={() => {
+						if (
+							post.icon === 'event' &&
+							viewInteractions === 'public'
+						) {
+							setBottomSheetType('Interactions');
+							setSnapPoints(['85%']);
+							handlePresentModalPress();
+						}
 						toggleToolbar();
 					}}
 				>
