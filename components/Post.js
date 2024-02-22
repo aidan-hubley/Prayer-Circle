@@ -25,16 +25,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
-import { useStore } from '../app/global';
+import { useStore, notify } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
-import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
+import { backdrop, handle } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
-import { Notifier } from 'react-native-notifier';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { set } from 'firebase/database';
 
@@ -49,9 +48,6 @@ const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
-const titleCharThreshold = 20;
-const contentCharThreshold = 300;
-
 export const Post = (post) => {
 	// variables
 	const [title, setTitle] = useState(decrypt(post.id, post.title));
@@ -100,11 +96,7 @@ export const Post = (post) => {
 	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isToggleVisible, setIsToggleVisible] = useState(
-		title.length > titleCharThreshold ||
-			content.length > contentCharThreshold
-	);
-	const [snapPoints, setSnapPoints] = useState([]);
+	const [snapPoints, setSnapPoints] = useState(['85%']);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -129,9 +121,9 @@ export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 	let insets = useSafeAreaInsets();
 
-	const isTextTruncated = (text) => {
-		return text && text.length > 300;
-	};
+	// These need to be dynamic based on screen width available and a static max-height for content before truncation
+	const titleCharThreshold = Dimensions.get('window').width / 17;
+	const contentCharThreshold = 300;
 
 	// bottom sheet modal
 	const handlePresentModalPress = useCallback(() => {
@@ -169,10 +161,6 @@ export const Post = (post) => {
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
-	};
-
-	const handleExpanded = () => {
-		setIsExpanded((prevState) => !prevState);
 	};
 
 	const selectedComment = useRef(new Animated.Value(0)).current;
@@ -267,7 +255,6 @@ export const Post = (post) => {
 						contentContainerStyle={{
 							display: 'flex',
 							flexDirection: 'column',
-							justifyContent: 'center',
 							alignItems: 'center',
 							width: '100%'
 						}}
@@ -793,19 +780,24 @@ export const Post = (post) => {
 	}
 
 	async function hidePost() {
-		writeData(
+		await toggleToolbar();
+		await writeData(
 			`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
 			true,
 			true
 		);
-		writeData(
+		await writeData(
 			`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
 			true,
 			true
 		);
-		toggleToolbar();
+		await setGlobalReload(true);
 
-		setGlobalReload(true);
+		notify(
+			'Post Hidden',
+			'This action can be reverted from the settings page.',
+			'#F9A826'
+		);
 	}
 
 	const toggleBookmark = async (postId, postData) => {
@@ -1072,13 +1064,6 @@ export const Post = (post) => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
-	useEffect(() => {
-		setIsToggleVisible(
-			title.length > titleCharThreshold ||
-				content.length > contentCharThreshold
-		);
-	}, [title, content]);
-
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
@@ -1128,17 +1113,11 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${
-										post.owned ? 'ml-[10px]' : 'ml-2'
+									className={`flex-1 ${
+										post.owned ? 'ml-[4px]' : 'ml-2'
 									}`}
 								>
-									<View
-										className={`${
-											post.owned
-												? 'ml-[10px]'
-												: 'ml-[2px]'
-										} max-w-[95%]`}
-									>
+									<View className={`mr-[10px]`}>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
 											title.length <= titleCharThreshold
@@ -1186,10 +1165,8 @@ export const Post = (post) => {
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText
 									className={`${
-										post.owned
-											? 'ml-[10px] text-white mt-[2px] pb-[10px]'
-											: 'text-white mt-[2px] pb-[10px]'
-									}`}
+										post.owned ? 'ml-[4px]' : ''
+									} text-white mt-[2px] pb-[10px]`}
 								>
 									{isExpanded ||
 									content.length <= contentCharThreshold
@@ -1223,9 +1200,12 @@ export const Post = (post) => {
 									}}
 								/>
 							</StyledPressable>
-							{isToggleVisible && (
+							{(title.length > titleCharThreshold ||
+								content.length > contentCharThreshold) && (
 								<StyledOpacity
-									onPress={handleExpanded}
+									onPress={() => {
+										setIsExpanded(!isExpanded);
+									}}
 									className='self-center pt-2'
 								>
 									<Ionicons
@@ -1335,7 +1315,7 @@ export const Post = (post) => {
 								onPress={async () => {
 									populateComments();
 									setBottomSheetType('Comments');
-									setSnapPoints(['65%']);
+									setSnapPoints(['85%']);
 									handlePresentModalPress();
 								}}
 							/>
@@ -1347,7 +1327,7 @@ export const Post = (post) => {
 										Haptics.impactAsync(
 											Haptics.ImpactFeedbackStyle.Light
 										);
-									setBottomSheetType('All Circles');
+									setBottomSheetType("Post's Circles");
 									handlePresentModalPress();
 								}}
 							/>
@@ -1366,7 +1346,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
-				{bottomSheetType === 'All Circles' && circlesView()}
+				{bottomSheetType === "Post's Circles" && circlesView()}
 				{bottomSheetType === 'Interactions' && interactionsView()}
 				{bottomSheetType === 'Report' && reportView()}
 				{bottomSheetType === 'Settings' && settingsView()}

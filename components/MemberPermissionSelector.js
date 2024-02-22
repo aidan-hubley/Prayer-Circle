@@ -19,9 +19,10 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	const animationValue = useRef(new Animated.Value(0)).current;
 	const [open, setOpen] = useState(false);
 	const [permission, setPermission] = useState(props.role);
-	const [currentCircleRole, filter] = useStore((state) => [
+	const [currentCircleRole, filter, haptics] = useStore((state) => [
 		state.currentCircleRole,
-		state.filter
+		state.filter,
+		state.haptics
 	]);
 
 	/* TODO: Implement DB update on permission change */
@@ -156,7 +157,6 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	};
 
 	const getIconFromRole = (role) => {
-		console.log(role);
 		if (
 			currentCircleRole === 'owner' ||
 			currentCircleRole === 'admin' ||
@@ -235,7 +235,6 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 			>
 				<TouchableOpacity
 					onPress={async () => {
-						console.log('press');
 						if (!open) toggleOpen();
 						if (open && currentCircleRole === 'owner')
 							await changeOwnership(props.uid);
