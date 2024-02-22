@@ -19,9 +19,10 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	const animationValue = useRef(new Animated.Value(0)).current;
 	const [open, setOpen] = useState(false);
 	const [permission, setPermission] = useState(props.role);
-	const [currentCircleRole, filter] = useStore((state) => [
+	const [currentCircleRole, filter, haptics] = useStore((state) => [
 		state.currentCircleRole,
-		state.filter
+		state.filter,
+		state.haptics
 	]);
 
 	/* TODO: Implement DB update on permission change */

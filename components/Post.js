@@ -30,11 +30,10 @@ import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
-import { backdrop, handle, SnapPoints } from './BottomSheetModalHelpers';
+import { backdrop, handle } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
-import { Notifier } from 'react-native-notifier';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StyledImage = styled(Image);
@@ -48,9 +47,6 @@ const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
-const titleCharThreshold = 20;
-const contentCharThreshold = 300;
-
 export const Post = (post) => {
 	// variables
 	const [title, setTitle] = useState(decrypt(post.id, post.title));
@@ -95,10 +91,6 @@ export const Post = (post) => {
 	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isToggleVisible, setIsToggleVisible] = useState(
-		title.length > titleCharThreshold ||
-			content.length > contentCharThreshold
-	);
 	const [snapPoints, setSnapPoints] = useState([]);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
@@ -124,9 +116,9 @@ export const Post = (post) => {
 	const tS = timeSince(post.timestamp);
 	let insets = useSafeAreaInsets();
 
-	const isTextTruncated = (text) => {
-		return text && text.length > 300;
-	};
+	// These need to be dynamic based on screen width available and a static max-height for content before truncation
+	const titleCharThreshold = Dimensions.get('window').width / 17;
+	const contentCharThreshold = 300;
 
 	// bottom sheet modal
 	const handlePresentModalPress = useCallback(() => {
@@ -166,10 +158,6 @@ export const Post = (post) => {
 		transform: [{ rotate: spinInter }]
 	};
 
-	const handleExpanded = () => {
-		setIsExpanded((prevState) => !prevState);
-	};
-
 	const commentsView = () => {
 		return (
 			<StyledView className='flex-1 bg-grey'>
@@ -204,7 +192,6 @@ export const Post = (post) => {
 					contentContainerStyle={{
 						display: 'flex',
 						flexDirection: 'column',
-						justifyContent: 'center',
 						alignItems: 'center',
 						width: '100%'
 					}}
@@ -821,13 +808,6 @@ export const Post = (post) => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
-	useEffect(() => {
-		setIsToggleVisible(
-			title.length > titleCharThreshold ||
-				content.length > contentCharThreshold
-		);
-	}, [title, content]);
-
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
 			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
@@ -869,17 +849,11 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`${
-										post.owned ? 'ml-[10px]' : 'ml-2'
+									className={`flex-1 ${
+										post.owned ? 'ml-[4px]' : 'ml-2'
 									}`}
 								>
-									<View
-										className={`${
-											post.owned
-												? 'ml-[10px]'
-												: 'ml-[2px]'
-										} max-w-[95%]`}
-									>
+									<View className={`mr-[10px]`}>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
 											title.length <= titleCharThreshold
@@ -927,10 +901,8 @@ export const Post = (post) => {
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText
 									className={`${
-										post.owned
-											? 'ml-[10px] text-white mt-[2px] pb-[10px]'
-											: 'text-white mt-[2px] pb-[10px]'
-									}`}
+										post.owned ? 'ml-[4px]' : ''
+									} text-white mt-[2px] pb-[10px]`}
 								>
 									{isExpanded ||
 									content.length <= contentCharThreshold
@@ -964,9 +936,12 @@ export const Post = (post) => {
 									}}
 								/>
 							</StyledPressable>
-							{isToggleVisible && (
+							{(title.length > titleCharThreshold ||
+								content.length > contentCharThreshold) && (
 								<StyledOpacity
-									onPress={handleExpanded}
+									onPress={() => {
+										setIsExpanded(!isExpanded);
+									}}
 									className='self-center pt-2'
 								>
 									<Ionicons

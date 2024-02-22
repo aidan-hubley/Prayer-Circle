@@ -161,6 +161,10 @@ export default function Page() {
 	}
 
 	async function setUp(hard) {
+		let description = await readData(
+			`prayer_circle/circles/${filter}/description`
+		);
+		setDescription(description);
 		if (hard) setMemberData([]);
 		let data = await makeCircleUserList(filter);
 		sortUsers(data);
@@ -169,10 +173,6 @@ export default function Page() {
 	useEffect(() => {
 		(async () => {
 			setUp();
-			let description = await readData(
-				`prayer_circle/circles/${filter}/description`
-			);
-			setDescription(description);
 		})();
 	}, [filter]);
 
