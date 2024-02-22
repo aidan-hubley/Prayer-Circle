@@ -46,8 +46,8 @@ export const notify = (
 		hideOnPress: false,
 		duration: duration || 6000,
 		containerStyle: (translateY) => ({
-			// add safe area inset to the container			
-			marginTop: Platform.OS === 'android' ? 31 : -15
+			// add safe area inset to the container
+			marginTop: Platform.OS === 'android' ? 31 : -10
 			// ...
 		}),
 		onPress: () => {

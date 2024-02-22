@@ -216,6 +216,20 @@ export default function Page() {
 					selectedAsset.uri
 				);
 				await updateProfile(auth.currentUser, { photoURL: imgURL });
+				// change name in all posts
+				let userPosts = await readData(
+					`prayer_circle/users/${userData.uid}/private/posts`
+				);
+				if (userPosts) {
+					userPosts = Object.keys(userPosts);
+					userPosts.forEach((post) => {
+						writeData(
+							`prayer_circle/posts/${post}/profile_img`,
+							`${imgURL}`,
+							true
+						);
+					});
+				}
 				notify(
 					'Success',
 					'Profile picture has been updated.',
@@ -674,7 +688,7 @@ export default function Page() {
 										img={item[1].profile_img}
 										title={item[1].title}
 										timestamp={item[1].timestamp}
-										content={item[1].text}
+										content={item[1].body}
 										icon={item[1].type}
 										id={item[0]}
 										edited={item[1].edited}

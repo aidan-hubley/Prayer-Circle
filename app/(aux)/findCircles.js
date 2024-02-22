@@ -58,7 +58,6 @@ async function searchForCircle(code) {
 					'#00A55E'
 				);
 			}
-			setFilterReload(true);
 		} else {
 			notify('Invalid code', 'You are already in this circle.');
 		}
@@ -84,9 +83,11 @@ export default function Page() {
 
 	const handleBarCodeScanned = ({ type, data }) => {
 		setScanned(true);
-		if (type == 'org.iso.QRCode') {
+		if (type === 'org.iso.QRCode' || type === 256) {
 			searchForCircle(data);
+			setFilterReload(true);
 		} else {
+			console.error(type, data);
 			notify('Error', 'Invalid code type!', '#CC2500');
 		}
 	};

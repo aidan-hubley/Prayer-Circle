@@ -98,7 +98,7 @@ export async function createCircle(data) {
 		}
 	}
 
-	data.members[`${uid}`] = true;
+	data.members[`${uid}`] = 'owner';
 	data.admin[`${uid}`] = true;
 	data.owner = uid;
 	let circlePermissions = {
@@ -121,7 +121,7 @@ export async function addUserToCircle(circle, otherUserUID) {
 	if (arguments.length >= 2) {
 		uid = otherUserUID;
 	}
-	writeData(`prayer_circle/circles/${circle}/members/${uid}`, true, true);
+	writeData(`prayer_circle/circles/${circle}/members/${uid}`, 'member', true);
 	let circlePermissions = {
 		admin: false,
 		read: true,
@@ -133,6 +133,7 @@ export async function addUserToCircle(circle, otherUserUID) {
 		circlePermissions,
 		true
 	);
+	deleteData(`prayer_circle/circles/${circle}/awaitingEntry/${uid}`);
 }
 
 export async function addUserToQueue(circle) {
