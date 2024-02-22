@@ -157,7 +157,6 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 	};
 
 	const getIconFromRole = (role) => {
-		console.log(role);
 		if (
 			currentCircleRole === 'owner' ||
 			currentCircleRole === 'admin' ||
@@ -236,7 +235,6 @@ const MemberPermissionSelector = forwardRef((props, ref) => {
 			>
 				<TouchableOpacity
 					onPress={async () => {
-						console.log('press');
 						if (!open) toggleOpen();
 						if (open && currentCircleRole === 'owner')
 							await changeOwnership(props.uid);

@@ -3,7 +3,6 @@ import {
 	Text,
 	View,
 	Platform,
-	Animated,
 	FlatList,
 	ActivityIndicator
 } from 'react-native';
@@ -37,7 +36,6 @@ export default function Page() {
 	const [memberData, setMemberData] = useState([]);
 	const [userQueueData, setUserQueueData] = useState([]);
 	const [description, setDescription] = useState('');
-	const [queueLength, setQueueLength] = useState(0);
 	const [
 		filter,
 		currentFilterName,
@@ -74,47 +72,16 @@ export default function Page() {
 	}, []);
 	const [modalContent, setModalContent] = useState(null);
 
-	const [isEnabled, setIsEnabled] = useState(false);
-	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-	const togglePosition = React.useRef(new Animated.Value(1)).current;
-
-	React.useEffect(() => {
-		Animated.timing(togglePosition, {
-			toValue: isEnabled ? 45 : 5,
-			duration: 200,
-			useNativeDriver: false
-		}).start();
-	}, [isEnabled]);
-
 	const handleQueuePress = () => {
 		setModalContent('queue');
 		handlePresentModalPress();
 	};
 
-	const renderContent = () => {
-		switch (modalContent) {
-			case 'queue':
-				return (
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<BottomSheetFlatList
-							data={userQueueData}
-							renderItem={({ item }) => {
-								return (
-									<MemberQueue
-										name={item.name}
-										img={item.img}
-										last={item.key == userQueueData.length}
-										uid={item.uid}
-										circle={filter}
-									/>
-								);
-							}}
-						/>
-					</StyledView>
-				);
-			default:
-				return null;
-		}
+	const updateUserQueueData = async (uid) => {
+		setUserQueueData(
+			userQueueData.filter((obj) => Object.keys(obj)[0] !== uid)
+		);
+		setUp();
 	};
 
 	async function makeCircleUserList(circle) {
@@ -164,10 +131,11 @@ export default function Page() {
 			let img = data.profile_img;
 
 			circleMembersData.push({
-				name: name,
-				role: role,
-				img: img,
-				uid: targetUserList[i][0]
+				[targetUserList[i][0]]: {
+					name: name,
+					role: role,
+					img: img
+				}
 			});
 		}
 		return circleMembersData;
@@ -201,14 +169,13 @@ export default function Page() {
 		sortUsers(data);
 		data = await makeCircleUserQueueList(filter);
 		setUserQueueData(data);
-		setQueueLength(data.length);
 	}
 
 	useEffect(() => {
 		(async () => {
 			setUp();
 		})();
-	}, [filter]);
+	}, []);
 
 	return (
 		<BottomSheetModalProvider>
@@ -337,12 +304,15 @@ export default function Page() {
 						icon='arrow-back'
 						href='/'
 					/>
-					<Button // Queue
-						title={`Queue: ${queueLength}`}
-						height={'h-[50px]'}
-						width={'w-[200px]'}
-						press={handleQueuePress}
-					/>
+
+					{userQueueData.length > 0 && (
+						<Button // Queue
+							title={`Queue: ${userQueueData.length}`}
+							height={'h-[50px]'}
+							width={'w-[200px]'}
+							press={handleQueuePress}
+						/>
+					)}
 					<Button // to Share Page
 						height={'h-[50px]'}
 						width={'w-[50px]'}
@@ -450,7 +420,27 @@ export default function Page() {
 					keyboardBehavior='extend'
 				>
 					<StyledView className='flex-1 bg-offblack'>
-						{renderContent()}
+						<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+							<BottomSheetFlatList
+								data={userQueueData}
+								keyExtractor={(item) => Object.keys(item)[0]}
+								renderItem={({ item }) => {
+									let key = Object.keys(item)[0];
+									let values = Object.values(item)[0];
+									return (
+										<MemberQueue
+											name={values.name}
+											img={values.img}
+											uid={key}
+											circle={filter}
+											updateUserQueueData={(uid) => {
+												updateUserQueueData(uid);
+											}}
+										/>
+									);
+								}}
+							/>
+						</StyledView>
 					</StyledView>
 				</BottomSheetModal>
 			</StyledView>

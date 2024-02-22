@@ -1,14 +1,16 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { addUserToCircle, deleteData } from '../backend/firebaseFunctions';
+import CachedImage from 'expo-cached-image';
+import shorthash from 'shorthash';
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
 const StyledImage = styled(Image);
 
-function MemberQueue({ img, name, last, uid, circle }) {
+function MemberQueue({ img, name, last, uid, circle, updateUserQueueData }) {
 	return (
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
@@ -16,10 +18,11 @@ function MemberQueue({ img, name, last, uid, circle }) {
 			${last ? 'rounded-b-[20px] h-[60px]' : ''}`}
 		>
 			<StyledView className='flex flex-row'>
-				<StyledImage
-					className='rounded-xl'
+				<CachedImage
+					className='rounded-[6px]'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
+					cacheKey={shorthash.unique(img)}
 				/>
 				<StyledView className='pl-2 bottom-[3px]'>
 					<StyledText
@@ -36,6 +39,7 @@ function MemberQueue({ img, name, last, uid, circle }) {
 				<TouchableOpacity
 					onPress={() => {
 						addUserToCircle(circle, uid);
+						updateUserQueueData(uid);
 					}}
 				>
 					<Ionicons

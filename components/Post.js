@@ -25,7 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
-import { useStore } from '../app/global';
+import { useStore, notify } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from 'expo-cached-image';
@@ -91,7 +91,7 @@ export const Post = (post) => {
 	const [circles, setCircles] = useState([]);
 	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [snapPoints, setSnapPoints] = useState([]);
+	const [snapPoints, setSnapPoints] = useState(['85%']);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const typeRef = useRef(null);
@@ -544,19 +544,24 @@ export const Post = (post) => {
 	}
 
 	async function hidePost() {
-		writeData(
+		await toggleToolbar();
+		await writeData(
 			`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
 			true,
 			true
 		);
-		writeData(
+		await writeData(
 			`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
 			true,
 			true
 		);
-		toggleToolbar();
+		await setGlobalReload(true);
 
-		setGlobalReload(true);
+		notify(
+			'Post Hidden',
+			'This action can be reverted from the settings page.',
+			'#F9A826'
+		);
 	}
 
 	const toggleBookmark = async (postId, postData) => {
@@ -1047,7 +1052,7 @@ export const Post = (post) => {
 								onPress={async () => {
 									populateComments();
 									setBottomSheetType('Comments');
-									setSnapPoints(['65%']);
+									setSnapPoints(['85%']);
 									handlePresentModalPress();
 								}}
 							/>
@@ -1059,7 +1064,7 @@ export const Post = (post) => {
 										Haptics.impactAsync(
 											Haptics.ImpactFeedbackStyle.Light
 										);
-									setBottomSheetType('All Circles');
+									setBottomSheetType("Post's Circles");
 									handlePresentModalPress();
 								}}
 							/>
@@ -1078,7 +1083,7 @@ export const Post = (post) => {
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}
-				{bottomSheetType === 'All Circles' && circlesView()}
+				{bottomSheetType === "Post's Circles" && circlesView()}
 				{bottomSheetType === 'Interactions' && interactionsView()}
 				{bottomSheetType === 'Report' && reportView()}
 			</BottomSheetModal>
