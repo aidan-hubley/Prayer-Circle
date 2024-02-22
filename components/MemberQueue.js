@@ -2,12 +2,13 @@ import React, { useRef } from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { addUserToCircle, deleteData } from '../backend/firebaseFunctions';
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
 const StyledImage = styled(Image);
 
-function MemberQueue({ img, name, username, last }) {
+function MemberQueue({ img, name, last, uid, circle }) {
 	return (
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
@@ -27,19 +28,29 @@ function MemberQueue({ img, name, username, last }) {
 						{name}
 					</StyledText>
 					<StyledText className={`text-offwhite text-[14px]`}>
-						{username}
+						{last}
 					</StyledText>
 				</StyledView>
 			</StyledView>
 			<StyledView className='flex-row absoulte right space-x-3'>
-				<TouchableOpacity onPress={() => {}}>
+				<TouchableOpacity
+					onPress={() => {
+						addUserToCircle(circle, uid);
+					}}
+				>
 					<Ionicons
 						name={'checkmark-circle'}
 						size={40}
 						color={'#00A55E'}
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => {}}>
+				<TouchableOpacity
+					onPress={() => {
+						deleteData(
+							`prayer_circle/circles/${circle}/awaitingEntry/${uid}`
+						);
+					}}
+				>
 					<Ionicons
 						name={'close-circle'}
 						size={40}

@@ -35,7 +35,9 @@ const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
 	const [memberData, setMemberData] = useState([]);
+	const [userQueueData, setUserQueueData] = useState([]);
 	const [description, setDescription] = useState('');
+	const [queueLength, setQueueLength] = useState(0);
 	const [
 		filter,
 		currentFilterName,
@@ -95,13 +97,15 @@ export default function Page() {
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<BottomSheetFlatList
-							data={memberData}
+							data={userQueueData}
 							renderItem={({ item }) => {
 								return (
 									<MemberQueue
 										name={item.name}
 										img={item.img}
-										last={item.key == memberData.length}
+										last={item.key == userQueueData.length}
+										uid={item.uid}
+										circle={filter}
 									/>
 								);
 							}}
@@ -142,6 +146,33 @@ export default function Page() {
 		return circleMembersData;
 	}
 
+	async function makeCircleUserQueueList(circle) {
+		let circleMembersData = [];
+		let targetUserList = Object.entries(
+			(await readData(
+				`prayer_circle/circles/${circle}/awaitingEntry/`
+			)) || {}
+		);
+		for (i = 0; i < targetUserList.length; i++) {
+			let data =
+				(await readData(
+					`prayer_circle/users/${targetUserList[i][0]}/public`
+				)) || {};
+			let name = data.fname + ' ' + data.lname;
+
+			let role = targetUserList[i][1];
+			let img = data.profile_img;
+
+			circleMembersData.push({
+				name: name,
+				role: role,
+				img: img,
+				uid: targetUserList[i][0]
+			});
+		}
+		return circleMembersData;
+	}
+
 	function sortUsers(array) {
 		let data = array;
 		const statusesOrder = [
@@ -164,6 +195,9 @@ export default function Page() {
 		if (hard) setMemberData([]);
 		let data = await makeCircleUserList(filter);
 		sortUsers(data);
+		data = await makeCircleUserQueueList(filter);
+		setUserQueueData(data);
+		setQueueLength(data.length);
 	}
 
 	useEffect(() => {
@@ -304,7 +338,7 @@ export default function Page() {
 						href='/'
 					/>
 					<Button // Queue
-						title='Queue: 4'
+						title={`Queue: ${queueLength}`}
 						height={'h-[50px]'}
 						width={'w-[200px]'}
 						press={handleQueuePress}
