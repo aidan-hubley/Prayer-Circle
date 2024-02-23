@@ -31,6 +31,10 @@
 					},
 					"posts": {
 						"_pushId_": true
+					},
+					"post_preferances": {
+						"comments": true,
+						"interactions": "private"
 					}
 				}
 			}
@@ -61,6 +65,10 @@
 				},
 				"hidden": {
 					"_uid_": true
+				},
+				"settings": {
+					"viewable_comments": true,
+					"viewable_interactions": ""
 				}
 			}
 		},

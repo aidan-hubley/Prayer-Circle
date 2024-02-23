@@ -59,6 +59,10 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
+	const [viewInteractions, setViewInteractions] = useState(
+		post.viewInteractions
+	);
+	const [viewComments, setViewComments] = useState(post.viewComments);
 	const [
 		haptics,
 		setGlobalReload,
@@ -156,6 +160,63 @@ export const Post = (post) => {
 
 	const spiralStyle = {
 		transform: [{ rotate: spinInter }]
+	};
+
+	const selectedComment = useRef(new Animated.Value(0)).current;
+
+	const selectedInteraction = useRef(new Animated.Value(0)).current;
+
+	const selectedEventInteraction = useRef(new Animated.Value(0)).current;
+
+	const selectedDualComment = selectedComment.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['18%', '68%']
+	});
+
+	const selectedDualInter = selectedInteraction.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['18%', '68%']
+	});
+
+	const selectedTripleInter = selectedEventInteraction.interpolate({
+		inputRange: [0, 1, 2],
+		outputRange: ['10%', '43%', '76%']
+	});
+
+	const handlePressComment = (index) => {
+		Animated.spring(selectedComment, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+	};
+
+	const handlePressInteraction = (index) => {
+		Animated.spring(selectedInteraction, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+	};
+
+	const handlePressEventInteraction = (index) => {
+		Animated.spring(selectedEventInteraction, {
+			toValue: index,
+			duration: 200,
+			useNativeDriver: false
+		}).start();
+	};
+
+	const highlightDualComment = {
+		left: selectedDualComment
+	};
+
+	const highlightDualInteraction = {
+		left: selectedDualInter
+	};
+
+	const highlightTripleInteraction = {
+		left: selectedTripleInter
 	};
 
 	const commentsView = () => {
@@ -462,6 +523,169 @@ export const Post = (post) => {
 		);
 	};
 
+	const settingsView = () => {
+		return (
+			<StyledView className='flex-1 bg-grey'>
+				<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
+					<StyledText className='text-offwhite text-[18px]'>
+						Public Comments
+					</StyledText>
+					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+						<StyledAnimatedView
+							style={highlightDualComment}
+							className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
+						></StyledAnimatedView>
+						<StyledOpacity
+							className='flex items-center justify-center w-[70px] h-[50px]'
+							onPress={() => handlePressComment(0)}
+						>
+							<StyledText className='text-offwhite text-[16px]'>
+								Display
+							</StyledText>
+						</StyledOpacity>
+						<StyledOpacity
+							className='flex items-center justify-center w-[70px] h-[50px]'
+							onPress={() => handlePressComment(1)}
+						>
+							<StyledText className='text-offwhite text-[16px]'>
+								Hide
+							</StyledText>
+						</StyledOpacity>
+					</StyledView>
+				</StyledView>
+				<StyledView className='flex flex-col w-screen items-center px-[20px]'>
+					<StyledText className='text-offwhite text-[18px]'>
+						Interaction Count
+					</StyledText>
+					{post.icon === 'event' ? (
+						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+							<StyledAnimatedView
+								style={highlightTripleInteraction}
+								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
+							></StyledAnimatedView>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressEventInteraction(0)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Public
+								</StyledText>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressEventInteraction(1)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Private
+								</StyledText>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressEventInteraction(2)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Hidden
+								</StyledText>
+							</StyledOpacity>
+						</StyledView>
+					) : (
+						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+							<StyledAnimatedView
+								style={highlightDualInteraction}
+								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
+							></StyledAnimatedView>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressInteraction(0)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Display
+								</StyledText>
+							</StyledOpacity>
+							<StyledOpacity
+								className='flex items-center justify-center w-[70px] h-[50px]'
+								onPress={() => handlePressInteraction(1)}
+							>
+								<StyledText className='text-offwhite text-[16px]'>
+									Hide
+								</StyledText>
+							</StyledOpacity>
+						</StyledView>
+					)}
+				</StyledView>
+				<StyledView
+					className='absolute flex flex-row w-screen px-[15px] justify-center bg-grey pb-5'
+					style={{ bottom: insets.bottom }}
+				>
+					<Button
+						title='Save'
+						width={'w-[48%]'}
+						press={() => {
+							if (selectedComment._value < 0.5) {
+								writeData(
+									`prayer_circle/posts/${post.id}/settings/viewable_comments`,
+									true,
+									true
+								);
+								setViewComments(true);
+							} else {
+								writeData(
+									`prayer_circle/posts/${post.id}/settings/viewable_comments`,
+									false,
+									true
+								);
+								setViewComments(false);
+							}
+							if (post.icon === 'event') {
+								if (selectedEventInteraction._value < 0.33) {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'public',
+										true
+									);
+									setViewInteractions('public');
+								} else if (
+									selectedEventInteraction._value < 0.66
+								) {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'private',
+										true
+									);
+									setViewInteractions('private');
+								} else {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'hidden',
+										true
+									);
+									setViewInteractions('hidden');
+								}
+							} else {
+								if (selectedInteraction._value < 0.5) {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'private',
+										true
+									);
+									setViewInteractions('private');
+								} else {
+									writeData(
+										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
+										'hidden',
+										true
+									);
+									setViewInteractions('hidden');
+								}
+							}
+							bottomSheetModalRef.current?.dismiss();
+						}}
+					/>
+				</StyledView>
+			</StyledView>
+		);
+	};
+
 	const ToolbarButton = (props) => {
 		return (
 			<StyledOpacity
@@ -545,23 +769,24 @@ export const Post = (post) => {
 
 	async function hidePost() {
 		await toggleToolbar();
-		await writeData(
-			`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
-			true,
-			true
-		);
-		await writeData(
-			`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
-			true,
-			true
-		);
-		await setGlobalReload(true);
-
-		notify(
-			'Post Hidden',
-			'This action can be reverted from the settings page.',
-			'#F9A826'
-		);
+		setTimeout(async () => {
+			await writeData(
+				`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
+				true,
+				true
+			);
+			await writeData(
+				`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
+				true,
+				true
+			);
+			await setGlobalReload(true);
+			notify(
+				'Post Hidden',
+				'This action can be reverted from the settings page.',
+				'#F9A826'
+			);
+		}, 200);
 	}
 
 	const toggleBookmark = async (postId, postData) => {
@@ -669,6 +894,13 @@ export const Post = (post) => {
 
 		// set up comments
 		await populateComments(post.comments);
+		let viewableComments = await readData(
+			`prayer_circle/posts/${postId}/settings/viewable_comments`
+		);
+		if (viewableComments == undefined) {
+			viewableComments = true;
+		}
+		setViewComments(viewableComments);
 
 		// set up reports
 		await populateReports(postId);
@@ -676,6 +908,14 @@ export const Post = (post) => {
 		// set up interactions
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
+		let viewableInteractions = await readData(
+			`prayer_circle/posts/${postId}/settings/viewable_interactions`
+		);
+		if (viewableInteractions == undefined) {
+			if (post.icon === 'event') viewableInteractions = 'public';
+			else viewableInteractions = 'private';
+		}
+		setViewInteractions(viewableInteractions);
 
 		if (!post.owned && !post.ownedToolBar) {
 			if (interactions[userData.uid]) {
@@ -834,6 +1074,14 @@ export const Post = (post) => {
 						}
 					}}
 					onLongPress={() => {
+						if (
+							post.icon === 'event' &&
+							viewInteractions === 'public'
+						) {
+							setBottomSheetType('Interactions');
+							setSnapPoints(['85%']);
+							handlePresentModalPress();
+						}
 						toggleToolbar();
 					}}
 				>
@@ -995,7 +1243,11 @@ export const Post = (post) => {
 										icon={'cog-outline'}
 										size={29}
 										color='#F9A826'
-										onPress={() => {}}
+										onPress={() => {
+											setBottomSheetType('Settings');
+											setSnapPoints(['55%']);
+											handlePresentModalPress();
+										}}
 									/>
 									<ToolbarButton
 										icon={'create-outline'}
@@ -1048,12 +1300,21 @@ export const Post = (post) => {
 							<ToolbarButton
 								icon={'chatbubble-outline'}
 								size={29}
-								color='#5946B2'
+								color={viewComments ? '#5946B2' : '#3D3D3D'}
 								onPress={async () => {
-									populateComments();
-									setBottomSheetType('Comments');
-									setSnapPoints(['85%']);
-									handlePresentModalPress();
+									if (!post.owned && !post.ownedToolBar) {
+										if (viewComments) {
+											populateComments();
+											setBottomSheetType('Comments');
+											setSnapPoints(['85%']);
+											handlePresentModalPress();
+										}
+									} else {
+										populateComments();
+										setBottomSheetType('Comments');
+										setSnapPoints(['85%']);
+										handlePresentModalPress();
+									}
 								}}
 							/>
 							<StyledOpacity
@@ -1086,6 +1347,7 @@ export const Post = (post) => {
 				{bottomSheetType === "Post's Circles" && circlesView()}
 				{bottomSheetType === 'Interactions' && interactionsView()}
 				{bottomSheetType === 'Report' && reportView()}
+				{bottomSheetType === 'Settings' && settingsView()}
 			</BottomSheetModal>
 		</StyledPressable>
 	);

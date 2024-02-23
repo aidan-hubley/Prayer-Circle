@@ -11,7 +11,11 @@ import { styled } from 'nativewind';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
-import { writeData, generateId } from '../../backend/firebaseFunctions';
+import {
+	writeData,
+	generateId,
+	readData
+} from '../../backend/firebaseFunctions';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore, notify } from '../global';
@@ -238,6 +242,16 @@ export default function Page() {
 								start:
 									typeSelected === 'event' ? startDate : null,
 								end: typeSelected === 'event' ? endDate : null
+							},
+							settings: {
+								viewable_comments:
+									(await readData(
+										`prayer_circle/circles/${userData.uid}/private/post_preferances/comments`
+									)) || false,
+								viewable_interactions:
+									(await readData(
+										`prayer_circle/circles/${userData.uid}/private/post_preferances/interactions`
+									)) || 'private'
 							}
 						};
 						await writeData(
