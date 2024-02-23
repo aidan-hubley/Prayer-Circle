@@ -35,25 +35,16 @@ export default function Page() {
 	const [userData, setUserData] = useState(auth.currentUser);
 
 	async function leaveCircle(circle, user) { // Database call to remove user from circle
-		console.log("leave");
-		console.log(circle);
-		console.log(user);
-		x = Object.entries(
-			(await readData(`prayer_circle/circles/${circle}/members/${user}`)) || {} //this call needs to be rewritten for the array structure
-		);
-		console.log(x); //NRA why is this empty?
+		// x = await readData(`prayer_circle/circles/${circle}/members/${user}`); path test read
 		// deleteData(`prayer_circle/circles/${circle}/members/${user}`);
 	}
 	async function deleteCircle(circle) { // Database call to remove circle from database
-		console.log("delete");
-		console.log(circle);
 		
 		membersList = Object.entries(
 			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
 		); // Get list of members in circle; consider combining this with the identical call in another function below
 		for (i = 0; i < membersList.length; i++) {
-			console.log(membersList[i]);
-		// 	deleteData(`prayer_circle/users/${membersList[i]}/private/${circle}`); //Removes circle from users' circles list; don't fire
+		// 	deleteData(`prayer_circle/users/${membersList[i]}/private/${circle}`); //Removes circle from users' circles list
 		};
 	
 		postList = Object.entries(
@@ -61,16 +52,15 @@ export default function Page() {
 		); // Get list of members in circle; consider combining this with the identical call in another function below
 		for (j = 0; j < postList.length; j++) { // Cycles through every post
 			localPost = postList[j]; // currently observed post in the loop
-			console.log(localPost);
-			// deleteData(`prayer_circle/posts/${localPost}/circles/${circle}`); //Removes circle from posts' circles list; don't fire
+			// deleteData(`prayer_circle/posts/${localPost}/circles/${circle}`); //Removes circle from posts' circles list
 		
-			// if (prayer_circle/posts/localPost/circles == null) {
+			if (prayer_circle/posts/localPost/circles == null) {
 			// 	deleteData(`prayer_circle/posts/${localPost}`);
-			// }
+			};
 		}
-		// deleteData(`prayer_circle/circles/${circle}`); // Removes circle from list of circles. Should this be fired last?
+		// deleteData(`prayer_circle/circles/${circle}`); // Removes circle from list of circles
 	}
-	
+
 	const [memberData, setMemberData] = useState([]);
 	const [
 		filter,
@@ -90,7 +80,7 @@ export default function Page() {
 	let insets = useSafeAreaInsets();
 	const [handleText, setHandleText] = useState('');
 
-	// bottom sheet modal //NRA use
+	// bottom sheet modal
 	const bottomSheetModalRef = useRef(null);
 	const handlePresentModalPress = useCallback(() => {
 		bottomSheetModalRef.current?.present();
@@ -113,21 +103,21 @@ export default function Page() {
 		setHandleText('User Queue');
 		setModalContent('queue');
 		handlePresentModalPress();
-	}; //NRA imitate
+	};
 	const handleLeavePress = () => {
 		setHandleText('');
 		setModalContent('leave');
 		handlePresentModalPress();
-	}; //NRA made
+	};
 	const handleDeletePress = () => {
 		setHandleText('');
 		setModalContent('delete');
 		handlePresentModalPress();
-	}; //NRA made
+	};
 
 	const renderContent = () => {
 		switch (modalContent) {
-			case 'queue': //NRA imitate
+			case 'queue':
 				return (
 					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 						<BottomSheetFlatList
@@ -144,7 +134,7 @@ export default function Page() {
 						/>
 					</StyledView>
 				);
-			case 'leave': //NRA made
+			case 'leave':
 				return (
 					// <StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
 						<StyledView className='flex-1 items-center h-[60%]'>
@@ -174,7 +164,7 @@ export default function Page() {
 						</StyledView>
 					// </StyledView>
 				);
-			case 'delete': //NRA made
+			case 'delete':
 				return (
 					<StyledView className='flex-1 items-center h-[60%]'>
 						<Button
@@ -324,7 +314,7 @@ export default function Page() {
 						iconSize={30}
 						icon='log-out-outline'
 						iconColor='#F9A826'
-						press={handleLeavePress} //NRA replaced
+						press={handleLeavePress}
 					/>
 					<StyledText className='text-4xl font-bold text-offwhite'>
 						Settings
@@ -338,7 +328,7 @@ export default function Page() {
 						iconSize={30}
 						icon='trash-outline'
 						iconColor='#CC2500'
-						press={handleDeletePress} //NRA replaced
+						press={handleDeletePress}
 					/>
 				</StyledView>
 
