@@ -5,7 +5,8 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Pressable,
-	Animated
+	Animated,
+	Platform
 } from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
@@ -22,10 +23,9 @@ import { useStore, notify } from '../global';
 import { Filter } from '../../components/Filter';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../backend/config';
-import DateTimePicker from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
-import { formatDateAndTime, isTimeBefore } from '../../backend/functions';
-import { encrypt, decrypt } from 'react-native-simple-encryption';
+import { encrypt } from 'react-native-simple-encryption';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { formatTimestamp } from '../../backend/functions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -36,10 +36,6 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
-	const [getDate, setGetDate] = useState(dayjs);
-	const [getWhichDate, setGetWhichDate] = useState(null);
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
@@ -51,22 +47,8 @@ export default function Page() {
 			state.setAddCircles
 		]
 	);
-	const [dateTimePickerShown, setDateTimePickerShown] = useState(false);
-	const dtpOpacity = useRef(new Animated.Value(0)).current;
-
-	const dtpInter = dtpOpacity.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0, 1]
-	});
-
-	const toggleDateTimePicker = () => {
-		Animated.spring(dtpOpacity, {
-			toValue: dateTimePickerShown ? 0 : 1,
-			duration: 200,
-			useNativeDriver: true
-		}).start();
-		setDateTimePickerShown(!dateTimePickerShown);
-	};
+	const [startDate, setStartDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(new Date());
 
 	const handleSelect = (index) => {
 		if (index == 2) {
@@ -123,48 +105,54 @@ export default function Page() {
 							}}
 						/>
 						{showDatePicker && (
-							<View className='w-full flex flex-row justify-between'>
-								<Pressable
-									className='bg-offblack w-[48%] border border-outline rounded-lg px-3 py-[10px] my-2'
-									onPress={() => {
-										setGetWhichDate('start');
-										toggleDateTimePicker();
-									}}
-								>
-									<Text
-										className='text-[18px]'
-										style={{
-											color: startDate
-												? '#fefefe'
-												: '#fefefe80'
-										}}
-									>
-										{startDate
-											? formatDateAndTime(startDate)
-											: 'Start'}
+							<>
+								<View className='flex flex-row items-center justify-start w-full mb-2'>
+									<Text className='text-offwhite text-[18px] pl-2'>
+										Start:{' '}
 									</Text>
-								</Pressable>
-								<Pressable
-									className='bg-offblack w-[48%] border border-outline rounded-lg px-3 py-[10px] my-2'
-									onPress={() => {
-										setGetWhichDate('end');
-										toggleDateTimePicker();
-									}}
-								>
-									<Text
-										className='text-[18px]'
-										style={{
-											color: endDate
-												? '#fefefe'
-												: '#fefefe80'
+									<DateTimePicker
+										value={startDate}
+										mode={'date'}
+										display='default'
+										onChange={(event, selectedDate) => {
+											setStartDate(selectedDate);
 										}}
-									>
-										{endDate
-											? formatDateAndTime(endDate)
-											: 'End'}
+									/>
+									<DateTimePicker
+										value={startDate}
+										mode={'time'}
+										is24Hour={false}
+										display='default'
+										onChange={(event, selectedDate) => {
+											setStartDate(selectedDate);
+										}}
+									/>
+								</View>
+								<View className='flex flex-row items-center justify-start w-full'>
+									<Text className='text-offwhite text-[18px] pl-2'>
+										End:{' '}
 									</Text>
-								</Pressable>
-							</View>
+									<DateTimePicker
+										value={endDate}
+										mode={'date'}
+										display='default'
+										minimumDate={startDate}
+										onChange={(event, selectedDate) => {
+											setEndDate(selectedDate);
+										}}
+									/>
+									<DateTimePicker
+										value={endDate}
+										mode={'time'}
+										is24Hour={false}
+										minimumDate={startDate}
+										display='default'
+										onChange={(event, selectedDate) => {
+											setEndDate(selectedDate);
+										}}
+									/>
+								</View>
+							</>
 						)}
 						<StyledInput
 							className='bg-offblack text-[18px] w-full min-h-[100px] max-h-[150px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
@@ -240,8 +228,17 @@ export default function Page() {
 							metadata: {
 								flag_count: 0,
 								start:
-									typeSelected === 'event' ? startDate : null,
-								end: typeSelected === 'event' ? endDate : null
+									typeSelected === 'event'
+										? startDate.getTime()
+										: null,
+								end:
+									typeSelected === 'event'
+										? endDate.getTime()
+										: null,
+								timezone_offset:
+									typeSelected === 'event'
+										? -new Date().getTimezoneOffset()
+										: null
 							},
 							settings: {
 								viewable_comments:
@@ -277,64 +274,6 @@ export default function Page() {
 					}}
 				/>
 			</StyledView>
-			<AnimatedPressable
-				className='absolute w-screen h-screen items-center justify-center bg-[#12121280]'
-				onPress={() => {
-					if (getWhichDate === 'start') {
-						setStartDate(getDate);
-						toggleDateTimePicker();
-					} else {
-						let start = startDate.split(' ');
-						let end = getDate.split(' ');
-						if (
-							start[0] === end[0] &&
-							isTimeBefore(start[1], end[1])
-						) {
-							return notify(
-								'Invalid Date',
-								'Please select a valid end time.',
-								'#CC2500'
-							);
-						} else {
-							setEndDate(getDate);
-							toggleDateTimePicker();
-						}
-					}
-				}}
-				style={{ opacity: dtpInter }}
-				pointerEvents={dateTimePickerShown ? 'auto' : 'none'}
-			>
-				<View className='w-[80%] max-w-[340px] border border-outline bg-offblack py-2 px-2 rounded-2xl'>
-					<DateTimePicker
-						mode='single'
-						date={getDate}
-						onChange={(params) => {
-							setGetDate(params.date);
-						}}
-						selectedItemColor='#5946B2'
-						timePicker
-						minDate={
-							getWhichDate === 'start'
-								? new Date().setDate(new Date().getDate() - 1)
-								: startDate
-						}
-						calendarTextStyle={{ color: '#FEFEFE' }}
-						headerTextStyle={{ color: '#FEFEFE', fontSize: 18 }}
-						weekDaysTextStyle={{ color: '#FEFEFE' }}
-						monthContainerStyle={{ backgroundColor: '#121212' }}
-						yearContainerStyle={{ backgroundColor: '#121212' }}
-						headerButtonColor='#FEFEFE'
-						dayContainerStyle={{
-							borderRadius: 8
-						}}
-						headerButtonsPosition='right'
-						timePickerContainerStyle={{
-							color: '#FEFEFE',
-							backgroundColor: '#121212'
-						}}
-					/>
-				</View>
-			</AnimatedPressable>
 		</StyledSafeArea>
 	);
 }

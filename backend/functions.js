@@ -52,12 +52,26 @@ export function timeSince(timeStamp) {
 	}
 }
 
-export function formatDateAndTime(inputDateTime) {
-	// Parse the input date string
-	const dateTime = new Date(inputDateTime);
+export function formatTimestamp(
+	timestamp,
+	originalTimezoneOffset,
+	currentOffset
+) {
+	// Convert original timezone offset to milliseconds
+	const originalOffsetMilliseconds = originalTimezoneOffset * 60 * 1000;
 
-	// Get abbreviated month
-	const months = [
+	// Convert current timezone offset to milliseconds
+	const currentOffsetMilliseconds = currentOffset * 60 * 1000;
+
+	// Convert timestamp to UTC time
+	let date = new Date(timestamp);
+	date = new Date(date.getTime() - originalOffsetMilliseconds);
+
+	// Convert UTC time to local time
+	date = new Date(date.getTime() + currentOffsetMilliseconds);
+
+	// Define month names
+	const monthNames = [
 		'Jan',
 		'Feb',
 		'Mar',
@@ -71,56 +85,21 @@ export function formatDateAndTime(inputDateTime) {
 		'Nov',
 		'Dec'
 	];
-	const abbreviatedMonth = months[dateTime.getMonth()];
 
-	// Get day of the month
-	const day = dateTime.getDate();
-
-	// Get 12-hour time
-	const hours = dateTime.getHours() % 12 || 12; // Convert 24hr to 12hr format
-	const minutes = dateTime.getMinutes();
-	const meridiem = dateTime.getHours() < 12 ? 'AM' : 'PM';
-
-	// Format time
-	const formattedTime = `${hours}:${
-		minutes < 10 ? '0' : ''
-	}${minutes} ${meridiem}`;
-
-	// Combine abbreviated month, day and formatted time
-	return `${abbreviatedMonth} ${day}, ${formattedTime}`;
-}
-
-export function isTimeBefore(firstTime, secondTime) {
-	// Splitting hours and minutes from time strings
-	const [firstHours, firstMinutes] = firstTime.split(':').map(Number);
-	const [secondHours, secondMinutes] = secondTime.split(':').map(Number);
-
-	// Convert times to minutes since midnight
-	const firstMinutesSinceMidnight = firstHours * 60 + firstMinutes;
-	const secondMinutesSinceMidnight = secondHours * 60 + secondMinutes;
-
-	// Check if second time is before first time
-	return secondMinutesSinceMidnight < firstMinutesSinceMidnight;
-}
-
-export function formatDate(epochTimestamp) {
-	const date = new Date(epochTimestamp * 1000); // Convert epoch timestamp to milliseconds
-	const months = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December'
-	];
-	const month = months[date.getMonth()];
+	// Extract date components
+	const month = monthNames[date.getMonth()];
 	const day = date.getDate();
 	const year = date.getFullYear();
-	return `${month} ${day}, ${year}`;
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+
+	// Convert hours to AM/PM format
+	const ampm = hours >= 12 ? 'PM' : 'AM';
+	const formattedHours = hours % 12 || 12; // Convert 0 to 12
+	const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+	// Assemble formatted timestamp string
+	const formattedTimestamp = `${month} ${day}, ${formattedHours}:${formattedMinutes} ${ampm}`;
+
+	return formattedTimestamp;
 }
