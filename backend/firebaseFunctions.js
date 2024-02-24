@@ -290,15 +290,3 @@ export async function checkIfUserIsInCircle(circle) {
 	}
 	return inCircle;
 }
-
-export async function getUserPermissions(circle) {
-	let uid = await getUID();
-	return (
-		(await readData(
-			`prayer_circle/users/${uid}/private/circles/${circle}/permissions/admin`
-		)) ||
-		(await readData(
-			`prayer_circle/users/${uid}/private/circles/${circle}/permissions/owner`
-		))
-	);
-}

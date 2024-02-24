@@ -17,7 +17,7 @@ import {
 import { Button } from '../../components/Buttons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import QRCode from 'react-qr-code';
-import { readData, getUserPermissions } from '../../backend/firebaseFunctions';
+import { readData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { set } from 'firebase/database';
 
@@ -60,6 +60,7 @@ export default function Page() {
 	};
 
 	const filterTarget = useStore((state) => state.filter);
+	const circlePermission = useStore((state) => state.currentCircleRole);
 
 	useEffect(() => {
 		(async () => {
@@ -73,7 +74,6 @@ export default function Page() {
 					`prayer_circle/circles/${filterTarget}/title`
 				)) || 'Circle Name';
 			setCircleName(name);
-			setCirclePermissions(await getUserPermissions(filterTarget));
 		})();
 	}, []);
 
@@ -107,7 +107,8 @@ export default function Page() {
 								{publicCode}
 							</StyledText>
 						</StyledView>
-						{circlePermissions && (
+						{(circlePermission === 'owner' ||
+							circlePermission === 'admin') && (
 							<StyledView>
 								<StyledView className='flex-row justify-center items-baseline'>
 									<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
