@@ -23,6 +23,7 @@ export default function Layout() {
 	const pagerRef = useRef();
 	const circleNameRef = useRef();
 	const filterRef = useRef();
+	const circleRef = useRef();
 	const [
 		filterName,
 		globalReload,
@@ -32,7 +33,6 @@ export default function Layout() {
 		setFilterReload,
 		setFilterIcon,
 		setFilterColor,
-		setFilterDescription,
 		setFilterIconColor,
 		setUid,
 		setName,
@@ -47,7 +47,6 @@ export default function Layout() {
 		state.setFilterReload,
 		state.setFilterIcon,
 		state.setFilterColor,
-		state.setFilterDescription,
 		state.setFilterIconColor,
 		state.setUid,
 		state.setName,
@@ -114,8 +113,10 @@ export default function Layout() {
 			</StyledView>
 
 			<Filter
+				index={2}
 				data={circles}
 				ref={filterRef}
+				setPressed={circleRef?.current?.setPressed}
 				touchEvents={swipingEnabled}
 				toggleSwiping={setSwipingEnabled}
 			/>
@@ -127,7 +128,11 @@ export default function Layout() {
 				}}
 				className='absolute flex flex-row mx-[100px] justify-center z-0'
 			>
-				<Circle toggleSwiping={setSwipingEnabled} filter={filterRef} />
+				<Circle
+					ref={circleRef}
+					toggleSwiping={setSwipingEnabled}
+					filter={filterRef}
+				/>
 			</StyledView>
 
 			<StyledView
@@ -135,10 +140,14 @@ export default function Layout() {
 				className='absolute mx-[85px]'
 			>
 				<Button
-					title={filterName}
+					title={filterName || 'Prayer Circle'}
 					height='h-[50]'
 					width='w-full'
-					href='/circleSettings'
+					href={
+						filterName === 'Prayer Circle'
+							? '/prayerCircleInfo'
+							: '/circleSettings'
+					}
 					ref={circleNameRef}
 				/>
 			</StyledView>

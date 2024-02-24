@@ -98,7 +98,7 @@ export async function createCircle(data) {
 		}
 	}
 
-	data.members[`${uid}`] = true;
+	data.members[`${uid}`] = 'owner';
 	data.admin[`${uid}`] = true;
 	data.owner = uid;
 	let circlePermissions = {
@@ -121,7 +121,7 @@ export async function addUserToCircle(circle, otherUserUID) {
 	if (arguments.length >= 2) {
 		uid = otherUserUID;
 	}
-	writeData(`prayer_circle/circles/${circle}/members/${uid}`, true, true);
+	writeData(`prayer_circle/circles/${circle}/members/${uid}`, 'member', true);
 	let circlePermissions = {
 		admin: false,
 		read: true,
@@ -133,6 +133,7 @@ export async function addUserToCircle(circle, otherUserUID) {
 		circlePermissions,
 		true
 	);
+	deleteData(`prayer_circle/circles/${circle}/awaitingEntry/${uid}`);
 }
 
 export async function addUserToQueue(circle) {
@@ -158,12 +159,19 @@ export async function getCircles() {
 }
 
 export async function getFilterCircles() {
+	let uid = await getUID();
 	let circles = await getCircles();
-	let circlesData = [{ id: 'addCircles' }, { id: 'Gridview' }];
+	let circlesData = [
+		{ id: 'addCircles' },
+		{ id: 'Gridview' },
+		{ id: 'allCircles' }
+	];
 
 	for (const circle of circles) {
 		let circleData =
 			(await readData(`prayer_circle/circles/${circle}`)) || {};
+
+		let role = circleData.members[uid];
 		let circleStruct = {
 			id: circle,
 			iconColor: circleData.iconColor,
@@ -171,7 +179,7 @@ export async function getFilterCircles() {
 			color: circleData.color,
 			icon: circleData.icon,
 			description: circleData.description,
-			iconColor: circleData.iconColor,
+			role
 		};
 		circlesData.push(circleStruct);
 	}
@@ -214,6 +222,19 @@ export async function getPosts(circleId) {
 	return filteredPosts;
 }
 
+export async function getProfilePosts() {
+	let uid = await getUID();
+	let posts = Object.entries(
+		(await readData(`prayer_circle/users/${uid}/private/posts`)) || {}
+	);
+
+	posts.sort((a, b) => {
+		return b[1] - a[1];
+	});
+
+	return posts;
+}
+
 export async function getHiddenPosts() {
 	const uid = await getUID();
 	let hiddenPosts = [];
@@ -234,11 +255,10 @@ export async function getHiddenPosts() {
 }
 
 export async function uploadImage(path, uri) {
-	let id = generateId();
 	const img = await fetch(uri);
 	const blob = await img.blob();
 
-	const storageRef = sRef(storage, path + '/' + id);
+	const storageRef = sRef(storage, path + '/profile');
 	await uploadBytesResumable(storageRef, blob);
 
 	const downloadURL = await getDownloadURL(storageRef);

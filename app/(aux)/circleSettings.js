@@ -1,6 +1,11 @@
-{/* In the future, Leave Circle and Delete circle code could be parameterized and merged */}
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Text, View, Platform, Animated, FlatList } from 'react-native';
+import {
+	Text,
+	View,
+	Platform,
+	FlatList,
+	ActivityIndicator
+} from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,61 +26,44 @@ import {
 	SnapPoints
 } from '../../components/BottomSheetModalHelpers.js';
 import { auth } from '../../backend/config';
+import { router } from 'expo-router';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledModal = styled(Modal);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
-
 	useEffect(() => {
 		setUserData(auth.currentUser);
 	}, [auth.currentUser]);
 	const [userData, setUserData] = useState(auth.currentUser);
-
-	async function leaveCircle(circle, user) { // Database call to remove user from circle
-		// x = await readData(`prayer_circle/circles/${circle}/members/${user}`); path test read
-		// deleteData(`prayer_circle/circles/${circle}/members/${user}`);
-	}
-	async function deleteCircle(circle) { // Database call to remove circle from database
-		
-		membersList = Object.entries(
-			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
-		); // Get list of members in circle; consider combining this with the identical call in another function below
-		for (i = 0; i < membersList.length; i++) {
-		// 	deleteData(`prayer_circle/users/${membersList[i]}/private/${circle}`); //Removes circle from users' circles list
-		};
-	
-		postList = Object.entries(
-			(await readData(`prayer_circle/circles/${circle}/posts/`)) || {}
-		); // Get list of members in circle; consider combining this with the identical call in another function below
-		for (j = 0; j < postList.length; j++) { // Cycles through every post
-			localPost = postList[j]; // currently observed post in the loop
-			// deleteData(`prayer_circle/posts/${localPost}/circles/${circle}`); //Removes circle from posts' circles list
-		
-			if (prayer_circle/posts/localPost/circles == null) {
-			// 	deleteData(`prayer_circle/posts/${localPost}`);
-			};
-		}
-		// deleteData(`prayer_circle/circles/${circle}`); // Removes circle from list of circles
-	}
-
 	const [memberData, setMemberData] = useState([]);
+	const [userQueueData, setUserQueueData] = useState([]);
+	const [description, setDescription] = useState('');
 	const [
 		filter,
 		currentFilterName,
 		currentFilterIcon,
 		currentFilterColor,
-		currentFilterDescription,
-		currentFilterIconColor
+		currentFilterIconColor,
+		currentCircleRole,
+		setCurrentCircleRole,
+		setFilter,
+		setFilterName,
+		setGlobalReload,
+		setFilterReload
 	] = useStore((state) => [
 		state.filter,
 		state.currentFilterName,
 		state.currentFilterIcon,
 		state.currentFilterColor,
-		state.currentFilterDescription,
-		state.currentFilterIconColor
+		state.currentFilterIconColor,
+		state.currentCircleRole,
+		state.setCurrentCircleRole,
+		state.setFilter,
+		state.setFilterName,
+		state.setGlobalReload,
+		state.setFilterReload
 	]);
 	let insets = useSafeAreaInsets();
 	const [handleText, setHandleText] = useState('');
@@ -86,18 +74,6 @@ export default function Page() {
 		bottomSheetModalRef.current?.present();
 	}, []);
 	const [modalContent, setModalContent] = useState(null);
-
-	const [isEnabled, setIsEnabled] = useState(false);
-	const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-	const togglePosition = React.useRef(new Animated.Value(1)).current;
-
-	React.useEffect(() => {
-		Animated.timing(togglePosition, {
-			toValue: isEnabled ? 45 : 5,
-			duration: 200,
-			useNativeDriver: false
-		}).start();
-	}, [isEnabled]);
 
 	const handleQueuePress = () => {
 		setHandleText('User Queue');
@@ -115,86 +91,12 @@ export default function Page() {
 		handlePresentModalPress();
 	};
 
-	const renderContent = () => {
-		switch (modalContent) {
-			case 'queue':
-				return (
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-						<BottomSheetFlatList
-							data={memberData}
-							renderItem={({ item }) => {
-								return (
-									<MemberQueue
-										name={item.name}
-										img={item.img}
-										last={item.key == memberData.length}
-									/>
-								);
-							}}
-						/>
-					</StyledView>
-				);
-			case 'leave':
-				return (
-					// <StyledView className='bg-offblack border-[5px] border-yellow rounded-2xl h-[60%]'>
-						<StyledView className='flex-1 items-center h-[60%]'>
-							<Button
-								btnStyles='top-[15%] bg-grey border-4 border-purple'
-								height={'h-[90px]'}
-								width={'w-[90px]'}
-								iconSize={60}
-								icon={currentFilterIcon}
-								iconColor={currentFilterIconColor}
-								href='/'
-								borderColor={currentFilterColor}
-							/>
-
-							<StyledText className='top-[20%] text-3xl text-offwhite'>
-								{currentFilterName}
-							</StyledText>
-							{/* Database call to remove from Circle  */}
-							<Button
-								title='Leave this Circle'
-								btnStyles={'top-[31%] border-2 border-yellow'}
-								bgColor={'bg-offblack'}
-								textStyles={'text-yellow'}
-								width='w-[70%]'
-								press={leaveCircle(filter, userData.uid)}
-							/>
-						</StyledView>
-					// </StyledView>
-				);
-			case 'delete':
-				return (
-					<StyledView className='flex-1 items-center h-[60%]'>
-						<Button
-							btnStyles='top-[15%] bg-grey border-4 border-purple'
-							height={'h-[90px]'}
-							width={'w-[90px]'}
-							iconSize={60}
-							icon={currentFilterIcon}
-							iconColor={currentFilterIconColor}
-							href='/'
-							borderColor={currentFilterColor}
-						/>
-
-						<StyledText className='top-[20%] text-3xl text-offwhite'>
-							{currentFilterName}
-						</StyledText>
-						{/* Database call to remove from Circle  */}
-						<Button
-							title='Delete this Circle'
-							btnStyles={'top-[31%] border-2 border-red'}
-							bgColor={'bg-offblack'}
-							textStyles={'text-red'}
-							width='w-[70%]'
-							press={deleteCircle(filter)}
-						/>
-					</StyledView>
-				);
-			default:
-				return null;
-		}
+	const renderContent = () => {};
+	const updateUserQueueData = async (uid) => {
+		setUserQueueData(
+			userQueueData.filter((obj) => Object.keys(obj)[0] !== uid)
+		);
+		setUp();
 	};
 
 	async function makeCircleUserList(circle) {
@@ -211,21 +113,120 @@ export default function Page() {
 
 			let role = targetUserList[i][1];
 			let img = data.profile_img;
+
+			if (targetUserList[i][0] === auth.currentUser.uid) {
+				setCurrentCircleRole(role);
+			}
+
 			circleMembersData.push({
 				name: name,
 				role: role,
-				img: img
+				img: img,
+				uid: targetUserList[i][0]
 			});
 		}
 		return circleMembersData;
 	}
 
+	async function makeCircleUserQueueList(circle) {
+		let circleMembersData = [];
+		let targetUserList = Object.entries(
+			(await readData(
+				`prayer_circle/circles/${circle}/awaitingEntry/`
+			)) || {}
+		);
+		for (i = 0; i < targetUserList.length; i++) {
+			let data =
+				(await readData(
+					`prayer_circle/users/${targetUserList[i][0]}/public`
+				)) || {};
+			let name = data.fname + ' ' + data.lname;
+
+			let role = targetUserList[i][1];
+			let img = data.profile_img;
+
+			circleMembersData.push({
+				[targetUserList[i][0]]: {
+					name: name,
+					role: role,
+					img: img
+				}
+			});
+		}
+		return circleMembersData;
+	}
+
+	function sortUsers(array) {
+		let data = array;
+		const statusesOrder = [
+			'owner',
+			'admin',
+			'member',
+			'suspended',
+			'banned'
+		];
+		data.sort((a, b) => {
+			return (
+				statusesOrder.indexOf(a.role) - statusesOrder.indexOf(b.role)
+			);
+		});
+
+		setMemberData(data);
+	}
+
+	async function leaveCircle(circle, user) {
+		deleteData(`prayer_circle/circles/${circle}/members/${user}`);
+		deleteData(`prayer_circle/users/${user}/private/circles/${circle}`);
+		setFilter('unfiltered');
+		setFilterName('Prayer Circle');
+		setGlobalReload(true);
+		setFilterReload(true);
+		router.push('/');
+	}
+	async function deleteCircle(circle) {
+		// Database call to remove circle from database
+		let membersList = Object.keys(
+			(await readData(`prayer_circle/circles/${circle}/members/`)) || {}
+		); // Get list of members in circle
+		for (let member of membersList) {
+			deleteData(
+				`prayer_circle/users/${member}/private/circles/${circle}`
+			); //Removes circle from users' circles list
+		}
+
+		let postList = Object.keys(
+			(await readData(`prayer_circle/circles/${circle}/posts/`)) || {}
+		); // Get list of posts in circle
+		for (let post of postList) {
+			deleteData(`prayer_circle/posts/${post}/circles/${circle}`); //Removes circle from posts' circles list
+			// this is intentional, because just because a post exists in 1 circle doesn't mean that the creator would want it to be deleted
+		}
+		deleteData(`prayer_circle/circles/${circle}`); // Removes circle from list of circles
+
+		setFilter('unfiltered');
+		setFilterName('Prayer Circle');
+		setGlobalReload(true);
+		setFilterReload(true);
+		router.push('/');
+	}
+
+	async function setUp(hard) {
+		let description = await readData(
+			`prayer_circle/circles/${filter}/description`
+		);
+		setDescription(description);
+		if (hard) setMemberData([]);
+		let data = await makeCircleUserList(filter);
+		sortUsers(data);
+		data = await makeCircleUserQueueList(filter);
+		setUserQueueData(data);
+	}
+
 	useEffect(() => {
 		(async () => {
-			let data = await makeCircleUserList(filter);
-			setMemberData(data);
+			setUp();
 		})();
-	}, [filter]);
+	}, []);
 
 	return (
 		<BottomSheetModalProvider>
@@ -264,12 +265,12 @@ export default function Page() {
 							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
 								{currentFilterName}
 							</StyledText>
-							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[20px] p-[10px] my-2'>
+							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
 								<StyledText className='text-white text-[14px]'>
-									{currentFilterDescription}
+									{description}
 								</StyledText>
 							</StyledView>
-							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[45px] pt-2 bg-grey rounded-t-[20px] items-center justify-center'>
+							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[60px] bg-grey rounded-t-[10px] items-center justify-center'>
 								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 									Members
 								</StyledText>
@@ -283,13 +284,24 @@ export default function Page() {
 								name={item.name}
 								role={item.role}
 								img={item.img}
+								uid={item.uid}
 								last={
 									memberData.indexOf(item) + 1 ==
 									memberData.length
 								}
+								setUp={setUp}
 							/>
 						);
 					}}
+					ListEmptyComponent={
+						<StyledView className='border-x border-b border-[#6666660d] w-full h-[140px] bg-grey rounded-b-[10px] items-center justify-center'>
+							<ActivityIndicator size={'large'} />
+						</StyledView>
+					}
+					ListFooterComponent={
+						<StyledView className='w-full h-[100px] bg-offblack' />
+					}
+					extraData={memberData}
 				/>
 				<StyledGradient
 					pointerEvents='none'
@@ -305,31 +317,55 @@ export default function Page() {
 					}}
 					className='absolute w-screen flex flex-row items-center justify-between px-[15px]'
 				>
-					<Button
-						btnStyles='rotate-180 border-2'
-						bgColor='bg-offblack'
-						borderColor='border-yellow'
-						height={'h-[50px]'}
-						width={'w-[50px]'}
-						iconSize={30}
-						icon='log-out-outline'
-						iconColor='#F9A826'
-						press={handleLeavePress}
-					/>
+					{currentCircleRole !== 'owner' ? (
+						<Button
+							btnStyles='rotate-180 border-2'
+							bgColor='bg-offblack'
+							borderColor='#F9A826'
+							height={'h-[50px]'}
+							width={'w-[50px]'}
+							iconSize={30}
+							icon='log-out-outline'
+							iconColor='#F9A826'
+							press={handleLeavePress}
+						/>
+					) : (
+						<View
+							style={{
+								width: 50,
+								height: 50,
+								borderWidth: 2,
+								borderColor: 'transparent',
+								backgroundColor: 'transparent'
+							}}
+						/>
+					)}
 					<StyledText className='text-4xl font-bold text-offwhite'>
 						Settings
 					</StyledText>
-					<Button
-						btnStyles='border-2'
-						bgColor='bg-offblack'
-						borderColor='border-red'
-						height={'h-[50px]'}
-						width={'w-[50px]'}
-						iconSize={30}
-						icon='trash-outline'
-						iconColor='#CC2500'
-						press={handleDeletePress}
-					/>
+					{currentCircleRole === 'owner' ? (
+						<Button
+							btnStyles='border-2'
+							bgColor='bg-offblack'
+							borderColor='#CC2500'
+							height={'h-[50px]'}
+							width={'w-[50px]'}
+							iconSize={30}
+							icon='trash-outline'
+							iconColor='#CC2500'
+							press={handleDeletePress}
+						/>
+					) : (
+						<View
+							style={{
+								width: 50,
+								height: 50,
+								borderWidth: 2,
+								borderColor: 'transparent',
+								backgroundColor: 'transparent'
+							}}
+						/>
+					)}
 				</StyledView>
 
 				<StyledView
@@ -343,12 +379,15 @@ export default function Page() {
 						icon='arrow-back'
 						href='/'
 					/>
-					<Button // Queue
-						title='Queue: 4'
-						height={'h-[50px]'}
-						width={'w-[200px]'}
-						press={handleQueuePress}
-					/>
+
+					{userQueueData.length > 0 && (
+						<Button // Queue
+							title={`Queue: ${userQueueData.length}`}
+							height={'h-[50px]'}
+							width={'w-[200px]'}
+							press={handleQueuePress}
+						/>
+					)}
 					<Button // to Share Page
 						height={'h-[50px]'}
 						width={'w-[50px]'}
@@ -369,8 +408,91 @@ export default function Page() {
 					}
 					keyboardBehavior='extend'
 				>
-					<StyledView className='flex-1 bg-offblack'>
-						{renderContent()}
+					<StyledView className='flex-1 bg-grey'>
+						{modalContent === 'queue' && (
+							<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+								<BottomSheetFlatList
+									data={userQueueData}
+									keyExtractor={(item) =>
+										Object.keys(item)[0]
+									}
+									renderItem={({ item }) => {
+										let key = Object.keys(item)[0];
+										let values = Object.values(item)[0];
+										return (
+											<MemberQueue
+												name={values.name}
+												img={values.img}
+												uid={key}
+												circle={filter}
+												updateUserQueueData={(uid) => {
+													updateUserQueueData(uid);
+												}}
+											/>
+										);
+									}}
+								/>
+							</StyledView>
+						)}
+						{modalContent === 'leave' && (
+							<StyledView className='flex-1 items-center h-[60%]'>
+								<Button
+									btnStyles='top-[15%] bg-grey border-4'
+									height={'h-[90px]'}
+									width={'w-[90px]'}
+									iconSize={60}
+									icon={currentFilterIcon}
+									iconColor={currentFilterIconColor}
+									href='/'
+									borderColor={currentFilterColor}
+								/>
+
+								<StyledText className='top-[20%] text-3xl text-offwhite'>
+									{currentFilterName}
+								</StyledText>
+								{/* Database call to remove from Circle  */}
+								<Button
+									title='Leave this Circle'
+									btnStyles={
+										'top-[31%] border-2 border-yellow'
+									}
+									bgColor={'bg-offblack'}
+									textStyles={'text-yellow'}
+									width='w-[70%]'
+									press={() => {
+										leaveCircle(filter, userData.uid);
+									}}
+								/>
+							</StyledView>
+						)}
+						{modalContent === 'delete' && (
+							<StyledView className='flex-1 items-center h-[60%]'>
+								<Button
+									btnStyles='top-[15%] bg-grey border-4'
+									height={'h-[90px]'}
+									width={'w-[90px]'}
+									iconSize={60}
+									icon={currentFilterIcon}
+									iconColor={currentFilterIconColor}
+									href='/'
+									borderColor={currentFilterColor}
+								/>
+								<StyledText className='top-[20%] text-3xl text-offwhite'>
+									{currentFilterName}
+								</StyledText>
+								{/* Database call to remove from Circle  */}
+								<Button
+									title='Delete this Circle'
+									btnStyles={'top-[31%] border-2 border-red'}
+									bgColor={'bg-offblack'}
+									textStyles={'text-red'}
+									width='w-[70%]'
+									press={() => {
+										deleteCircle(filter);
+									}}
+								/>
+							</StyledView>
+						)}
 					</StyledView>
 				</BottomSheetModal>
 			</StyledView>

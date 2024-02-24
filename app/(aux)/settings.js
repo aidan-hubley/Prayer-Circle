@@ -5,7 +5,6 @@ import {
 	TouchableOpacity,
 	Animated,
 	Image,
-	Alert,
 	TextInput,
 	ScrollView
 } from 'react-native';
@@ -41,6 +40,7 @@ import {
 	readData,
 	uploadImage
 } from '../../backend/firebaseFunctions';
+import { useStore, notify } from '../global';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
@@ -76,33 +76,35 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
+	const [haptics, notifications, setHaptics, setNotifications] = useStore(
+		(state) => [
+			state.haptics,
+			state.notifications,
+			state.setHaptics,
+			state.setNotifications
+		]
+	);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
 			try {
 				await sendPasswordResetEmail(auth, userData?.email);
-				Alert.alert(
-					'Check your email',
+				notify(
+					'Email Sent',
 					'A link to reset your password has been sent to your email address.',
-					[
-						{
-							text: 'OK',
-							onPress: () =>
-								bottomSheetModalRef.current?.dismiss()
-						}
-					]
+					'#00A55E'
 				);
 			} catch (error) {
-				Alert.alert('Error', error.message);
+				notify('Error', error.message, '#CC2500');
 			}
 		} else {
-			Alert.alert('Error', 'No user is currently signed in.');
+			notify('Error', 'No user is currently signed in.', '#CC2500');
 		}
 	};
 
 	const hanleChangeName = async () => {
 		if (newFName === '' || newLName === '') {
-			Alert.alert('Error', 'Please enter a valid name.');
+			notify('Error', 'Please enter a valid name.', '#CC2500');
 			return;
 		}
 		writeData(
@@ -131,9 +133,10 @@ export default function Page() {
 			});
 		}
 
-		Alert.alert(
+		notify(
 			'Success',
-			'Name has been updated to: ' + newFName + ' ' + newLName
+			'Name has been updated to: ' + newFName + ' ' + newLName,
+			'#00A55E'
 		);
 
 		bottomSheetModalRef.current?.dismiss();
@@ -154,8 +157,11 @@ export default function Page() {
 	async function takePicture() {
 		const { status } = await Camera.requestCameraPermissionsAsync();
 		if (status !== 'granted') {
-			alert('Permission to access the camera was denied.');
-			return;
+			return notify(
+				'Permission Denied',
+				'Could not access camera',
+				'#CC2500'
+			);
 		}
 
 		if (cameraRef.current) {
@@ -175,14 +181,25 @@ export default function Page() {
 					true
 				);
 
-				Alert.alert('Success', 'Profile picture has been updated.');
+				notify(
+					'Success',
+					'Profile picture has been updated.',
+					'#00A55E'
+				);
 			} catch (error) {
-				console.error('Error taking picture:', error);
+				notify('Error', 'Profile image upload unsuccessful', '#CC2500');
 			}
 		}
 	}
 
 	const openImagePicker = async () => {
+		/* const { status } =
+			await ImagePicker.requestMediaLibraryPermissionsAsync();
+		if (status !== 'granted') {
+			alert('Sorry, we need camera roll permissions to make this work!');
+			return; // Early return if permission is not granted
+		} */
+
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -190,23 +207,38 @@ export default function Page() {
 			quality: 0.2
 		});
 
-		if (!result.canceled) {
-			const selectedAsset = result.assets[0];
-			// TODO: SVG animation here
+		if (!result.canceled && result.assets && result.assets.length > 0) {
 			bottomSheetModalRef.current?.dismiss();
-			let imgURL = await uploadImage(
-				`prayer_circle/users/${userData.photoURL}`,
-				selectedAsset
-			);
-
-			updateProfile(auth?.currentUser, { photoURL: imgURL });
-			writeData(
-				`prayer_circle/users/${userData.uid}/public/profile_img`,
-				imgURL,
-				true
-			);
-
-			Alert.alert('Success', 'Profile picture has been updated.');
+			const selectedAsset = result.assets[0];
+			try {
+				const imgURL = await uploadImage(
+					`prayer_circle/users/${userData.uid}`,
+					selectedAsset.uri
+				);
+				await updateProfile(auth.currentUser, { photoURL: imgURL });
+				// change name in all posts
+				let userPosts = await readData(
+					`prayer_circle/users/${userData.uid}/private/posts`
+				);
+				if (userPosts) {
+					userPosts = Object.keys(userPosts);
+					userPosts.forEach((post) => {
+						writeData(
+							`prayer_circle/posts/${post}/profile_img`,
+							`${imgURL}`,
+							true
+						);
+					});
+				}
+				notify(
+					'Success',
+					'Profile picture has been updated.',
+					'#00A55E'
+				);
+			} catch (error) {
+				console.error('Error updating profile picture:', error);
+				notify('Error', 'Failed to update profile picture.', '#CC2500');
+			}
 		}
 	};
 
@@ -233,14 +265,15 @@ export default function Page() {
 
 	const ChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
-			Alert.alert('Error', 'The new passwords do not match.');
+			notify('Error', 'The new passwords do not match.', '#CC2500');
 			return;
 		}
 
 		if (!passwordValidation(newPassword)) {
-			Alert.alert(
+			notify(
 				'Invalid Password',
-				'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character'
+				'Password must be at least 8 characters long and contain at least 1 uppercase letter, lowercase letter, number, and special character',
+				'#CC2500'
 			);
 			return;
 		}
@@ -255,40 +288,36 @@ export default function Page() {
 				await reauthenticateWithCredential(user, credential);
 
 				await updatePassword(user, newPassword);
-				Alert.alert(
+				notify(
 					'Success',
-					'Password has been updated successfully.'
+					'Password has been updated successfully.',
+					'#00A55E'
 				);
 				bottomSheetModalRef.current?.dismiss();
 				setCurrentPassword('');
 				setNewPassword('');
 				setConfirmPassword('');
 			} catch (error) {
-				Alert.alert('Error', error.message);
+				notify('Error', error.message, '#CC2500');
 			}
 		} else {
-			Alert.alert('Error', 'No user is currently signed in.');
+			notify('Error', 'No user is currently signed in.', '#CC2500');
 		}
 	};
 
 	const ChangeEmail = async () => {
 		if (newEmail !== confirmEmail) {
-			Alert.alert('Error', 'The new emails do not match.');
-			return;
+			return notify('Error', 'The new emails do not match.', '#CC2500');
 		}
 
-		let approvedEmailProviders = [
-			'gmail.com',
-			'yahoo.com',
-			'outlook.com',
-			'icloud.com',
-			'aol.com'
-		];
-
-		let confirmEmailCheck = confirmEmail.split('@');
-		if (confirmEmailCheck.length !== 2) return alert('Invalid Email');
-		else if (!approvedEmailProviders.includes(confirmEmailCheck[1]))
-			return alert('Email provider not supported');
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		let emailCheck = email.split('@');
+		if (emailCheck.length !== 2 || !emailRegex.test(email))
+			return notify(
+				'Invalid Email',
+				'Please enter a valid email.',
+				'#CC2500'
+			);
 
 		writeData(
 			`prayer_circle/users/${userData.uid}/private/email`,
@@ -297,7 +326,11 @@ export default function Page() {
 		);
 		updateProfile(auth?.currentUser, { email: confirmEmail });
 
-		Alert.alert('Success', 'Email has been updated to: ' + confirmEmail);
+		notify(
+			'Success',
+			'Email has been updated to: ' + confirmEmail,
+			'#00A55E'
+		);
 		bottomSheetModalRef.current?.dismiss();
 
 		authContext.signOut();
@@ -306,19 +339,20 @@ export default function Page() {
 	const EmptyCache = async () => {
 		// TODO: need to only remove bookmars and timers
 
-		Alert.alert('Success', 'Cache has been emptied.');
+		notify('Success', 'Cache has been emptied.', '#00A55E');
 		bottomSheetModalRef.current?.dismiss();
 	};
 
 	const DeleteAccount = async () => {
 		// TODO: throughly test this
 		if (deletionName !== userData.displayName) {
-			Alert.alert(
+			notify(
 				'Error',
 				'The name does not match. Deletion name: ' +
 					deletionName +
 					' Name: ' +
-					userData.displayName
+					userData.displayName,
+				'#CC2500'
 			);
 			return;
 		}
@@ -347,9 +381,10 @@ export default function Page() {
 						return;
 					} else if (circleData.owner === userData.uid) {
 						// if user is the owner of the circle
-						Alert.alert(
+						notify(
 							'Error',
-							'You are the owner of a circle. Please transfer ownership or delete / leave the circle before deleting your profile.'
+							'You are the owner of a circle. Please transfer ownership or delete / leave the circle before deleting your profile.',
+							'#CC2500'
 						);
 						return;
 					} else {
@@ -472,17 +507,6 @@ export default function Page() {
 
 	const renderContent = () => {
 		switch (modalContent) {
-			case 'tos':
-				return (
-					<StyledView className='w-[90%] flex-1'>
-						<BottomSheetFlatList
-							data={[{ key: 'terms' }]}
-							renderItem={({ item }) => <Terms />}
-							keyExtractor={(item) => item.key}
-							showsVerticalScrollIndicator={false}
-						/>
-					</StyledView>
-				);
 			case 'updProfileInfo':
 				return (
 					<StyledView className='w-[85%] items-center'>
@@ -664,7 +688,7 @@ export default function Page() {
 										img={item[1].profile_img}
 										title={item[1].title}
 										timestamp={item[1].timestamp}
-										content={item[1].text}
+										content={item[1].body}
 										icon={item[1].type}
 										id={item[0]}
 										edited={item[1].edited}
@@ -969,7 +993,6 @@ export default function Page() {
 				<ScrollView>
 					<StyledView className='w-full flex items-center'>
 						<View className='relative pt-[100px]'></View>
-
 						<View className='flex-row items-center mt-5 px-5'>
 							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
 								<Text className='mr-3 text-lg text-offwhite'>
@@ -983,7 +1006,7 @@ export default function Page() {
 									height={'h-[35px]'}
 									bgColor={'bg-transparent'}
 									textColor={'text-offwhite'}
-									borderColor={'border-offwhite'}
+									borderColor={'#FFFBFC'}
 									btnStyles='border-2'
 									press={() =>
 										handleModalPress(
@@ -1024,13 +1047,13 @@ export default function Page() {
 								<StyledView className='flex-row justify-between'>
 									<StyledView className='w-full justify-between flex-row'>
 										<Button
-  											title={`Edit Name: ${userData.displayName}`}
+											title={`Edit Name: ${userData.displayName}`}
 											textColor={'text-offwhite'}
 											textStyles='font-normal'
 											width={'flex-1'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-offwhite'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() =>
 												handleModalPress(
@@ -1048,7 +1071,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-offwhite'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() =>
 												handleModalPress(
@@ -1076,7 +1099,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={notifications}
+										onFunc={() => {
+											setNotifications(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setNotifications(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>
@@ -1092,7 +1133,25 @@ export default function Page() {
 										color='#FFFBFC'
 										className='w-[30px] h-[30px] mr-2'
 									/>
-									<Toggle />
+									<Toggle
+										toggle={haptics}
+										onFunc={() => {
+											setHaptics(true);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												true,
+												true
+											);
+										}}
+										offFunc={() => {
+											setHaptics(false);
+											writeData(
+												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+												false,
+												true
+											);
+										}}
+									/>
 								</StyledView>
 							</View>
 						</View>
@@ -1262,7 +1321,7 @@ export default function Page() {
 									width={'w-[65px]'}
 									height={'h-[35px]'}
 									bgColor={'bg-transparent'}
-									borderColor={'border-white'}
+									borderColor={'#FFFBFC'}
 									btnStyles='border-2'
 									press={() => {
 										handleModalPress(
@@ -1298,7 +1357,7 @@ export default function Page() {
 									iconSize={30}
 									iconColor={'#F9A826'}
 									btnStyles='border-2'
-									borderColor={'border-yellow'}
+									borderColor={'#F9A826'}
 									press={() => toggleAdvancedSettings()}
 								></Button>
 							</View>
@@ -1347,9 +1406,7 @@ export default function Page() {
 													width={'flex-1'}
 													height={'h-[35px]'}
 													bgColor={'bg-transparent'}
-													borderColor={
-														'border-offwhite'
-													}
+													borderColor={'#FFFBFC'}
 													btnStyles='mr-3 border-2'
 													press={() => {
 														handleModalPress(
@@ -1366,9 +1423,7 @@ export default function Page() {
 													width={'w-[65px]'}
 													height={'h-[35px]'}
 													bgColor={'bg-transparent'}
-													borderColor={
-														'border-offwhite'
-													}
+													borderColor={'#FFFBFC'}
 													iconSize={26}
 													iconColor={'#FFFBFC'}
 													btnStyles='border-2'
@@ -1398,7 +1453,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() => {
 												handleModalPress(
@@ -1431,7 +1486,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() => {
 												handleModalPress(
@@ -1465,7 +1520,7 @@ export default function Page() {
 											width={'w-[65px]'}
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'border-white'}
+											borderColor={'#FFFBFC'}
 											btnStyles='border-2'
 											press={() => {
 												handleModalPress(

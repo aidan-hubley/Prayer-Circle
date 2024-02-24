@@ -32,13 +32,22 @@ const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
 
 const FilterItem = forwardRef((props, ref) => {
-		const setFilter = useStore((state) => state.setFilter);
-		const setFilterName = useStore((state) => state.setFilterName);
-		const setFilterIcon = useStore((state) => state.setFilterIcon);
-		const setFilterColor = useStore((state) => state.setFilterColor);
-		const setFilterDescription = useStore((state) => state.setFilterDescription);
-		const setFilterIconColor = useStore((state) => state.setFilterIconColor);
-		const setCircleMembersData = useStore((state) => state.setCircleMembersData);
+	const [
+		setFilter,
+		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterIconColor,
+		setCurrentCircleRole
+	] = useStore((state) => [
+		state.setFilter,
+		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterIconColor,
+		state.setCurrentCircleRole
+	]);
+
 	const [selected, setSelected] = useState(false);
 	const itemStyle = useAnimatedStyle(() => {
 		const inputRange = [
@@ -132,6 +141,9 @@ const FilterItem = forwardRef((props, ref) => {
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
 						/>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							Search Circles
+						</StyledText>
 						<StyledIcon
 							name={'search-outline'}
 							size={45}
@@ -159,6 +171,7 @@ const FilterItem = forwardRef((props, ref) => {
 						onPress={() => {
 							bottomSheetModalRef.current.present();
 							props.toggleShown();
+							props.setPressed('none');
 						}}
 					>
 						<StyledView className='flex items-center justify-center'>
@@ -166,6 +179,9 @@ const FilterItem = forwardRef((props, ref) => {
 								source={require('../assets/spiral/thin.png')}
 								style={{ width: 80, height: 80 }}
 							/>
+							<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+								View Circles
+							</StyledText>
 							<StyledIcon
 								name={'apps-outline'}
 								size={35}
@@ -187,7 +203,7 @@ const FilterItem = forwardRef((props, ref) => {
 					>
 						<StyledView className='flex-1 bg-grey'>
 							<BottomSheetFlatList
-								data={props.circles.slice(2)}
+								data={props.circles.slice(3)}
 								keyExtractor={(item) => item.id}
 								contentContainerStyle={{
 									paddingVertical: 20,
@@ -214,9 +230,14 @@ const FilterItem = forwardRef((props, ref) => {
 												className='flex border-[6px] items-center justify-center rounded-full w-[85px] aspect-square'
 												onPress={() => {
 													bottomSheetModalRef.current.dismiss();
-													updateFilter(item.id);
-													updateFilterName(
-														item.title
+													props.toggleShown();
+													props.setPressed('none');
+													setFilter(item.id);
+													setFilterName(item.title);
+													setFilterIcon(item.icon);
+													setFilterColor(item.color);
+													setFilterIconColor(
+														item.iconColor
 													);
 												}}
 											>
@@ -237,6 +258,38 @@ const FilterItem = forwardRef((props, ref) => {
 					</BottomSheetModal>
 				</>
 			);
+		} else if (props.data.id == 'allCircles') {
+			return (
+				<StyledAnimatedHighlight
+					style={[
+						{
+							borderColor: props.data.color,
+							width: props.itemSize,
+							height: props.itemSize,
+							marginHorizontal: props.itemMargin / 2,
+							top: 60
+						},
+						itemStyle
+					]}
+					className='justify-center'
+					onPress={() => {
+						props.toggleShown();
+						props.setPressed('none');
+						setFilter('unfiltered');
+						setFilterName('Prayer Circle');
+					}}
+				>
+					<StyledView className='flex items-center justify-center'>
+						<StyledImage
+							source={require('../assets/spiral/thin.png')}
+							style={{ width: 80, height: 80 }}
+						/>
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
+							All Circles
+						</StyledText>
+					</StyledView>
+				</StyledAnimatedHighlight>
+			);
 		} else {
 			return (
 				<StyledAnimatedHighlight
@@ -253,13 +306,13 @@ const FilterItem = forwardRef((props, ref) => {
 					className='flex border-[6px] items-center justify-center rounded-full'
 					onPress={() => {
 						props.toggleShown();
+						props.setPressed('none');
 						setFilter(props.data.id);
 						setFilterName(props.data.title);
 						setFilterIcon(props.data.icon);
 						setFilterColor(props.data.color);
-						setFilterDescription(props.data.description);
 						setFilterIconColor(props.data.iconColor);
-						setCircleMembersData(props.data.circleMembersData)
+						setCurrentCircleRole(props.data.role);
 					}}
 				>
 					<>

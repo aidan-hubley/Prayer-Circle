@@ -4,16 +4,45 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SplashScreen } from 'expo-router';
 import { Provider, useAuth } from './context/auth';
 import AnimatedSplash from 'react-native-animated-splash-screen';
+import { readData, writeData } from '../backend/firebaseFunctions';
+import { encrypt, decrypt } from 'react-native-simple-encryption';
+import * as Config from '../app.config';
+import { auth } from '../backend/config.js';
+import { useStore, notify } from './global.js';
+import { NotifierWrapper } from 'react-native-notifier';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 	const [loaded, setLoaded] = useState(false);
+	const [setHaptics, setNotifications] = useStore((state) => [
+		state.setHaptics,
+		state.setNotifications
+	]);
 
 	useEffect(() => {
-		setTimeout(() => {
-			setLoaded(true);
-		}, 1000);
+		(async () => {
+			setTimeout(async () => {
+				let settings = await readData(
+					`prayer_circle/users/${auth.currentUser.uid}/private/settings`
+				);
+				setHaptics(settings?.haptics);
+				setNotifications(settings?.notifications);
+			}, 1000);
+
+			let latestVersion = await readData(
+				'prayer_circle/constants/minimum_stable_version'
+			);
+			if (latestVersion > Config.default.expo.version) {
+				notify(
+					'App Update Available',
+					'A new version of Prayer Circle is available. Please update to the latest version to continue using the app.',
+					0
+				);
+			} else {
+				setLoaded(true);
+			}
+		})();
 	}, []);
 
 	useEffect(() => {
@@ -46,19 +75,28 @@ function RootLayoutNavigation() {
 	if (!authInitialized && !user) return null;
 
 	return (
-		<BottomSheetModalProvider>
-			<Stack
-				screenOptions={{ headerShown: false, gestureEnabled: false }}
-			>
-				<Stack.Screen
-					name='(aux)/circleSettings'
-					options={{ presentation: 'modal' }}
-				/>
-				<Stack.Screen
-					name='(aux)/shareCircle'
-					options={{ presentation: 'modal' }}
-				/>
-			</Stack>
-		</BottomSheetModalProvider>
+		<NotifierWrapper>
+			<BottomSheetModalProvider>
+				<Stack
+					screenOptions={{
+						headerShown: false,
+						gestureEnabled: false
+					}}
+				>
+					<Stack.Screen
+						name='(aux)/circleSettings'
+						options={{ presentation: 'modal' }}
+					/>
+					<Stack.Screen
+						name='(aux)/shareCircle'
+						options={{ presentation: 'modal' }}
+					/>
+					<Stack.Screen
+						name='(aux)/prayerCircleInfo'
+						options={{ presentation: 'modal' }}
+					/>
+				</Stack>
+			</BottomSheetModalProvider>
+		</NotifierWrapper>
 	);
 }

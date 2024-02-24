@@ -26,6 +26,7 @@ import {
 	updateProfile
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { notify } from '../global';
 
 const AuthContext = createContext(null);
 
@@ -104,8 +105,10 @@ export function Provider(props) {
 							console.error(err);
 						}
 					);
-					return alert(
-						'Please verify your email before logging in. Check your email for a verification link.'
+					return notify(
+						'Verify Email',
+						'Check your email for a verification link.',
+						'#CC2500'
 					);
 				}
 				setAuth(true);
@@ -114,7 +117,7 @@ export function Provider(props) {
 				const errorCode = error.code;
 				const errorMessage = error.message;
 				console.error(errorCode, errorMessage);
-				alert('Incorrect email or password');
+				notify('Login Error', 'Incorrect email or password', '#CC2500');
 			});
 	};
 
@@ -132,15 +135,22 @@ export function Provider(props) {
 
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
 
-				alert(
-					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.'
+				notify(
+					'Welcom to Prayer Circle',
+					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.',
+					'#00A55E',
+					140000
 				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
 				if (errorCode === 'auth/email-already-in-use') {
-					return alert('Email already in use');
+					return notify(
+						'Regitration Error',
+						'Email already in use',
+						'#CC2500'
+					);
 				} else console.error(errorCode, errorMessage);
 			});
 		await updateProfile(auth?.currentUser, {
