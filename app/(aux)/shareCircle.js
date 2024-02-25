@@ -19,6 +19,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import QRCode from 'react-qr-code';
 import { readData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
+import { set } from 'firebase/database';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -51,6 +52,7 @@ export default function Page() {
 		setModalVisible1(!isModalVisible1);
 	};
 
+	const [circlePermissions, setCirclePermissions] = useState(false);
 	const [isCodeVisible, setIsCodeVisible] = useState(false);
 
 	const toggleVisibleCode = () => {
@@ -58,6 +60,7 @@ export default function Page() {
 	};
 
 	const filterTarget = useStore((state) => state.filter);
+	const circlePermission = useStore((state) => state.currentCircleRole);
 
 	useEffect(() => {
 		(async () => {
@@ -104,48 +107,53 @@ export default function Page() {
 								{publicCode}
 							</StyledText>
 						</StyledView>
-						<StyledView className='flex-row justify-center items-baseline'>
-							<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
-								Private Code
-							</StyledText>
-						</StyledView>
-						<StyledPressable
-							className='border-[4px] border-offwhite bg-offblack p-[10px] rounded-xl flex-row justify-center relative h-100 w-100'
-							onPress={toggleVisibleCode}
-						>
-							{isCodeVisible ? (
-								<>
-									<StyledText
-										className='font-bold text-3xl text-offwhite'
-										onPress={() => shareCircle()}
-									>
-										{privateCode}
+						{(circlePermission === 'owner' ||
+							circlePermission === 'admin') && (
+							<StyledView>
+								<StyledView className='flex-row justify-center items-baseline'>
+									<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
+										Private Code
 									</StyledText>
-									<StyledView className='absolute left-3 top-3'>
-										<StyledIcon
-											className=''
-											name='eye'
-											size={30}
-											color='#FFFBFC'
-										/>
-									</StyledView>
-								</>
-							) : (
-								<>
-									<StyledText className='font-bold text-3xl text-offwhite'>
-										Tap to View
-									</StyledText>
-									<StyledView className='absolute left-3 top-3'>
-										<StyledIcon
-											className=''
-											name='eye-off'
-											size={30}
-											color='#FFFBFC'
-										/>
-									</StyledView>
-								</>
-							)}
-						</StyledPressable>
+								</StyledView>
+								<StyledPressable
+									className='border-[4px] border-offwhite bg-offblack p-[10px] rounded-xl flex-row justify-center relative h-100 w-100'
+									onPress={toggleVisibleCode}
+								>
+									{isCodeVisible ? (
+										<>
+											<StyledText
+												className='font-bold text-3xl text-offwhite'
+												onPress={() => shareCircle()}
+											>
+												{privateCode}
+											</StyledText>
+											<StyledView className='absolute left-3 top-3'>
+												<StyledIcon
+													className=''
+													name='eye'
+													size={30}
+													color='#FFFBFC'
+												/>
+											</StyledView>
+										</>
+									) : (
+										<>
+											<StyledText className='font-bold text-3xl text-offwhite'>
+												Tap to View
+											</StyledText>
+											<StyledView className='absolute left-3 top-3'>
+												<StyledIcon
+													className=''
+													name='eye-off'
+													size={30}
+													color='#FFFBFC'
+												/>
+											</StyledView>
+										</>
+									)}
+								</StyledPressable>
+							</StyledView>
+						)}
 					</StyledView>
 				</StyledView>
 			</ScrollView>
