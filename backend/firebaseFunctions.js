@@ -308,23 +308,15 @@ export async function createTutorial(data) {
 			type: post.type,
 			timestamp: now,
 			circles,
-			// metadata: {
-			// 	flag_count: 0,
-			// 	start:
-			// 		typeSelected === 'event' ? startDate : null,
-			// 	end: typeSelected === 'event' ? endDate : null
-			// },
-			// settings: {
-			// 	viewable_comments:
-			// 		(await readData(
-			// 			`prayer_circle/circles/${userData.uid}/private/post_preferances/comments`
-			// 		)) || false,
-			// 	viewable_interactions:
-			// 		(await readData(
-			// 			`prayer_circle/circles/${userData.uid}/private/post_preferances/interactions`
-			// 		)) || 'private'
-			// }
-			// Do these last pieces need to be included for the tutorial posts?
+			metadata: {
+				flag_count: 0,
+				start: null,
+				end: null
+			},
+			settings: {
+				viewable_comments: false,
+				viewable_interactions: 'private'
+			}
 		};
 		writeData(`prayer_circle/circles/${circle}/posts/`, newPost, false); //Removes circle from posts' circles list
 	}
