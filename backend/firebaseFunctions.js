@@ -114,6 +114,7 @@ export async function createCircle(data) {
 		circlePermissions,
 		true
 	);
+	return (circleId); //I think this is the most effective way to do tutorial, let me know if it breaks something else
 }
 
 export async function addUserToCircle(circle, otherUserUID) {
@@ -292,8 +293,7 @@ export async function checkIfUserIsInCircle(circle) {
 }
 
 export async function createTutorial(data) {
-	createCircle(data);
-	let circle = ; //how to get circle id of the circle this is creating?
+	let circle = createCircle(data); //how to get circle id of the circle this is creating?
 	let postList = Object.keys(
 		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts/`)) || {}
 	); // Get list of posts in circle
