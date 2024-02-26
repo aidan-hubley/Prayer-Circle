@@ -13,7 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
-import { uploadImage } from '../../backend/firebaseFunctions';
+import { createTutorial } from '../../backend/firebaseFunctions';
 import { passwordValidation } from '../../backend/functions';
 import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
@@ -51,10 +51,26 @@ export default function Register() {
 	const authContext = useAuth();
 	const bottomSheetModalRef = useRef(null);
 
+	let data = {
+		title: 'Tutorial',
+		description: 'A place to learn how to use Prayer Circle',
+		iconColor: '000000',
+		icon: 'house', // is this  avalid icon?
+		timestamp: Date.now(),
+		type: 'individual',
+		color: 'FFFFFF',
+		members: {},
+		admin: {},
+		usersAwaitingEntry: {},
+		owner: false
+		// this data structure is taken from createCircle.js, but owner seems to have its type changed when its passed to createCircle in firebaseFunctions; am I reading that wrong?
+	};
+
+	createTutorial(data);
+
 	const toggleModal = () => {
 		setModalVisible(!isModalVisible);
 	};
-
 
 	function toggleCameraType() {
 		setType((current) =>

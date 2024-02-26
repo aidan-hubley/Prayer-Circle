@@ -290,3 +290,42 @@ export async function checkIfUserIsInCircle(circle) {
 	}
 	return inCircle;
 }
+
+export async function createTutorial(data) {
+	createCircle(data);
+	let circle = ; //how to get circle id of the circle this is creating?
+	let postList = Object.keys(
+		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts/`)) || {}
+	); // Get list of posts in circle
+	let now = Date.now();
+	for (let post of postList) {
+		let newPost = {
+			user: post.user,
+			profile_img: post.profile_img,
+			name: post.name,
+			title: post.title,
+			body: post.body,
+			type: post.type,
+			timestamp: now,
+			circles,
+			// metadata: {
+			// 	flag_count: 0,
+			// 	start:
+			// 		typeSelected === 'event' ? startDate : null,
+			// 	end: typeSelected === 'event' ? endDate : null
+			// },
+			// settings: {
+			// 	viewable_comments:
+			// 		(await readData(
+			// 			`prayer_circle/circles/${userData.uid}/private/post_preferances/comments`
+			// 		)) || false,
+			// 	viewable_interactions:
+			// 		(await readData(
+			// 			`prayer_circle/circles/${userData.uid}/private/post_preferances/interactions`
+			// 		)) || 'private'
+			// }
+			// Do these last pieces need to be included for the tutorial posts?
+		};
+		writeData(`prayer_circle/circles/${circle}/posts/`, newPost, false); //Removes circle from posts' circles list
+	}
+}
