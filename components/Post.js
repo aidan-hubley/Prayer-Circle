@@ -121,7 +121,7 @@ export const Post = (post) => {
 	let insets = useSafeAreaInsets();
 
 	// These need to be dynamic based on screen width available and a static max-height for content before truncation
-	const titleCharThreshold = Dimensions.get('window').width / 17;
+	const titleCharThreshold = Dimensions.get('window').width / 16;
 	const contentCharThreshold = 300;
 
 	// bottom sheet modal
@@ -1106,14 +1106,14 @@ export const Post = (post) => {
 										post.owned ? 'ml-[4px]' : 'ml-2'
 									}`}
 								>
-									<View className={`mr-[10px]`}>
+									<View className={`mr-[20px]`}>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
 											title.length <= titleCharThreshold
 												? title
 												: `${title.substring(
 														0,
-														titleCharThreshold
+														titleCharThreshold - 4
 												  )}...`}
 										</StyledText>
 									</View>
