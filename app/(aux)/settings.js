@@ -1322,15 +1322,15 @@ export default function Page() {
 						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
 						<View className='flex-row items-center mt-5 px-5'>
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row justify-between pb-5 w-full'>
+								<StyledView className='flex-row justify-between w-full'>
 									<Text className='text-lg text-offwhite'>
 										Post Preferances
 									</Text>
 									<Button
 										icon={
 											viewPref
-												? 'chevron-down-outline'
-												: 'chevron-up-outline'
+												? 'chevron-up-outline'
+												: 'chevron-down-outline'
 										}
 										width={'w-[65px]'}
 										height={'h-[35px]'}
@@ -1349,7 +1349,7 @@ export default function Page() {
 								</StyledView>
 								{viewPref && (
 									<View>
-										<StyledView className='flex-row justify-between'>
+										<StyledView className='flex-row justify-between py-3'>
 											<Text className='text-lg text-offwhite'>
 												Comments:
 											</Text>
@@ -1394,7 +1394,7 @@ export default function Page() {
 												></Button>
 											)}
 										</StyledView>
-										<StyledView className='flex-row justify-between py-2'>
+										<StyledView className='flex-row justify-between'>
 											<Text className='text-lg text-offwhite'>
 												Interactions:
 											</Text>
