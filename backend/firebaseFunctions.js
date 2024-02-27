@@ -319,9 +319,8 @@ export async function createTutorial(uid) {
 	addUserToCircle(circleID, uid);
 }
 
-export async function checkIfTutorialExists(uid) {
+export async function checkIfTutorialExists() {
 	let circles = await getCircles();
-	console.log(circles);
 	for (let i = 0; i < circles.length; i++) {
 		let circleData = (await readData(`prayer_circle/circles/${circles[i]}`)) || {};
 		console.log(circleData.title);

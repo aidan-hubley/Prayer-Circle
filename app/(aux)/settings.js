@@ -102,9 +102,10 @@ export default function Page() {
 	]);
 
 	const RecreateTutoril = () => {
-		if (checkIfTutorialExists(userData.uid)) {
-			console.log('Doesnt exist');
-			createTutorial(userData.uid);
+		const hasTutorialCircle = checkIfTutorialExists();
+		if (hasTutorialCircle) {
+			console.log('Creating it now');
+			// createTutorial(userData.uid);
 			setGlobalReload(true);
 			setFilterReload(true);
 			notify('Tutorial Circle', 'Check it out!', '#00A55E');
