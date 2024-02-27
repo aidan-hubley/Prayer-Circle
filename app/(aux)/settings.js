@@ -79,14 +79,19 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
-	const [haptics, notifications, setHaptics, setNotifications] = useStore(
-		(state) => [
-			state.haptics,
-			state.notifications,
-			state.setHaptics,
-			state.setNotifications
-		]
-	);
+	const [
+		haptics,
+		notifications,
+		setHaptics,
+		setNotifications,
+		setGlobalReload
+	] = useStore((state) => [
+		state.haptics,
+		state.notifications,
+		state.setHaptics,
+		state.setNotifications,
+		state.setGlobalReload
+	]);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
@@ -1755,6 +1760,7 @@ export default function Page() {
 					height={'h-[50px]'}
 					iconSize={30}
 					press={() => {
+						setGlobalReload(true);
 						handleModalPress('signOut', ['20%']);
 					}}
 				></Button>
