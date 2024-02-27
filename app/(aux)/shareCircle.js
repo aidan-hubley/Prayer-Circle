@@ -27,19 +27,6 @@ const StyledIcon = styled(Ionicons);
 const StyledModal = styled(Modal);
 const StyledPressable = styled(Pressable);
 
-const shareCircle = async () => {
-	try {
-		await Share.share({
-			title: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
-			message:
-				'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
-			url: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle'
-		});
-	} catch (error) {
-		console.error('Error sharing:', error);
-	}
-};
-
 export default function Page() {
 	let insets = useSafeAreaInsets();
 	let topInset = Platform.OS == 'android' ? insets.top + 10 : 0;
@@ -61,6 +48,18 @@ export default function Page() {
 
 	const filterTarget = useStore((state) => state.filter);
 	const circlePermission = useStore((state) => state.currentCircleRole);
+
+	const shareCircle = async () => {
+		try {
+			await Share.share({			
+				title: 	'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+				message:'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+				url: 	'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+			});
+		} catch (error) {
+			console.error('Error sharing:', error);
+		}
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -109,51 +108,51 @@ export default function Page() {
 						</StyledView>
 						{(circlePermission === 'owner' ||
 							circlePermission === 'admin') && (
-							<StyledView>
-								<StyledView className='flex-row justify-center items-baseline'>
-									<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
-										Private Code
-									</StyledText>
+								<StyledView>
+									<StyledView className='flex-row justify-center items-baseline'>
+										<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
+											Private Code
+										</StyledText>
+									</StyledView>
+									<StyledPressable
+										className='border-[4px] border-offwhite bg-offblack p-[10px] rounded-xl flex-row justify-center relative h-100 w-100'
+										onPress={toggleVisibleCode}
+									>
+										{isCodeVisible ? (
+											<>
+												<StyledText
+													className='font-bold text-3xl text-offwhite'
+													onPress={() => shareCircle()}
+												>
+													{privateCode}
+												</StyledText>
+												<StyledView className='absolute left-3 top-3'>
+													<StyledIcon
+														className=''
+														name='eye'
+														size={30}
+														color='#FFFBFC'
+													/>
+												</StyledView>
+											</>
+										) : (
+											<>
+												<StyledText className='font-bold text-3xl text-offwhite'>
+													Tap to View
+												</StyledText>
+												<StyledView className='absolute left-3 top-3'>
+													<StyledIcon
+														className=''
+														name='eye-off'
+														size={30}
+														color='#FFFBFC'
+													/>
+												</StyledView>
+											</>
+										)}
+									</StyledPressable>
 								</StyledView>
-								<StyledPressable
-									className='border-[4px] border-offwhite bg-offblack p-[10px] rounded-xl flex-row justify-center relative h-100 w-100'
-									onPress={toggleVisibleCode}
-								>
-									{isCodeVisible ? (
-										<>
-											<StyledText
-												className='font-bold text-3xl text-offwhite'
-												onPress={() => shareCircle()}
-											>
-												{privateCode}
-											</StyledText>
-											<StyledView className='absolute left-3 top-3'>
-												<StyledIcon
-													className=''
-													name='eye'
-													size={30}
-													color='#FFFBFC'
-												/>
-											</StyledView>
-										</>
-									) : (
-										<>
-											<StyledText className='font-bold text-3xl text-offwhite'>
-												Tap to View
-											</StyledText>
-											<StyledView className='absolute left-3 top-3'>
-												<StyledIcon
-													className=''
-													name='eye-off'
-													size={30}
-													color='#FFFBFC'
-												/>
-											</StyledView>
-										</>
-									)}
-								</StyledPressable>
-							</StyledView>
-						)}
+							)}
 					</StyledView>
 				</StyledView>
 			</ScrollView>

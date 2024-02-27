@@ -136,7 +136,7 @@ export function Provider(props) {
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
 
 				notify(
-					'Welcom to Prayer Circle',
+					'Welcome to Prayer Circle',
 					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.',
 					'#00A55E',
 					140000

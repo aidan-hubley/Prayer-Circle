@@ -4,6 +4,7 @@ import {
 	View,
 	Platform,
 	Image,
+	Share,
 	ScrollView,
 	Pressable,
 	Linking,
@@ -36,16 +37,27 @@ export default function Page() {
 	const [userData] = useState(auth?.currentUser);
 	const bottomSheetModalRef = useRef(null);
 
+	const shareApp = async () => {
+		try {
+			await Share.share({
+				title: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+				message: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+				url: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+			});
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	};
+
 	let insets = useSafeAreaInsets();
+	let topInset = insets.top > 30 ? insets.top : insets.top + 10;
 
 	const handleModalPress = (
 		modalContent,
 		snapPoints,
 		handleText,
 		handleColor,
-		extra = () => {}
 	) => {
-		extra();
 		setModalContent(modalContent);
 		setSnapPoints(snapPoints);
 		setHandles(handle(handleText, handleColor));
@@ -84,7 +96,8 @@ export default function Page() {
 				>
 					<StyledPressable
 						onPress={() => router.push('http://prayer-circle.com')}
-						className='mt-[40px]'
+						className={Platform.OS == 'android' ? 'my-[40px]' : 'mb-[40px]'}
+						style={{ top: topInset }}
 					>
 						<StyledImage
 							style={{ width: 300, height: 300 }}
@@ -110,7 +123,7 @@ export default function Page() {
 
 					<StyledView className='flex-row justify-between items-center w-full bg-grey border border-[#6666660D] rounded-[10px] py-[10px] px-[15px] my-2'>
 						<StyledText className={`text-offwhite text-[20px]`}>
-							Review TOS
+							Terms of Service
 						</StyledText>
 						<Button
 							icon='document-text'
@@ -143,7 +156,7 @@ export default function Page() {
 							</StyledText>
 							<StyledPressable
 								className='w-[65px] h-[35px] bg-transparent border-offwhite border rounded-[20px] justify-center items-center'
-								onPress={() => '/'}
+								onPress={() => router.push('https://forms.gle/PtbSFjNjtUBJi3Tz6')}
 							>
 								<StyledImage
 									className='w-[18px] h-[24px]'
@@ -245,10 +258,10 @@ export default function Page() {
 								press={() =>
 									Linking.openURL(
 										'mailto:devs.prayercircle@gmail.com?subject=Prayer Circle User &body=Hello Prayer Circle Devs, %0A %0A [add your message here] %0A %0A Account Name: ' +
-											userData.displayName +
-											' %0A Account Email: ' +
-											userData?.email +
-											''
+										userData.displayName +
+										' %0A Account Email: ' +
+										userData?.email +
+										''
 									)
 								}
 							></Button>
@@ -535,18 +548,6 @@ export default function Page() {
 					/>
 				</ScrollView>
 			</StyledView>
-			<BottomSheetModal
-				ref={bottomSheetModalRef}
-				index={0}
-				snapPoints={snapPoints}
-				handleComponent={() => handles}
-				backdropComponent={(backdropProps) => backdrop(backdropProps)}
-				keyboardBehavior='extend'
-			>
-				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-					{renderContent()}
-				</StyledView>
-			</BottomSheetModal>
 			<StyledGradient
 				pointerEvents='none'
 				start={{ x: 0, y: 0.1 }}
@@ -590,9 +591,20 @@ export default function Page() {
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='share'
-					href='/'
+					press={() => shareApp()}
 				/>
 			</StyledView>
+			<BottomSheetModal
+				ref={bottomSheetModalRef}
+				snapPoints={snapPoints}
+				handleComponent={() => handles}
+				backdropComponent={(backdropProps) => backdrop(backdropProps)}
+				keyboardBehavior='extend'
+			>
+				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+					{renderContent()}
+				</StyledView>
+			</BottomSheetModal>
 		</>
 	);
 }

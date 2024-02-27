@@ -79,14 +79,25 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
-	const [haptics, notifications, setHaptics, setNotifications] = useStore(
-		(state) => [
-			state.haptics,
-			state.notifications,
-			state.setHaptics,
-			state.setNotifications
-		]
-	);
+	const [
+		haptics,
+		notifications,
+		setHaptics,
+		setNotifications,
+		setFilter,
+		setFilterName,
+		setGlobalReload,
+		setFilterReload
+	] = useStore((state) => [
+		state.haptics,
+		state.notifications,
+		state.setHaptics,
+		state.setNotifications,
+		state.setFilter,
+		state.setFilterName,
+		state.setGlobalReload,
+		state.setFilterReload
+	]);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
@@ -105,7 +116,7 @@ export default function Page() {
 		}
 	};
 
-	const hanleChangeName = async () => {
+	const handleChangeName = async () => {
 		if (newFName === '' || newLName === '') {
 			notify('Error', 'Please enter a valid name.', '#CC2500');
 			return;
@@ -135,6 +146,10 @@ export default function Page() {
 				);
 			});
 		}
+
+		updateProfile(auth?.currentUser, {
+			displayName: `${newFName} ${newLName}`
+		});
 
 		notify(
 			'Success',
@@ -571,7 +586,7 @@ export default function Page() {
 							title='Confirm'
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={hanleChangeName}
+							press={handleChangeName}
 						/>
 					</StyledView>
 				);
@@ -979,6 +994,10 @@ export default function Page() {
 							btnStyles='mt-3'
 							width='w-[70%]'
 							press={() => {
+								setFilter('unfiltered');
+								setFilterName('Prayer Circle');
+								setGlobalReload(true);
+								setFilterReload(true);
 								authContext.signOut();
 							}}
 						/>
@@ -1014,33 +1033,6 @@ export default function Page() {
 				<ScrollView>
 					<StyledView className='w-full flex items-center'>
 						<View className='relative pt-[100px]'></View>
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<Text className='mr-3 text-lg text-offwhite'>
-									Terms of Service
-								</Text>
-								<Button // TODO: use component
-									icon='document'
-									iconColor={'#FFFBFC'}
-									iconSize={26}
-									width={'w-[65px]'}
-									height={'h-[35px]'}
-									bgColor={'bg-transparent'}
-									textColor={'text-offwhite'}
-									borderColor={'#FFFBFC'}
-									btnStyles='border-2'
-									press={() =>
-										handleModalPress(
-											'tos',
-											['65%', '85%'],
-											'Terms of Service',
-											''
-										)
-									}
-								></Button>
-							</View>
-						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
 						<View className='flex-row mt-5 px-5'>
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
 								<StyledView className='flex-row pb-5 w-full'>
