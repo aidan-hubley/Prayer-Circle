@@ -140,7 +140,7 @@ export function Provider(props) {
 
 				notify(
 					'Welcome to Prayer Circle',
-					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.',
+					'Thank you for becoming a part of Prayer Circle! Please check your email for a verification link before logging in.',
 					'#00A55E',
 					140000
 				);
