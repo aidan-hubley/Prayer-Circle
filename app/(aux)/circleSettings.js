@@ -91,7 +91,7 @@ export default function Page() {
 		handlePresentModalPress();
 	};
 
-	const renderContent = () => {};
+	const renderContent = () => { };
 	const updateUserQueueData = async (uid) => {
 		setUserQueueData(
 			userQueueData.filter((obj) => Object.keys(obj)[0] !== uid)
@@ -265,11 +265,13 @@ export default function Page() {
 							<StyledText className='w-full text-center text-[30px] text-offwhite my-2'>
 								{currentFilterName}
 							</StyledText>
-							<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
-								<StyledText className='text-white text-[14px]'>
-									{description}
-								</StyledText>
-							</StyledView>
+							{description && (
+								<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
+									<StyledText className='text-white text-[14px]'>
+										{description}
+									</StyledText>
+								</StyledView>
+							)}
 							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[60px] bg-grey rounded-t-[10px] items-center justify-center'>
 								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 									Members

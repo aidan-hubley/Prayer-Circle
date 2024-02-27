@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
 	Text,
 	View,
@@ -9,7 +9,11 @@ import {
 	ScrollView
 } from 'react-native';
 import { styled } from 'nativewind';
-import Modal from 'react-native-modal';
+import {
+	BottomSheetModal,
+	BottomSheetFlatList,
+	BottomSheetModalProvider
+} from '@gorhom/bottom-sheet';
 import {
 	SafeAreaView,
 	useSafeAreaInsets
@@ -20,11 +24,15 @@ import QRCode from 'react-qr-code';
 import { readData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { set } from 'firebase/database';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../../components/BottomSheetModalHelpers.js';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledIcon = styled(Ionicons);
-const StyledModal = styled(Modal);
 const StyledPressable = styled(Pressable);
 
 export default function Page() {
@@ -34,10 +42,10 @@ export default function Page() {
 	const [privateCode, setPrivateCode] = useState(0);
 	const [circleName, setCircleName] = useState('');
 
-	const [isModalVisible1, setModalVisible1] = useState(false);
-	const toggleModal1 = () => {
-		setModalVisible1(!isModalVisible1);
-	};
+	const bottomSheetModalRef = useRef(null);
+	const handlePresentModalPress = useCallback(() => {
+		bottomSheetModalRef.current?.present();
+	}, []);
 
 	const [circlePermissions, setCirclePermissions] = useState(false);
 	const [isCodeVisible, setIsCodeVisible] = useState(false);
@@ -51,10 +59,10 @@ export default function Page() {
 
 	const shareCircle = async () => {
 		try {
-			await Share.share({			
-				title: 	'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
-				message:'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
-				url: 	'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+			await Share.share({
+				title: 'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+				message: 'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+				url: 'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
 			});
 		} catch (error) {
 			console.error('Error sharing:', error);
@@ -171,7 +179,7 @@ export default function Page() {
 					title='How to share?'
 					height={'h-[50px]'}
 					width={'w-[200px]'}
-					press={toggleModal1}
+					press={() => handlePresentModalPress()}
 				/>
 				<Button // Share Circle
 					height={'h-[50px]'}
@@ -182,18 +190,17 @@ export default function Page() {
 				/>
 			</StyledView>
 
-			<StyledModal
-				className='w-[80%] self-center'
-				isVisible={isModalVisible1}
-				onBackdropPress={toggleModal1}
+			<BottomSheetModal
+				enableDismissOnClose={true}
+				ref={bottomSheetModalRef}
+				snapPoints={(['45%', '65%'])}
+				handleComponent={() => handle('Share the ' + `${circleName}` + ' Circle with:')}
+				backdropComponent={(backdropProps) =>
+					backdrop(backdropProps)
+				}
 			>
-				<StyledView className='bg-offblack border-[5px] border-purple rounded-2xl h-[55%] px-2 py-3'>
-					<StyledView className='items-center'>
-						<StyledText className='top-[6%] text-3xl text-offwhite'>
-							How to share circles:
-						</StyledText>
-					</StyledView>
-					<StyledView className='flex-1 mx-2 gap-y-8'>
+				<StyledView className='flex-1 bg-grey'>
+					<StyledView className='flex-1 mx-7 gap-y-8'>
 						<StyledView className='flex-row items-center pt-6'>
 							<StyledIcon
 								className=''
@@ -227,30 +234,28 @@ export default function Page() {
 								Share on other apps
 							</StyledText>
 						</StyledView>
-						<StyledView className='flex-row items-center'>
-							<StyledIcon
-								className=''
-								name='shield'
-								size={30}
-								color='#FFFBFC'
-							/>
-							<StyledText className='ml-3 text-2xl text-offwhite'>
-								Share the private code
-							</StyledText>
-							<StyledText className='absolute top-10 left-10 text-l text-offwhite'>
-								Only share with trusted people!
-							</StyledText>
-						</StyledView>
-					</StyledView>
-					<StyledView className='items-center py-3'>
-						<Button
-							title='Got it!'
-							width='w-[70%]'
-							press={toggleModal1}
-						/>
+						{(circlePermission === 'owner' || circlePermission === 'admin') ? (
+							<StyledView className='flex-row items-center'>
+								<StyledIcon
+									className=''
+									name='shield'
+									size={30}
+									color='#FFFBFC'
+								/>
+								<StyledText className='ml-3 text-2xl text-offwhite'>
+									Share the private code
+								</StyledText>
+								<StyledText className='absolute top-10 left-10 text-l text-offwhite'>
+									This skips the queue, share carefully!
+								</StyledText>
+							</StyledView>
+							) : (
+								<></>
+							)
+						}
 					</StyledView>
 				</StyledView>
-			</StyledModal>
+			</BottomSheetModal>
 		</StyledView>
 	);
 }
