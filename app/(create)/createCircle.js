@@ -158,6 +158,12 @@ export default function Page() {
 							usersAwaitingEntry: {},
 							owner: false
 						};
+
+						if (title === 'Tutorial') {
+							notify('Error', 'Please choose another title', '#CC2500');
+							return;
+						}
+
 						await createCircle(data);
 						notify(
 							'Circle Successfully Created',
