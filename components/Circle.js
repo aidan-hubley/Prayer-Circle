@@ -11,10 +11,12 @@ import { Button } from './Buttons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../app/global';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
 const StyledView = styled(View);
+const StyledIcon = styled(Ionicons);
 
 const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 	const [pressed, setPressed] = useState('none');
@@ -23,6 +25,18 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 	const shortOpacity = useRef(new Animated.Value(0)).current;
 	const bgOpacity = useRef(new Animated.Value(0)).current;
 	const haptics = useStore((state) => state.haptics);
+
+	const [
+		currentFilter,
+		currentFilterIcon,
+		currentFilterColor,
+		currentFilterIconColor,
+	] = useStore((state) => [
+		state.filter,
+		state.currentFilterIcon,
+		state.currentFilterColor,
+		state.currentFilterIconColor,
+	]);
 
 	let insets = useSafeAreaInsets();
 	let topButtonInset = insets.top > 30 ? insets.top : insets.top + 10;
@@ -132,9 +146,7 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 
 			<AnimatedPressable
 				style={{ transform: [{ scale: scaleInterpolation }] }}
-				className={`rounded-full border-[6px] border-offwhite
-                h-[80px] w-[80px]
-            `}
+				className={`justify-center rounded-full border-[6px] border-offwhite h-[80px] w-[80px] z-10`}
 				onPressIn={() => {
 					resize(0.7);
 				}}
@@ -167,7 +179,23 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 					if (haptics)
 						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 				}}
-			></AnimatedPressable>
+			>
+				{currentFilter !== 'unfiltered' ? (
+					<View
+						className='h-[50px] w-[50px] self-center border-[4px] bg-grey rounded-full justify-center'
+						borderColor={currentFilterColor}
+					>
+						<StyledIcon
+							name={currentFilterIcon}
+							size={25}
+							color={currentFilterIconColor}
+							className='self-center'
+						/>
+					</View>
+				) : (
+					<></>
+				)}
+			</AnimatedPressable>
 		</>
 	);
 });
