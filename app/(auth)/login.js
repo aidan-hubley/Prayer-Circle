@@ -164,7 +164,9 @@ export default function Login() {
 						/>
 						<StyledOpacity
 							className='absolute top-[10px] right-[8%]'
-							onPress={handlePasswordReset}
+							onPress={() => {
+								handlePasswordReset();
+							}}
 						>
 							<StyledIcon
 								name='send'

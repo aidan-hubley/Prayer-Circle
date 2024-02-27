@@ -6,6 +6,7 @@ import {
 	Keyboard,
 	Image,
 	TouchableWithoutFeedback,
+	Pressable,
 	TouchableOpacity,
 	StatusBar
 } from 'react-native';
@@ -14,8 +15,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { Button } from '../../components/Buttons';
 import { passwordValidation } from '../../backend/functions';
-import { BottomSheetModal, BottomSheetFlatList, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { handle, backdrop, SnapPoints } from '../../components/BottomSheetModalHelpers.js';
+import {
+	BottomSheetModal,
+	BottomSheetFlatList,
+	BottomSheetModalProvider
+} from '@gorhom/bottom-sheet';
+import {
+	handle,
+	backdrop,
+	SnapPoints
+} from '../../components/BottomSheetModalHelpers.js';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -100,7 +109,6 @@ export default function Register() {
 		}
 	};
 
-	
 	const handleModalPress = (
 		modalContent,
 		snapPoints,
@@ -108,6 +116,7 @@ export default function Register() {
 		handleColor,
 		extra = () => {}
 	) => {
+		console.log('handleModalPress');
 		extra();
 		setModalContent(modalContent);
 		setSnapPoints(snapPoints);
@@ -129,238 +138,259 @@ export default function Register() {
 					</StyledView>
 				);
 			default:
-				return (
-					<></>
-				)			
+				return <></>;
 		}
 	};
 
 	return (
-		<StyledSafeArea className='bg-offblack flex-1'>
-			<KeyboardAwareScrollView
-				bounces={false}
-				keyboardShouldPersistTaps='handled'
-			>
-				<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-					<>
-						<StyledView className='flex flex-col pb-3 px-[15px] w-screen'>
-							<StyledView className='w-full flex flex-col items-center mb-2'>
-								<StyledView className='w-11/12 aspect-square mt-[20px] mb-[40px]'>
-									<TouchableOpacity onPress={toggleModal}>
-										<StyledImage
-											className='h-full aspect-square rounded-3xl'
-											source={
-												profileImage
-													? { uri: profileImage }
-													: require('../../assets/Squared_Logo_Dark.png')
-											}
-											resizeMode='contain'
+		<BottomSheetModalProvider>
+			<StyledSafeArea className='bg-offblack flex-1'>
+				<KeyboardAwareScrollView
+					bounces={false}
+					keyboardShouldPersistTaps='handled'
+				>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+						<>
+							<StyledView className='flex flex-col pb-3 px-[15px] w-screen'>
+								<StyledView className='w-full flex flex-col items-center mb-2'>
+									<StyledView className='w-11/12 aspect-square mt-[20px] mb-[40px]'>
+										<TouchableOpacity
+											onPress={() => {
+												toggleModal();
+											}}
+										>
+											<StyledImage
+												className='h-full aspect-square rounded-3xl'
+												source={
+													profileImage
+														? { uri: profileImage }
+														: require('../../assets/Squared_Logo_Dark.png')
+												}
+												resizeMode='contain'
+											/>
+										</TouchableOpacity>
+										<StyledText className='text-offwhite text-center text-[18px] mt-2'>
+											{profileImage
+												? 'Tap Photo to Retake Picture'
+												: 'Tap Logo to Upload a Profile Picture'}
+										</StyledText>
+									</StyledView>
+								</StyledView>
+								<StyledView className='flex flex-col items-center justify-center w-full gap-y-2'>
+									<StyledView className='flex flex-row w-11/12'>
+										<StyledInput
+											className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+											placeholder={'First Name'}
+											placeholderTextColor={'#fff'}
+											inputMode='text'
+											maxLength={30}
+											autoComplete='given-name'
+											onChangeText={(text) => {
+												setFName(text);
+											}}
 										/>
-									</TouchableOpacity>
-									<StyledText className='text-offwhite text-center text-[18px] mt-2'>
-										{profileImage
-											? 'Tap Photo to Retake Picture'
-											: 'Tap Logo to Upload a Profile Picture'}
-									</StyledText>
-								</StyledView>
-							</StyledView>
-							<StyledView className='flex flex-col items-center justify-center w-full gap-y-2'>
-								<StyledView className='flex flex-row w-11/12'>
+										<StyledInput
+											className='bg-offblack text-[18px] ml-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+											placeholder={'Last Name'}
+											placeholderTextColor={'#fff'}
+											inputMode='text'
+											maxLength={30}
+											autoComplete='family-name'
+											onChangeText={(text) => {
+												setLName(text);
+											}}
+										/>
+									</StyledView>
 									<StyledInput
-										className='bg-offblack text-[18px] mr-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-										placeholder={'First Name'}
+										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+										placeholder={'Email'}
 										placeholderTextColor={'#fff'}
-										inputMode='text'
+										autoCapitalize='none'
+										inputMode='email'
+										autoComplete='email'
 										maxLength={30}
-										autoComplete='given-name'
 										onChangeText={(text) => {
-											setFName(text);
+											setEmail(text);
 										}}
 									/>
 									<StyledInput
-										className='bg-offblack text-[18px] ml-1 w-auto flex-1 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-										placeholder={'Last Name'}
+										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+										placeholder={'Password'}
 										placeholderTextColor={'#fff'}
-										inputMode='text'
-										maxLength={30}
-										autoComplete='family-name'
+										secureTextEntry={true}
+										maxLength={25}
 										onChangeText={(text) => {
-											setLName(text);
+											setPass(text);
+										}}
+									/>
+									<StyledInput
+										className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+										placeholder={'Confirm Password'}
+										placeholderTextColor={'#fff'}
+										secureTextEntry={true}
+										maxLength={25}
+										onChangeText={(text) => {
+											setConfirmPass(text);
 										}}
 									/>
 								</StyledView>
-								<StyledInput
-									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-									placeholder={'Email'}
-									placeholderTextColor={'#fff'}
-									autoCapitalize='none'
-									inputMode='email'
-									autoComplete='email'
-									maxLength={30}
-									onChangeText={(text) => {
-										setEmail(text);
-									}}
-								/>
-								<StyledInput
-									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-									placeholder={'Password'}
-									placeholderTextColor={'#fff'}
-									secureTextEntry={true}
-									maxLength={25}
-									onChangeText={(text) => {
-										setPass(text);
-									}}
-								/>
-								<StyledInput
-									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-									placeholder={'Confirm Password'}
-									placeholderTextColor={'#fff'}
-									secureTextEntry={true}
-									maxLength={25}
-									onChangeText={(text) => {
-										setConfirmPass(text);
-									}}
-								/>
 							</StyledView>
-						</StyledView>
-						<StyledText className='text-offwhite text-center text-[18px] mb-3'>
-							Read the{' '}
-							<TouchableWithoutFeedback 
-								onPress={() => handleModalPress(
-									'tos',
-									['65%', '85%'],
-									'Terms of Service',
-									''
-								)}
-							> 
-								<StyledText className='text-yellow font-bold'>
-									Terms and Conditions
-								</StyledText>
-							</TouchableWithoutFeedback>
-						</StyledText>
-						<StyledView className='flex flex-col items-center'>
-							<Button
-								width='w-[85%]'
-								title='Agree & Register'
-								textColor='#F7F1E3'
-								backgroundColor='#121212'
-								borderColor='#F9A826'
-								press={() => {
-									Keyboard.dismiss();
-									createUserData(
-										fname,
-										lname,
-										email,
-										pass,
-										confirmPass,
-										profileImage,
-										authContext
-									);
-								}}
-							/>
-							<StyledText className='text-offwhite text-center text-[18px] mt-3'>
-								Already have an account?{' '}
-								<TouchableWithoutFeedback
+							<StyledText className='text-offwhite text-center text-[18px] mb-3'>
+								Read the{' '}
+								<Pressable
 									onPress={() => {
-										router.replace('/login');
+										console.log('pressed');
+
+										handleModalPress(
+											'tos',
+											['65%', '85%'],
+											'Terms of Service',
+											''
+										);
 									}}
 								>
-									<StyledText className='text-yellow font-bold'>
-										Login
+									<StyledText className='text-yellow text-[16px] font-bold'>
+										Terms and Conditions
 									</StyledText>
-								</TouchableWithoutFeedback>
+								</Pressable>
 							</StyledText>
-						</StyledView>
-					</>
-				</TouchableWithoutFeedback>
-			</KeyboardAwareScrollView>
-			<StatusBar barStyle={'light-content'} />
-			<StyledModal
-				className='w-[90%] self-center'
-				isVisible={isModalVisible}
-			>
-				<StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px] h-[90%]'>
-					<StyledView className='flex-1 items-center h-[60%]'>
-						<StyledText className='top-[3%] text-3xl text-offwhite'>
-							Take a Selfie!
-						</StyledText>
-						<StyledView
-							className='top-[8%] w-[300px] aspect-square rounded-[20px]'
-							onPress={toggleCameraType}
-						>
-							<StyledCamera
-								ref={cameraRef}
-								mirrorImage={true}
-								fixOrientation={true}
-								// Still mirroring
-								className='w-full h-full rounded-[20px]'
-								type={type}
-								ratio='1:1'
-								flashMode={flashMode}
+							<StyledView className='flex flex-col items-center'>
+								<Button
+									width='w-[85%]'
+									title='Agree & Register'
+									textColor='#F7F1E3'
+									backgroundColor='#121212'
+									borderColor='#F9A826'
+									press={() => {
+										Keyboard.dismiss();
+										createUserData(
+											fname,
+											lname,
+											email,
+											pass,
+											confirmPass,
+											profileImage,
+											authContext
+										);
+									}}
+								/>
+								<StyledText className='text-offwhite text-center text-[18px] mt-3'>
+									Already have an account?{' '}
+									<TouchableWithoutFeedback
+										onPress={() => {
+											router.replace('/login');
+										}}
+									>
+										<StyledText className='text-yellow font-bold'>
+											Login
+										</StyledText>
+									</TouchableWithoutFeedback>
+								</StyledText>
+							</StyledView>
+						</>
+					</TouchableWithoutFeedback>
+				</KeyboardAwareScrollView>
+				<StatusBar barStyle={'light-content'} />
+				<StyledModal
+					className='w-[90%] self-center'
+					isVisible={isModalVisible}
+				>
+					<StyledSafeArea className='bg-offblack border border-offwhite rounded-[20px] h-[90%]'>
+						<StyledView className='flex-1 items-center h-[60%]'>
+							<StyledText className='top-[3%] text-3xl text-offwhite'>
+								Take a Selfie!
+							</StyledText>
+							<StyledView
+								className='top-[8%] w-[300px] aspect-square rounded-[20px]'
+								onPress={() => {
+									toggleCameraType();
+								}}
 							>
-								{/* Having squared profile pictures means we should do a 1:1 ratio here
+								<StyledCamera
+									ref={cameraRef}
+									mirrorImage={true}
+									fixOrientation={true}
+									// Still mirroring
+									className='w-full h-full rounded-[20px]'
+									type={type}
+									ratio='1:1'
+									flashMode={flashMode}
+								>
+									{/* Having squared profile pictures means we should do a 1:1 ratio here
 										I don't know how to do that without using w-#px h-#px  */}
-							</StyledCamera>
+								</StyledCamera>
+							</StyledView>
+							<StyledView className='w-full flex flex-row justify-between absolute bottom-[135px] items-center'>
+								<Button
+									icon='camera-reverse-outline'
+									btnStyles={'left-[75px]'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={() => {
+										toggleCameraType();
+									}}
+								/>
+								<Button
+									icon='flashlight-outline'
+									btnStyles={'right-[75px]'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={() => {
+										toggleFlashMode();
+									}}
+								/>
+							</StyledView>
+							<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
+								<Button
+									icon='arrow-back-outline'
+									btnStyles={'left-10'}
+									width='w-[50px]'
+									height='h-[50px]'
+									press={() => {
+										toggleModal();
+									}}
+								/>
+								<Button
+									icon='camera-outline'
+									iconColor='#FFFBFC'
+									btnStyles={
+										'border-4 border-offwhite bg-offblack'
+									}
+									width='w-[80px]'
+									height='h-[80px]'
+									press={() => {
+										takePicture();
+									}}
+								/>
+								<Button
+									icon='images-outline'
+									btnStyles='right-10'
+									width='w-[50px]'
+									height='h-[50px]'
+									press={() => {
+										openImagePicker();
+									}}
+								/>
+							</StyledView>
 						</StyledView>
-						<StyledView className='w-full flex flex-row justify-between absolute bottom-[135px] items-center'>
-							<Button
-								icon='camera-reverse-outline'
-								btnStyles={'left-[75px]'}
-								width='w-[50px]'
-								height='h-[50px]'
-								press={toggleCameraType}
-							/>
-							<Button
-								icon='flashlight-outline'
-								btnStyles={'right-[75px]'}
-								width='w-[50px]'
-								height='h-[50px]'
-								press={toggleFlashMode}
-							/>
-						</StyledView>
-						<StyledView className='w-full flex flex-row justify-between absolute bottom-5 items-center'>
-							<Button
-								icon='arrow-back-outline'
-								btnStyles={'left-10'}
-								width='w-[50px]'
-								height='h-[50px]'
-								press={toggleModal}
-							/>
-							<Button
-								icon='camera-outline'
-								iconColor='#FFFBFC'
-								btnStyles={
-									'border-4 border-offwhite bg-offblack'
-								}
-								width='w-[80px]'
-								height='h-[80px]'
-								press={takePicture}
-							/>
-							<Button
-								icon='images-outline'
-								btnStyles='right-10'
-								width='w-[50px]'
-								height='h-[50px]'
-								press={openImagePicker}
-							/>
-						</StyledView>
+					</StyledSafeArea>
+				</StyledModal>
+
+				<BottomSheetModal
+					ref={bottomSheetModalRef}
+					snapPoints={snapPoints}
+					handleComponent={() => handles}
+					backdropComponent={(backdropProps) =>
+						backdrop(backdropProps)
+					}
+					keyboardBehavior='extend'
+				>
+					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+						{renderContent()}
 					</StyledView>
-				</StyledSafeArea>
-			</StyledModal>
-			
-			<BottomSheetModal
-				ref={bottomSheetModalRef}
-				index={0}
-				snapPoints={snapPoints}
-				handleComponent={() => handles}
-				backdropComponent={(backdropProps) => backdrop(backdropProps)}
-				keyboardBehavior='extend'
-			>
-				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-					{renderContent()}
-				</StyledView>
-			</BottomSheetModal>
-		</StyledSafeArea>
+				</BottomSheetModal>
+			</StyledSafeArea>
+		</BottomSheetModalProvider>
 	);
 }
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
 	Text,
 	View,
-	Image,
 	Share,
 	Pressable,
 	Platform,
@@ -11,24 +10,15 @@ import {
 import { styled } from 'nativewind';
 import {
 	BottomSheetModal,
-	BottomSheetFlatList,
 	BottomSheetModalProvider
 } from '@gorhom/bottom-sheet';
-import {
-	SafeAreaView,
-	useSafeAreaInsets
-} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import QRCode from 'react-qr-code';
 import { readData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
-import { set } from 'firebase/database';
-import {
-	handle,
-	backdrop,
-	SnapPoints
-} from '../../components/BottomSheetModalHelpers.js';
+import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -60,9 +50,21 @@ export default function Page() {
 	const shareCircle = async () => {
 		try {
 			await Share.share({
-				title: 'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
-				message: 'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
-				url: 'Come join my ' + circleName + 'Circle on Prayer Circle! Here is the code: ' + publicCode,
+				title:
+					'Come join my ' +
+					circleName +
+					'Circle on Prayer Circle! Here is the code: ' +
+					publicCode,
+				message:
+					'Come join my ' +
+					circleName +
+					'Circle on Prayer Circle! Here is the code: ' +
+					publicCode,
+				url:
+					'Come join my ' +
+					circleName +
+					'Circle on Prayer Circle! Here is the code: ' +
+					publicCode
 			});
 		} catch (error) {
 			console.error('Error sharing:', error);
@@ -85,37 +87,38 @@ export default function Page() {
 	}, []);
 
 	return (
-		<StyledView
-			className='bg-offblack flex-1'
-			style={{ paddingTop: topInset }}
-		>
-			<ScrollView bounces={false}>
-				<StyledView className='flex-1 min-h-screen flex flex-col items-center'>
-					<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
-						<StyledText className='text-offwhite font-bold text-4xl'>
-							{circleName}
-						</StyledText>
-					</StyledView>
-					<StyledView className='align-self-center'>
-						<StyledView className='border-[6px] bg-offwhite border-purple rounded-xl'>
-							<StyledView className='p-[15px] rounded-xl'>
-								<QRCode
-									size={240}
-									value={`${publicCode}`}
-									onPress={() => shareCircle()}
-								/>
-							</StyledView>
-						</StyledView>
-						<StyledView className='border-[4px] border-purple bg-white mt-7 p-[10px] rounded-xl'>
-							<StyledText
-								className='px-[5px] font-bold text-3xl text-offblack text-center'
-								onPress={() => shareCircle()}
-							>
-								{publicCode}
+		<BottomSheetModalProvider>
+			<StyledView
+				className='bg-offblack flex-1'
+				style={{ paddingTop: topInset }}
+			>
+				<ScrollView bounces={false}>
+					<StyledView className='flex-1 min-h-screen flex flex-col items-center'>
+						<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
+							<StyledText className='text-offwhite font-bold text-4xl'>
+								{circleName}
 							</StyledText>
 						</StyledView>
-						{(circlePermission === 'owner' ||
-							circlePermission === 'admin') && (
+						<StyledView className='align-self-center'>
+							<StyledView className='border-[6px] bg-offwhite border-purple rounded-xl'>
+								<StyledView className='p-[15px] rounded-xl'>
+									<QRCode
+										size={240}
+										value={`${publicCode}`}
+										onPress={() => shareCircle()}
+									/>
+								</StyledView>
+							</StyledView>
+							<StyledView className='border-[4px] border-purple bg-white mt-7 p-[10px] rounded-xl'>
+								<StyledText
+									className='px-[5px] font-bold text-3xl text-offblack text-center'
+									onPress={() => shareCircle()}
+								>
+									{publicCode}
+								</StyledText>
+							</StyledView>
+							{(circlePermission === 'owner' ||
+								circlePermission === 'admin') && (
 								<StyledView>
 									<StyledView className='flex-row justify-center items-baseline'>
 										<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
@@ -130,7 +133,9 @@ export default function Page() {
 											<>
 												<StyledText
 													className='font-bold text-3xl text-offwhite'
-													onPress={() => shareCircle()}
+													onPress={() =>
+														shareCircle()
+													}
 												>
 													{privateCode}
 												</StyledText>
@@ -161,101 +166,104 @@ export default function Page() {
 									</StyledPressable>
 								</StyledView>
 							)}
+						</StyledView>
 					</StyledView>
+				</ScrollView>
+				<StyledView
+					className='absolute flex flex-row w-screen px-[15px] justify-between'
+					style={{ bottom: insets.bottom }}
+				>
+					<Button // to Settings Page
+						height={'h-[50px]'}
+						width={'w-[50px]'}
+						iconSize={30}
+						icon='cog'
+						href='circleSettings'
+					/>
+					<Button
+						title='How to share?'
+						height={'h-[50px]'}
+						width={'w-[200px]'}
+						press={() => handlePresentModalPress()}
+					/>
+					<Button // Share Circle
+						height={'h-[50px]'}
+						width={'w-[50px]'}
+						iconSize={30}
+						icon='share'
+						press={() => shareCircle()}
+					/>
 				</StyledView>
-			</ScrollView>
-			<StyledView
-				className='absolute flex flex-row w-screen px-[15px] justify-between'
-				style={{ bottom: insets.bottom }}
-			>
-				<Button // to Settings Page
-					height={'h-[50px]'}
-					width={'w-[50px]'}
-					iconSize={30}
-					icon='cog'
-					href='circleSettings'
-				/>
-				<Button
-					title='How to share?'
-					height={'h-[50px]'}
-					width={'w-[200px]'}
-					press={() => handlePresentModalPress()}
-				/>
-				<Button // Share Circle
-					height={'h-[50px]'}
-					width={'w-[50px]'}
-					iconSize={30}
-					icon='share'
-					press={() => shareCircle()}
-				/>
-			</StyledView>
 
-			<BottomSheetModal
-				enableDismissOnClose={true}
-				ref={bottomSheetModalRef}
-				snapPoints={(['45%', '65%'])}
-				handleComponent={() => handle('Share the ' + `${circleName}` + ' Circle with:')}
-				backdropComponent={(backdropProps) =>
-					backdrop(backdropProps)
-				}
-			>
-				<StyledView className='flex-1 bg-grey'>
-					<StyledView className='flex-1 mx-7 gap-y-8'>
-						<StyledView className='flex-row items-center pt-6'>
-							<StyledIcon
-								className=''
-								name='qr-code-outline'
-								size={30}
-								color='#FFFBFC'
-							/>
-							<StyledText className='ml-3 text-2xl text-offwhite'>
-								Scan this QR code
-							</StyledText>
-						</StyledView>
-						<StyledView className='flex-row items-center'>
-							<StyledIcon
-								className=''
-								name='text'
-								size={30}
-								color='#FFFBFC'
-							/>
-							<StyledText className='ml-3 text-2xl text-offwhite'>
-								Share this code
-							</StyledText>
-						</StyledView>
-						<StyledView className='flex-row items-center'>
-							<StyledIcon
-								className=''
-								name='share-outline'
-								size={30}
-								color='#FFFBFC'
-							/>
-							<StyledText className='ml-3 text-2xl text-offwhite'>
-								Share on other apps
-							</StyledText>
-						</StyledView>
-						{(circlePermission === 'owner' || circlePermission === 'admin') ? (
-							<StyledView className='flex-row items-center'>
+				<BottomSheetModal
+					enableDismissOnClose={true}
+					ref={bottomSheetModalRef}
+					snapPoints={['45%']}
+					handleComponent={() =>
+						handle('Share the ' + `${circleName}` + ' Circle with:')
+					}
+					backdropComponent={(backdropProps) =>
+						backdrop(backdropProps)
+					}
+				>
+					<StyledView className='flex-1 bg-grey'>
+						<StyledView className='flex-1 mx-7 gap-y-8'>
+							<StyledView className='flex-row items-center pt-6'>
 								<StyledIcon
 									className=''
-									name='shield'
+									name='qr-code-outline'
 									size={30}
 									color='#FFFBFC'
 								/>
 								<StyledText className='ml-3 text-2xl text-offwhite'>
-									Share the private code
-								</StyledText>
-								<StyledText className='absolute top-10 left-10 text-l text-offwhite'>
-									This skips the queue, share carefully!
+									Scan this QR code
 								</StyledText>
 							</StyledView>
+							<StyledView className='flex-row items-center'>
+								<StyledIcon
+									className=''
+									name='text'
+									size={30}
+									color='#FFFBFC'
+								/>
+								<StyledText className='ml-3 text-2xl text-offwhite'>
+									Share this code
+								</StyledText>
+							</StyledView>
+							<StyledView className='flex-row items-center'>
+								<StyledIcon
+									className=''
+									name='share-outline'
+									size={30}
+									color='#FFFBFC'
+								/>
+								<StyledText className='ml-3 text-2xl text-offwhite'>
+									Share on other apps
+								</StyledText>
+							</StyledView>
+							{circlePermission === 'owner' ||
+							circlePermission === 'admin' ? (
+								<StyledView className='flex-row items-center'>
+									<StyledIcon
+										className=''
+										name='shield'
+										size={30}
+										color='#FFFBFC'
+									/>
+									<StyledText className='ml-3 text-2xl text-offwhite'>
+										Share the private code
+									</StyledText>
+									<StyledText className='absolute top-10 left-10 text-l text-offwhite'>
+										This skips the queue, share carefully!
+									</StyledText>
+								</StyledView>
 							) : (
 								<></>
-							)
-						}
+							)}
+						</StyledView>
 					</StyledView>
-				</StyledView>
-			</BottomSheetModal>
-		</StyledView>
+				</BottomSheetModal>
+			</StyledView>
+		</BottomSheetModalProvider>
 	);
 }

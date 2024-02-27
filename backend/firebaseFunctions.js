@@ -65,7 +65,7 @@ export async function createCircle(data) {
 		}
 		circleCode += sectionCode.toString() + '.';
 	}
-	data.members[`${uid}`] = true;
+	data.members[`${uid}`] = 'owner';
 	data.admin[`${uid}`] = true;
 	data.owner = uid;
 	data.codes = { admin: 0, public: 0 };
@@ -114,7 +114,7 @@ export async function createCircle(data) {
 		circlePermissions,
 		true
 	);
-	return (circleId); //I think this is the most effective way to do tutorial, let me know if it breaks something else
+	return circleId; //I think this is the most effective way to do tutorial, let me know if it breaks something else
 }
 
 export async function addUserToCircle(circle, otherUserUID) {
@@ -312,10 +312,10 @@ export async function createTutorial(uid) {
 		owner: false
 	};
 	let postList =
-		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts`)) || {}
-		; // Get list of posts in circle
-	data["posts"] = postList;
-	let circleID = createCircle(data);
+		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts`)) ||
+		{}; // Get list of posts in circle
+	data['posts'] = postList;
+	let circleID = await createCircle(data);
 	addUserToCircle(circleID, uid);
 }
 

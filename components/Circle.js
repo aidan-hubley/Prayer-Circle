@@ -30,12 +30,12 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 		currentFilter,
 		currentFilterIcon,
 		currentFilterColor,
-		currentFilterIconColor,
+		currentFilterIconColor
 	] = useStore((state) => [
 		state.filter,
 		state.currentFilterIcon,
 		state.currentFilterColor,
-		state.currentFilterIconColor,
+		state.currentFilterIconColor
 	]);
 
 	let insets = useSafeAreaInsets();
@@ -145,8 +145,14 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 			</AnimatedView>
 
 			<AnimatedPressable
-				style={{ transform: [{ scale: scaleInterpolation }] }}
-				className={`justify-center rounded-full border-[6px] border-offwhite h-[80px] w-[80px] z-10`}
+				style={{
+					transform: [{ scale: scaleInterpolation }],
+					borderColor:
+						currentFilter !== 'unfiltered'
+							? currentFilterColor
+							: '#FFFBFC'
+				}}
+				className={`justify-center rounded-full border-[6px] h-[80px] w-[80px] z-10`}
 				onPressIn={() => {
 					resize(0.7);
 				}}
@@ -181,17 +187,12 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 				}}
 			>
 				{currentFilter !== 'unfiltered' ? (
-					<View
-						className='h-[50px] w-[50px] self-center border-[4px] bg-grey rounded-full justify-center'
-						borderColor={currentFilterColor}
-					>
-						<StyledIcon
-							name={currentFilterIcon}
-							size={25}
-							color={currentFilterIconColor}
-							className='self-center'
-						/>
-					</View>
+					<StyledIcon
+						name={currentFilterIcon}
+						size={38}
+						color={currentFilterIconColor}
+						className='self-center'
+					/>
 				) : (
 					<></>
 				)}

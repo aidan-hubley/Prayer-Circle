@@ -19,7 +19,11 @@ import {
 } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import {
+	BottomSheetModal,
+	BottomSheetFlatList,
+	BottomSheetModalProvider
+} from '@gorhom/bottom-sheet';
 import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
 import { auth } from '../../backend/config';
 import { reportBug } from '../../backend/firebaseFunctions.js';
@@ -38,7 +42,7 @@ export default function Page() {
 	const topicRef = useRef(null);
 	const descriptionRef = useRef(null);
 	const [desc, setDesc] = useState('');
-	const [topic, setTopic] = useState('')
+	const [topic, setTopic] = useState('');
 	const [handles, setHandles] = useState('');
 	const [snapPoints, setSnapPoints] = useState([]);
 	const [modalContent, setModalContent] = useState(null);
@@ -49,8 +53,9 @@ export default function Page() {
 		try {
 			await Share.share({
 				title: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
-				message: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
-				url: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+				message:
+					'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+				url: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com'
 			});
 		} catch (error) {
 			console.error('Error:', error);
@@ -84,7 +89,7 @@ export default function Page() {
 		modalContent,
 		snapPoints,
 		handleText,
-		handleColor,
+		handleColor
 	) => {
 		setModalContent(modalContent);
 		setSnapPoints(snapPoints);
@@ -152,7 +157,7 @@ export default function Page() {
 	};
 
 	return (
-		<>
+		<BottomSheetModalProvider>
 			<StyledView
 				className='bg-offblack'
 				style={{ width: Dimensions.get('window').width }}
@@ -165,7 +170,9 @@ export default function Page() {
 				>
 					<StyledPressable
 						onPress={() => router.push('http://prayer-circle.com')}
-						className={Platform.OS == 'android' ? 'my-[40px]' : 'mb-[40px]'}
+						className={
+							Platform.OS == 'android' ? 'my-[40px]' : 'mb-[40px]'
+						}
 						style={{ top: topInset }}
 					>
 						<StyledImage
@@ -225,7 +232,11 @@ export default function Page() {
 							</StyledText>
 							<StyledPressable
 								className='w-[65px] h-[35px] bg-transparent border-offwhite border rounded-[20px] justify-center items-center'
-								onPress={() => router.push('https://forms.gle/PtbSFjNjtUBJi3Tz6')}
+								onPress={() =>
+									router.push(
+										'https://forms.gle/PtbSFjNjtUBJi3Tz6'
+									)
+								}
 							>
 								<StyledImage
 									className='w-[18px] h-[24px]'
@@ -334,10 +345,10 @@ export default function Page() {
 								press={() =>
 									Linking.openURL(
 										'mailto:devs.prayercircle@gmail.com?subject=Prayer Circle User &body=Hello Prayer Circle Devs, %0A %0A [add your message here] %0A %0A Account Name: ' +
-										userData.displayName +
-										' %0A Account Email: ' +
-										userData?.email +
-										''
+											userData.displayName +
+											' %0A Account Email: ' +
+											userData?.email +
+											''
 									)
 								}
 							></Button>
@@ -681,6 +692,6 @@ export default function Page() {
 					{renderContent()}
 				</StyledView>
 			</BottomSheetModal>
-		</>
+		</BottomSheetModalProvider>
 	);
 }

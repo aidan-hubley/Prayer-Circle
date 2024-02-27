@@ -67,9 +67,7 @@ export function Provider(props) {
 				router.replace('/login');
 			} else if (user && inAuthGroup) {
 				SplashScreen.hideAsync();
-				router.replace(
-					''
-				); /* TODO: fix this to replace the current screen */
+				router.replace('');
 			} else {
 				SplashScreen.hideAsync();
 			}
@@ -135,7 +133,7 @@ export function Provider(props) {
 				data.public['profile_img'] = imgURL;
 
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
-				
+
 				createTutorial(user.uid);
 
 				notify(
