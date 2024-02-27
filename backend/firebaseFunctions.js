@@ -65,7 +65,7 @@ export async function createCircle(data) {
 		}
 		circleCode += sectionCode.toString() + '.';
 	}
-	data.members[`${uid}`] = true;
+	data.members[`${uid}`] = 'owner';
 	data.admin[`${uid}`] = true;
 	data.owner = uid;
 	data.codes = { admin: 0, public: 0 };
@@ -114,6 +114,7 @@ export async function createCircle(data) {
 		circlePermissions,
 		true
 	);
+	return circleId; //I think this is the most effective way to do tutorial, let me know if it breaks something else
 }
 
 export async function addUserToCircle(circle, otherUserUID) {
@@ -289,4 +290,43 @@ export async function checkIfUserIsInCircle(circle) {
 		}
 	}
 	return inCircle;
+}
+
+export async function createTutorial(uid) {
+	let data = {
+		title: 'Tutorial',
+		description: 'A place to learn how to use Prayer Circle',
+		iconColor: '#FFFFFF',
+		icon: 'home',
+		timestamp: Date.now(),
+		type: 'individual',
+		color: '#FFFFFF',
+		members: {
+			[uid]: true
+		},
+		admin: {
+			[uid]: true
+		},
+		usersAwaitingEntry: {},
+		posts: {},
+		owner: false
+	};
+	let postList =
+		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts`)) ||
+		{}; // Get list of posts in circle
+	data['posts'] = postList;
+	let circleID = await createCircle(data);
+	addUserToCircle(circleID, uid);
+}
+
+export async function reportBug(topic, description) {
+	let uid = await getUID();
+	let bug = {
+		user: uid,
+		topic: topic,
+		description: description,
+		timestamp: Date.now()
+	};
+
+	writeData(`prayer_circle/bugs/${generateId()}`, bug, true);
 }

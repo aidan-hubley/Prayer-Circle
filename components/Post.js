@@ -749,7 +749,7 @@ export const Post = (post) => {
 
 	// db related functions
 	async function deletePost() {
-		for (let circle of Object.keys(post.data.circles)) {
+		for (let circle of Object.keys(post?.data?.circles || {})) {
 			await writeData(
 				`prayer_circle/circles/${circle}/posts/${post.id}`,
 				null,

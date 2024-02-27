@@ -12,7 +12,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import { readData, getProfilePosts } from '../../backend/firebaseFunctions';
+import {
+	readData,
+	getProfilePosts,
+	createTutorial
+} from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
 import CachedImage from 'expo-cached-image';

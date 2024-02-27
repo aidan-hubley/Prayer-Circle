@@ -4,8 +4,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SplashScreen } from 'expo-router';
 import { Provider, useAuth } from './context/auth';
 import AnimatedSplash from 'react-native-animated-splash-screen';
-import { readData, writeData } from '../backend/firebaseFunctions';
-import { encrypt, decrypt } from 'react-native-simple-encryption';
+import { readData } from '../backend/firebaseFunctions';
 import * as Config from '../app.config';
 import { auth } from '../backend/config.js';
 import { useStore, notify } from './global.js';
@@ -23,17 +22,19 @@ export default function RootLayout() {
 	useEffect(() => {
 		(async () => {
 			setTimeout(async () => {
-				let settings = await readData(
-					`prayer_circle/users/${auth.currentUser.uid}/private/settings`
-				);
-				setHaptics(settings?.haptics);
-				setNotifications(settings?.notifications);
+				if (auth) {
+					let settings =
+						(await readData(
+							`prayer_circle/users/${auth?.currentUser?.uid}/private/settings`
+						)) || {};
+					setHaptics(settings?.haptics);
+					setNotifications(settings?.notifications);
+				}
 			}, 1000);
-
 			let latestVersion = await readData(
 				'prayer_circle/constants/minimum_stable_version'
 			);
-			if (latestVersion > Config.default.expo.version) {
+			if (latestVersion > Config?.default?.expo.version) {
 				notify(
 					'App Update Available',
 					'A new version of Prayer Circle is available. Please update to the latest version to continue using the app.',
