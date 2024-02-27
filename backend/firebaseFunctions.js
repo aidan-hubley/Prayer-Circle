@@ -297,8 +297,11 @@ export async function createTutorial(data) {
 	let postList = Object.keys(
 		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts/`)) || {}
 	); // Get list of posts in circle
-	let now = Date.now();
+	console.log("postList");
+	console.log(postList);
 	for (let post of postList) {
+		console.log("post");
+		console.log(post);
 		let newPost = {
 			user: post.user,
 			profile_img: post.profile_img,
@@ -306,7 +309,7 @@ export async function createTutorial(data) {
 			title: post.title,
 			body: post.body,
 			type: post.type,
-			timestamp: now,
+			timestamp: Date.now(),
 			circles,
 			metadata: {
 				flag_count: 0,
@@ -318,6 +321,8 @@ export async function createTutorial(data) {
 				viewable_interactions: 'private'
 			}
 		};
-		writeData(`prayer_circle/circles/${circle}/posts/`, newPost, false); //Removes circle from posts' circles list
+		console.log("newPost");
+		console.log(newPost);
+		// writeData(`prayer_circle/circles/${circle}/posts/`, newPost, false); //Removes circle from posts' circles list
 	}
 }

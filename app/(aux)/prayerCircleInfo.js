@@ -37,6 +37,7 @@ export default function Page() {
 	const bottomSheetModalRef = useRef(null);
 
 	let insets = useSafeAreaInsets();
+	let topInset = insets.top > 30 ? insets.top : insets.top + 10;
 
 	const handleModalPress = (
 		modalContent,
@@ -84,7 +85,8 @@ export default function Page() {
 				>
 					<StyledPressable
 						onPress={() => router.push('http://prayer-circle.com')}
-						className='mt-[40px]'
+						className='my-[40px]'
+						style={{ top: topInset}}
 					>
 						<StyledImage
 							style={{ width: 300, height: 300 }}
@@ -143,7 +145,7 @@ export default function Page() {
 							</StyledText>
 							<StyledPressable
 								className='w-[65px] h-[35px] bg-transparent border-offwhite border rounded-[20px] justify-center items-center'
-								onPress={() => '/'}
+								onPress={() => router.push('https://forms.gle/PtbSFjNjtUBJi3Tz6')}
 							>
 								<StyledImage
 									className='w-[18px] h-[24px]'
