@@ -38,7 +38,8 @@ import {
 	getHiddenPosts,
 	writeData,
 	readData,
-	uploadImage
+	uploadImage,
+	createTutorial
 } from '../../backend/firebaseFunctions';
 import { useStore, notify } from '../global';
 
@@ -385,9 +386,9 @@ export default function Page() {
 			notify(
 				'Error',
 				'The name does not match. Deletion name: ' +
-					deletionName +
-					' Name: ' +
-					userData.displayName,
+				deletionName +
+				' Name: ' +
+				userData.displayName,
 				'#CC2500'
 			);
 			return;
@@ -511,7 +512,7 @@ export default function Page() {
 		snapPoints,
 		handleText,
 		handleColor,
-		extra = () => {}
+		extra = () => { }
 	) => {
 		extra();
 		setModalContent(modalContent);
@@ -748,6 +749,23 @@ export default function Page() {
 									</StyledText>
 								</StyledView>
 							)}
+						/>
+					</StyledView>
+				);
+			case 'Tutorial':
+				return (
+					<StyledView className='w-[85%] items-center'>
+						<Button
+							title='Recreate Tutorial'
+							textColor={'text-offblack'}
+							bgColor={'bg-[#00A55E]'}
+							btnStyles='mt-5'
+							width='w-[70%]'
+							press={() => {
+								createTutorial(userData.uid);
+								notify('Tutorial Circle', 'Check it out!', '#00A55E');
+								bottomSheetModalRef.current?.close();
+							}}
 						/>
 					</StyledView>
 				);
@@ -1493,6 +1511,34 @@ export default function Page() {
 											'Hidden Posts',
 											'',
 											setUpHiddenPosts
+										);
+									}}
+								></Button>
+							</View>
+						</View>
+						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+						<View className='flex-row items-center mt-5 px-5'>
+							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
+								<StyledView className='flex-row'>
+									<Text className='mr-3 text-lg text-offwhite'>
+										Recreate Tutorial Circle
+									</Text>
+								</StyledView>
+								<Button
+									icon='home'
+									iconColor={'#FFFBFC'}
+									iconSize={26}
+									width={'w-[65px]'}
+									height={'h-[35px]'}
+									bgColor={'bg-transparent'}
+									borderColor={'#FFFBFC'}
+									btnStyles='border-2'
+									press={() => {
+										handleModalPress(
+											'Tutorial',
+											['23%'],
+											'Recreate Tutorial',
+											'',
 										);
 									}}
 								></Button>

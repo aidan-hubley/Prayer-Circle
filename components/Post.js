@@ -1153,7 +1153,7 @@ export const Post = (post) => {
 									<StyledText
 										className={`${
 											post.owned
-												? 'ml-[10px] text-white font-bold text-[16px]'
+												? 'ml-[4px] text-white font-bold text-[16px]'
 												: 'text-white font-bold text-[16px]'
 										}`}
 									>
