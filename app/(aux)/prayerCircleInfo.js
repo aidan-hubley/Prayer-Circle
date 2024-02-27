@@ -44,9 +44,7 @@ export default function Page() {
 		snapPoints,
 		handleText,
 		handleColor,
-		extra = () => {}
 	) => {
-		extra();
 		setModalContent(modalContent);
 		setSnapPoints(snapPoints);
 		setHandles(handle(handleText, handleColor));
@@ -85,8 +83,8 @@ export default function Page() {
 				>
 					<StyledPressable
 						onPress={() => router.push('http://prayer-circle.com')}
-						className='mb-[40px]'
-						style={{ top: topInset}}
+						className={Platform.OS == 'android' ? 'my-[40px]' : 'mb-[40px]'}
+						style={{ top: topInset }}
 					>
 						<StyledImage
 							style={{ width: 300, height: 300 }}
@@ -247,10 +245,10 @@ export default function Page() {
 								press={() =>
 									Linking.openURL(
 										'mailto:devs.prayercircle@gmail.com?subject=Prayer Circle User &body=Hello Prayer Circle Devs, %0A %0A [add your message here] %0A %0A Account Name: ' +
-											userData.displayName +
-											' %0A Account Email: ' +
-											userData?.email +
-											''
+										userData.displayName +
+										' %0A Account Email: ' +
+										userData?.email +
+										''
 									)
 								}
 							></Button>
@@ -537,18 +535,6 @@ export default function Page() {
 					/>
 				</ScrollView>
 			</StyledView>
-			<BottomSheetModal
-				ref={bottomSheetModalRef}
-				index={0}
-				snapPoints={snapPoints}
-				handleComponent={() => handles}
-				backdropComponent={(backdropProps) => backdrop(backdropProps)}
-				keyboardBehavior='extend'
-			>
-				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
-					{renderContent()}
-				</StyledView>
-			</BottomSheetModal>
 			<StyledGradient
 				pointerEvents='none'
 				start={{ x: 0, y: 0.1 }}
@@ -595,6 +581,17 @@ export default function Page() {
 					href='/'
 				/>
 			</StyledView>
+			<BottomSheetModal
+				ref={bottomSheetModalRef}
+				snapPoints={snapPoints}
+				handleComponent={() => handles}
+				backdropComponent={(backdropProps) => backdrop(backdropProps)}
+				keyboardBehavior='extend'
+			>
+				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+					{renderContent()}
+				</StyledView>
+			</BottomSheetModal>
 		</>
 	);
 }
