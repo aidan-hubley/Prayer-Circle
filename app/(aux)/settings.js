@@ -39,7 +39,8 @@ import {
 	writeData,
 	readData,
 	uploadImage,
-	createTutorial
+	createTutorial,
+	checkIfTutorialExists
 } from '../../backend/firebaseFunctions';
 import { useStore, notify } from '../global';
 
@@ -99,6 +100,21 @@ export default function Page() {
 		state.setGlobalReload,
 		state.setFilterReload
 	]);
+
+	const RecreateTutoril = () => {
+		if (checkIfTutorialExists(userData.uid)) {
+			console.log('Doesnt exist');
+			createTutorial(userData.uid);
+			setGlobalReload(true);
+			setFilterReload(true);
+			notify('Tutorial Circle', 'Check it out!', '#00A55E');
+			bottomSheetModalRef.current?.close();
+		} else {
+			console.log('Already exists');
+			notify('Tutorial Circle Already Exists', 'Check it out!', '#CC2500');
+			bottomSheetModalRef.current?.close();
+		}
+	};
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
@@ -761,11 +777,7 @@ export default function Page() {
 							bgColor={'bg-[#00A55E]'}
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={() => {
-								createTutorial(userData.uid);
-								notify('Tutorial Circle', 'Check it out!', '#00A55E');
-								bottomSheetModalRef.current?.close();
-							}}
+							press={() => RecreateTutoril()}
 						/>
 					</StyledView>
 				);

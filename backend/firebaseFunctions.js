@@ -319,6 +319,19 @@ export async function createTutorial(uid) {
 	addUserToCircle(circleID, uid);
 }
 
+export async function checkIfTutorialExists(uid) {
+	let circles = await getCircles();
+	console.log(circles);
+	for (let i = 0; i < circles.length; i++) {
+		let circleData = (await readData(`prayer_circle/circles/${circles[i]}`)) || {};
+		console.log(circleData.title);
+		if (circleData.title === 'Tutorial') {
+			return true;
+		}
+	}
+	return false;
+}
+
 export async function reportBug(topic, description) {
 	let uid = await getUID();
 	let bug = {
