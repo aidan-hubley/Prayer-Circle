@@ -84,13 +84,19 @@ export default function Page() {
 		notifications,
 		setHaptics,
 		setNotifications,
-		setGlobalReload
+		setFilter,
+		setFilterName,
+		setGlobalReload,
+		setFilterReload
 	] = useStore((state) => [
 		state.haptics,
 		state.notifications,
 		state.setHaptics,
 		state.setNotifications,
-		state.setGlobalReload
+		state.setFilter,
+		state.setFilterName,
+		state.setGlobalReload,
+		state.setFilterReload
 	]);
 
 	const PasswordReset = async () => {
@@ -984,6 +990,10 @@ export default function Page() {
 							btnStyles='mt-3'
 							width='w-[70%]'
 							press={() => {
+								setFilter('unfiltered');
+								setFilterName('Prayer Circle');
+								setGlobalReload(true);
+								setFilterReload(true);
 								authContext.signOut();
 							}}
 						/>
@@ -1760,7 +1770,6 @@ export default function Page() {
 					height={'h-[50px]'}
 					iconSize={30}
 					press={() => {
-						setGlobalReload(true);
 						handleModalPress('signOut', ['20%']);
 					}}
 				></Button>
