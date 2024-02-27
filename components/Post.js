@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { timeSince, formatDateAndTime } from '../backend/functions';
+import { timeSince, formatTimestamp } from '../backend/functions';
 import {
 	writeData,
 	readData,
@@ -949,17 +949,27 @@ export const Post = (post) => {
 	};
 
 	const getEventDate = () => {
-		const start = formatDateAndTime(post?.metadata?.start);
-		const end = formatDateAndTime(post?.metadata?.end);
+		let currentTimezoneOffset = -new Date().getTimezoneOffset();
+		const start = formatTimestamp(
+			post?.metadata?.start,
+			post?.metadata?.timezone_offset,
+			currentTimezoneOffset
+		);
+		const end = formatTimestamp(
+			post?.metadata?.end,
+			post?.metadata?.timezone_offset,
+			currentTimezoneOffset
+		);
+
 		let date = '';
 
 		if (start === end) {
 			date = start;
-		} else if (start.split(', ')[0] === end.split(', ')[0]) {
+		} /* else if (start.split(', ')[0] === end.split(', ')[0]) {
 			date = `${start.split(', ')[0]}, ${start.split(', ')[1]}-${
 				end.split(', ')[1]
 			}`;
-		} else {
+		} */ else {
 			date = `${start} - ${end}`;
 		}
 
