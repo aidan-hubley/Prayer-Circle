@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
 	Text,
+	TextInput,
 	View,
 	Platform,
 	Image,
@@ -11,6 +12,7 @@ import {
 	Dimensions
 } from 'react-native';
 import { styled } from 'nativewind';
+import { notify } from '../../app/global';
 import {
 	SafeAreaView,
 	useSafeAreaInsets
@@ -20,10 +22,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
 import { auth } from '../../backend/config';
+import { reportBug } from '../../backend/firebaseFunctions.js';
 import { Terms } from '../../components/Terms';
 import { router } from 'expo-router';
 
 const StyledView = styled(View);
+const StyledInput = styled(TextInput);
 const StyledText = styled(Text);
 const StyledImage = styled(Image);
 const StyledSafeArea = styled(SafeAreaView);
@@ -31,6 +35,10 @@ const StyledGradient = styled(LinearGradient);
 const StyledPressable = styled(Pressable);
 
 export default function Page() {
+	const topicRef = useRef(null);
+	const descriptionRef = useRef(null);
+	const [desc, setDesc] = useState('');
+	const [topic, setTopic] = useState('')
 	const [handles, setHandles] = useState('');
 	const [snapPoints, setSnapPoints] = useState([]);
 	const [modalContent, setModalContent] = useState(null);
@@ -46,6 +54,26 @@ export default function Page() {
 			});
 		} catch (error) {
 			console.error('Error:', error);
+		}
+	};
+
+	const bugReport = () => {
+		if (topic.length > 0 && desc.length > 0) {
+			reportBug(topic, desc);
+			notify(
+				'Bug Successfully Reported.',
+				'A Prayer Circle developer will investigate this bug.',
+				'#00A55E'
+			);
+			topicRef.current.clear();
+			descriptionRef.current.clear();
+			bottomSheetModalRef.current?.close();
+		} else {
+			notify(
+				'Please fill out all fields.',
+				'Make sure to include a topic and a description of the bug.',
+				'#FF0000'
+			);
 		}
 	};
 
@@ -75,6 +103,47 @@ export default function Page() {
 							keyExtractor={(item) => item.key}
 							showsVerticalScrollIndicator={false}
 						/>
+					</StyledView>
+				);
+			case 'bug':
+				return (
+					<StyledView className='w-[90%] flex-1'>
+						<StyledView className='flex flex-col w-full gap-y-3'>
+							<StyledText className='text-offwhite text-[20px]'>
+								Topic
+							</StyledText>
+							<StyledInput
+								className='bg-[#ffffff11] rounded-[10px] px-3 py-3 text-white text-[16px]'
+								placeholderTextColor='#ffffff66'
+								placeholder='Enter the topic of the bug'
+								ref={topicRef}
+								onChangeText={(text) => {
+									setTopic(text);
+								}}
+							/>
+							<StyledText className='text-offwhite text-[20px]'>
+								Description
+							</StyledText>
+							<StyledInput
+								className='bg-[#ffffff11] rounded-[10px] px-3 py-3 text-white text-[16px]'
+								placeholderTextColor='#ffffff66'
+								placeholder='Enter a detailed description of the bug'
+								multiline={true}
+								numberOfLines={5}
+								ref={descriptionRef}
+								onChangeText={(text) => {
+									setDesc(text);
+								}}
+							/>
+						</StyledView>
+						<StyledView className='items-center pt-3'>
+							<Button
+								press={() => bugReport()}
+								textColor={'#121212'}
+								title='Send Bug Report'
+								className='w-[90%]'
+							/>
+						</StyledView>
 					</StyledView>
 				);
 			default:
@@ -197,7 +266,14 @@ export default function Page() {
 								bgColor={'bg-transparent'}
 								borderColor={'#FFFBFC'}
 								btnStyles='border'
-								href={'/'}
+								press={() =>
+									handleModalPress(
+										'bug',
+										['65%', '85%'],
+										'Report a Bug',
+										''
+									)
+								}
 							></Button>
 						</StyledView>
 					</StyledView>

@@ -313,8 +313,20 @@ export async function createTutorial(uid) {
 	};
 	let postList =
 		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts`)) || {}
-	; // Get list of posts in circle
+		; // Get list of posts in circle
 	data["posts"] = postList;
 	let circleID = createCircle(data);
 	addUserToCircle(circleID, uid);
+}
+
+export async function reportBug(topic, description) {
+	let uid = await getUID();
+	let bug = {
+		user: uid,
+		topic: topic,
+		description: description,
+		timestamp: Date.now()
+	};
+
+	writeData(`prayer_circle/bugs/${generateId()}`, bug, true);
 }
