@@ -292,37 +292,29 @@ export async function checkIfUserIsInCircle(circle) {
 	return inCircle;
 }
 
-export async function createTutorial(data) {
-	let circle = createCircle(data); //how to get circle id of the circle this is creating?
-	let postList = Object.keys(
-		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts/`)) || {}
-	); // Get list of posts in circle
-	console.log("postList");
-	console.log(postList);
-	for (let post of postList) {
-		console.log("post");
-		console.log(post);
-		let newPost = {
-			user: post.user,
-			profile_img: post.profile_img,
-			name: post.name,
-			title: post.title,
-			body: post.body,
-			type: post.type,
-			timestamp: Date.now(),
-			circles,
-			metadata: {
-				flag_count: 0,
-				start: null,
-				end: null
-			},
-			settings: {
-				viewable_comments: false,
-				viewable_interactions: 'private'
-			}
-		};
-		console.log("newPost");
-		console.log(newPost);
-		// writeData(`prayer_circle/circles/${circle}/posts/`, newPost, false); //Removes circle from posts' circles list
-	}
+export async function createTutorial(uid) {
+	let data = {
+		title: 'Tutorial',
+		description: 'A place to learn how to use Prayer Circle',
+		iconColor: '#FFFFFF',
+		icon: 'home',
+		timestamp: Date.now(),
+		type: 'individual',
+		color: '#FFFFFF',
+		members: {
+			[uid]: true
+		},
+		admin: {
+			[uid]: true
+		},
+		usersAwaitingEntry: {},
+		posts: {},
+		owner: false
+	};
+	let postList =
+		(await readData(`prayer_circle/circles/-NrYA9VcCeNftfvsl8H1/posts`)) || {}
+	; // Get list of posts in circle
+	data["posts"] = postList;
+	let circleID = createCircle(data);
+	addUserToCircle(circleID, uid);
 }

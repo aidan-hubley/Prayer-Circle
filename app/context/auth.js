@@ -15,7 +15,8 @@ import { auth } from '../../backend/config';
 import {
 	writeData,
 	readData,
-	uploadImage
+	uploadImage,
+	createTutorial
 } from '../../backend/firebaseFunctions';
 import {
 	signOut,
@@ -134,9 +135,11 @@ export function Provider(props) {
 				data.public['profile_img'] = imgURL;
 
 				writeData(`prayer_circle/users/${user.uid}`, data, true);
+				
+				createTutorial(user.uid);
 
 				notify(
-					'Welcom to Prayer Circle',
+					'Welcome to Prayer Circle',
 					'Thank you for becoming a part of Prayer Circle! Please verify your email before logging in. Check your email for a verification link.',
 					'#00A55E',
 					140000
