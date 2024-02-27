@@ -401,7 +401,7 @@ export default function Page() {
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
 					index={0}
-					snapPoints={SnapPoints(['65%'])}
+					snapPoints={modalContent === 'queue' ? SnapPoints(['65%']) : SnapPoints(['37%'])}
 					handleComponent={() => handle(handleText)}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
@@ -437,7 +437,7 @@ export default function Page() {
 						{modalContent === 'leave' && (
 							<StyledView className='flex-1 items-center h-[60%]'>
 								<Button
-									btnStyles='top-[15%] bg-grey border-4'
+									btnStyles='top-[5%] bg-grey border-4'
 									height={'h-[90px]'}
 									width={'w-[90px]'}
 									iconSize={60}
@@ -447,14 +447,14 @@ export default function Page() {
 									borderColor={currentFilterColor}
 								/>
 
-								<StyledText className='top-[20%] text-3xl text-offwhite'>
+								<StyledText className='top-[10%] text-3xl text-offwhite'>
 									{currentFilterName}
 								</StyledText>
 								{/* Database call to remove from Circle  */}
 								<Button
 									title='Leave this Circle'
 									btnStyles={
-										'top-[31%] border-2 border-yellow'
+										'top-[18%] border-2 border-yellow'
 									}
 									bgColor={'bg-offblack'}
 									textStyles={'text-yellow'}
@@ -468,7 +468,7 @@ export default function Page() {
 						{modalContent === 'delete' && (
 							<StyledView className='flex-1 items-center h-[60%]'>
 								<Button
-									btnStyles='top-[15%] bg-grey border-4'
+									btnStyles='top-[5%] bg-grey border-4'
 									height={'h-[90px]'}
 									width={'w-[90px]'}
 									iconSize={60}
@@ -477,13 +477,13 @@ export default function Page() {
 									href='/'
 									borderColor={currentFilterColor}
 								/>
-								<StyledText className='top-[20%] text-3xl text-offwhite'>
+								<StyledText className='top-[10%] text-3xl text-offwhite'>
 									{currentFilterName}
 								</StyledText>
 								{/* Database call to remove from Circle  */}
 								<Button
 									title='Delete this Circle'
-									btnStyles={'top-[31%] border-2 border-red'}
+									btnStyles={'top-[18%] border-2 border-red'}
 									bgColor={'bg-offblack'}
 									textStyles={'text-red'}
 									width='w-[70%]'

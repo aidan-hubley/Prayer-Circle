@@ -79,14 +79,25 @@ export default function Page() {
 	const insets = useSafeAreaInsets();
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
-	const [haptics, notifications, setHaptics, setNotifications] = useStore(
-		(state) => [
-			state.haptics,
-			state.notifications,
-			state.setHaptics,
-			state.setNotifications
-		]
-	);
+	const [
+		haptics,
+		notifications,
+		setHaptics,
+		setNotifications,
+		setFilter,
+		setFilterName,
+		setGlobalReload,
+		setFilterReload
+	] = useStore((state) => [
+		state.haptics,
+		state.notifications,
+		state.setHaptics,
+		state.setNotifications,
+		state.setFilter,
+		state.setFilterName,
+		state.setGlobalReload,
+		state.setFilterReload
+	]);
 
 	const PasswordReset = async () => {
 		if (userData && userData?.email) {
@@ -105,7 +116,7 @@ export default function Page() {
 		}
 	};
 
-	const hanleChangeName = async () => {
+	const handleChangeName = async () => {
 		if (newFName === '' || newLName === '') {
 			notify('Error', 'Please enter a valid name.', '#CC2500');
 			return;
@@ -135,6 +146,10 @@ export default function Page() {
 				);
 			});
 		}
+
+		updateProfile(auth?.currentUser, {
+			displayName: `${newFName} ${newLName}`
+		});
 
 		notify(
 			'Success',
@@ -571,7 +586,7 @@ export default function Page() {
 							title='Confirm'
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={hanleChangeName}
+							press={handleChangeName}
 						/>
 					</StyledView>
 				);
@@ -979,6 +994,10 @@ export default function Page() {
 							btnStyles='mt-3'
 							width='w-[70%]'
 							press={() => {
+								setFilter('unfiltered');
+								setFilterName('Prayer Circle');
+								setGlobalReload(true);
+								setFilterReload(true);
 								authContext.signOut();
 							}}
 						/>

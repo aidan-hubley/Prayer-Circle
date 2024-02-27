@@ -5,7 +5,9 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Pressable,
-	Animated
+	Animated,
+	Platform,
+	Keyboard
 } from 'react-native';
 import { styled } from 'nativewind';
 import { PostTypeSelector } from '../../components/PostTypeSelector';
@@ -22,10 +24,9 @@ import { useStore, notify } from '../global';
 import { Filter } from '../../components/Filter';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../backend/config';
-import DateTimePicker from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
-import { formatDateAndTime, isTimeBefore } from '../../backend/functions';
-import { encrypt, decrypt } from 'react-native-simple-encryption';
+import { encrypt } from 'react-native-simple-encryption';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { formatTimestamp } from '../../backend/functions';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -36,10 +37,6 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
-	const [getDate, setGetDate] = useState(dayjs);
-	const [getWhichDate, setGetWhichDate] = useState(null);
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
@@ -51,22 +48,14 @@ export default function Page() {
 			state.setAddCircles
 		]
 	);
-	const [dateTimePickerShown, setDateTimePickerShown] = useState(false);
-	const dtpOpacity = useRef(new Animated.Value(0)).current;
-
-	const dtpInter = dtpOpacity.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0, 1]
-	});
-
-	const toggleDateTimePicker = () => {
-		Animated.spring(dtpOpacity, {
-			toValue: dateTimePickerShown ? 0 : 1,
-			duration: 200,
-			useNativeDriver: true
-		}).start();
-		setDateTimePickerShown(!dateTimePickerShown);
-	};
+	const [startDate, setStartDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(new Date());
+	const [startDateShow, setStartDateShow] = useState(false);
+	const [endDateShow, setEndDateShow] = useState(false);
+	const [startTimeShow, setStartTimeShow] = useState(false);
+	const [endTimeShow, setEndTimeShow] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+	const filterRef = useRef();
 
 	const handleSelect = (index) => {
 		if (index == 2) {
@@ -82,6 +71,26 @@ export default function Page() {
 
 	useEffect(() => {
 		setAddCircles([]);
+	}, []);
+
+	useEffect(() => {
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+				setKeyboardVisible(true); // or some other action
+			}
+		);
+		const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+				setKeyboardVisible(false); // or some other action
+			}
+		);
+
+		return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		};
 	}, []);
 
 	return (
@@ -123,48 +132,150 @@ export default function Page() {
 							}}
 						/>
 						{showDatePicker && (
-							<View className='w-full flex flex-row justify-between'>
-								<Pressable
-									className='bg-offblack w-[48%] border border-outline rounded-lg px-3 py-[10px] my-2'
-									onPress={() => {
-										setGetWhichDate('start');
-										toggleDateTimePicker();
-									}}
-								>
-									<Text
-										className='text-[18px]'
-										style={{
-											color: startDate
-												? '#fefefe'
-												: '#fefefe80'
-										}}
-									>
-										{startDate
-											? formatDateAndTime(startDate)
-											: 'Start'}
+							<>
+								<View className='flex flex-row items-center justify-start w-full mb-2'>
+									<Text className='text-offwhite text-[18px] pl-2'>
+										Start:{' '}
 									</Text>
-								</Pressable>
-								<Pressable
-									className='bg-offblack w-[48%] border border-outline rounded-lg px-3 py-[10px] my-2'
-									onPress={() => {
-										setGetWhichDate('end');
-										toggleDateTimePicker();
-									}}
-								>
-									<Text
-										className='text-[18px]'
-										style={{
-											color: endDate
-												? '#fefefe'
-												: '#fefefe80'
-										}}
-									>
-										{endDate
-											? formatDateAndTime(endDate)
-											: 'End'}
+									{(Platform.OS === 'android'
+										? startDateShow
+										: true) && (
+										<DateTimePicker
+											value={startDate}
+											mode={'date'}
+											display='default'
+											onChange={(event, selectedDate) => {
+												setStartDate(selectedDate);
+												setStartDateShow(false);
+											}}
+										/>
+									)}
+									{(Platform.OS === 'android'
+										? startTimeShow
+										: true) && (
+										<DateTimePicker
+											value={startDate}
+											mode={'time'}
+											is24Hour={false}
+											display='spinner'
+											onChange={(event, selectedDate) => {
+												setStartDate(selectedDate);
+												setStartTimeShow(false);
+											}}
+										/>
+									)}
+									{Platform.OS === 'android' && (
+										<>
+											<Pressable
+												className='bg-grey py-[5px] px-[10px] rounded-[8px] ml-[6px]'
+												onPress={() => {
+													setStartDateShow(true);
+												}}
+											>
+												<Text className='text-offwhite text-[16px]'>
+													{
+														formatTimestamp(
+															startDate.getTime(),
+															-new Date().getTimezoneOffset(),
+															-new Date().getTimezoneOffset()
+														).split(', ')[0]
+													}
+													,{' '}
+													{new Date().getYear() +
+														1900}
+												</Text>
+											</Pressable>
+											<Pressable
+												className='bg-grey py-[5px] px-[10px] rounded-[8px] ml-[6px]'
+												onPress={() => {
+													setStartTimeShow(true);
+												}}
+											>
+												<Text className='text-offwhite text-[16px]'>
+													{
+														formatTimestamp(
+															startDate.getTime(),
+															-new Date().getTimezoneOffset(),
+															-new Date().getTimezoneOffset()
+														).split(', ')[1]
+													}
+												</Text>
+											</Pressable>
+										</>
+									)}
+								</View>
+								<View className='flex flex-row items-center justify-start w-full mb-2'>
+									<Text className='text-offwhite text-[18px] pl-2'>
+										End:{' '}
 									</Text>
-								</Pressable>
-							</View>
+									{(Platform.OS === 'android'
+										? endDateShow
+										: true) && (
+										<DateTimePicker
+											value={endDate}
+											mode={'date'}
+											display='default'
+											onChange={(event, selectedDate) => {
+												setEndDate(selectedDate);
+												setEndDateShow(false);
+											}}
+										/>
+									)}
+									{(Platform.OS === 'android'
+										? endTimeShow
+										: true) && (
+										<DateTimePicker
+											value={endDate}
+											mode={'time'}
+											is24Hour={false}
+											display='spinner'
+											onChange={(event, selectedDate) => {
+												setEndDate(selectedDate);
+												setEndTimeShow(false);
+											}}
+										/>
+									)}
+									{Platform.OS === 'android' && (
+										<>
+											<Pressable
+												className='bg-grey py-[5px] px-[10px] rounded-[8px] ml-[6px]'
+												onPress={() => {
+													setEndDateShow(true);
+												}}
+											>
+												<Text className='text-offwhite text-[16px]'>
+													{
+														formatTimestamp(
+															endDate.getTime(),
+															-new Date().getTimezoneOffset(),
+															-new Date().getTimezoneOffset()
+														).split(', ')[0]
+													}
+													,{' '}
+													{new Date().getYear() +
+														1900}
+												</Text>
+											</Pressable>
+											<Pressable
+												className='bg-grey py-[5px] px-[10px] rounded-[8px] ml-[6px]'
+												onPress={() => {
+													setEndTimeShow(true);
+												}}
+											>
+												<Text className='text-offwhite text-[16px]'>
+													{
+														formatTimestamp(
+															endDate.getTime(),
+															-new Date().getTimezoneOffset(),
+															-new Date().getTimezoneOffset()
+														).split(', ')[1]
+													}
+												</Text>
+											</Pressable>
+										</>
+									)}
+								</View>
+							</>
 						)}
 						<StyledInput
 							className='bg-offblack text-[18px] w-full min-h-[100px] max-h-[150px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
@@ -183,158 +294,122 @@ export default function Page() {
 				</>
 			</KeyboardAwareScrollView>
 
-			<Filter open data={circles.slice(3)} multiselect backdropHidden />
-			<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
-				<Button
-					title='Draw'
-					height='h-[60px]'
-					width='w-[125px]'
-					press={async () => {
-						if (title.length == 0 || body.length == 0)
-							return notify(
-								'Error Posting',
-								'Please enter a title and body for your post.',
-								'#CC2500'
-							);
-						if (addCircles.length == 0)
-							return notify(
-								'Error Posting',
-								'Please select 1 or more circles to post to.',
-								'#CC2500'
-							);
-
-						let newPostId = generateId();
-						let now = Date.now();
-						let typeSelectedVal = Math.round(
-							Math.abs(typeRef.current.selected._value)
-						);
-						let typeSelected = '';
-						if (typeSelectedVal == 0) typeSelected = 'praise';
-						else if (typeSelectedVal == 1) typeSelected = 'request';
-						else if (typeSelectedVal == 2) typeSelected = 'event';
-
-						let circles = {};
-						addCircles.forEach((circle) => {
-							circles[circle] = true;
-						});
-
-						if (
-							typeSelected === 'event' &&
-							(!startDate || !endDate)
-						)
-							return notify(
-								'Error Posting',
-								'Please select a start and end date for your event.',
-								'#CC2500'
-							);
-
-						let newPost = {
-							user: userData.uid,
-							profile_img: userData.photoURL,
-							name: userData.displayName,
-							title: encrypt(newPostId, title),
-							body: encrypt(newPostId, body),
-							type: typeSelected,
-							timestamp: now,
-							circles,
-							metadata: {
-								flag_count: 0,
-								start:
-									typeSelected === 'event' ? startDate : null,
-								end: typeSelected === 'event' ? endDate : null
-							},
-							settings: {
-								viewable_comments:
-									(await readData(
-										`prayer_circle/circles/${userData.uid}/private/post_preferances/comments`
-									)) || false,
-								viewable_interactions:
-									(await readData(
-										`prayer_circle/circles/${userData.uid}/private/post_preferances/interactions`
-									)) || 'private'
-							}
-						};
-						await writeData(
-							`prayer_circle/posts/${newPostId}`,
-							newPost,
-							true
-						);
-						for (let circle of addCircles) {
-							await writeData(
-								`prayer_circle/circles/${circle}/posts/${newPostId}`,
-								now,
-								true
-							);
-						}
-						writeData(
-							`prayer_circle/users/${userData.uid}/private/posts/${newPostId}`,
-							now,
-							true
-						).then(() => {
-							setGlobalReload(true);
-							router.back();
-						});
-					}}
-				/>
-			</StyledView>
-			<AnimatedPressable
-				className='absolute w-screen h-screen items-center justify-center bg-[#12121280]'
-				onPress={() => {
-					if (getWhichDate === 'start') {
-						setStartDate(getDate);
-						toggleDateTimePicker();
-					} else {
-						let start = startDate.split(' ');
-						let end = getDate.split(' ');
-						if (
-							start[0] === end[0] &&
-							isTimeBefore(start[1], end[1])
-						) {
-							return notify(
-								'Invalid Date',
-								'Please select a valid end time.',
-								'#CC2500'
-							);
-						} else {
-							setEndDate(getDate);
-							toggleDateTimePicker();
-						}
-					}
-				}}
-				style={{ opacity: dtpInter }}
-				pointerEvents={dateTimePickerShown ? 'auto' : 'none'}
-			>
-				<View className='w-[80%] max-w-[340px] border border-outline bg-offblack py-2 px-2 rounded-2xl'>
-					<DateTimePicker
-						mode='single'
-						date={getDate}
-						onChange={(params) => {
-							setGetDate(params.date);
-						}}
-						selectedItemColor='#5946B2'
-						timePicker
-						minDate={
-							getWhichDate === 'start'
-								? new Date().setDate(new Date().getDate() - 1)
-								: startDate
-						}
-						calendarTextStyle={{ color: '#FEFEFE' }}
-						headerTextStyle={{ color: '#FEFEFE', fontSize: 18 }}
-						weekDaysTextStyle={{ color: '#FEFEFE' }}
-						monthContainerStyle={{ backgroundColor: '#121212' }}
-						yearContainerStyle={{ backgroundColor: '#121212' }}
-						headerButtonColor='#FEFEFE'
-						dayContainerStyle={{
-							borderRadius: 8
-						}}
-						headerButtonsPosition='right'
-						timePickerContainerStyle={{
-							color: '#FEFEFE',
-							backgroundColor: '#121212'
-						}}
+			{(Platform.OS === 'android' ? !isKeyboardVisible : true) && (
+				<>
+					<Filter
+						open
+						data={circles.slice(3)}
+						multiselect
+						backdropHidden
+						ref={filterRef}
 					/>
-				</View>
-			</AnimatedPressable>
+					<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
+						<Button
+							title='Draw'
+							height='h-[60px]'
+							width='w-[125px]'
+							press={async () => {
+								if (title.length == 0 || body.length == 0)
+									return notify(
+										'Error Posting',
+										'Please enter a title and body for your post.',
+										'#CC2500'
+									);
+								if (addCircles.length == 0)
+									return notify(
+										'Error Posting',
+										'Please select 1 or more circles to post to.',
+										'#CC2500'
+									);
+
+								let newPostId = generateId();
+								let now = Date.now();
+								let typeSelectedVal = Math.round(
+									Math.abs(typeRef.current.selected._value)
+								);
+								let typeSelected = '';
+								if (typeSelectedVal == 0)
+									typeSelected = 'praise';
+								else if (typeSelectedVal == 1)
+									typeSelected = 'request';
+								else if (typeSelectedVal == 2)
+									typeSelected = 'event';
+
+								let circles = {};
+								addCircles.forEach((circle) => {
+									circles[circle] = true;
+								});
+
+								if (
+									typeSelected === 'event' &&
+									(!startDate || !endDate)
+								)
+									return notify(
+										'Error Posting',
+										'Please select a start and end date for your event.',
+										'#CC2500'
+									);
+
+								let newPost = {
+									user: userData.uid,
+									profile_img: userData.photoURL,
+									name: userData.displayName,
+									title: encrypt(newPostId, title),
+									body: encrypt(newPostId, body),
+									type: typeSelected,
+									timestamp: now,
+									circles,
+									metadata: {
+										flag_count: 0,
+										start:
+											typeSelected === 'event'
+												? startDate.getTime()
+												: null,
+										end:
+											typeSelected === 'event'
+												? endDate.getTime()
+												: null,
+										timezone_offset:
+											typeSelected === 'event'
+												? -new Date().getTimezoneOffset()
+												: null
+									},
+									settings: {
+										viewable_comments:
+											(await readData(
+												`prayer_circle/circles/${userData.uid}/private/post_preferances/comments`
+											)) || false,
+										viewable_interactions:
+											(await readData(
+												`prayer_circle/circles/${userData.uid}/private/post_preferances/interactions`
+											)) || 'private'
+									}
+								};
+								await writeData(
+									`prayer_circle/posts/${newPostId}`,
+									newPost,
+									true
+								);
+								for (let circle of addCircles) {
+									await writeData(
+										`prayer_circle/circles/${circle}/posts/${newPostId}`,
+										now,
+										true
+									);
+								}
+								writeData(
+									`prayer_circle/users/${userData.uid}/private/posts/${newPostId}`,
+									now,
+									true
+								).then(() => {
+									setGlobalReload(true);
+									router.back();
+								});
+							}}
+						/>
+					</StyledView>
+				</>
+			)}
 		</StyledSafeArea>
 	);
 }
