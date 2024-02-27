@@ -40,6 +40,7 @@ import {
 	readData,
 	uploadImage,
 	createTutorial,
+	getCircles,
 	checkIfTutorialExists
 } from '../../backend/firebaseFunctions';
 import { useStore, notify } from '../global';
@@ -101,19 +102,17 @@ export default function Page() {
 		state.setFilterReload
 	]);
 
-	const RecreateTutoril = () => {
-		const hasTutorialCircle = checkIfTutorialExists();
-		if (hasTutorialCircle) {
+	const RecreateTutorial = async () => {
+		bottomSheetModalRef.current?.close();
+		const hasTutorialCircle = await checkIfTutorialExists();
+		if (!hasTutorialCircle) {
 			console.log('Creating it now');
-			// createTutorial(userData.uid);
+			createTutorial(userData.uid);
 			setGlobalReload(true);
 			setFilterReload(true);
-			notify('Tutorial Circle', 'Check it out!', '#00A55E');
-			bottomSheetModalRef.current?.close();
+			notify('Recreated Tutorial', 'Check out the new Tutorial Circle!', '#00A55E');
 		} else {
-			console.log('Already exists');
 			notify('Tutorial Circle Already Exists', 'Check it out!', '#CC2500');
-			bottomSheetModalRef.current?.close();
 		}
 	};
 
@@ -778,7 +777,7 @@ export default function Page() {
 							bgColor={'bg-[#00A55E]'}
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={() => RecreateTutoril()}
+							press={() => RecreateTutorial()}
 						/>
 					</StyledView>
 				);
