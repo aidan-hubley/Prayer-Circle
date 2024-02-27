@@ -170,17 +170,17 @@ export const Post = (post) => {
 
 	const selectedDualComment = selectedComment.interpolate({
 		inputRange: [0, 1],
-		outputRange: ['18%', '68%']
+		outputRange: ['18.5%', '69%']
 	});
 
 	const selectedDualInter = selectedInteraction.interpolate({
 		inputRange: [0, 1],
-		outputRange: ['18%', '68%']
+		outputRange: ['18.5%', '69%']
 	});
 
 	const selectedTripleInter = selectedEventInteraction.interpolate({
 		inputRange: [0, 1, 2],
-		outputRange: ['10%', '43%', '76%']
+		outputRange: ['10.5%', '43.5%', '77%']
 	});
 
 	const handlePressComment = (index) => {
@@ -530,7 +530,7 @@ export const Post = (post) => {
 					<StyledText className='text-offwhite text-[18px]'>
 						Public Comments
 					</StyledText>
-					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
 						<StyledAnimatedView
 							style={highlightDualComment}
 							className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
@@ -558,7 +558,7 @@ export const Post = (post) => {
 						Interaction Count
 					</StyledText>
 					{post.icon === 'event' ? (
-						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
 							<StyledAnimatedView
 								style={highlightTripleInteraction}
 								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
@@ -589,7 +589,7 @@ export const Post = (post) => {
 							</StyledOpacity>
 						</StyledView>
 					) : (
-						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-offwhite rounded-full px-[15px] my-3'>
+						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
 							<StyledAnimatedView
 								style={highlightDualInteraction}
 								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'

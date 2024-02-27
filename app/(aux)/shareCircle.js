@@ -30,10 +30,9 @@ const StyledPressable = styled(Pressable);
 const shareCircle = async () => {
 	try {
 		await Share.share({
-			title: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
-			message:
-				'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
-			url: 'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle'
+			title:  'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
+			message:'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle',
+			url: 	'Hey, this message was sent from our app! https://github.com/aidan-hubley/Prayer-Circle'
 		});
 	} catch (error) {
 		console.error('Error sharing:', error);

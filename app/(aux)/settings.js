@@ -1033,33 +1033,6 @@ export default function Page() {
 				<ScrollView>
 					<StyledView className='w-full flex items-center'>
 						<View className='relative pt-[100px]'></View>
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<Text className='mr-3 text-lg text-offwhite'>
-									Terms of Service
-								</Text>
-								<Button // TODO: use component
-									icon='document'
-									iconColor={'#FFFBFC'}
-									iconSize={26}
-									width={'w-[65px]'}
-									height={'h-[35px]'}
-									bgColor={'bg-transparent'}
-									textColor={'text-offwhite'}
-									borderColor={'#FFFBFC'}
-									btnStyles='border-2'
-									press={() =>
-										handleModalPress(
-											'tos',
-											['65%', '85%'],
-											'Terms of Service',
-											''
-										)
-									}
-								></Button>
-							</View>
-						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
 						<View className='flex-row mt-5 px-5'>
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
 								<StyledView className='flex-row pb-5 w-full'>
