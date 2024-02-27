@@ -233,7 +233,7 @@ export default function Page() {
 								/>
 							</StyledPressable>
 						</StyledView>
-						<StyledView className='flex flex-row w-full justify-between items-center'>
+						{/* <StyledView className='flex flex-row w-full justify-between items-center'>
 							<StyledText className={`text-offwhite text-[20px]`}>
 								Rate the App
 							</StyledText>
@@ -252,7 +252,7 @@ export default function Page() {
 								btnStyles='border'
 								href={'/'}
 							></Button>
-						</StyledView>
+						</StyledView> */}
 						<StyledView className='flex flex-row w-full justify-between items-center mb-3'>
 							<StyledText className={`text-offwhite text-[20px]`}>
 								Report a Bug
