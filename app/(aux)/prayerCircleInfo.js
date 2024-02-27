@@ -110,7 +110,7 @@ export default function Page() {
 
 					<StyledView className='flex-row justify-between items-center w-full bg-grey border border-[#6666660D] rounded-[10px] py-[10px] px-[15px] my-2'>
 						<StyledText className={`text-offwhite text-[20px]`}>
-							Review TOS
+							Terms of Service
 						</StyledText>
 						<Button
 							icon='document-text'

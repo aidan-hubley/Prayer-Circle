@@ -14,6 +14,7 @@ import {
 	addUserToQueue,
 	checkIfUserIsInCircle
 } from '../../backend/firebaseFunctions';
+import { router } from 'expo-router';
 import { useStore, notify } from '../../app/global';
 
 const StyledSafeArea = styled(SafeAreaView);
@@ -46,17 +47,19 @@ async function searchForCircle(code) {
 			if (adminCode) {
 				addUserToCircle(circle);
 				notify(
-					'Added to Circle',
+					'Added Directly to Circle',
 					'You have been added to the circle.',
 					'#00A55E'
 				);
+				router.replace('/');
 			} else {
 				addUserToQueue(circle);
 				notify(
-					'Added to Circle',
-					"You have been added this circle's waiting queue.",
+					'Added to Circle Waiting Queue',
+					"You have been added this circle's waiting queue, check back later!",
 					'#00A55E'
 				);
+				router.replace('/');
 			}
 		} else {
 			notify('Invalid code', 'You are already in this circle.');
