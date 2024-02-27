@@ -116,7 +116,7 @@ export default function Page() {
 		}
 	};
 
-	const hanleChangeName = async () => {
+	const handleChangeName = async () => {
 		if (newFName === '' || newLName === '') {
 			notify('Error', 'Please enter a valid name.', '#CC2500');
 			return;
@@ -146,6 +146,10 @@ export default function Page() {
 				);
 			});
 		}
+
+		updateProfile(auth?.currentUser, {
+			displayName: `${newFName} ${newLName}`
+		});
 
 		notify(
 			'Success',
@@ -582,7 +586,7 @@ export default function Page() {
 							title='Confirm'
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={hanleChangeName}
+							press={handleChangeName}
 						/>
 					</StyledView>
 				);
