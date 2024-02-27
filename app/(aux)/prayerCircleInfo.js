@@ -4,6 +4,7 @@ import {
 	View,
 	Platform,
 	Image,
+	Share,
 	ScrollView,
 	Pressable,
 	Linking,
@@ -35,6 +36,18 @@ export default function Page() {
 	const [modalContent, setModalContent] = useState(null);
 	const [userData] = useState(auth?.currentUser);
 	const bottomSheetModalRef = useRef(null);
+
+	const shareApp = async () => {
+		try {
+			await Share.share({
+				title: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+				message: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+				url: 'Come join me on Prayer Circle! Here is the website: https://prayer-circle.com',
+			});
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	};
 
 	let insets = useSafeAreaInsets();
 	let topInset = insets.top > 30 ? insets.top : insets.top + 10;
@@ -578,7 +591,7 @@ export default function Page() {
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='share'
-					href='/'
+					press={() => shareApp()}
 				/>
 			</StyledView>
 			<BottomSheetModal
