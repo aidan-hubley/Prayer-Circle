@@ -385,26 +385,43 @@ export default function Page() {
 											)) || 'private'
 									}
 								};
-								await writeData(
-									`prayer_circle/posts/${newPostId}`,
-									newPost,
-									true
-								);
-								for (let circle of addCircles) {
-									await writeData(
-										`prayer_circle/circles/${circle}/posts/${newPostId}`,
-										now,
-										true
-									);
-								}
 								writeData(
 									`prayer_circle/users/${userData.uid}/private/posts/${newPostId}`,
 									now,
 									true
-								).then(() => {
-									setGlobalReload(true);
-									router.back();
-								});
+								)
+									.then(() => {
+										return writeData(
+											`prayer_circle/posts/${newPostId}`,
+											newPost,
+											true
+										);
+									})
+									.then(() => {
+										const writePromises = addCircles.map(
+											(circle) => {
+												return writeData(
+													`prayer_circle/circles/${circle}/posts/${newPostId}`,
+													now,
+													true
+												);
+											}
+										);
+										return Promise.all(writePromises);
+									})
+									.then(() => {
+										// Proceed with other operations after data is successfully written
+									})
+									.catch((error) => {
+										console.error(
+											'Error writing data to the database:',
+											error
+										);
+										// Handle error, retry, or notify the user
+									});
+
+								setGlobalReload(true);
+								router.back();
 							}}
 						/>
 					</StyledView>

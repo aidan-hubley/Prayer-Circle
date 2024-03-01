@@ -941,7 +941,8 @@ export const Post = (post) => {
 		let userCircles = await getCircles();
 		for (let circle of Object.keys(post.data.circles)) {
 			if (!userCircles.includes(circle)) continue;
-			let circleData = await readData(`prayer_circle/circles/${circle}`);
+			let circleData =
+				(await readData(`prayer_circle/circles/${circle}`)) || {};
 			circleData.id = circle;
 			circlesData.push(circleData);
 		}
@@ -1027,7 +1028,8 @@ export const Post = (post) => {
 				timestamp: timestamp,
 				user: userData.uid,
 				name: userData.displayName,
-				profile_img: userData.photoURL
+				profile_img: userData.photoURL,
+				post: post.id
 			};
 
 			//write data
