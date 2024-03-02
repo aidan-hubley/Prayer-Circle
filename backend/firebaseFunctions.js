@@ -322,7 +322,8 @@ export async function createTutorial(uid) {
 export async function checkIfTutorialExists() {
 	let circles = await getCircles();
 	for (let i = 0; i < circles.length; i++) {
-		let circleData = (await readData(`prayer_circle/circles/${circles[i]}`)) || {};
+		let circleData =
+			(await readData(`prayer_circle/circles/${circles[i]}`)) || {};
 		console.log(circleData.title);
 		if (circleData.title === 'Tutorial') {
 			return true;
