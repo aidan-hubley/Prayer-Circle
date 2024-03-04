@@ -18,6 +18,7 @@ export async function readData(path) {
 			}
 		})
 		.catch((error) => {
+			console.log(path, error);
 			console.error(error);
 		});
 }

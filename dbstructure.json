@@ -32,7 +32,7 @@
 					"posts": {
 						"_pushId_": true
 					},
-					"post_preferances": {
+					"post_preferences": {
 						"comments": true,
 						"interactions": "private"
 					}

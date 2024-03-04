@@ -444,7 +444,11 @@ async function createUserData(
 			reactions: false,
 			comments: false,
 			posts: false,
-			termsAgreed: true
+			termsAgreed: true,
+			post_preferences: {
+				comments: true,
+				interactions: false
+			}
 		}
 	};
 	authContext.register(email, password, userData, image);

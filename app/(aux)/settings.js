@@ -110,9 +110,17 @@ export default function Page() {
 			createTutorial(userData.uid);
 			setGlobalReload(true);
 			setFilterReload(true);
-			notify('Recreated Tutorial', 'Check out the new Tutorial Circle!', '#00A55E');
+			notify(
+				'Recreated Tutorial',
+				'Check out the new Tutorial Circle!',
+				'#00A55E'
+			);
 		} else {
-			notify('Tutorial Circle Already Exists', 'Check it out!', '#CC2500');
+			notify(
+				'Tutorial Circle Already Exists',
+				'Check it out!',
+				'#CC2500'
+			);
 		}
 	};
 
@@ -298,9 +306,9 @@ export default function Page() {
 		bottomSheetModalRef.current?.dismiss();
 	}
 
-	async function getPostPreferances() {
+	async function getPostPreferences() {
 		let commentPref = await readData(
-			`prayer_circle/users/${userData.uid}/private/post_preferances/comments`
+			`prayer_circle/users/${userData.uid}/private/post_preferences/comments`
 		);
 		if (commentPref == undefined) {
 			commentPref = true;
@@ -308,7 +316,7 @@ export default function Page() {
 		setCommentPref(commentPref);
 
 		let interactionPref = await readData(
-			`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`
+			`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`
 		);
 		if (interactionPref == undefined) {
 			interactionPref = 'public';
@@ -402,9 +410,9 @@ export default function Page() {
 			notify(
 				'Error',
 				'The name does not match. Deletion name: ' +
-				deletionName +
-				' Name: ' +
-				userData.displayName,
+					deletionName +
+					' Name: ' +
+					userData.displayName,
 				'#CC2500'
 			);
 			return;
@@ -528,7 +536,7 @@ export default function Page() {
 		snapPoints,
 		handleText,
 		handleColor,
-		extra = () => { }
+		extra = () => {}
 	) => {
 		extra();
 		setModalContent(modalContent);
@@ -1354,7 +1362,7 @@ export default function Page() {
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
 								<StyledView className='flex-row justify-between w-full'>
 									<Text className='text-lg text-offwhite'>
-										Post Preferances
+										Post Preferences
 									</Text>
 									<Button
 										icon={
@@ -1371,7 +1379,7 @@ export default function Page() {
 										borderColor={'#FFFBFC'}
 										press={() => {
 											if (!viewPref) {
-												getPostPreferances();
+												getPostPreferences();
 											}
 											setViewPref(!viewPref);
 										}}
@@ -1396,7 +1404,7 @@ export default function Page() {
 													press={() => {
 														setCommentPref(false);
 														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferances/comments`,
+															`prayer_circle/users/${userData.uid}/private/post_preferences/comments`,
 															false,
 															true
 														);
@@ -1416,7 +1424,7 @@ export default function Page() {
 													press={() => {
 														setCommentPref(true);
 														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferances/comments`,
+															`prayer_circle/users/${userData.uid}/private/post_preferences/comments`,
 															true,
 															true
 														);
@@ -1443,7 +1451,7 @@ export default function Page() {
 															'private'
 														);
 														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`,
+															`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
 															'private',
 															true
 														);
@@ -1465,7 +1473,7 @@ export default function Page() {
 															'hidden'
 														);
 														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`,
+															`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
 															'hidden',
 															true
 														);
@@ -1487,7 +1495,7 @@ export default function Page() {
 															'public'
 														);
 														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferances/interactions`,
+															`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
 															'public',
 															true
 														);
@@ -1550,7 +1558,7 @@ export default function Page() {
 											'Tutorial',
 											['23%'],
 											'Recreate Tutorial',
-											'',
+											''
 										);
 									}}
 								></Button>

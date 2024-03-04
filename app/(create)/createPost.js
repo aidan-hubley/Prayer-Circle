@@ -377,11 +377,11 @@ export default function Page() {
 									settings: {
 										viewable_comments:
 											(await readData(
-												`prayer_circle/circles/${userData.uid}/private/post_preferances/comments`
+												`prayer_circle/circles/${userData.uid}/private/post_preferences/comments`
 											)) || false,
 										viewable_interactions:
 											(await readData(
-												`prayer_circle/circles/${userData.uid}/private/post_preferances/interactions`
+												`prayer_circle/circles/${userData.uid}/private/post_preferences/interactions`
 											)) || 'private'
 									}
 								};
