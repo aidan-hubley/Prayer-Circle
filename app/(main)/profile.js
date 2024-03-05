@@ -37,12 +37,14 @@ export default function ProfilePage() {
 	const [userData, setUserData] = useState(auth?.currentUser);
 
 	const setUpFeed = async () => {
-		setRenderIndex(0);
-		let gp = await getProfilePosts();
-		setPostList(gp);
-		let pl = await populateList(gp, 0, 7);
-		setPosts(pl);
-		setInitialLoad('loaded');
+		if (auth.currentUser) {
+			setRenderIndex(0);
+			let gp = await getProfilePosts();
+			setPostList(gp);
+			let pl = await populateList(gp, 0, 7);
+			setPosts(pl);
+			setInitialLoad('loaded');
+		}
 	};
 
 	async function populateList(list, start, numOfItems) {
@@ -128,7 +130,7 @@ export default function ProfilePage() {
 								/> */}
 							{userData?.photoURL ? (
 								/* TODO: Make this image cached. currently the cached implementation(above) does not refresh when the profileImage state is changed */
-								<Image
+								<CachedImage
 									style={{
 										width: '100%',
 										height: '100%',
@@ -137,6 +139,9 @@ export default function ProfilePage() {
 											? 'flex'
 											: 'none'
 									}}
+									cacheKey={shorthash.unique(
+										userData.photoURL
+									)}
 									source={{
 										uri: userData.photoURL
 									}}

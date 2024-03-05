@@ -33,12 +33,14 @@ export default function FeedPage() {
 	]);
 
 	async function setUpFeed() {
-		setRenderIndex(0);
-		let gp = await getPosts(filterTarget);
-		setPostList(gp);
-		let pl = await populateList(gp, 0, 12);
-		setPosts(pl);
-		setInitialLoad('loaded');
+		if (auth.currentUser) {
+			setRenderIndex(0);
+			let gp = await getPosts(filterTarget);
+			setPostList(gp);
+			let pl = await populateList(gp, 0, 12);
+			setPosts(pl);
+			setInitialLoad('loaded');
+		}
 	}
 	async function populateList(list, start, numOfItems) {
 		let renderedList = [];

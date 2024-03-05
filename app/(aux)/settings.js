@@ -1012,7 +1012,7 @@ export default function Page() {
 							placeholder='Type your name'
 							placeholderTextColor={'#FFFBFC'}
 							value={deletionName}
-							onChangeText={setDeletionName}
+							onChangeText={() => setDeletionName()}
 						/>
 						<Button
 							title='Delete Profile'
@@ -1020,7 +1020,7 @@ export default function Page() {
 							bgColor={'bg-[#CC2500]'}
 							btnStyles='mt-5'
 							width='w-[70%]'
-							press={DeleteAccount}
+							press={() => DeleteAccount()}
 						/>
 					</StyledView>
 				);

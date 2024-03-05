@@ -22,7 +22,7 @@ export default function RootLayout() {
 	useEffect(() => {
 		(async () => {
 			setTimeout(async () => {
-				if (auth) {
+				if (auth.currentUser) {
 					let settings =
 						(await readData(
 							`prayer_circle/users/${auth?.currentUser?.uid}/private/settings`
