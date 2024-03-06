@@ -59,8 +59,10 @@ export default function Layout() {
 	let circeNameWidth = screenWidth - 170;
 
 	const setUp = async () => {
-		let gc = await getFilterCircles();
-		setCircles(gc);
+		if (auth.currentUser) {
+			let gc = await getFilterCircles();
+			setCircles(gc);
+		}
 	};
 
 	useEffect(() => {
@@ -73,8 +75,7 @@ export default function Layout() {
 	useEffect(() => {
 		(async () => {
 			if (filterReload) {
-				let gc = await getFilterCircles();
-				setCircles(gc);
+				await setUp();
 				setFilterReload(false);
 			}
 		})();

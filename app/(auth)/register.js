@@ -116,7 +116,6 @@ export default function Register() {
 		handleColor,
 		extra = () => {}
 	) => {
-		console.log('handleModalPress');
 		extra();
 		setModalContent(modalContent);
 		setSnapPoints(snapPoints);
@@ -239,8 +238,6 @@ export default function Register() {
 								Read the{' '}
 								<Pressable
 									onPress={() => {
-										console.log('pressed');
-
 										handleModalPress(
 											'tos',
 											['65%', '85%'],
@@ -447,7 +444,11 @@ async function createUserData(
 			reactions: false,
 			comments: false,
 			posts: false,
-			termsAgreed: true
+			termsAgreed: true,
+			post_preferences: {
+				comments: true,
+				interactions: false
+			}
 		}
 	};
 	authContext.register(email, password, userData, image);

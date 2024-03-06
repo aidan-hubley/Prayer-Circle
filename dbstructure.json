@@ -32,7 +32,7 @@
 					"posts": {
 						"_pushId_": true
 					},
-					"post_preferances": {
+					"post_preferences": {
 						"comments": true,
 						"interactions": "private"
 					}
@@ -76,7 +76,10 @@
 			"_pushId_": {
 				"user": "_uid_",
 				"content": "Comment text",
-				"timestamp": 1234567890
+				"timestamp": 1234567890,
+				"edited": false,
+				"name": "First Last",
+				"profile_img": "URL"
 			}
 		},
 		"circles": {
