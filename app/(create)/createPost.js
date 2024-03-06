@@ -157,7 +157,11 @@ export default function Page() {
 											value={startDate}
 											mode={'time'}
 											is24Hour={false}
-											display='spinner'
+											display={
+												Platform.OS === 'android'
+													? 'spinner'
+													: 'default'
+											}
 											onChange={(event, selectedDate) => {
 												setStartDate(selectedDate);
 												setStartTimeShow(false);
@@ -228,7 +232,11 @@ export default function Page() {
 											value={endDate}
 											mode={'time'}
 											is24Hour={false}
-											display='spinner'
+											display={
+												Platform.OS === 'android'
+													? 'spinner'
+													: 'default'
+											}
 											onChange={(event, selectedDate) => {
 												setEndDate(selectedDate);
 												setEndTimeShow(false);
