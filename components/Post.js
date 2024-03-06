@@ -35,6 +35,7 @@ import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pulsating } from './Loading';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -1361,6 +1362,71 @@ export const Post = (post) => {
 				{bottomSheetType === 'Report' && reportView()}
 				{bottomSheetType === 'Settings' && settingsView()}
 			</BottomSheetModal>
+		</StyledPressable>
+	);
+};
+
+export const EmptyPost = (post) => {
+	return (
+		<StyledPressable className='w-full max-w-[500px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
+				<StyledPressable>
+					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
+						<StyledView className='w-[90%]'>
+							<StyledView className='flex flex-row mb-2'>
+								<Pulsating width={44} height={44}></Pulsating>
+								<StyledView className={`flex-1 ml-2`}>
+									<View className={`mr-[20px]`}>
+										<Pulsating
+											width={44}
+											height={18}
+											styles={'my-[1px]'}
+											borderRadius={4}
+										/>
+									</View>
+									<StyledView className='flex flex-row'>
+										<Pulsating
+											width={80}
+											height={18}
+											styles={' my-[1px]'}
+											borderRadius={4}
+										/>
+									</StyledView>
+								</StyledView>
+							</StyledView>
+							<StyledView className='flex flex-column items-start w-[95%]'>
+								<Pulsating
+									width={'70%'}
+									height={20}
+									borderRadius={4}
+									styles={'mb-1'}
+								/>
+								<Pulsating
+									width={'80%'}
+									height={20}
+									borderRadius={4}
+									styles={'mb-1'}
+								/>
+								<Pulsating
+									width={'50%'}
+									height={20}
+									borderRadius={4}
+									styles={'mb-4'}
+								/>
+							</StyledView>
+						</StyledView>
+						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
+							<View className={'w-[20px]'}></View>
+							<View className='flex w-[30px] aspect-square justify-end mb-[10px]'>
+								<Image
+									className='w-[28px] h-[28px]'
+									source={require('../assets/spiral/spiral.png')}
+								/>
+							</View>
+						</StyledView>
+					</StyledView>
+				</StyledPressable>
+			</StyledView>
 		</StyledPressable>
 	);
 };
