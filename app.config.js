@@ -18,7 +18,7 @@ export default {
 		},
 		android: {
 			adaptiveIcon: {
-				foregroundImage: './assets/Logo_Dark.png',
+				foregroundImage: './assets/AndriodIcon.png',
 				backgroundColor: '#121212'
 			},
 			package: 'com.prayercircle.prayercircle',
