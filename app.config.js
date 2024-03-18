@@ -22,7 +22,8 @@ export default {
 				backgroundColor: '#121212'
 			},
 			package: 'com.prayercircle.prayercircle',
-			userInterfaceStyle: 'dark'
+			userInterfaceStyle: 'dark', 
+			versionCode: 2
 		},
 		web: {
 			favicon: './assets/favicon.png'
