@@ -39,6 +39,7 @@ export default function FeedPage() {
 			console.log(Date.now() - n, 'ms');
 			setPostList(gp);
 			setInitialLoad('loaded');
+			setRefreshing(false);
 		}
 	}
 	useEffect(() => {
@@ -132,12 +133,12 @@ export default function FeedPage() {
 						>
 							{initialLoad == 'loading' && (
 								<>
-									{/* <EmptyPost></EmptyPost>
 									<EmptyPost></EmptyPost>
 									<EmptyPost></EmptyPost>
 									<EmptyPost></EmptyPost>
 									<EmptyPost></EmptyPost>
-									<EmptyPost></EmptyPost> */}
+									<EmptyPost></EmptyPost>
+									<EmptyPost></EmptyPost>
 								</>
 							)}
 							<StyledText
@@ -149,7 +150,9 @@ export default function FeedPage() {
 							</StyledText>
 						</StyledView>
 					}
-					renderItem={({ item }) => <EmptyPost />}
+					renderItem={({ item }) => {
+						return <Post id={item} />;
+					}}
 					keyExtractor={(item) => item}
 				/>
 			</StyledView>

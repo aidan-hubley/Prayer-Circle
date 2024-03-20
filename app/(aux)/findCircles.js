@@ -132,7 +132,7 @@ export default function Page() {
 						</StyledView>
 						<StyledView className='w-[300px] border-[4px] border-offwhite mt-14 rounded-xl'>
 							<StyledInput
-								className='bg-offblack px-[10px] font-bold text-2xl flex-1 h-[42px] text-offwhite rounded-lg py-[5px] mr-1'
+								className='bg-offblack px-[10px] font-bold flex-1 h-[42px] text-offwhite rounded-lg py-[5px] mr-1'
 								placeholder={'Code:'}
 								placeholderTextColor={'#FFFBFC'}
 								inputMode='numeric'

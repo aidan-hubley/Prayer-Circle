@@ -49,21 +49,25 @@ const StyledInput = styled(TextInput);
 const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
 export const Post = (post) => {
+	const [data, setData] = useState(null);
+
 	// variables
-	const [title, setTitle] = useState(decrypt(post.id, post.title));
-	const [content, setContent] = useState(decrypt(post.id, post.content));
-	const [icon, setIcon] = useState(post.icon);
+	const [title, setTitle] = useState('');
+	const [content, setContent] = useState('');
+	const [icon, setIcon] = useState('');
 	const [interacted, setInteracted] = useState(false);
 	const [interactions, setInteractions] = useState([]);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
+	const [ownedToolbar, setOwnedToolbar] = useState(false);
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const [viewInteractions, setViewInteractions] = useState(
-		post.viewInteractions
-	);
-	const [viewComments, setViewComments] = useState(post.viewComments);
+	const [viewInteractions, setViewInteractions] = useState(false);
+	const [viewComments, setViewComments] = useState(false);
+	const [editTitle, setEditTitle] = useState('');
+	const [editContent, setEditContent] = useState('');
+	const [edited, setEdited] = useState(false);
 	const [
 		haptics,
 		setGlobalReload,
@@ -84,11 +88,6 @@ export const Post = (post) => {
 		state.setFilterIconColor
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
-	const [editTitle, setEditTitle] = useState(decrypt(post.id, post.title));
-	const [editContent, setEditContent] = useState(
-		decrypt(post.id, post.content)
-	);
-	const [edited, setEdited] = useState(post.edited);
 	const [reported, setReported] = useState(false);
 	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
@@ -118,7 +117,7 @@ export const Post = (post) => {
 			nonOutline: require('../assets/post/prayer.png')
 		}
 	};
-	const tS = timeSince(post.timestamp);
+	const [tS, setTS] = useState('0s');
 	let insets = useSafeAreaInsets();
 
 	// These need to be dynamic based on screen width available and a static max-height for content before truncation
@@ -164,9 +163,7 @@ export const Post = (post) => {
 	};
 
 	const selectedComment = useRef(new Animated.Value(0)).current;
-
 	const selectedInteraction = useRef(new Animated.Value(0)).current;
-
 	const selectedEventInteraction = useRef(new Animated.Value(0)).current;
 
 	const selectedDualComment = selectedComment.interpolate({
@@ -220,6 +217,7 @@ export const Post = (post) => {
 		left: selectedTripleInter
 	};
 
+	// bottom sheet contents
 	const commentsView = () => {
 		return (
 			<StyledView className='flex-1 bg-grey'>
@@ -344,8 +342,8 @@ export const Post = (post) => {
 								width={'w-[48%]'}
 								press={() => {
 									bottomSheetModalRef.current?.dismiss();
-									setEditTitle(post.title);
-									setEditContent(post.content);
+									setEditTitle(data.title);
+									setEditContent(data.content);
 								}}
 							/>
 							<Button
@@ -558,7 +556,7 @@ export const Post = (post) => {
 					<StyledText className='text-offwhite text-[18px]'>
 						Interaction Count
 					</StyledText>
-					{post.icon === 'event' ? (
+					{data?.type === 'event' ? (
 						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
 							<StyledAnimatedView
 								style={highlightTripleInteraction}
@@ -637,7 +635,7 @@ export const Post = (post) => {
 								);
 								setViewComments(false);
 							}
-							if (post.icon === 'event') {
+							if (data?.type === 'event') {
 								if (selectedEventInteraction._value < 0.33) {
 									writeData(
 										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
@@ -687,6 +685,7 @@ export const Post = (post) => {
 		);
 	};
 
+	// toolbar button abstraction
 	const ToolbarButton = (props) => {
 		return (
 			<StyledOpacity
@@ -714,7 +713,7 @@ export const Post = (post) => {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
-		if (post.owned || post.ownedToolBar) {
+		if (post.owned || ownedToolbar) {
 			return images[iconKey].nonOutline;
 		}
 		return !interacted
@@ -750,7 +749,7 @@ export const Post = (post) => {
 
 	// db related functions
 	async function deletePost() {
-		for (let circle of Object.keys(post?.data?.circles || {})) {
+		for (let circle of Object.keys(data?.circles || {})) {
 			await writeData(
 				`prayer_circle/circles/${circle}/posts/${post.id}`,
 				null,
@@ -825,7 +824,7 @@ export const Post = (post) => {
 	};
 
 	async function editPost() {
-		let updatedData = post.data;
+		let updatedData = data;
 
 		updatedData.title = encrypt(post.id, editTitle);
 		setTitle(editTitle);
@@ -891,10 +890,10 @@ export const Post = (post) => {
 		}
 
 		// set up event date
-		if (post.icon === 'event') getEventDate();
+		if (data?.type === 'event') getEventDate();
 
 		// set up comments
-		await populateComments(post.comments);
+		await populateComments(data?.comments || {});
 		let viewableComments = await readData(
 			`prayer_circle/posts/${postId}/settings/viewable_comments`
 		);
@@ -913,12 +912,12 @@ export const Post = (post) => {
 			`prayer_circle/posts/${postId}/settings/viewable_interactions`
 		);
 		if (viewableInteractions == undefined) {
-			if (post.icon === 'event') viewableInteractions = 'public';
+			if (data?.type === 'event') viewableInteractions = 'public';
 			else viewableInteractions = 'private';
 		}
 		setViewInteractions(viewableInteractions);
 
-		if (!post.owned && !post.ownedToolBar) {
+		if (!post.owned && !ownedToolbar) {
 			if (interactions[userData.uid]) {
 				setInteracted(true);
 			}
@@ -940,7 +939,7 @@ export const Post = (post) => {
 		// set up view circles
 		let circlesData = [];
 		let userCircles = await getCircles();
-		for (let circle of Object.keys(post.data.circles)) {
+		for (let circle of Object.keys(data?.circles || {})) {
 			if (!userCircles.includes(circle)) continue;
 			let circleData =
 				(await readData(`prayer_circle/circles/${circle}`)) || {};
@@ -950,6 +949,7 @@ export const Post = (post) => {
 		setCircles(circlesData);
 	};
 
+	// populate functions
 	const getEventDate = () => {
 		let currentTimezoneOffset = -new Date().getTimezoneOffset();
 		const start = formatTimestamp(
@@ -1059,311 +1059,358 @@ export const Post = (post) => {
 		}
 	};
 
+	// set up
 	useEffect(() => {
-		setUp(post.id);
+		(async () => {
+			let d = await readData(`prayer_circle/posts/${post.id}`);
+			await setData(d);
+			await setTitle(decrypt(post.id, d.title));
+			await setContent(decrypt(post.id, d.body));
+			await setIcon(d.type);
+			await setEdited(d?.edited || false);
+			await setTS(timeSince(d?.timestamp));
+			await setOwnedToolbar(d.user === userData.uid);
+
+			// could be moved
+			await setViewComments(d?.settings?.viewable_comments || false);
+			await setViewInteractions(
+				d?.settings?.viewable_interactions || false
+			);
+			await setEditTitle(decrypt(post.id, d.title));
+			await setEditContent(decrypt(post.id, d.body));
+
+			//console.log(timeSince(d?.timestamp) || false);
+
+			await setUp(post.id);
+		})();
 	}, []);
 	useEffect(() => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
-	return (
-		<StyledPressable className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
-				<StyledPressable
-					onPressIn={() => {
-						const now = Date.now();
-						if (lastTap && now - lastTap < 300) {
-							clearTimeout(timer.current);
-							if (post.owned || post.ownedToolBar) {
+	if (data) {
+		return (
+			<StyledPressable className='w-full max-w-[500px]'>
+				<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
+					<StyledPressable
+						onPressIn={() => {
+							const now = Date.now();
+							if (lastTap && now - lastTap < 300) {
+								clearTimeout(timer.current);
+								if (post.owned || ownedToolbar) {
+									setBottomSheetType('Interactions');
+									setSnapPoints(['85%']);
+									handlePresentModalPress();
+								} else {
+									toggleIcon();
+								}
+							} else {
+								setLastTap(now);
+								timer.current = setTimeout(() => {}, 300);
+							}
+						}}
+						onLongPress={() => {
+							if (
+								icon === 'event' &&
+								viewInteractions === 'public'
+							) {
 								setBottomSheetType('Interactions');
 								setSnapPoints(['85%']);
 								handlePresentModalPress();
-							} else {
-								toggleIcon();
 							}
-						} else {
-							setLastTap(now);
-							timer.current = setTimeout(() => {}, 300);
-						}
-					}}
-					onLongPress={() => {
-						if (
-							post.icon === 'event' &&
-							viewInteractions === 'public'
-						) {
-							setBottomSheetType('Interactions');
-							setSnapPoints(['85%']);
-							handlePresentModalPress();
-						}
-						toggleToolbar();
-					}}
-				>
-					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
-						<StyledView className='w-[90%]'>
-							<StyledView className='flex flex-row mb-2'>
-								<CachedImage
-									cacheKey={shorthash.unique(post.img)}
-									style={{
-										width: 44,
-										height: 44,
-										borderRadius: 8,
-										display: post.owned ? 'none' : 'flex'
-									}}
-									source={{
-										uri: post.img,
-										expiresIn: 2_628_288
-									}}
-								/>
-								<StyledView
-									className={`flex-1 ${
-										post.owned ? 'ml-[4px]' : 'ml-2'
-									}`}
-								>
-									<View className={`mr-[20px]`}>
-										<StyledText className='text-offwhite font-bold text-[20px]'>
-											{isExpanded ||
-											title.length <= titleCharThreshold
-												? title
-												: `${title.substring(
-														0,
-														titleCharThreshold - 4
-												  )}...`}
-										</StyledText>
-									</View>
-									<StyledView className='flex flex-row'>
-										<StyledText
-											className={`${
-												post.owned ? 'hidden' : ''
-											} text-white`}
-										>
-											{post.user} •{' '}
-										</StyledText>
-										<StyledText className={`text-white`}>
-											{tS}{' '}
-										</StyledText>
-										<StyledText
-											className={`${
-												edited ? '' : 'hidden'
-											} text-white`}
-										>
-											(edited)
-										</StyledText>
-									</StyledView>
-								</StyledView>
-							</StyledView>
-							{post.icon == 'event' && (
-								<StyledView className='flex flex-row items-center mb-2'>
-									<StyledText
-										className={`${
-											post.owned
-												? 'ml-[4px] text-white font-bold text-[16px]'
-												: 'text-white font-bold text-[16px]'
+							toggleToolbar();
+						}}
+					>
+						<StyledView className='w-full flex flex-row justify-between px-[6px]'>
+							<StyledView className='w-[90%]'>
+								<StyledView className='flex flex-row mb-2'>
+									{data?.profile_img && (
+										<CachedImage
+											cacheKey={shorthash.unique(
+												data?.profile_img
+											)}
+											style={{
+												width: 44,
+												height: 44,
+												borderRadius: 8,
+												display: post.owned
+													? 'none'
+													: 'flex'
+											}}
+											source={{
+												uri: data?.profile_img,
+												expiresIn: 2_628_288
+											}}
+											placeholderContent={
+												<View
+													style={{ borderRadius: 8 }}
+													className=' w-[44px] h-[44px] bg-outline'
+												></View>
+											}
+										/>
+									)}
+									<StyledView
+										className={`flex-1 ${
+											post.owned ? 'ml-[4px]' : 'ml-2'
 										}`}
 									>
-										{eventDate}
+										<View className={`mr-[20px]`}>
+											<StyledText className='text-offwhite font-bold text-[20px]'>
+												{isExpanded ||
+												title.length <=
+													titleCharThreshold
+													? title
+													: `${title.substring(
+															0,
+															titleCharThreshold -
+																4
+													  )}...`}
+											</StyledText>
+										</View>
+										<StyledView className='flex flex-row'>
+											<StyledText
+												className={`${
+													post.owned ? 'hidden' : ''
+												} text-white`}
+											>
+												{data?.name} •{' '}
+											</StyledText>
+											<StyledText
+												className={`text-white`}
+											>
+												{tS}{' '}
+											</StyledText>
+											<StyledText
+												className={`${
+													edited ? '' : 'hidden'
+												} text-white`}
+											>
+												(edited)
+											</StyledText>
+										</StyledView>
+									</StyledView>
+								</StyledView>
+								{icon == 'event' && (
+									<StyledView className='flex flex-row items-center mb-2'>
+										<StyledText
+											className={`${
+												post.owned
+													? 'ml-[4px] text-white font-bold text-[16px]'
+													: 'text-white font-bold text-[16px]'
+											}`}
+										>
+											{eventDate}
+										</StyledText>
+									</StyledView>
+								)}
+								<StyledView className='flex flex-row items-center w-[95%]'>
+									<StyledText
+										className={`${
+											post.owned ? 'ml-[4px]' : ''
+										} text-white mt-[2px] pb-[10px]`}
+									>
+										{isExpanded ||
+										content.length <= contentCharThreshold
+											? content
+											: `${content.substring(
+													0,
+													contentCharThreshold
+											  )}...`}
 									</StyledText>
 								</StyledView>
-							)}
-							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText
-									className={`${
-										post.owned ? 'ml-[4px]' : ''
-									} text-white mt-[2px] pb-[10px]`}
-								>
-									{isExpanded ||
-									content.length <= contentCharThreshold
-										? content
-										: `${content.substring(
-												0,
-												contentCharThreshold
-										  )}...`}
-								</StyledText>
 							</StyledView>
-						</StyledView>
-						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
-							<StyledPressable
-								className='flex aspect-square w-[30px] self-end'
-								onPress={() => {
-									if (!post.owned && !post.ownedToolBar) {
-										toggleIcon();
-									} else {
-										setBottomSheetType('Interactions');
-										setSnapPoints(['85%']);
-										handlePresentModalPress();
-									}
-								}}
-							>
-								<AnimatedImage
-									source={getIconSource(icon, interacted)}
-									style={{
-										width: 26,
-										height: 26,
-										transform: [{ scale: iconInter }]
-									}}
-								/>
-							</StyledPressable>
-							{(title.length > titleCharThreshold ||
-								content.length > contentCharThreshold) && (
-								<StyledOpacity
+							<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
+								<StyledPressable
+									className='flex aspect-square w-[30px] self-end'
 									onPress={() => {
-										setIsExpanded(!isExpanded);
-									}}
-									className='self-center pt-2'
-								>
-									<Ionicons
-										name={
-											isExpanded
-												? 'chevron-up'
-												: 'chevron-down'
-										}
-										size={24}
-										color='#3D3D3D'
-									/>
-								</StyledOpacity>
-							)}
-							<StyledPressable
-								className='flex w-[30px] aspect-square justify-end mb-[2px]'
-								onPress={() => {
-									toggleToolbar();
-								}}
-							>
-								<AnimatedImage
-									className='w-[28px] h-[28px]'
-									style={spiralStyle}
-									source={require('../assets/spiral/spiral.png')}
-								/>
-							</StyledPressable>
-						</StyledView>
-					</StyledView>
-				</StyledPressable>
-				<StyledAnimatedView
-					style={toolbarStyle}
-					className='px-[10px] w-full overflow-hidden'
-				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
-						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
-							{post.owned || post.ownedToolBar ? (
-								<>
-									<ToolbarButton
-										icon={'trash-outline'}
-										color={'#CC2500'}
-										size={29}
-										onPress={() => {
-											deletePost();
-										}}
-									/>
-									<ToolbarButton
-										icon={'cog-outline'}
-										size={29}
-										color='#F9A826'
-										onPress={() => {
-											setBottomSheetType('Settings');
-											setSnapPoints(['55%']);
-											handlePresentModalPress();
-										}}
-									/>
-									<ToolbarButton
-										icon={'create-outline'}
-										size={29}
-										color='#00A55E'
-										onPress={() => {
-											setBottomSheetType('Edit');
+										if (!post.owned && !ownedToolbar) {
+											toggleIcon();
+										} else {
+											setBottomSheetType('Interactions');
 											setSnapPoints(['85%']);
 											handlePresentModalPress();
-										}}
-									/>
-								</>
-							) : (
-								<>
-									<ToolbarButton
-										icon={
-											reported ? 'flag' : 'flag-outline'
 										}
-										size={29}
-										color='#CC2500'
-										onPress={() => {
-											populateReports(post.id);
-											setBottomSheetType('Report');
-											setSnapPoints(['65%', '85%']);
-											handlePresentModalPress();
+									}}
+								>
+									{/* <AnimatedImage
+										source={getIconSource(icon, interacted)}
+										style={{
+											width: 26,
+											height: 26,
+											transform: [{ scale: iconInter }]
 										}}
-									/>
-									<ToolbarButton
-										icon={'eye-off-outline'}
-										size={29}
-										color='#F9A826'
+									/> */}
+								</StyledPressable>
+								{(title.length > titleCharThreshold ||
+									content.length > contentCharThreshold) && (
+									<StyledOpacity
 										onPress={() => {
-											hidePost();
+											setIsExpanded(!isExpanded);
 										}}
+										className='self-center pt-2'
+									>
+										<Ionicons
+											name={
+												isExpanded
+													? 'chevron-up'
+													: 'chevron-down'
+											}
+											size={24}
+											color='#3D3D3D'
+										/>
+									</StyledOpacity>
+								)}
+								<StyledPressable
+									className='flex w-[30px] aspect-square justify-end mb-[2px]'
+									onPress={() => {
+										toggleToolbar();
+									}}
+								>
+									<AnimatedImage
+										className='w-[28px] h-[28px]'
+										style={spiralStyle}
+										source={require('../assets/spiral/spiral.png')}
 									/>
-									<ToolbarButton
-										icon={
-											bookmarked
-												? 'bookmark'
-												: 'bookmark-outline'
-										}
-										size={29}
-										color='#00A55E'
-										onPress={() => {
-											toggleBookmark(post.id, post.data);
-										}}
-									/>
-								</>
-							)}
-							<ToolbarButton
-								icon={'chatbubble-outline'}
-								size={29}
-								color={viewComments ? '#5946B2' : '#3D3D3D'}
-								onPress={async () => {
-									if (!post.owned && !post.ownedToolBar) {
-										if (viewComments) {
+								</StyledPressable>
+							</StyledView>
+						</StyledView>
+					</StyledPressable>
+					<StyledAnimatedView
+						style={toolbarStyle}
+						className='px-[10px] w-full overflow-hidden'
+					>
+						<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
+							<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
+								{post?.owned || ownedToolbar ? (
+									<>
+										<ToolbarButton
+											icon={'trash-outline'}
+											color={'#CC2500'}
+											size={29}
+											onPress={() => {
+												deletePost();
+											}}
+										/>
+										<ToolbarButton
+											icon={'cog-outline'}
+											size={29}
+											color='#F9A826'
+											onPress={() => {
+												setBottomSheetType('Settings');
+												setSnapPoints(['55%']);
+												handlePresentModalPress();
+											}}
+										/>
+										<ToolbarButton
+											icon={'create-outline'}
+											size={29}
+											color='#00A55E'
+											onPress={() => {
+												setBottomSheetType('Edit');
+												setSnapPoints(['85%']);
+												handlePresentModalPress();
+											}}
+										/>
+									</>
+								) : (
+									<>
+										<ToolbarButton
+											icon={
+												reported
+													? 'flag'
+													: 'flag-outline'
+											}
+											size={29}
+											color='#CC2500'
+											onPress={() => {
+												populateReports(post.id);
+												setBottomSheetType('Report');
+												setSnapPoints(['65%', '85%']);
+												handlePresentModalPress();
+											}}
+										/>
+										<ToolbarButton
+											icon={'eye-off-outline'}
+											size={29}
+											color='#F9A826'
+											onPress={() => {
+												hidePost();
+											}}
+										/>
+										<ToolbarButton
+											icon={
+												bookmarked
+													? 'bookmark'
+													: 'bookmark-outline'
+											}
+											size={29}
+											color='#00A55E'
+											onPress={() => {
+												toggleBookmark(post.id, data);
+											}}
+										/>
+									</>
+								)}
+								<ToolbarButton
+									icon={'chatbubble-outline'}
+									size={29}
+									color={viewComments ? '#5946B2' : '#3D3D3D'}
+									onPress={async () => {
+										if (!post?.owned && !ownedToolbar) {
+											if (viewComments) {
+												populateComments();
+												setBottomSheetType('Comments');
+												setSnapPoints(['85%']);
+												handlePresentModalPress();
+											}
+										} else {
 											populateComments();
 											setBottomSheetType('Comments');
 											setSnapPoints(['85%']);
 											handlePresentModalPress();
 										}
-									} else {
-										populateComments();
-										setBottomSheetType('Comments');
-										setSnapPoints(['85%']);
+									}}
+								/>
+								<StyledOpacity
+									className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+									activeOpacity={0.4}
+									onPress={() => {
+										if (haptics)
+											Haptics.impactAsync(
+												Haptics.ImpactFeedbackStyle
+													.Light
+											);
+										setBottomSheetType("Post's Circles");
 										handlePresentModalPress();
-									}
-								}}
-							/>
-							<StyledOpacity
-								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
-								activeOpacity={0.4}
-								onPress={() => {
-									if (haptics)
-										Haptics.impactAsync(
-											Haptics.ImpactFeedbackStyle.Light
-										);
-									setBottomSheetType("Post's Circles");
-									handlePresentModalPress();
-								}}
-							/>
+									}}
+								/>
+							</StyledView>
 						</StyledView>
-					</StyledView>
-				</StyledAnimatedView>
-			</StyledView>
-			<BottomSheetModal
-				enableDismissOnClose={true}
-				ref={bottomSheetModalRef}
-				index={0}
-				snapPoints={snapPoints}
-				handleComponent={() => handle(bottomSheetType)}
-				backdropComponent={(backdropProps) => backdrop(backdropProps)}
-				keyboardBehavior='extend'
-			>
-				{bottomSheetType === 'Comments' && commentsView()}
-				{bottomSheetType === 'Edit' && editView()}
-				{bottomSheetType === "Post's Circles" && circlesView()}
-				{bottomSheetType === 'Interactions' && interactionsView()}
-				{bottomSheetType === 'Report' && reportView()}
-				{bottomSheetType === 'Settings' && settingsView()}
-			</BottomSheetModal>
-		</StyledPressable>
-	);
+					</StyledAnimatedView>
+				</StyledView>
+				<BottomSheetModal
+					enableDismissOnClose={true}
+					ref={bottomSheetModalRef}
+					index={0}
+					snapPoints={snapPoints}
+					handleComponent={() => handle(bottomSheetType)}
+					backdropComponent={(backdropProps) =>
+						backdrop(backdropProps)
+					}
+					keyboardBehavior='extend'
+				>
+					{bottomSheetType === 'Comments' && commentsView()}
+					{bottomSheetType === 'Edit' && editView()}
+					{bottomSheetType === "Post's Circles" && circlesView()}
+					{bottomSheetType === 'Interactions' && interactionsView()}
+					{bottomSheetType === 'Report' && reportView()}
+					{bottomSheetType === 'Settings' && settingsView()}
+				</BottomSheetModal>
+			</StyledPressable>
+		);
+	} else {
+		return <EmptyPost />;
+	}
 };
 
 export const EmptyPost = (post) => {

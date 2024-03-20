@@ -27,18 +27,18 @@ export async function writeData(path, data, overwrite = false) {
 	if (overwrite) {
 		set(ref(database, path), data)
 			.then(() => {
-				console.log('data written successfully');
+				console.log('data set successfully', path);
 			})
 			.catch((error) => {
-				console.error(error);
+				console.error(error, path);
 			});
 	} else {
 		push(ref(database, path), data)
 			.then(() => {
-				console.log('data written successfully');
+				console.log('data pushed successfully', path);
 			})
 			.catch((error) => {
-				console.error(error);
+				console.error(error, path);
 			});
 	}
 }
