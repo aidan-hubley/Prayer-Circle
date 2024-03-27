@@ -8,8 +8,7 @@ import { Animated, Text, View, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
 
 export const Loading = forwardRef((props, ref) => {
-	const visible = useRef(new Animated.Value(0)).current;
-	useImperativeHandle(ref, () => ({}));
+	const visible = useRef(new Animated.Value(props.loading ? 1 : 0)).current;
 
 	const visibleInter = visible.interpolate({
 		inputRange: [0, 1],
@@ -17,6 +16,7 @@ export const Loading = forwardRef((props, ref) => {
 	});
 
 	const toggleVisible = () => {
+		console.log('toggleVisible', props.loading, props.loading ? 0 : 1);
 		Animated.timing(visible, {
 			toValue: props.loading ? 0 : 1,
 			duration: 300,
@@ -25,6 +25,7 @@ export const Loading = forwardRef((props, ref) => {
 	};
 
 	useEffect(() => {
+		console.log('useEffect', props.loading);
 		return () => {
 			toggleVisible();
 		};
@@ -33,21 +34,34 @@ export const Loading = forwardRef((props, ref) => {
 	return (
 		<Animated.View
 			style={{ opacity: visibleInter }}
-			pointerEvents={props.loading ? 'auto' : 'none'}
-			className='absolute w-screen h-screen bg-offblack justify-center items-center'
+			pointerEvents={props.allowEvents || 'none'}
+			className={`absolute bg-[#121212BB] w-screen h-screen justify-center items-center`}
 		>
-			<Progress.Circle
-				size={80}
-				borderWidth={4}
-				indeterminate
-				color='#FFFBFC'
-			/>
-			<Text className='text-white mt-2 text-[20px]'>Uploading...</Text>
+			<View
+				className={`bg-grey  ${props.width || 'w-screen'} ${
+					props.height || 'h-screen'
+				} ${
+					props.border && 'border border-[#FFFBFC66]'
+				} rounded-xl flex items-center justify-center`}
+				pointerEvents={props.loading ? 'auto' : 'none'}
+			>
+				{props.circle && (
+					<Progress.Circle
+						size={80}
+						borderWidth={4}
+						indeterminate
+						color='#FFFBFC'
+					/>
+				)}
+				{props.text && (
+					<Text className='text-white mt-4 text-[20px]'>
+						{props.text || 'Loading...'}
+					</Text>
+				)}
+			</View>
 		</Animated.View>
 	);
 });
-
-const LoadingStyles = StyleSheet.create({});
 
 export const Pulsating = (props) => {
 	return (

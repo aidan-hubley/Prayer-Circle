@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../app/global';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { debounce } from '../backend/functions';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));
@@ -83,9 +84,9 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 		}).start();
 	}
 	function toggleShortOptions(val) {
+		filter.current.toggleShown(val);
 		setPressed(val ? 'short' : 'none');
 		toggleSwiping(!val);
-		filter.current.toggleShown(val);
 	}
 	function toggleBackdrop(val) {
 		Animated.timing(bgOpacity, {
@@ -133,14 +134,14 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 					href='/createCircle'
 				/>
 				<Button
-					title='Sketch a Post'
+					title='Search Circles'
 					height='h-[65px]'
 					btnStyles={'mt-3'}
 					width='w-11/12'
 					press={() => {
 						toggleLongOptions(false);
 					}}
-					href='/createPost'
+					href='/findCircles'
 				/>
 			</AnimatedView>
 
@@ -174,7 +175,7 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 						);
 				}}
 				onPress={() => {
-					resize(1);
+					/* TODO: Speed up animation */
 					if (pressed == 'none') {
 						toggleShortOptions(true);
 					} else {
@@ -184,6 +185,7 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 					if (press) press();
 					if (haptics)
 						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+					resize(1);
 				}}
 			>
 				{currentFilter !== 'unfiltered' ? (

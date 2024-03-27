@@ -1,4 +1,9 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import React, {
+	useRef,
+	forwardRef,
+	useImperativeHandle,
+	useState
+} from 'react';
 import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import { useSharedValue } from 'react-native-reanimated';
@@ -14,6 +19,7 @@ const StyledPressable = styled(Pressable);
 const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
 
 const Filter = forwardRef((props, ref) => {
+	const [open, setOpen] = useState(false);
 	const opacity = useRef(new Animated.Value(props.open ? 1 : 0)).current;
 	const width = Dimensions.get('window').width;
 	const itemSize = 80;
@@ -28,13 +34,17 @@ const Filter = forwardRef((props, ref) => {
 		inputRange: [0, 1],
 		outputRange: [0, 1]
 	});
+	const scaleInter = opacity.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0.8, 1]
+	});
 	const backdropOpacityInter = opacity.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0, 0.6]
 	});
 	const opacityStyle = {
 		opacity: opacityInter,
-		transform: [{ scale: opacityInter }],
+		transform: [{ scale: scaleInter }],
 		bottom: insets.bottom
 	};
 	const backdropOpacityStyle = {
@@ -42,13 +52,13 @@ const Filter = forwardRef((props, ref) => {
 	};
 
 	function toggleShown(toggle) {
-		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-		if (props.toggleSwiping) props.toggleSwiping(!toggle);
 		Animated.timing(opacity, {
 			toValue: toggle ? 1 : 0,
-			duration: 200,
+			duration: 100,
 			useNativeDriver: true
 		}).start();
+		setOpen(toggle);
+		if (props.toggleSwiping) props.toggleSwiping(!toggle);
 	}
 
 	useImperativeHandle(ref, () => ({
@@ -70,6 +80,7 @@ const Filter = forwardRef((props, ref) => {
 			)}
 			<AnimatedView
 				style={opacityStyle}
+				pointerEvents={open ? 'auto' : 'none'}
 				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center'
 			>
 				<StyledView

@@ -164,7 +164,7 @@ export async function getFilterCircles() {
 	let uid = await getUID();
 	let circles = await getCircles();
 	let circlesData = [
-		{ id: 'addCircles' },
+		{ id: 'addPost' },
 		{ id: 'Gridview' },
 		{ id: 'allCircles' }
 	];

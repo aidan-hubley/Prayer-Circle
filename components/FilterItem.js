@@ -116,7 +116,7 @@ const FilterItem = forwardRef((props, ref) => {
 	]);
 
 	if (!props.multiselect) {
-		if (props.data.id == 'addCircles') {
+		if (props.data.id == 'addPost') {
 			return (
 				<StyledAnimatedHighlight
 					style={[
@@ -134,19 +134,19 @@ const FilterItem = forwardRef((props, ref) => {
 					<StyledPressable
 						className='flex items-center justify-center'
 						onPress={async () => {
-							router.push('findCircles');
+							router.push('createPost');
 						}}
 					>
 						<StyledImage
 							source={require('../assets/spiral/thin.png')}
 							style={{ width: 80, height: 80 }}
 						/>
-						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-20'>
-							Search Circles
+						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-[84px]'>
+							Sketch a Post
 						</StyledText>
 						<StyledIcon
-							name={'search-outline'}
-							size={45}
+							name={'ios-add'}
+							size={50}
 							color={'#FFFBFC'}
 							style={{ position: 'absolute' }}
 						/>

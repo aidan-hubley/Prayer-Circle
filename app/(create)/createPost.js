@@ -324,7 +324,7 @@ export default function Page() {
 								height='h-[60px]'
 								width='w-[125px]'
 								press={async () => {
-									if (title.length == 0 || body.length == 0)
+									if (title?.length == 0 || body?.length == 0)
 										return notify(
 											'Error Posting',
 											'Please enter a title and body for your post.',
@@ -446,7 +446,7 @@ export default function Page() {
 					</>
 				)}
 			</StyledSafeArea>
-			<Loading loading={uploading} />
+			<Loading loading={uploading} text={'Posting...'} circle />
 		</>
 	);
 }

@@ -1,8 +1,9 @@
 import React, { useState, useRef, forwardRef } from 'react';
-import { View, Animated, TouchableOpacity } from 'react-native';
+import { View, Animated, Pressable } from 'react-native';
 import { styled } from 'nativewind';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../app/global';
+import { debounce } from '../backend/functions';
 
 const StyledView = styled(View);
 
@@ -21,6 +22,7 @@ export const Toggle = forwardRef(
 		};
 
 		const togglePosition = () => {
+			console.log('run');
 			if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 			let direction = !isEnabled;
 			setIsEnabled(direction);
@@ -38,7 +40,12 @@ export const Toggle = forwardRef(
 		};
 
 		return (
-			<TouchableOpacity onPress={() => togglePosition()} ref={ref}>
+			<Pressable
+				onPress={debounce(() => {
+					togglePosition();
+				}, 300)}
+				ref={ref}
+			>
 				<StyledView
 					className={`${width || 'w-[50px]'} ${
 						height || 'h-[28px]'
@@ -54,7 +61,7 @@ export const Toggle = forwardRef(
 						style={positionStyle}
 					/>
 				</StyledView>
-			</TouchableOpacity>
+			</Pressable>
 		);
 	}
 );

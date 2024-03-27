@@ -120,7 +120,6 @@ export const Post = (post) => {
 	const [tS, setTS] = useState('0s');
 	let insets = useSafeAreaInsets();
 
-	// These need to be dynamic based on screen width available and a static max-height for content before truncation
 	const titleCharThreshold = Dimensions.get('window').width / 16;
 	const contentCharThreshold = 300;
 
@@ -708,6 +707,7 @@ export const Post = (post) => {
 
 	//functions
 	function getIconSource(iconType, interacted) {
+		if (!iconType) return;
 		const iconKey = iconType.replace('_outline', '');
 		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
@@ -889,9 +889,6 @@ export const Post = (post) => {
 			console.error('Error toggling bookmark:', error.message);
 		}
 
-		// set up event date
-		if (data?.type === 'event') getEventDate();
-
 		// set up comments
 		await populateComments(data?.comments || {});
 		let viewableComments = await readData(
@@ -901,9 +898,6 @@ export const Post = (post) => {
 			viewableComments = true;
 		}
 		setViewComments(viewableComments);
-
-		// set up reports
-		await populateReports(postId);
 
 		// set up interactions
 		let interactions =
@@ -935,31 +929,19 @@ export const Post = (post) => {
 			}
 			setInteractions(interactionsData);
 		}
-
-		// set up view circles
-		let circlesData = [];
-		let userCircles = await getCircles();
-		for (let circle of Object.keys(data?.circles || {})) {
-			if (!userCircles.includes(circle)) continue;
-			let circleData =
-				(await readData(`prayer_circle/circles/${circle}`)) || {};
-			circleData.id = circle;
-			circlesData.push(circleData);
-		}
-		setCircles(circlesData);
 	};
 
 	// populate functions
-	const getEventDate = () => {
+	const getEventDate = (data) => {
 		let currentTimezoneOffset = -new Date().getTimezoneOffset();
 		const start = formatTimestamp(
-			post?.metadata?.start,
-			post?.metadata?.timezone_offset,
+			data?.metadata?.start,
+			data?.metadata?.timezone_offset,
 			currentTimezoneOffset
 		);
 		const end = formatTimestamp(
-			post?.metadata?.end,
-			post?.metadata?.timezone_offset,
+			data?.metadata?.end,
+			data?.metadata?.timezone_offset,
 			currentTimezoneOffset
 		);
 
@@ -1011,6 +993,20 @@ export const Post = (post) => {
 				setReported(reports[report].reason);
 			}
 		}
+	};
+
+	const populateCircles = async () => {
+		// set up view circles
+		let circlesData = [];
+		let userCircles = await getCircles();
+		for (let circle of Object.keys(data?.circles || {})) {
+			if (!userCircles.includes(circle)) continue;
+			let circleData =
+				(await readData(`prayer_circle/circles/${circle}`)) || {};
+			circleData.id = circle;
+			circlesData.push(circleData);
+		}
+		setCircles(circlesData);
 	};
 
 	const postComment = async () => {
@@ -1066,6 +1062,7 @@ export const Post = (post) => {
 			await setData(d);
 			await setTitle(decrypt(post.id, d.title));
 			await setContent(decrypt(post.id, d.body));
+			if (d?.type === 'event') getEventDate(d);
 			await setIcon(d.type);
 			await setEdited(d?.edited || false);
 			await setTS(timeSince(d?.timestamp));
@@ -1078,8 +1075,6 @@ export const Post = (post) => {
 			);
 			await setEditTitle(decrypt(post.id, d.title));
 			await setEditContent(decrypt(post.id, d.body));
-
-			//console.log(timeSince(d?.timestamp) || false);
 
 			await setUp(post.id);
 		})();
@@ -1157,10 +1152,10 @@ export const Post = (post) => {
 										<View className={`mr-[20px]`}>
 											<StyledText className='text-offwhite font-bold text-[20px]'>
 												{isExpanded ||
-												title.length <=
+												title?.length <=
 													titleCharThreshold
 													? title
-													: `${title.substring(
+													: `${title?.substring(
 															0,
 															titleCharThreshold -
 																4
@@ -1232,16 +1227,16 @@ export const Post = (post) => {
 										}
 									}}
 								>
-									{/* <AnimatedImage
+									<AnimatedImage
 										source={getIconSource(icon, interacted)}
 										style={{
 											width: 26,
 											height: 26,
 											transform: [{ scale: iconInter }]
 										}}
-									/> */}
+									/>
 								</StyledPressable>
-								{(title.length > titleCharThreshold ||
+								{(title?.length > titleCharThreshold ||
 									content.length > contentCharThreshold) && (
 									<StyledOpacity
 										onPress={() => {
@@ -1380,6 +1375,7 @@ export const Post = (post) => {
 												Haptics.ImpactFeedbackStyle
 													.Light
 											);
+										populateCircles();
 										setBottomSheetType("Post's Circles");
 										handlePresentModalPress();
 									}}
