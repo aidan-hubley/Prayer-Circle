@@ -337,11 +337,15 @@ export default function Page() {
 								);
 								let typeSelected = '';
 								if (typeSelectedVal == 0)
-									typeSelected = 'praise';
+									typeSelected = 'annoucement';
 								else if (typeSelectedVal == 1)
-									typeSelected = 'request';
+									typeSelected = 'praise';
 								else if (typeSelectedVal == 2)
+									typeSelected = 'request';
+								else if (typeSelectedVal == 3)
 									typeSelected = 'event';
+								else if (typeSelectedVal == 4)
+									typeSelected = 'thought';
 
 								let circles = {};
 								addCircles.forEach((circle) => {

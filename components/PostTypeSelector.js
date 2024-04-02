@@ -19,8 +19,8 @@ const PostTypeSelector = forwardRef((props, ref) => {
 		)
 	).current;
 	const selectedInter = selected.interpolate({
-		inputRange: [0, 1, 2],
-		outputRange: ['12.5%', '46%', '79.5%']
+		inputRange: [0, 1, 2, 3, 4],
+		outputRange: ['6%', '26%', '45.5%', '66%', '86.5%']
 	});
 
 	const handlePress = (index) => {
@@ -47,9 +47,8 @@ const PostTypeSelector = forwardRef((props, ref) => {
 
 	return (
 		<StyledView
-			className={`flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] ${
-				props.noYMargin ? '' : 'my-3'
-			}`}
+			className={`flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] ${props.noYMargin ? '' : 'my-3'
+				}`}
 		>
 			<StyledAnimatedView
 				style={highlightPosition}
@@ -60,7 +59,7 @@ const PostTypeSelector = forwardRef((props, ref) => {
 				onPress={() => handlePress(0)}
 			>
 				<StyledImg
-					source={require('../assets/post/praise.png')}
+					source={require('../assets/post/annoucement.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
@@ -69,7 +68,7 @@ const PostTypeSelector = forwardRef((props, ref) => {
 				onPress={() => handlePress(1)}
 			>
 				<StyledImg
-					source={require('../assets/post/prayer.png')}
+					source={require('../assets/post/praise.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
@@ -78,7 +77,25 @@ const PostTypeSelector = forwardRef((props, ref) => {
 				onPress={() => handlePress(2)}
 			>
 				<StyledImg
+					source={require('../assets/post/prayer.png')}
+					className='w-[26px] h-[26px]'
+				/>
+			</StyledOpacity>
+			<StyledOpacity
+				className='flex items-center justify-center w-[50px] h-[50px]'
+				onPress={() => handlePress(3)}
+			>
+				<StyledImg
 					source={require('../assets/post/calendar.png')}
+					className='w-[26px] h-[26px]'
+				/>
+			</StyledOpacity>
+			<StyledOpacity
+				className='flex items-center justify-center w-[50px] h-[50px]'
+				onPress={() => handlePress(4)}
+			>
+				<StyledImg
+					source={require('../assets/post/thought.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>
