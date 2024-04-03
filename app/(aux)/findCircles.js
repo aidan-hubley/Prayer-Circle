@@ -148,7 +148,7 @@ export default function Page() {
 							</StyledView>
 							<StyledView className='w-[300px] mt-2 rounded-xl'>
 								<StyledInput
-									className='min-h-[40px] bg-[#ffffff11] rounded-[20px] pl-3 pr-[50px] py-3 text-offwhite text-[16px] border border-[#FFFBFC66]'
+									className='min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-offwhite text-[16px] border border-[#FFFBFC66]'
 									placeholder={'Code:'}
 									placeholderTextColor={'#FFFBFC66'}
 									inputMode='numeric'
@@ -211,6 +211,8 @@ export default function Page() {
 				height={'h-auto py-10'}
 				circle
 				text={'Searching for circle...'}
+				allowEvents={searching ? 'auto' : 'none'}
+				border
 			/>
 		</>
 	);

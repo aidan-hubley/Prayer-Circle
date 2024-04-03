@@ -16,7 +16,6 @@ export const Loading = forwardRef((props, ref) => {
 	});
 
 	const toggleVisible = () => {
-		console.log('toggleVisible', props.loading, props.loading ? 0 : 1);
 		Animated.timing(visible, {
 			toValue: props.loading ? 0 : 1,
 			duration: 300,
@@ -25,7 +24,6 @@ export const Loading = forwardRef((props, ref) => {
 	};
 
 	useEffect(() => {
-		console.log('useEffect', props.loading);
 		return () => {
 			toggleVisible();
 		};
@@ -47,7 +45,7 @@ export const Loading = forwardRef((props, ref) => {
 			>
 				{props.circle && (
 					<Progress.Circle
-						size={80}
+						size={60}
 						borderWidth={4}
 						indeterminate
 						color='#FFFBFC'

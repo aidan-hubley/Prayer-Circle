@@ -193,7 +193,7 @@ export default function Page() {
 				<BottomSheetModal
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
-					snapPoints={['45%']}
+					snapPoints={['55%']}
 					handleComponent={() =>
 						handle('Share the ' + `${circleName}` + ' Circle with:')
 					}

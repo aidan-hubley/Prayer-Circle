@@ -166,9 +166,8 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 					} else {
 						toggleLongOptions(false);
 						toggleShortOptions(false);
+						resize(1);
 					}
-					resize(1);
-
 					if (haptics)
 						Haptics.notificationAsync(
 							Haptics.NotificationFeedbackType.Success
@@ -181,11 +180,11 @@ const Circle = forwardRef(({ filter, press, toggleSwiping }, ref) => {
 					} else {
 						toggleLongOptions(false);
 						toggleShortOptions(false);
+						resize(1);
 					}
 					if (press) press();
 					if (haptics)
 						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-					resize(1);
 				}}
 			>
 				{currentFilter !== 'unfiltered' ? (

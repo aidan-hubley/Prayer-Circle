@@ -36,7 +36,6 @@ export default function FeedPage() {
 			let n = Date.now();
 			setRenderIndex(0);
 			let gp = await getPosts(filterTarget);
-			console.log(Date.now() - n, 'ms');
 			setPostList(gp);
 			setInitialLoad('loaded');
 			setRefreshing(false);

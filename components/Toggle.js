@@ -22,7 +22,6 @@ export const Toggle = forwardRef(
 		};
 
 		const togglePosition = () => {
-			console.log('run');
 			if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 			let direction = !isEnabled;
 			setIsEnabled(direction);
