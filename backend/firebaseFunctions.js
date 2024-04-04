@@ -6,7 +6,7 @@ import {
 	uploadBytesResumable
 } from 'firebase/storage';
 
-async function getUID() {
+export async function getUID() {
 	return auth?.currentUser?.uid;
 }
 
@@ -343,4 +343,36 @@ export async function reportBug(topic, description) {
 	};
 
 	writeData(`prayer_circle/bugs/${generateId()}`, bug, true);
+}
+
+export async function getUserData(uid) {
+	let fname = (await readData(`prayer_circle/users/${uid}/public/fname`)) || '';
+	let lname = (await readData(`prayer_circle/users/${uid}/public/lname`)) || '';
+	let name = fname + ' ' + lname;
+	let profile_img = (await readData(`prayer_circle/users/${uid}/public/profile_img`)) || '';
+
+	// let circles = Object.keys(
+	// 	(await readData(`prayer_circle/users/${uid}/private/circles`)) || {}
+	// );
+	// let circleIds = [];
+	// for (let i = 0; i < circles.length; i++) {
+	// 	let circle = circles[i];
+	// 	let members = (await readData(`prayer_circle/circles/${circle}/members`)) || {};
+	// 	if (Object.keys(members).includes(uid)) {
+	// 		circleIds.push(circle);
+	// 	}
+	// }
+
+	// let postIds = [];
+	// for (let i = 0; i < circleIds.length; i++) {
+	// 	let circle = circleIds[i];
+	// 	let posts = (await readData(`prayer_circle/circles/${circle}/posts`)) || {};
+	// 	for (let post in posts) {
+	// 		if (posts[post].uid == uid) {
+	// 			postIds.push(post);
+	// 		}
+	// 	}
+	// }
+
+	return { name, profile_img };
 }

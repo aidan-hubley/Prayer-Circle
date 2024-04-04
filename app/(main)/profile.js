@@ -110,7 +110,7 @@ export default function ProfilePage() {
 						style={{ paddingTop: insets.top + 100 }}
 						className='flex items-center w-full mb-10'
 					>
-						<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
+						<StyledView className='w-[175px] h-[175px] rounded-[20px]'>
 							{/* <CachedImage
 									className='w-full h-full rounded-[18px]'
 									style={{

@@ -19,12 +19,14 @@ import {
 	writeData,
 	readData,
 	generateId,
-	getCircles
+	getCircles, 
+	getUID
 } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
+import { router } from 'expo-router';
 import { useStore, notify } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
@@ -71,7 +73,10 @@ export const Post = (post) => {
 		setFilterName,
 		setFilterIcon,
 		setFilterColor,
-		setFilterIconColor
+		setFilterIconColor,
+		setOtherUserID,
+		setOtherUserName,
+		setOtherUserImg
 	] = useStore((state) => [
 		state.haptics,
 		state.setGlobalReload,
@@ -80,7 +85,10 @@ export const Post = (post) => {
 		state.setFilterName,
 		state.setFilterIcon,
 		state.setFilterColor,
-		state.setFilterIconColor
+		state.setFilterIconColor,
+		state.setOtherUserID,
+		state.setOtherUserName,
+		state.setOtherUserImg
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [editTitle, setEditTitle] = useState(decrypt(post.id, post.title));
@@ -302,8 +310,8 @@ export const Post = (post) => {
 									post?.data?.type === 'praise'
 										? 0
 										: post?.data?.type === 'request'
-										? 1
-										: 2
+											? 1
+											: 2
 								}
 								ref={typeRef}
 							/>
@@ -468,9 +476,8 @@ export const Post = (post) => {
 						else reportPost(text);
 						setReported(text);
 					}}
-					className={`w-full h-[60px] justify-center pl-4 ${
-						first && 'rounded-t-[20px]'
-					} ${last ? 'rounded-b-[20px]' : 'border-b border-outline'}`}
+					className={`w-full h-[60px] justify-center pl-4 ${first && 'rounded-t-[20px]'
+						} ${last ? 'rounded-b-[20px]' : 'border-b border-outline'}`}
 				>
 					<Text className='text-offwhite text-[18px]'>{text}</Text>
 				</TouchableHighlight>
@@ -868,6 +875,22 @@ export const Post = (post) => {
 		);
 	}
 
+	async function viewOtherUser(uid, name, img) {
+		bottomSheetModalRef.current?.dismiss();
+		let myuid = await getUID();		
+		console.log(myuid);
+		console.log(uid);
+		// if (uid === myuid) {
+		// 	router.replace('/profile');
+		// } else {	
+		// 	setOtherUserID(uid);
+		// 	setOtherUserName(name);
+		// 	setOtherUserImg(img);
+		// 	console.log(uid + " " + name + " " + img);
+		// 	router.replace('/otherUser');
+		// }
+	}
+
 	// post setup
 	const setUp = async (postId) => {
 		// set up bookmark
@@ -1082,7 +1105,7 @@ export const Post = (post) => {
 							}
 						} else {
 							setLastTap(now);
-							timer.current = setTimeout(() => {}, 300);
+							timer.current = setTimeout(() => { }, 300);
 						}
 					}}
 					onLongPress={() => {
@@ -1099,7 +1122,9 @@ export const Post = (post) => {
 				>
 					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
 						<StyledView className='w-[90%]'>
-							<StyledView className='flex flex-row mb-2'>
+							<StyledPressable className='flex flex-row mb-2'
+								onPress={() => { viewOtherUser(userData.uid, post.user, post.img) }} // wrong user id								
+							>
 								<CachedImage
 									cacheKey={shorthash.unique(post.img)}
 									style={{
@@ -1114,26 +1139,24 @@ export const Post = (post) => {
 									}}
 								/>
 								<StyledView
-									className={`flex-1 ${
-										post.owned ? 'ml-[4px]' : 'ml-2'
-									}`}
+									className={`flex-1 ${post.owned ? 'ml-[4px]' : 'ml-2'
+										}`}
 								>
 									<View className={`mr-[20px]`}>
 										<StyledText className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
-											title.length <= titleCharThreshold
+												title.length <= titleCharThreshold
 												? title
 												: `${title.substring(
-														0,
-														titleCharThreshold - 4
-												  )}...`}
+													0,
+													titleCharThreshold - 4
+												)}...`}
 										</StyledText>
 									</View>
 									<StyledView className='flex flex-row'>
 										<StyledText
-											className={`${
-												post.owned ? 'hidden' : ''
-											} text-white`}
+											className={`${post.owned ? 'hidden' : ''
+												} text-white`}
 										>
 											{post.user} •{' '}
 										</StyledText>
@@ -1141,23 +1164,21 @@ export const Post = (post) => {
 											{tS}{' '}
 										</StyledText>
 										<StyledText
-											className={`${
-												edited ? '' : 'hidden'
-											} text-white`}
+											className={`${edited ? '' : 'hidden'
+												} text-white`}
 										>
 											(edited)
 										</StyledText>
 									</StyledView>
 								</StyledView>
-							</StyledView>
+							</StyledPressable>
 							{post.icon == 'event' && (
 								<StyledView className='flex flex-row items-center mb-2'>
 									<StyledText
-										className={`${
-											post.owned
-												? 'ml-[4px] text-white font-bold text-[16px]'
-												: 'text-white font-bold text-[16px]'
-										}`}
+										className={`${post.owned
+											? 'ml-[4px] text-white font-bold text-[16px]'
+											: 'text-white font-bold text-[16px]'
+											}`}
 									>
 										{eventDate}
 									</StyledText>
@@ -1165,17 +1186,16 @@ export const Post = (post) => {
 							)}
 							<StyledView className='flex flex-row items-center w-[95%]'>
 								<StyledText
-									className={`${
-										post.owned ? 'ml-[4px]' : ''
-									} text-white mt-[2px] pb-[10px]`}
+									className={`${post.owned ? 'ml-[4px]' : ''
+										} text-white mt-[2px] pb-[10px]`}
 								>
 									{isExpanded ||
-									content.length <= contentCharThreshold
+										content.length <= contentCharThreshold
 										? content
 										: `${content.substring(
-												0,
-												contentCharThreshold
-										  )}...`}
+											0,
+											contentCharThreshold
+										)}...`}
 								</StyledText>
 							</StyledView>
 						</StyledView>
@@ -1203,23 +1223,23 @@ export const Post = (post) => {
 							</StyledPressable>
 							{(title.length > titleCharThreshold ||
 								content.length > contentCharThreshold) && (
-								<StyledOpacity
-									onPress={() => {
-										setIsExpanded(!isExpanded);
-									}}
-									className='self-center pt-2'
-								>
-									<Ionicons
-										name={
-											isExpanded
-												? 'chevron-up'
-												: 'chevron-down'
-										}
-										size={24}
-										color='#3D3D3D'
-									/>
-								</StyledOpacity>
-							)}
+									<StyledOpacity
+										onPress={() => {
+											setIsExpanded(!isExpanded);
+										}}
+										className='self-center pt-2'
+									>
+										<Ionicons
+											name={
+												isExpanded
+													? 'chevron-up'
+													: 'chevron-down'
+											}
+											size={24}
+											color='#3D3D3D'
+										/>
+									</StyledOpacity>
+								)}
 							<StyledPressable
 								className='flex w-[30px] aspect-square justify-end mb-[2px]'
 								onPress={() => {
