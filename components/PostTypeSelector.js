@@ -20,7 +20,7 @@ const PostTypeSelector = forwardRef((props, ref) => {
 	).current;
 	const selectedInter = selected.interpolate({
 		inputRange: [0, 1, 2, 3, 4],
-		outputRange: ['6%', '26%', '46.25%', '66%', '86%']
+		outputRange: ['6%', '26%', '46.25%', '66.25%', '86%']
 	});
 
 	const handlePress = (index) => {
