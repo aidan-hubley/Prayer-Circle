@@ -15,12 +15,12 @@ const StyledAnimatedView = styled(Animated.View);
 const PostTypeSelector = forwardRef((props, ref) => {
 	const selected = useRef(
 		new Animated.Value(
-			props.initialValue != undefined ? props.initialValue : 1
+			props.initialValue != undefined ? props.initialValue : 2
 		)
 	).current;
 	const selectedInter = selected.interpolate({
 		inputRange: [0, 1, 2, 3, 4],
-		outputRange: ['6%', '26%', '45.5%', '66%', '86.5%']
+		outputRange: ['6%', '26%', '46.25%', '66%', '86%']
 	});
 
 	const handlePress = (index) => {
