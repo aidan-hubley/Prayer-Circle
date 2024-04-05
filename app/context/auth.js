@@ -142,6 +142,7 @@ export function Provider(props) {
 					'#00A55E',
 					140000
 				);
+				router.replace('/login');
 			})
 			.catch((error) => {
 				const errorCode = error.code;
