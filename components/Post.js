@@ -19,8 +19,7 @@ import {
 	writeData,
 	readData,
 	generateId,
-	getCircles, 
-	getUID
+	getCircles
 } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -877,18 +876,17 @@ export const Post = (post) => {
 
 	async function viewOtherUser(uid, name, img) {
 		bottomSheetModalRef.current?.dismiss();
-		let myuid = await getUID();		
-		console.log(myuid);
+		console.log(auth.currentUser.uid);
 		console.log(uid);
-		// if (uid === myuid) {
-		// 	router.replace('/profile');
-		// } else {	
-		// 	setOtherUserID(uid);
-		// 	setOtherUserName(name);
-		// 	setOtherUserImg(img);
-		// 	console.log(uid + " " + name + " " + img);
-		// 	router.replace('/otherUser');
-		// }
+		if (uid === auth.currentUser.uid) {
+			router.replace('/profile');
+		} else {	
+			setOtherUserID(uid);
+			setOtherUserName(name);
+			setOtherUserImg(img);
+			console.log(uid + " " + name + " " + img);
+			router.replace('/otherUser');
+		}
 	}
 
 	// post setup
@@ -1123,7 +1121,7 @@ export const Post = (post) => {
 					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
 						<StyledView className='w-[90%]'>
 							<StyledPressable className='flex flex-row mb-2'
-								onPress={() => { viewOtherUser(userData.uid, post.user, post.img) }} // wrong user id								
+								onPress={() => { viewOtherUser(post.data.user, post.data.name, post.img) }}
 							>
 								<CachedImage
 									cacheKey={shorthash.unique(post.img)}

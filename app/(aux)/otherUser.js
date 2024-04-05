@@ -132,6 +132,9 @@ export default function ProfilePage() {
                         <StyledText className='font-bold text-offwhite text-[26px] mt-3'>
                             {otherUserName}
                         </StyledText>
+                        <StyledText className='font-bold text-offwhite text-[26px] mt-3'>
+                            {otherUserID}
+                        </StyledText>
                     </StyledView>
                 }
                 ListFooterComponent={
