@@ -876,16 +876,14 @@ export const Post = (post) => {
 
 	async function viewOtherUser(uid, name, img) {
 		bottomSheetModalRef.current?.dismiss();
-		console.log(auth.currentUser.uid);
-		console.log(uid);
 		if (uid === auth.currentUser.uid) {
-			router.replace('/profile');
+			// router.replace('/profile');
+			
 		} else {	
+			router.replace('/otherUser');
 			setOtherUserID(uid);
 			setOtherUserName(name);
-			setOtherUserImg(img);
-			console.log(uid + " " + name + " " + img);
-			router.replace('/otherUser');
+			setOtherUserImg(img);						
 		}
 	}
 

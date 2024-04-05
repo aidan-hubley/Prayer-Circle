@@ -345,34 +345,41 @@ export async function reportBug(topic, description) {
 	writeData(`prayer_circle/bugs/${generateId()}`, bug, true);
 }
 
-export async function getUserData(uid) {
-	let fname = (await readData(`prayer_circle/users/${uid}/public/fname`)) || '';
-	let lname = (await readData(`prayer_circle/users/${uid}/public/lname`)) || '';
-	let name = fname + ' ' + lname;
-	let profile_img = (await readData(`prayer_circle/users/${uid}/public/profile_img`)) || '';
+export async function getUserData(theirUID) {
+	let circles = await getCircles();
+	let circlelist = [];
+	let postlist = [];
+	for (const circle of circles) {
+		let circleData = await readData(`prayer_circle/circles/${circle}/`);
+		if (circleData.members[theirUID]) {
+			circlelist.push({
+				color: circleData.color,
+				icon: circleData.icon,
+				iconColor: circleData.iconColor,
+				title: circleData.title
+			});
+			let circlePosts = await readData(`prayer_circle/circles/${circle}/posts`);
+			for (const post of Object.entries(circlePosts)) {
+				let postdata = await readData(`prayer_circle/posts/${post[0]}`);				
+				if (postdata.user === theirUID) {
+					postlist.push(postdata);
+					// postlist.push({
+					// 	user: postdata.user,
+					// 	img: postdata.profile_img,
+					// 	title: postdata.title,
+					// 	timestamp: postdata.timestamp,
+					// 	content: postdata.body,
+					// 	icon: postdata.type,
+					// 	id: post,
+					// 	owned: true,
+					// 	edited: postdata.edited,
+					// 	metadata: postdata.metadata,
+					// 	data: postdata.data
+					// });
+				}
+			}
 
-	// let circles = Object.keys(
-	// 	(await readData(`prayer_circle/users/${uid}/private/circles`)) || {}
-	// );
-	// let circleIds = [];
-	// for (let i = 0; i < circles.length; i++) {
-	// 	let circle = circles[i];
-	// 	let members = (await readData(`prayer_circle/circles/${circle}/members`)) || {};
-	// 	if (Object.keys(members).includes(uid)) {
-	// 		circleIds.push(circle);
-	// 	}
-	// }
-
-	// let postIds = [];
-	// for (let i = 0; i < circleIds.length; i++) {
-	// 	let circle = circleIds[i];
-	// 	let posts = (await readData(`prayer_circle/circles/${circle}/posts`)) || {};
-	// 	for (let post in posts) {
-	// 		if (posts[post].uid == uid) {
-	// 			postIds.push(post);
-	// 		}
-	// 	}
-	// }
-
-	return { name, profile_img };
+		}
+	}
+	return { circlelist, postlist };
 }

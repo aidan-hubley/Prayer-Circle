@@ -12,10 +12,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import { getUserData, getUID } from '../../backend/firebaseFunctions';
+import { getUserData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
-import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 import { router } from 'expo-router';
 
@@ -26,58 +25,56 @@ const StyledGradient = styled(LinearGradient);
 export default function ProfilePage() {
     const otherUserID = useStore((state) => state.otherUserID);
     const otherUserName = useStore((state) => state.otherUserName);
-    const otherUserImg = useStore((state) => state.otherUserImg);    
+    const otherUserImg = useStore((state) => state.otherUserImg);
     const [posts, setPosts] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-    const [postList, setPostList] = useState([]);
     const [renderIndex, setRenderIndex] = useState(0);
     const [initialLoad, setInitialLoad] = useState('loading');
     const [scrolling, setScrolling] = useState(false);
     const globalReload = useStore((state) => state.globalReload);
     const [userData, setUserData] = useState(auth?.currentUser);
 
-    // const setUpFeed = async () => {
-    //     if (auth.currentUser) {
-    //         setRenderIndex(0);
-    //         let gp = await getProfilePosts();
-    //         setPostList(gp);
-    //         let pl = await populateList(gp, 0, 7);
-    //         setPosts(pl);
-    //         setInitialLoad('loaded');
-    //     }
-    // };
+    const setUpVenn = async () => {
+        let data = await getUserData(otherUserID);
+        let circlelist = data['circlelist'];
+        let postlist = data['postlist'];
+        setRenderIndex(0);
 
-    // async function populateList(list, start, numOfItems) {
-    //     let renderedList = [];
-    //     let endOfList =
-    //         list.length < start + numOfItems ? list.length - start : numOfItems;
-    //     for (let i of list.slice(start, endOfList + start)) {
-    //         let id = i[0];
-    //         let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-    //         if (data.user == userData.uid) renderedList.push([id, data]);
-    //     }
-    //     setRefreshing(false);
-    //     setRenderIndex(start + endOfList);
-    //     return renderedList;
-    // }
-    // useEffect(() => {
+        console.log(postlist[1]);
 
-    //     setUpFeed();
-    // }, []);
-    // useEffect(() => {
-    //     if (globalReload) {
-    //         setUpFeed();
-    //     }
-    // }, [globalReload]);
-    // useEffect(() => {
-    //     setUserData(auth?.currentUser);
-    // }, [auth]);
+        // let pl = await populateList(postlist, 0, 7);
+        setPosts(postlist);
+
+        setInitialLoad('loaded');
+    }
+
+    async function populateList(list, start, numOfItems) {
+        let renderedList = [];
+        let endOfList =
+            list.length < start + numOfItems ? list.length - start : numOfItems;
+        for (let i of list.slice(start, endOfList + start)) {
+            let id = i[0];
+            let data = (await readData(`prayer_circle/posts/${id}`)) || {};
+            if (data.user == userData.uid) renderedList.push([id, data]);
+        }
+        setRefreshing(false);
+        setRenderIndex(start + endOfList);
+        return renderedList;
+    }
+    useEffect(() => {
+        setUpVenn();
+    }, []);
+    useEffect(() => {
+        if (globalReload) {
+            setUpVenn();
+        }
+    }, [globalReload]);
 
     let insets = useSafeAreaInsets();
     return (
         <StyledView className='flex-1 bg-offblack'>
             <FlatList
-                // data={posts}
+                data={posts}
                 onEndReachedThreshold={0.4}
                 windowSize={10}
                 onScrollBeginDrag={() => {
@@ -112,7 +109,7 @@ export default function ProfilePage() {
                         className='flex items-center w-full mb-10'
                     >
                         <StyledView className='w-[175px] h-[175px] rounded-[20px]'>
-                            <CachedImage
+                            <Image
                                 style={{
                                     width: '100%',
                                     height: '100%',
@@ -121,9 +118,6 @@ export default function ProfilePage() {
                                         ? 'flex'
                                         : 'none'
                                 }}
-                                cacheKey={shorthash.unique(
-                                    otherUserImg
-                                )}
                                 source={{
                                     uri: otherUserImg
                                 }}
@@ -132,15 +126,12 @@ export default function ProfilePage() {
                         <StyledText className='font-bold text-offwhite text-[26px] mt-3'>
                             {otherUserName}
                         </StyledText>
-                        <StyledText className='font-bold text-offwhite text-[26px] mt-3'>
-                            {otherUserID}
-                        </StyledText>
                     </StyledView>
                 }
                 ListFooterComponent={
                     posts && posts.length > 0 ? (
                         <StyledView
-                            className='w-full flex items-center mb-[10px]'
+                            className='w-full flex items-center mb-[10px] border-2 border-red'
                             style={{
                                 height: insets.top + 60
                             }}
@@ -167,17 +158,17 @@ export default function ProfilePage() {
                 }
                 renderItem={({ item }) => (
                     <Post
-                        user={item[1].name}
-                        img={item[1].profile_img}
-                        title={item[1].title}
-                        timestamp={`${item[1].timestamp}`}
-                        content={item[1].body}
-                        icon={item[1].type}
+                        user={item.name}
+                        img={item.profile_img}
+                        title={item.title}
+                        timestamp={`${item.timestamp}`}
+                        content={item.body}
+                        icon={item.type}
                         id={item[0]}
                         owned={true}
-                        edited={item[1].edited}
-                        metadata={item[1].metadata}
-                        data={item[1]}
+                        edited={item.edited}
+                        metadata={item.metadata}
+                        data={item}
                     />
                 )}
                 keyExtractor={(item) => item[0]}
