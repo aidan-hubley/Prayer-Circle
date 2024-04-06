@@ -115,6 +115,14 @@ export const Post = (post) => {
 		prayer: {
 			outline: require('../assets/post/prayer_outline.png'),
 			nonOutline: require('../assets/post/prayer.png')
+		},
+		annoucement: {
+			outline: require('../assets/post/annoucement_outline.png'),
+			nonOutline: require('../assets/post/annoucement.png')
+		},
+		thought: {
+			outline: require('../assets/post/thought_outline.png'),
+			nonOutline: require('../assets/post/thought.png')
 		}
 	};
 	const tS = timeSince(post.timestamp);
@@ -709,7 +717,7 @@ export const Post = (post) => {
 	//functions
 	function getIconSource(iconType, interacted) {
 		const iconKey = iconType.replace('_outline', '');
-		if (!['praise', 'event', 'request', 'prayer'].includes(iconKey)) {
+		if (!['praise', 'event', 'request', 'prayer', 'annoucement', 'thought'].includes(iconKey)) {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
