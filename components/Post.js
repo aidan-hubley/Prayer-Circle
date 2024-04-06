@@ -879,6 +879,8 @@ export const Post = (post) => {
 		if (uid === auth.currentUser.uid) {
 			// router.replace('/profile');
 			
+		} if (uid === 'tNcLtRJICvZ6w7rYIePhqBFGxRF3') {
+			router.replace('/prayerCircleInfo');
 		} else {	
 			router.replace('/otherUser');
 			setOtherUserID(uid);

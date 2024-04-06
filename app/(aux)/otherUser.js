@@ -40,10 +40,11 @@ export default function ProfilePage() {
         let postlist = data['postlist'];
         setRenderIndex(0);
 
-        console.log(postlist[1]);
+        console.log(circlelist);
+        console.log(postlist);
 
-        // let pl = await populateList(postlist, 0, 7);
-        setPosts(postlist);
+        let pl = await populateList(postlist, 0, 7);
+        setPosts(pl);
 
         setInitialLoad('loaded');
     }
@@ -61,9 +62,11 @@ export default function ProfilePage() {
         setRenderIndex(start + endOfList);
         return renderedList;
     }
+
     useEffect(() => {
         setUpVenn();
     }, []);
+
     useEffect(() => {
         if (globalReload) {
             setUpVenn();
@@ -97,7 +100,7 @@ export default function ProfilePage() {
                         progressViewOffset={insets.top + 60}
                         onRefresh={() => {
                             setRefreshing(true);
-                            setUpFeed();
+                            setUpVenn();
                         }}
                         refreshing={refreshing}
                         tintColor='#ebebeb'

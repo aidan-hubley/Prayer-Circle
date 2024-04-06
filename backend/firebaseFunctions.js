@@ -352,6 +352,7 @@ export async function getUserData(theirUID) {
 	for (const circle of circles) {
 		let circleData = await readData(`prayer_circle/circles/${circle}/`);
 		if (circleData.members[theirUID]) {
+			console.log("circle " + circleData.title);
 			circlelist.push({
 				color: circleData.color,
 				icon: circleData.icon,
@@ -362,24 +363,28 @@ export async function getUserData(theirUID) {
 			for (const post of Object.entries(circlePosts)) {
 				let postdata = await readData(`prayer_circle/posts/${post[0]}`);				
 				if (postdata.user === theirUID) {
-					postlist.push(postdata);
-					// postlist.push({
-					// 	user: postdata.user,
-					// 	img: postdata.profile_img,
-					// 	title: postdata.title,
-					// 	timestamp: postdata.timestamp,
-					// 	content: postdata.body,
-					// 	icon: postdata.type,
-					// 	id: post,
-					// 	owned: true,
-					// 	edited: postdata.edited,
-					// 	metadata: postdata.metadata,
-					// 	data: postdata.data
-					// });
+					// postlist.push(postdata);
+					postlist.push({
+						user: postdata.user,
+						img: postdata.profile_img,
+						title: postdata.title,
+						timestamp: postdata.timestamp,
+						content: postdata.body,
+						icon: postdata.type,
+						id: post,
+						owned: true,
+						edited: postdata.edited,
+						metadata: postdata.metadata,
+						data: postdata.data
+					});
 				}
 			}
 
 		}
 	}
+
+	console.log(postlist);
+	console.log(circlelist);
+
 	return { circlelist, postlist };
 }
