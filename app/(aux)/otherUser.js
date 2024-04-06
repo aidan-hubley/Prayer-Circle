@@ -49,13 +49,14 @@ export default function ProfilePage() {
         setInitialLoad('loaded');
     }
 
-    async function populateList(list, start, numOfItems) {
+    async function populateList(list, start, numOfItems) { // need @alex to implement lazy loading here
         let renderedList = [];
         let endOfList =
             list.length < start + numOfItems ? list.length - start : numOfItems;
         for (let i of list.slice(start, endOfList + start)) {
             let id = i[0];
-            let data = (await readData(`prayer_circle/posts/${id}`)) || {};
+            // let data = (await readData(`prayer_circle/posts/${id}`)) || {};
+            let data = list[i];
             if (data.user == userData.uid) renderedList.push([id, data]);
         }
         setRefreshing(false);
@@ -86,12 +87,12 @@ export default function ProfilePage() {
                 onMomentumScrollEnd={() => {
                     setScrolling(false);
                 }}
-                onEndReached={() => {
-                    if (initialLoad == 'loading' || !scrolling) return;
-                    populateList(postList, renderIndex, 10).then((res) => {
-                        setPosts([...posts, ...res]);
-                    });
-                }}
+                // onEndReached={() => {
+                //     if (initialLoad == 'loading' || !scrolling) return;
+                //     populateList(postList, renderIndex, 10).then((res) => {
+                //         setPosts([...posts, ...res]);
+                //     });
+                // }}
                 style={{ paddingHorizontal: 15 }}
                 estimatedItemSize={100}
                 showsHorizontalScrollIndicator={false}
@@ -161,19 +162,19 @@ export default function ProfilePage() {
                 }
                 renderItem={({ item }) => (
                     <Post
-                        user={item.name}
-                        img={item.profile_img}
-                        title={item.title}
-                        timestamp={`${item.timestamp}`}
-                        content={item.body}
-                        icon={item.type}
+                        user={item[1].user}
+                        img={item[1].img}
+                        title={item[1].title}
+                        timestamp={item[1].timestamp}
+                        content={item[1].content}
+                        icon={item[1].icon}
                         id={item[0]}
-                        owned={true}
-                        edited={item.edited}
-                        metadata={item.metadata}
-                        data={item}
+                        edited={item[1].edited}
+                        comments={item[1].comments}
+                        data={item[1]}
                     />
                 )}
+
                 keyExtractor={(item) => item[0]}
             />
             <StyledView

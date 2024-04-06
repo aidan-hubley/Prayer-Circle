@@ -352,7 +352,6 @@ export async function getUserData(theirUID) {
 	for (const circle of circles) {
 		let circleData = await readData(`prayer_circle/circles/${circle}/`);
 		if (circleData.members[theirUID]) {
-			console.log("circle " + circleData.title);
 			circlelist.push({
 				color: circleData.color,
 				icon: circleData.icon,
