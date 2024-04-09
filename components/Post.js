@@ -1114,6 +1114,7 @@ export const Post = (post) => {
 										width: 44,
 										height: 44,
 										borderRadius: 8,
+										marginStart: 3,
 										display: post.owned ? 'none' : 'flex'
 									}}
 									source={{
