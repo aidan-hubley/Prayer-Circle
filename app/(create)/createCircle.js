@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
 	Text,
 	View,
@@ -34,6 +34,7 @@ export default function Page() {
 	const [description, setDescription] = useState('');
 	const [icon, setIcon] = useState(null);
 	const [iconColor, setIconColor] = useState(null);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const iconSelectorRef = useRef();
 	const circleColorRef = useRef();
 	const setFilterReload = useStore((state) => state.setFilterReload);
@@ -44,13 +45,33 @@ export default function Page() {
 		setIconColor(iconColor);
 	};
 
+	useEffect(() => {
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+				setKeyboardVisible(true); // or some other action
+			}
+		);
+		const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+				setKeyboardVisible(false); // or some other action
+			}
+		);
+
+		return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		};
+	}, []);
+
 	return (
 		<StyledSafeArea className='bg-offblack flex-1'>
 			<KeyboardAwareScrollView
 				bounces={false}
 				keyboardShouldPersistTaps='handled'
 			>
-				<StyledView className='bg-offblack flex-1 flex flex-col items-center'>
+				<StyledView className='bg-offblack flex flex-col items-center'>
 					<StyledView className='flex items-center justify-center text-center w-screen'>
 						<StyledText className='text-offwhite font-bold text-4xl'>
 							Form a Circle
@@ -62,30 +83,9 @@ export default function Page() {
 							To select an icon, click the circle below!
 						</StyledText>
 					</StyledView>
-					<StyledView className='relative  flex w-screen aspect-square justify-center items-center mt-4 mb-2'>
-						<StyledColorPicker
-							className='w-[100%]'
-							ref={circleColorRef}
-							sliderComponent={Slider}
-							hideSliders={true}
-							style={{ flex: 1 }}
-						/>
-						<StyledOpacity
-							className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
-							onPress={() => {
-								iconSelectorRef.current.toggleSelector(true);
-							}}
-						>
-							<StyledIcon
-								name={icon}
-								size={85}
-								color={iconColor}
-							/>
-						</StyledOpacity>
-					</StyledView>
 					<StyledView className='w-full h-auto flex items-center justify-between px-[15px]'>
 						<StyledInput
-							className='bg-offblack text-[18px] h-[42px] w-full text-offwhite border border-offwhite rounded-lg px-3 py-[5px]'
+							className='bg-offblack text-[18px] h-[42px] w-full text-offwhite border border-offwhite rounded-lg px-3 py-[5px] my-3'
 							placeholder={'Circle Name'}
 							placeholderTextColor={'#ffffff66'}
 							inputMode='text'
@@ -115,67 +115,89 @@ export default function Page() {
 							}}
 						/>
 					</StyledView>
-				</StyledView>
+
+					<StyledView className='relative flex w-screen aspect-square justify-center items-center'>
+						<StyledColorPicker
+							className='w-[100%]'
+							ref={circleColorRef}
+							sliderComponent={Slider}
+							hideSliders={true}
+							style={{ flex: 1 }}
+						/>
+						<StyledOpacity
+							className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
+							onPress={() => {
+								iconSelectorRef.current.toggleSelector(true);
+							}}
+						>
+							<StyledIcon
+								name={icon}
+								size={85}
+								color={iconColor}
+							/>
+						</StyledOpacity>
+					</StyledView>
+					
+				</StyledView>				
 			</KeyboardAwareScrollView>
-			<StyledView
-				className='absolute flex flex-row w-screen px-[15px] justify-between bg-offblack pb-5'
-				style={{ bottom: insets.bottom }}
-			>
-				<Button
-					title='Erase'
-					width='w-[125px]'
-					height='h-[60px]'
-					href='/'
-					bgColor={'bg-offblack'}
-					borderColor={'#FFFBFC'}
-					borderWidth={'border-2'}
-					textColor={'text-offwhite'}
-				/>
-				<Button
-					title='Draw'
-					height='h-[60px]'
-					width='w-[125px]'
-					press={async () => {
-						if (title.length == 0) {
-							notify('Error', 'Please enter a title', '#CC2500');
-							return;
-						}
+			{(Platform.OS === 'android' ? !isKeyboardVisible : true) && (
+				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
+					{/* <Button
+						title='Erase'
+						width='w-[125px]'
+						height='h-[60px]'
+						href='/'
+						bgColor={'bg-offblack'}
+						borderColor={'#FFFBFC'}
+						borderWidth={'border-2'}
+						textColor={'text-offwhite'}
+					/> */}
+					<Button
+						title='Draw'
+						height='h-[60px]'
+						width='w-[125px]'
+						press={async () => {
+							if (title.length == 0) {
+								notify('Error', 'Please enter a title', '#CC2500');
+								return;
+							}
 
-						let borderColor = fromHsv(
-							circleColorRef.current.state.color
-						);
+							let borderColor = fromHsv(
+								circleColorRef.current.state.color
+							);
 
-						let data = {
-							title: title,
-							description: description,
-							iconColor: iconColor,
-							icon: icon,
-							timestamp: Date.now(),
-							type: 'individual',
-							color: borderColor,
-							members: {},
-							admin: {},
-							usersAwaitingEntry: {},
-							owner: false
-						};
+							let data = {
+								title: title,
+								description: description,
+								iconColor: iconColor,
+								icon: icon,
+								timestamp: Date.now(),
+								type: 'individual',
+								color: borderColor,
+								members: {},
+								admin: {},
+								usersAwaitingEntry: {},
+								owner: false
+							};
 
-						if (title === 'Tutorial') {
-							notify('Error', 'Please choose another title', '#CC2500');
-							return;
-						}
+							if (title === 'Tutorial') {
+								notify('Error', 'Please choose another title', '#CC2500');
+								return;
+							}
 
-						await createCircle(data);
-						notify(
-							'Circle Successfully Created',
-							'You can access your new circle from the filter.',
-							'#00A55E'
-						);
-						setFilterReload(true);
+							await createCircle(data);
+							notify(
+								'Circle Successfully Created',
+								'You can access your new circle from the filter.',
+								'#00A55E'
+							);
+							setFilterReload(true);
 
-						router.push('/');
-					}}
-				/>
-			</StyledView>
+							router.push('/');
+						}}
+					/>
+				</StyledView>
+			)}
 			<IconSelector
 				onIconSelected={handleIconSelected}
 				ref={iconSelectorRef}
