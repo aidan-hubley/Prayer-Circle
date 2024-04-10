@@ -12,7 +12,9 @@
     "@expo/ngrok": "^4.1.0",
     "@gorhom/bottom-sheet": "^4.6.0",
     "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/slider": "4.4.2",
+    "daily-bread": "^1.4.2",
     "expo": "^49.0.15",
     "expo-barcode-scanner": "~12.5.3",
     "expo-cached-image": "^49.0.2",
@@ -48,8 +50,7 @@
     "react-qr-code": "^2.0.12",
     "shorthash": "^0.0.2",
     "tailwindcss": "3.3.2",
-    "zustand": "^4.5.0",
-    "@react-native-community/datetimepicker": "7.2.0"
+    "zustand": "^4.5.0"
   },
   "overrides": {
     "@expo/config-plugins": "~7.2.2",

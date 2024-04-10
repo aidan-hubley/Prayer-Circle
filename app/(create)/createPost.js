@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
 	Text,
 	View,
+	Image,
 	TextInput,
 	TouchableOpacity,
 	Pressable,
@@ -27,8 +28,10 @@ import { auth } from '../../backend/config';
 import { encrypt } from 'react-native-simple-encryption';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatTimestamp } from '../../backend/functions';
+import { DailyBread } from 'daily-bread';
 
 const StyledSafeArea = styled(SafeAreaView);
+const StyledImg = styled(Image);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
@@ -37,11 +40,13 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
+	const [verse, setVerse] = useState('');
 	const [titlepplaceholder, setTitlePlaceholder] = useState('Title');
 	const [bodypplaceholder, setBodyPlaceholder] = useState('Write a Post');
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
+	const [showVerse, setShowVerse] = useState(false);
 	const [circles, setGlobalReload, addCircles, setAddCircles] = useStore(
 		(state) => [
 			state.circles,
@@ -79,7 +84,7 @@ export default function Page() {
 			setShowDatePicker(true);
 			setTitlePlaceholder('Event Title');
 			setBodyPlaceholder('Event Description');
-		} 
+		}
 		if (index == 4) {
 			setShowDatePicker(false);
 			setTitlePlaceholder('Thought Title');
@@ -135,7 +140,18 @@ export default function Page() {
 						<StyledText className='text-offwhite font-bold text-4xl'>
 							Sketch a Post
 						</StyledText>
-						<View className={'w-[40px] h-[40px] '}></View>
+						<TouchableOpacity
+							className={'w-[40px] '}
+							onPress={() => {
+								router.back();
+							}}
+						>
+							<Ionicons
+								name={'information-circle-outline'}
+								size={34}
+								color={'white'}
+							/>
+						</TouchableOpacity>
 					</StyledView>
 					<StyledView className='flex flex-col w-screen items-center py-3 px-[20px]'>
 						<PostTypeSelector
@@ -162,34 +178,34 @@ export default function Page() {
 									{(Platform.OS === 'android'
 										? startDateShow
 										: true) && (
-										<DateTimePicker
-											value={startDate}
-											mode={'date'}
-											display='default'
-											onChange={(event, selectedDate) => {
-												setStartDate(selectedDate);
-												setStartDateShow(false);
-											}}
-										/>
-									)}
+											<DateTimePicker
+												value={startDate}
+												mode={'date'}
+												display='default'
+												onChange={(event, selectedDate) => {
+													setStartDate(selectedDate);
+													setStartDateShow(false);
+												}}
+											/>
+										)}
 									{(Platform.OS === 'android'
 										? startTimeShow
 										: true) && (
-										<DateTimePicker
-											value={startDate}
-											mode={'time'}
-											is24Hour={false}
-											display={
-												Platform.OS === 'android'
-													? 'spinner'
-													: 'default'
-											}
-											onChange={(event, selectedDate) => {
-												setStartDate(selectedDate);
-												setStartTimeShow(false);
-											}}
-										/>
-									)}
+											<DateTimePicker
+												value={startDate}
+												mode={'time'}
+												is24Hour={false}
+												display={
+													Platform.OS === 'android'
+														? 'spinner'
+														: 'default'
+												}
+												onChange={(event, selectedDate) => {
+													setStartDate(selectedDate);
+													setStartTimeShow(false);
+												}}
+											/>
+										)}
 									{Platform.OS === 'android' && (
 										<>
 											<Pressable
@@ -237,34 +253,34 @@ export default function Page() {
 									{(Platform.OS === 'android'
 										? endDateShow
 										: true) && (
-										<DateTimePicker
-											value={endDate}
-											mode={'date'}
-											display='default'
-											onChange={(event, selectedDate) => {
-												setEndDate(selectedDate);
-												setEndDateShow(false);
-											}}
-										/>
-									)}
+											<DateTimePicker
+												value={endDate}
+												mode={'date'}
+												display='default'
+												onChange={(event, selectedDate) => {
+													setEndDate(selectedDate);
+													setEndDateShow(false);
+												}}
+											/>
+										)}
 									{(Platform.OS === 'android'
 										? endTimeShow
 										: true) && (
-										<DateTimePicker
-											value={endDate}
-											mode={'time'}
-											is24Hour={false}
-											display={
-												Platform.OS === 'android'
-													? 'spinner'
-													: 'default'
-											}
-											onChange={(event, selectedDate) => {
-												setEndDate(selectedDate);
-												setEndTimeShow(false);
-											}}
-										/>
-									)}
+											<DateTimePicker
+												value={endDate}
+												mode={'time'}
+												is24Hour={false}
+												display={
+													Platform.OS === 'android'
+														? 'spinner'
+														: 'default'
+												}
+												onChange={(event, selectedDate) => {
+													setEndDate(selectedDate);
+													setEndTimeShow(false);
+												}}
+											/>
+										)}
 									{Platform.OS === 'android' && (
 										<>
 											<Pressable
@@ -320,6 +336,47 @@ export default function Page() {
 								setBody(text);
 							}}
 						/>
+						{showVerse == false ? (
+							<StyledView className="flex flex-row items-center justify-between w-full my-2">
+								<StyledText className='text-[#fefefe80] text-[18px] my-2'>
+									Optional: Add Scripture to your post!
+								</StyledText>
+								<Button
+									icon='add'
+									width='w-[34px]'
+									height='h-[34px]'
+									iconColor='#FFFBFC'
+									btnStyles={
+										'bg-grey border border-outline'
+									}
+									press={() => {
+										setShowVerse(true);
+									}}
+								/>							
+							</StyledView>
+						) : (
+							<StyledView className="flex flex-row items-center justify-start w-full my-2">
+								{/* <StyledImg
+									source={require('../../assets/post/bible_outline.png')}
+									className='w-[32px] h-[34px]'
+								/> */}
+								<StyledText className='flex-1 text-center text-[#fefefe80] text-[18px] w-full text-center my-2'>
+									{verse}
+								</StyledText>
+								<Button
+									icon='remove'
+									width='w-[34px]'
+									height='h-[34px]'
+									iconColor='#FFFBFC'
+									btnStyles={
+										'bg-grey border border-outline rotate-[45deg]'
+									}
+									press={() => {
+										setShowVerse(false);
+									}}
+								/>		
+							</StyledView>
+						)}
 					</StyledView>
 				</>
 			</KeyboardAwareScrollView>
