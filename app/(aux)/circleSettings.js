@@ -7,14 +7,19 @@ import {
 	TextInput,
 	Keyboard,
 	Pressable,
+	TouchableOpacity,
 	ActivityIndicator,
 	TouchableWithoutFeedback
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { styled } from 'nativewind';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Member } from '../../components/Member.js';
+import { ColorPicker, fromHsv } from 'react-native-color-picker';
+import Slider from '@react-native-community/slider';
+import { IconSelector } from '../../components/iconSelector';
 import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../global';
@@ -35,15 +40,22 @@ import { router } from 'expo-router';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 const StyledPressable = styled(Pressable);
+const StyledOpacity = styled(TouchableOpacity);
 const StyledGradient = styled(LinearGradient);
+const StyledColorPicker = styled(ColorPicker);
 
 export default function Page() {
 	useEffect(() => {
 		setUserData(auth.currentUser);
 	}, [auth.currentUser]);
 	const filterTarget = useStore((state) => state.filter);
+	const [icon, setIcon] = useState(null);
+	const [iconColor, setIconColor] = useState(null);
+	const iconSelectorRef = useRef();
+	const circleColorRef = useRef();
 	const [userData, setUserData] = useState(auth.currentUser);
 	const [circleName, setCircleName] = useState('');
 	const [memberData, setMemberData] = useState([]);
@@ -61,6 +73,9 @@ export default function Page() {
 		setCurrentCircleRole,
 		setFilter,
 		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterIconColor,
 		setGlobalReload,
 		setFilterReload
 	] = useStore((state) => [
@@ -73,6 +88,9 @@ export default function Page() {
 		state.setCurrentCircleRole,
 		state.setFilter,
 		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterIconColor,
 		state.setGlobalReload,
 		state.setFilterReload
 	]);
@@ -245,9 +263,6 @@ export default function Page() {
 	}
 
 	async function editCircle() {
-		console.log(editTitle)
-		console.log(editDescription)
-
 		if (editTitle === '') {
 			notify(
 				'Circles Reqire a Title',
@@ -272,6 +287,29 @@ export default function Page() {
 		setFilterReload(true);
 		router.push('/');
 	}
+
+	async function editCircleIcon() {
+		let borderColor = fromHsv(
+			circleColorRef.current.state.color
+		);
+		let icon = currentFilterIcon;
+		let iconColor = currentFilterIconColor;
+
+		writeData(`prayer_circle/circles/${filter}/icon`, icon, true);
+		writeData(`prayer_circle/circles/${filter}/iconColor`, iconColor, true);
+		writeData(`prayer_circle/circles/${filter}/color`, borderColor, true);
+		
+		bottomSheetModalRef.current?.dismiss();
+		setGlobalReload(true);
+		setFilterReload(true);
+		router.push('/');
+	}
+
+	const handleIconSelected = (icon, iconColor) => {
+		setFilterIcon(icon);
+		setFilterIconColor(iconColor);
+		editView2();
+	};
 
 	async function updName() {
 		let name =
@@ -405,7 +443,7 @@ export default function Page() {
 					)}
 					<StyledPressable onPress={editView}>
 						<StyledText className='text-4xl font-bold text-offwhite'>
-							{ circleName }
+							{circleName}
 						</StyledText>
 					</StyledPressable>
 					{currentCircleRole === 'owner' ? (
@@ -575,7 +613,7 @@ export default function Page() {
 											placeholderTextColor={'#ffffff66'}
 											inputMode='text'
 											maxLength={22}
-											scrollEnabled={false}											
+											scrollEnabled={false}
 											onChangeText={(text) => {
 												setEditTitle(text);
 											}}
@@ -594,21 +632,17 @@ export default function Page() {
 										/>
 									</StyledView>
 									<StyledView className='w-full items-center justify-center w-[90%]'>
-										{/* <Button
-											title='Edit Circle Icon'
-											btnStyles={'bg-grey border-2 border-offwhite'}
-											textStyles={'text-offwhite'}
-											width={'w-[48%]'}
-										// press={() => {
-										// 	bottomSheetModalRef.current?.dismiss();
-										// 	setEditTitle(post.title);
-										// 	setEditContent(post.content);
-										// }}
-										/> */}
 										<Button
-											title='Save'
+											title='Save Info'
 											width={'w-[48%]'}
 											press={editCircle}
+										/>
+									</StyledView>
+									<StyledView className='absolute bottom-10 w-full items-center justify-center pt-4'>
+										<Button
+											title='Edit Circle Icon'
+											width={'w-[48%]'}
+											press={editView2}
 										/>
 									</StyledView>
 								</StyledView>
@@ -616,11 +650,45 @@ export default function Page() {
 						)}
 						{modalContent === 'editView2' && (
 							<StyledView className='flex-1 bg-grey'>
+								<StyledView className='relative flex w-screen aspect-square justify-center items-center mt-4 mb-2'>
+									<StyledColorPicker
+										className='w-[100%]'
+										ref={circleColorRef}
+										sliderComponent={Slider}
+										defaultColor={currentFilterColor}
+										hideSliders={true}
+										style={{ flex: 1 }}
+									/>
+									<StyledOpacity
+										className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
+										onPress={() => {
+											bottomSheetModalRef.current?.dismiss();
+											iconSelectorRef.current.toggleSelector(true);
+										}}
+									>
+										<StyledIcon
+											name={currentFilterIcon}
+											size={85}
+											color={currentFilterIconColor}
+										/>
+									</StyledOpacity>
+								</StyledView>
+								<StyledView className='absolute bottom-10 w-full items-center justify-center'>
+									<Button
+										title='Save Icon'
+										width={'w-[48%]'}
+										press={editCircleIcon}
+									/>
+								</StyledView>
 							</StyledView>
 						)}
 					</StyledView>
 				</BottomSheetModal>
 			</StyledView>
+			<IconSelector
+				onIconSelected={handleIconSelected}
+				ref={iconSelectorRef}
+			/>
 		</BottomSheetModalProvider>
 	);
 }
