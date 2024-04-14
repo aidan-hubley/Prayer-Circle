@@ -18,11 +18,12 @@ export default {
 		},
 		android: {
 			adaptiveIcon: {
-				foregroundImage: './assets/Logo_Dark.png',
+				foregroundImage: './assets/AndriodIcon.png',
 				backgroundColor: '#121212'
 			},
 			package: 'com.prayercircle.prayercircle',
-			userInterfaceStyle: 'dark'
+			userInterfaceStyle: 'dark', 
+			versionCode: 2
 		},
 		web: {
 			favicon: './assets/favicon.png'

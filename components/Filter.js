@@ -80,7 +80,7 @@ const Filter = forwardRef((props, ref) => {
 			)}
 			<AnimatedView
 				style={opacityStyle}
-				pointerEvents={open ? 'auto' : 'none'}
+				pointerEvents={props.multiselect || open ? 'auto' : 'none'}
 				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center'
 			>
 				<StyledView

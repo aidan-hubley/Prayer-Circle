@@ -134,6 +134,8 @@ const FilterItem = forwardRef((props, ref) => {
 					<StyledPressable
 						className='flex items-center justify-center'
 						onPress={async () => {
+							props.toggleShown();
+							props.setPressed('none');
 							router.push('createPost');
 						}}
 					>

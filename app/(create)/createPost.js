@@ -38,6 +38,8 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
+	const [titlepplaceholder, setTitlePlaceholder] = useState('Title');
+	const [bodypplaceholder, setBodyPlaceholder] = useState('Write a Post');
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
@@ -60,10 +62,30 @@ export default function Page() {
 	const filterRef = useRef();
 
 	const handleSelect = (index) => {
-		if (index == 2) {
-			setShowDatePicker(true);
-		} else {
+		if (index == 0) {
 			setShowDatePicker(false);
+			setTitlePlaceholder('Annoucement Title');
+			setBodyPlaceholder('Annoucement Description');
+		}
+		if (index == 1) {
+			setShowDatePicker(false);
+			setTitlePlaceholder('Praise Title');
+			setBodyPlaceholder('Praise Description');
+		}
+		if (index == 2) {
+			setShowDatePicker(false);
+			setTitlePlaceholder('Request Title');
+			setBodyPlaceholder('Request Description');
+		}
+		if (index == 3) {
+			setShowDatePicker(true);
+			setTitlePlaceholder('Event Title');
+			setBodyPlaceholder('Event Description');
+		}
+		if (index == 4) {
+			setShowDatePicker(false);
+			setTitlePlaceholder('Thought Title');
+			setBodyPlaceholder('Thought Description');
 		}
 	};
 
@@ -125,7 +147,7 @@ export default function Page() {
 							/>
 							<StyledInput
 								className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
-								placeholder={'Title'}
+								placeholder={titlepplaceholder}
 								placeholderTextColor={'#fefefe80'}
 								inputMode='text'
 								autoCorrect
@@ -163,7 +185,11 @@ export default function Page() {
 												value={startDate}
 												mode={'time'}
 												is24Hour={false}
-												display='spinner'
+												display={
+													Platform.OS === 'android'
+														? 'spinner'
+														: 'default'
+												}
 												onChange={(
 													event,
 													selectedDate
@@ -240,7 +266,11 @@ export default function Page() {
 												value={endDate}
 												mode={'time'}
 												is24Hour={false}
-												display='spinner'
+												display={
+													Platform.OS === 'android'
+														? 'spinner'
+														: 'default'
+												}
 												onChange={(
 													event,
 													selectedDate
@@ -294,7 +324,7 @@ export default function Page() {
 							)}
 							<StyledInput
 								className='bg-offblack text-[18px] w-full min-h-[100px] max-h-[150px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
-								placeholder={'Write a Post'}
+								placeholder={bodypplaceholder}
 								multiline
 								autoCorrect
 								autoCapitalize='sentences'
@@ -324,7 +354,7 @@ export default function Page() {
 								height='h-[60px]'
 								width='w-[125px]'
 								press={async () => {
-									if (title?.length == 0 || body?.length == 0)
+									if (title.length == 0 || body.length == 0)
 										return notify(
 											'Error Posting',
 											'Please enter a title and body for your post.',
@@ -337,7 +367,6 @@ export default function Page() {
 											'#CC2500'
 										);
 
-									setUploading(true);
 									let newPostId = generateId();
 									let now = Date.now();
 									let typeSelectedVal = Math.round(
@@ -347,11 +376,15 @@ export default function Page() {
 									);
 									let typeSelected = '';
 									if (typeSelectedVal == 0)
-										typeSelected = 'praise';
+										typeSelected = 'annoucement';
 									else if (typeSelectedVal == 1)
-										typeSelected = 'request';
+										typeSelected = 'praise';
 									else if (typeSelectedVal == 2)
+										typeSelected = 'request';
+									else if (typeSelectedVal == 3)
 										typeSelected = 'event';
+									else if (typeSelectedVal == 4)
+										typeSelected = 'thought';
 
 									let circles = {};
 									addCircles.forEach((circle) => {
@@ -367,7 +400,7 @@ export default function Page() {
 											'Please select a start and end date for your event.',
 											'#CC2500'
 										);
-
+									setUploading(true);
 									let newPost = {
 										user: userData.uid,
 										profile_img: userData.photoURL,
@@ -427,6 +460,7 @@ export default function Page() {
 											return Promise.all(writePromises);
 										})
 										.then(() => {
+											setUploading(true);
 											// Proceed with other operations after data is successfully written
 										})
 										.catch((error) => {
@@ -434,6 +468,7 @@ export default function Page() {
 												'Error writing data to the database:',
 												error
 											);
+											setUploading(false);
 											// Handle error, retry, or notify the user
 										});
 									setGlobalReload(true);
@@ -446,7 +481,14 @@ export default function Page() {
 					</>
 				)}
 			</StyledSafeArea>
-			<Loading loading={uploading} text={'Posting...'} circle />
+			<Loading
+				loading={uploading}
+				circle
+				text={'Creating Post...'}
+				width={'w-[80%] max-w-[500px]'}
+				height={'h-[200px] max-h-[500px]'}
+				allowEvents={uploading ? 'auto' : 'none'}
+			/>
 		</>
 	);
 }
