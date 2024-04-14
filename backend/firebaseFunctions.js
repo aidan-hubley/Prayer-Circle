@@ -224,7 +224,7 @@ export async function getPosts(circleId) {
 	return filteredPosts;
 }
 
-export async function getProfilePosts() {
+export async function getProfilePosts(userID) {
 	let uid = await getUID();
 	let posts = Object.entries(
 		(await readData(`prayer_circle/users/${uid}/private/posts`)) || {}
@@ -233,7 +233,6 @@ export async function getProfilePosts() {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
-
 	return posts;
 }
 
@@ -358,9 +357,11 @@ export async function getUserData(theirUID) {
 				iconColor: circleData.iconColor,
 				title: circleData.title
 			});
-			let circlePosts = await readData(`prayer_circle/circles/${circle}/posts`);
+			let circlePosts = await readData(
+				`prayer_circle/circles/${circle}/posts`
+			);
 			for (const post of Object.entries(circlePosts)) {
-				let postdata = await readData(`prayer_circle/posts/${post[0]}`);				
+				let postdata = await readData(`prayer_circle/posts/${post[0]}`);
 				if (postdata.user === theirUID) {
 					// postlist.push(postdata);
 					postlist.push({
@@ -378,7 +379,6 @@ export async function getUserData(theirUID) {
 					});
 				}
 			}
-
 		}
 	}
 

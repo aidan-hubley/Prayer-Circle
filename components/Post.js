@@ -78,9 +78,7 @@ export const Post = (post) => {
 		setFilterIcon,
 		setFilterColor,
 		setFilterIconColor,
-		setOtherUserID,
-		setOtherUserName,
-		setOtherUserImg
+		setOtherUserID
 	] = useStore((state) => [
 		state.haptics,
 		state.setGlobalReload,
@@ -90,9 +88,7 @@ export const Post = (post) => {
 		state.setFilterIcon,
 		state.setFilterColor,
 		state.setFilterIconColor,
-		state.setOtherUserID,
-		state.setOtherUserName,
-		state.setOtherUserImg
+		state.setOtherUserID
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [reported, setReported] = useState(false);
@@ -1160,11 +1156,8 @@ export const Post = (post) => {
 								<StyledPressable
 									className='flex flex-row mb-2'
 									onPress={() => {
-										viewOtherUser(
-											post.data.user,
-											post.data.name,
-											post.img
-										);
+										setOtherUserID(data.user);
+										router.push('/otherUser');
 									}}
 								>
 									{data?.profile_img && (

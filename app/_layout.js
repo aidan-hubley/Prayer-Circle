@@ -101,6 +101,10 @@ function RootLayoutNavigation() {
 						name='(aux)/prayerCircleInfo'
 						options={{ presentation: 'modal' }}
 					/>
+					<Stack.Screen
+						name='(aux)/otherUser'
+						options={{ gestureEnabled: true }}
+					/>
 				</Stack>
 			</BottomSheetModalProvider>
 		</NotifierWrapper>
