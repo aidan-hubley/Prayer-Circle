@@ -20,7 +20,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { auth } from '../../backend/config';
-import { passwordValidation } from '../../backend/functions';
+import { debounce, passwordValidation } from '../../backend/functions';
 import {
 	SafeAreaView,
 	useSafeAreaInsets
@@ -1186,21 +1186,21 @@ export default function Page() {
 									/>
 									<Toggle
 										toggle={haptics}
-										onFunc={() => {
+										onFunc={debounce(() => {
 											setHaptics(true);
 											writeData(
 												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
 												true,
 												true
 											);
-										}}
+										})}
 										offFunc={() => {
-											setHaptics(false);
+											/* setHaptics(false);
 											writeData(
 												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
 												false,
 												true
-											);
+											); */
 										}}
 									/>
 								</StyledView>

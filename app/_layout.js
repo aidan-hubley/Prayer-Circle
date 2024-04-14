@@ -41,7 +41,9 @@ export default function RootLayout() {
 					0
 				);
 			} else {
-				setLoaded(true);
+				setTimeout(() => {
+					setLoaded(true);
+				}, 1000);
 			}
 		})();
 	}, []);
@@ -90,7 +92,10 @@ function RootLayoutNavigation() {
 					/>
 					<Stack.Screen
 						name='(aux)/shareCircle'
-						options={{ presentation: 'modal' }}
+						options={{
+							presentation: 'modal',
+							gestureEnabled: true
+						}}
 					/>
 					<Stack.Screen
 						name='(aux)/prayerCircleInfo'

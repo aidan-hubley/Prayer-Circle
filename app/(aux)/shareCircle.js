@@ -89,18 +89,18 @@ export default function Page() {
 	return (
 		<BottomSheetModalProvider>
 			<StyledView
-				className='bg-offblack flex-1'
+				className='bg-offblack'
 				style={{ paddingTop: topInset }}
 			>
 				<ScrollView bounces={false}>
-					<StyledView className='flex-1 min-h-screen flex flex-col items-center'>
+					<StyledView className='min-h-screen flex flex-col items-center'>
 						<StyledView className='flex items-center justify-center text-center w-screen h-[90px]'>
 							<StyledText className='text-offwhite font-bold text-4xl'>
 								{circleName}
 							</StyledText>
 						</StyledView>
 						<StyledView className='align-self-center'>
-							<StyledView className='border-[6px] bg-offwhite border-purple rounded-xl'>
+							<StyledView className='border bg-offwhite border-purple rounded-[20px]'>
 								<StyledView className='p-[15px] rounded-xl'>
 									<QRCode
 										size={240}
@@ -109,9 +109,9 @@ export default function Page() {
 									/>
 								</StyledView>
 							</StyledView>
-							<StyledView className='border-[4px] border-purple bg-white mt-7 p-[10px] rounded-xl'>
+							<StyledView className='border border-purple bg-offblack mt-4 p-[10px] rounded-[15px]'>
 								<StyledText
-									className='px-[5px] font-bold text-3xl text-offblack text-center'
+									className='px-[5px] font-bold text-3xl text-offwhite text-center'
 									onPress={() => shareCircle()}
 								>
 									{publicCode}
@@ -120,13 +120,8 @@ export default function Page() {
 							{(circlePermission === 'owner' ||
 								circlePermission === 'admin') && (
 								<StyledView>
-									<StyledView className='flex-row justify-center items-baseline'>
-										<StyledText className='text-white mt-10 mb-2 text-center font-bold text-3xl'>
-											Private Code
-										</StyledText>
-									</StyledView>
 									<StyledPressable
-										className='border-[4px] border-offwhite bg-offblack p-[10px] rounded-xl flex-row justify-center relative h-100 w-100'
+										className='border border-[#FFFBFC66] bg-offblack p-[10px] mt-4 rounded-[15px] flex-row justify-center relative h-100 w-100'
 										onPress={toggleVisibleCode}
 									>
 										{isCodeVisible ? (
@@ -150,8 +145,8 @@ export default function Page() {
 											</>
 										) : (
 											<>
-												<StyledText className='font-bold text-3xl text-offwhite'>
-													Tap to View
+												<StyledText className='font-[600] ml-4 text-3xl text-offwhite'>
+													Private Code
 												</StyledText>
 												<StyledView className='absolute left-3 top-3'>
 													<StyledIcon
@@ -198,7 +193,7 @@ export default function Page() {
 				<BottomSheetModal
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
-					snapPoints={['45%']}
+					snapPoints={['55%']}
 					handleComponent={() =>
 						handle('Share the ' + `${circleName}` + ' Circle with:')
 					}
