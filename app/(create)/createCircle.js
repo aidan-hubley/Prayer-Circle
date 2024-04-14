@@ -73,26 +73,26 @@ export default function Page() {
 			>
 				<StyledView className='bg-offblack flex flex-col items-center'>
 					<StyledView className='flex items-center flex-row justify-between text-center w-screen pt-[20px] px-[15px]'>
-							<TouchableOpacity
-								className={'w-[40px] '}
-								onPress={() => {
-									router.back();
-								}}
-							>
-								<Ionicons
-									name={'chevron-back'}
-									size={34}
-									color={'white'}
-								/>
-							</TouchableOpacity>
-							<StyledText className='text-offwhite font-bold text-4xl'>
-								Form a Circle
-							</StyledText>
-							<View className={'w-[40px] h-[40px] '}></View>
+						<TouchableOpacity
+							className={'w-[40px] '}
+							onPress={() => {
+								router.back();
+							}}
+						>
+							<Ionicons
+								name={'chevron-back'}
+								size={34}
+								color={'white'}
+							/>
+						</TouchableOpacity>
+						<StyledText className='text-offwhite font-bold text-4xl'>
+							Form a Circle
+						</StyledText>
+						<View className={'w-[40px] h-[40px] '}></View>
 					</StyledView>
 					<StyledView className='w-full h-auto flex items-center justify-between px-[15px]'>
 						<StyledInput
-							className='bg-offblack text-[18px] h-[42px] w-full text-offwhite border border-outline rounded-lg px-3 py-[5px] my-3'
+							className='bg-offblack text-[18px] h-[42px] w-full text-offwhite border border-outline rounded-lg px-3 py-[5px] mt-6'
 							placeholder={'Circle Name'}
 							placeholderTextColor={'#ffffff66'}
 							inputMode='text'
@@ -105,7 +105,7 @@ export default function Page() {
 							}}
 						/>
 						<StyledInput
-							className='bg-offblack text-[18px] w-full min-h-[42px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-3'
+							className='bg-offblack text-[18px] w-full min-h-[42px] text-offwhite border border-outline rounded-lg px-3 py-[10px] mt-2 mb-3'
 							placeholder={'Write a bit about this Circle...'}
 							placeholderTextColor={'#ffffff66'}
 							inputMode='text'
@@ -121,7 +121,7 @@ export default function Page() {
 								Keyboard.dismiss();
 							}}
 						/>
-					</StyledView>					
+					</StyledView>
 					<StyledView className='relative flex w-screen aspect-square justify-center items-center'>
 						<StyledColorPicker
 							className='w-[100%]'
@@ -142,8 +142,8 @@ export default function Page() {
 								color={iconColor}
 							/>
 						</StyledOpacity>
-					</StyledView>						
-				</StyledView>				
+					</StyledView>
+				</StyledView>
 			</KeyboardAwareScrollView>
 			{(Platform.OS === 'android' ? !isKeyboardVisible : true) && (
 				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
@@ -163,7 +163,11 @@ export default function Page() {
 						width='w-[125px]'
 						press={async () => {
 							if (title.length == 0) {
-								notify('Error', 'Please enter a title', '#CC2500');
+								notify(
+									'Error',
+									'Please enter a title',
+									'#CC2500'
+								);
 								return;
 							}
 
@@ -186,7 +190,11 @@ export default function Page() {
 							};
 
 							if (title === 'Tutorial') {
-								notify('Error', 'Please choose another title', '#CC2500');
+								notify(
+									'Error',
+									'Please choose another title',
+									'#CC2500'
+								);
 								return;
 							}
 
