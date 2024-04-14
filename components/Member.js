@@ -22,6 +22,9 @@ function Member({ img, name, role, last, uid, setUp }) {
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
 					cacheKey={shorthash.unique(img)}
+					placeholderContent={
+						<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
+					}
 				/>
 				<StyledView className='pl-2 bottom-[3px]'>
 					<StyledText

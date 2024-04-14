@@ -20,6 +20,9 @@ export const Comment = (comment) => {
 				source={{
 					uri: comment.img
 				}}
+				placeholderContent={
+					<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
+				}
 			/>
 			<StyledView className='flex-1 ml-[8px]'>
 				<StyledView className=' flex flex-row items-center'>

@@ -7,7 +7,8 @@ import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	Image,
-	TouchableOpacity
+	TouchableOpacity,
+	Pressable
 } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -146,36 +147,52 @@ export default function Login() {
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={SnapPoints(['40%'])}
+				snapPoints={SnapPoints(['25%', '60%'])}
 				handleComponent={() => handle('Reset Password')}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
+				onChange={(index) => {
+					if (index === 0) Keyboard.dismiss();
+					else this.resetEmail.focus();
+				}}
 			>
-				<StyledView className='flex-1 bg-grey p-4 items-center'>
-					<StyledView className='w-full h-auto flex items-center my-3'>
+				<Pressable
+					className='flex-1 bg-grey p-4 items-center'
+					onPress={() => Keyboard.dismiss()}
+				>
+					<StyledView className='w-full h-auto flex items-center'>
 						<StyledInput
-							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+							className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-offwhite text-[16px]'
 							placeholder='What is your email?'
 							placeholderTextColor='#ffffff66'
 							multiline={false}
 							onChangeText={setResetEmail}
 							autoCapitalize='none'
 							keyboardType='email-address'
+							onFocus={() => {
+								bottomSheetModalRef.current?.expand();
+							}}
+							onBlur={() => {
+								bottomSheetModalRef.current?.snapToIndex(0);
+							}}
+							ref={(input) => {
+								this.resetEmail = input;
+							}}
 						/>
 						<StyledOpacity
-							className='absolute top-[10px] right-[8%]'
+							className='absolute top-[8px] right-[8%]'
 							onPress={() => {
 								handlePasswordReset();
 							}}
 						>
 							<StyledIcon
 								name='send'
-								size={30}
+								size={24}
 								className='text-green'
 							/>
 						</StyledOpacity>
 					</StyledView>
-				</StyledView>
+				</Pressable>
 			</BottomSheetModal>
 		</StyledSafeArea>
 	);
