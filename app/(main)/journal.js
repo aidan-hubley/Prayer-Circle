@@ -11,9 +11,11 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function JournalPage() {
+	const [annoucements, setAnnoucements] = useState([]);	
 	const [prayers, setPrayers] = useState([]);
 	const [praises, setPraises] = useState([]);
 	const [events, setEvents] = useState([]);
+	const [thoughts, setThoughts] = useState([]);
 	const [page, setPage] = useState('prayers');
 	const typeRef = useRef();
 	const [journalReload, setJournalReload] = useStore((state) => [
@@ -32,6 +34,9 @@ export default function JournalPage() {
 		const existingPosts = storedPosts ? JSON.parse(storedPosts) : [];
 
 		existingPosts.forEach((post) => {
+			if (post.data.type === 'announcement') {
+				setAnnoucements((prev) => [...prev, post]);
+			}
 			if (post.data.type === 'request') {
 				setPrayers((prev) => [...prev, post]);
 			}
@@ -40,6 +45,9 @@ export default function JournalPage() {
 			}
 			if (post.data.type === 'event') {
 				setEvents((prev) => [...prev, post]);
+			}
+			if (post.data.type === 'thought') {
+				setThoughts((prev) => [...prev, post]);
 			}
 		});
 	};
@@ -64,13 +72,53 @@ export default function JournalPage() {
 				<PostTypeSelector
 					ref={typeRef}
 					onSelect={(index) => {
-						if (index === 0) setPage('praises');
-						if (index === 1) setPage('prayers');
-						if (index === 2) setPage('events');
+						if (index === 0) setPage('annoucements');
+						if (index === 1) setPage('praises');
+						if (index === 2) setPage('prayers');
+						if (index === 3) setPage('events');
+						if (index === 4) setPage('thoughts');
 					}}
 				/>
 			</StyledView>
 			<StyledView className='flex-1'>
+				<FlatList
+					data={annoucements}
+					style={{
+						display: page === 'annoucements' ? 'flex' : 'none',
+						paddingHorizontal: 15,
+						flexGrow: 1
+					}}
+					renderItem={({ item }) => (
+						<Post
+							user={item.data.name}
+							img={item.data.profile_img}
+							title={item.data.title}
+							timestamp={`${item.data.timestamp}`}
+							content={item.data.text}
+							icon={item.data.type}
+							id={item.id}
+							edited={item.data.edited}
+							comments={item.data.comments}
+							data={item.data}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+					ListEmptyComponent={() => (
+						<StyledView
+							className='w-full justify-center items-center text-center'
+							style={{
+								height: vh - (insets.top + insets.bottom + 200)
+							}}
+						>
+							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
+								No Annoucements Saved!
+							</StyledText>
+							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
+								Save annoucements on your feed to view them here!
+							</StyledText>
+						</StyledView>
+					)}
+				/>
 				<FlatList
 					data={prayers}
 					style={{
@@ -182,6 +230,44 @@ export default function JournalPage() {
 							</StyledText>
 							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
 								Save events on your feed to view them here!
+							</StyledText>
+						</StyledView>
+					)}
+				/>
+				<FlatList
+					data={thoughts}
+					style={{
+						display: page === 'thoughts' ? 'flex' : 'none',
+						paddingHorizontal: 15,
+						flexGrow: 1
+					}}
+					renderItem={({ item }) => (
+						<Post
+							user={item.data.name}
+							img={item.data.profile_img}
+							title={item.data.title}
+							timestamp={`${item.data.timestamp}`}
+							content={item.data.text}
+							icon={item.data.type}
+							id={item.id}
+							edited={item.data.edited}
+							comments={item.data.comments}
+							data={item.data}
+						/>
+					)}
+					keyExtractor={(item) => item.id}
+					ListEmptyComponent={() => (
+						<StyledView
+							className='w-full justify-center items-center text-center'
+							style={{
+								height: vh - (insets.top + insets.bottom + 200)
+							}}
+						>
+							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
+								No Thoughts Saved!
+							</StyledText>
+							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
+								Save thoughts on your feed to view them here!
 							</StyledText>
 						</StyledView>
 					)}
