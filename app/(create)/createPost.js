@@ -47,7 +47,9 @@ const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export default function Page() {
+const bible = new DailyBread();
+
+export default function Page() {	
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
 	const [book, setBook] = useState('');
@@ -195,14 +197,15 @@ export default function Page() {
 	};
 
 	const searchVerse = async () => {
-		const bible = new DailyBread();
+		const votd = await bible.votd();
+		console.log(votd.text);
 		const gen11 = await bible.getOne('Genesis 1:1');
-		console.log(gen11);
-		const newpassage = book + ' ' + chapter + ':' + verse;
-		console.log(newpassage);
-		newpassage = await bible.getOne(newpassage);
-		setPassage(newpassage.text);
-		console.log(newpassage.text);
+		console.log(gen11.text);
+		// const newpassage = book + ' ' + chapter + ':' + verse;
+		// console.log(newpassage);
+		// newpassage = await bible.getOne(newpassage);
+		// setPassage(newpassage.text);
+		// console.log(newpassage.text);
 	};
 
 	useEffect(() => {
@@ -461,7 +464,8 @@ export default function Page() {
 										btnStyles={
 											'bg-grey border border-outline'
 										}
-										press={() => {handleVerse()}}
+										// press={() => {handleVerse()}}
+										press={() => {searchVerse()}}
 									/>							
 								</StyledView>
 							) : (
