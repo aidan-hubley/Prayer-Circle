@@ -4,66 +4,93 @@ import {
 	View,
 	FlatList,
 	RefreshControl,
-	ActivityIndicator
+	ActivityIndicator,
+	TouchableHighlight
 } from 'react-native';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import { getProfilePosts, readData } from '../../backend/firebaseFunctions';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { getCircles, getProfilePosts, readData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
+import { router } from 'expo-router';
 import CachedImage from 'expo-cached-image';
 import shorthash from 'shorthash';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledIcon = styled(Ionicons);
 const StyledGradient = styled(LinearGradient);
+const StyledHighlight = styled(TouchableHighlight);
 
 export default function ProfilePage() {
 	const [refreshing, setRefreshing] = useState(false);
+	const [circleList, setCircleList] = useState([]);
 	const [postList, setPostList] = useState([]);
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
 	const otherUserID = useStore((state) => state.otherUserID);
 	const [userData, setUserData] = useState({});
 
-	const setUpVenn = async () => {
-		let data = await getUserData(otherUserID);
-		let circlelist = data['circlelist'];
-		let postlist = data['postlist'];
-
-		console.log(circlelist);
-		console.log(postlist);
-
-		let pl = await populateList(postlist, 0, 7);
-		setPosts(pl);
-
-		setInitialLoad('loaded');
-	};
+	const [
+		setFilter,
+		setFilterName,
+		setFilterIcon,
+		setFilterColor,
+		setFilterIconColor,
+	] = useStore((state) => [
+		state.setFilter,
+		state.setFilterName,
+		state.setFilterIcon,
+		state.setFilterColor,
+		state.setFilterIconColor,
+	]);
 
 	const setUpFeed = async () => {
+		
 		setRefreshing(true);
-		if (otherUserID) {
-			let u = await await readData(
-				`prayer_circle/users/${otherUserID}/public`
-			);
-			console.log(u);
-			setUserData({
-				displayName: u?.fname + ' ' + u?.lname,
-				photoURL: u?.profile_img
-			});
+					
+		let u = await await readData(
+			`prayer_circle/users/${otherUserID}/public`
+		);			
+		setUserData({
+			displayName: u?.fname + ' ' + u?.lname,
+			photoURL: u?.profile_img
+		});
 
-			let gp = Object.entries(
-				(await readData(
-					`prayer_circle/users/${otherUserID}/private/posts`
-				)) || {}
-			);
+		if (otherUserID) {
+			let circles = await getCircles();
+			let gp = [];
+			let cl = [];
+			for (const circle of circles) {
+				let circleData = await readData(`prayer_circle/circles/${circle}/`);
+				if (circleData.members[otherUserID]) {
+					cl.push({
+						color: circleData.color,
+						icon: circleData.icon,
+						iconColor: circleData.iconColor,
+						title: circleData.title
+					});
+					let circlePosts = await readData(
+						`prayer_circle/circles/${circle}/posts`
+					);
+					for (const post of Object.keys(circlePosts)) {
+						let postdata = await readData(`prayer_circle/posts/${post}`);
+						if (postdata.user === otherUserID) {
+							gp.push([post, postdata.timestamp]);
+						}
+					}
+				}
+			}
+
 			gp.sort((a, b) => {
 				return b[1] - a[1];
 			});
 
+			setCircleList(cl);
 			setPostList(gp);
 			setInitialLoad('loaded');
 			setRefreshing(false);
@@ -87,11 +114,7 @@ export default function ProfilePage() {
 				onMomentumScrollEnd={() => {
 					setScrolling(false);
 				}}
-				onEndReached={async () => {
-					/* if (initialLoad == 'loading' || !scrolling) return;
-					let gpp = await getProfilePosts(otherUserID);
-					setPostList(gpp); */
-				}}
+				onEndReached={async () => {}}
 				style={{ paddingHorizontal: 15 }}
 				estimatedItemSize={100}
 				showsHorizontalScrollIndicator={false}
@@ -107,36 +130,96 @@ export default function ProfilePage() {
 					/>
 				}
 				ListHeaderComponent={
-					<StyledView
-						style={{ paddingTop: insets.top + 60 }}
-						className='flex items-center w-full mb-10'
-					>
-						<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
-							{userData?.photoURL ? (
-								<CachedImage
-									style={{
-										width: '100%',
-										height: '100%',
-										borderRadius: 18,
-										display: userData.photoURL
-											? 'flex'
-											: 'none'
-									}}
-									cacheKey={shorthash.unique(
-										userData.photoURL
-									)}
-									source={{
-										uri: userData.photoURL
-									}}
-								/>
-							) : (
-								<></>
-							)}
+					<>
+						<StyledView
+							style={{ paddingTop: insets.top + 60 }}
+							className='flex items-center w-full mb-10'
+						>
+							<StyledView className='w-[175px] h-[175px] rounded-[20px] border-2 border-offwhite'>
+								{userData?.photoURL ? (
+									<CachedImage
+										style={{
+											width: '100%',
+											height: '100%',
+											borderRadius: 18,
+											display: userData.photoURL
+												? 'flex'
+												: 'none'
+										}}
+										cacheKey={shorthash.unique(
+											userData.photoURL
+										)}
+										source={{
+											uri: userData.photoURL
+										}}
+									/>
+								) : (
+									<></>
+								)}
+							</StyledView>
+							<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
+								{userData?.displayName}
+							</StyledText>
 						</StyledView>
-						<StyledText className='font-bold text-offwhite text-[26px] mt-3'>
-							{userData?.displayName}
-						</StyledText>
-					</StyledView>
+						<StyledView
+							className='flex w-full px-2'
+						>
+							<StyledText className='font-bold text-offwhite text-[18px]'>
+								Your Shared Circles
+							</StyledText>
+						</StyledView>
+						<FlatList
+							data={circleList}
+							horizontal={true}
+							showsHorizontalScrollIndicator={false}
+							renderItem={({ item }) => {
+								return (
+									<StyledView
+										className='items-center my-[20px] pr-[10px] h-[100px]'
+									>							
+										<StyledHighlight
+											style={[
+												{
+													borderColor: item.color
+												}
+											]}
+											className='flex border-[5px] items-center justify-center rounded-full w-[65px] aspect-square'
+											onPress={() => {
+												setFilter(item.id);
+												setFilterName(item.title);
+												setFilterIcon(item.icon);
+												setFilterColor(item.color);
+												setFilterIconColor(
+													item.iconColor
+												);
+												router.replace('/');
+											}}
+										>
+											<StyledIcon
+												name={item.icon}
+												size={35}
+												color={
+													item.iconColor ||
+													item.color
+												}
+											/>
+										</StyledHighlight>
+										<StyledText className='text-white text-[14px] font-[600] text-center mb-2 w-[75px]'>
+											{item.title}
+										</StyledText>
+									</StyledView>
+								);
+							}}
+							keyExtractor={(item) => item[0]}
+						/>
+						<StyledView 
+							className="flex w-full px-2 pb-2"
+						>
+							<StyledText className='font-bold text-offwhite text-[18px]'>
+								Their Posts
+							</StyledText>
+						</StyledView>
+					</>
 				}
 				ListFooterComponent={
 					postList && postList.length > 0 ? (

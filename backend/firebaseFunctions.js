@@ -346,8 +346,6 @@ export async function reportBug(topic, description) {
 
 export async function getUserData(theirUID) {
 	let circles = await getCircles();
-	let circlelist = [];
-	let postlist = [];
 	for (const circle of circles) {
 		let circleData = await readData(`prayer_circle/circles/${circle}/`);
 		if (circleData.members[theirUID]) {
@@ -381,9 +379,6 @@ export async function getUserData(theirUID) {
 			}
 		}
 	}
-
-	console.log(postlist);
-	console.log(circlelist);
 
 	return { circlelist, postlist };
 }
