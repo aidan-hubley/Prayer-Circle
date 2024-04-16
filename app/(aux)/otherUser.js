@@ -264,6 +264,18 @@ export default function ProfilePage() {
 				className='absolute w-screen'
 				colors={['#121212', 'transparent']}
 			/>
+			<StyledView
+				style={{ bottom: insets.bottom }}
+				className='absolute w-screen flex flex-row px-[15px] justify-between'
+			>
+				<Button
+					icon='arrow-back'
+					href='/'
+					width={'w-[50px]'}
+					height={'h-[50px]'}
+					iconSize={30}
+				></Button>
+			</StyledView>
 		</StyledView>
 	);
 }
