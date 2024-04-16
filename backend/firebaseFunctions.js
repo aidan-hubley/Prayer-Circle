@@ -344,3 +344,18 @@ export async function reportBug(topic, description) {
 
 	writeData(`prayer_circle/bugs/${generateId()}`, bug, true);
 }
+
+export async function getReportedPosts(circleId) {
+	let allPosts = await getPosts(circleId);
+	let reported = [];
+
+	for (let post of allPosts) {
+		let postReported =
+			(await readData(`prayer_circle/posts/${post}/reports`)) || {};
+
+		if (Object.keys(postReported).length > 0) {
+			reported.push(post);
+		}
+	}
+	return reported;
+}

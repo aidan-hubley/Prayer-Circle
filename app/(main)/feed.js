@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
+import { NotifierWrapper } from 'react-native-notifier';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -33,8 +34,7 @@ export default function FeedPage() {
 
 	async function setUpFeed() {
 		if (auth.currentUser) {
-			let n = Date.now();
-			setRenderIndex(0);
+			setRenderIndex(8);
 			let gp = await getPosts(filterTarget);
 			setPostList(gp);
 			setInitialLoad('loaded');
@@ -61,7 +61,7 @@ export default function FeedPage() {
 		<StyledView className='w-screen flex-1 bg-offblack'>
 			<StyledView className='w-screen flex-1'>
 				<FlatList
-					data={postList}
+					data={postList.slice(0, renderIndex)}
 					onEndReachedThreshold={0.4}
 					windowSize={10}
 					onScrollBeginDrag={() => {
@@ -72,8 +72,11 @@ export default function FeedPage() {
 					}}
 					onEndReached={() => {
 						if (initialLoad == 'loading' || !scrolling) return;
-						getPosts(filterTarget).then((gp) => {
-							setPostList(gp);
+						setRenderIndex((prev) => {
+							if (prev + 8 > postList.length) {
+								return postList.length;
+							}
+							return prev + 8;
 						});
 					}}
 					style={{ paddingHorizontal: 15 }}
@@ -153,6 +156,7 @@ export default function FeedPage() {
 						return <Post id={item} />;
 					}}
 					keyExtractor={(item) => item}
+					extraData={globalReload}
 				/>
 			</StyledView>
 
