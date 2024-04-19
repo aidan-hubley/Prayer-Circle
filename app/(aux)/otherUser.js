@@ -179,6 +179,7 @@ export default function ProfilePage() {
 							renderItem={({ item }) => {
 								return (
 									<StyledView
+										key={item.id}
 										className='items-center my-[20px] pr-[10px] h-[100px]'
 									>							
 										<StyledHighlight
