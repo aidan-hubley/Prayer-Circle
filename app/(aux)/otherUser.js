@@ -64,6 +64,7 @@ export default function ProfilePage() {
 		if (otherUserID) {
 			let circles = await getCircles();
 			let gp = [];
+			let postIDs = [];
 			let cl = [];
 			for (const circle of circles) {
 				let circleData = await readData(`prayer_circle/circles/${circle}/`);
@@ -80,7 +81,10 @@ export default function ProfilePage() {
 					for (const post of Object.keys(circlePosts)) {
 						let postdata = await readData(`prayer_circle/posts/${post}`);
 						if (postdata.user === otherUserID) {
-							gp.push([post, postdata.timestamp]);
+							if (!postIDs.includes(post)) {
+								postIDs.push(post);
+								gp.push([post, postdata.timestamp]);
+							}
 						}
 					}
 				}
@@ -252,7 +256,7 @@ export default function ProfilePage() {
 					</StyledView>
 				}
 				renderItem={({ item }) => {
-					return <Post id={item[0]} owned={true} />;
+					return <Post id={item[0]} owned={false} />;
 				}}
 				keyExtractor={(item) => item[0]}
 			/>
