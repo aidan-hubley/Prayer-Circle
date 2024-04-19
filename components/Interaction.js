@@ -15,6 +15,9 @@ function Interaction(props) {
 				style={{ width: 40, height: 40 }}
 				source={{ uri: props.image }}
 				cacheKey={shorthash.unique(props.image)}
+				placeholderContent={
+					<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
+				}
 			/>
 			<Text className={`font-[600] text-offwhite text-[20px] ml-2`}>
 				{props.name}

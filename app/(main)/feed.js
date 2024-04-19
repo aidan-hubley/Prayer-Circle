@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
 	View,
-	StatusBar,
 	RefreshControl,
 	ActivityIndicator,
 	Text,
@@ -9,7 +8,7 @@ import {
 } from 'react-native';
 import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Post } from '../../components/Post';
+import { Post, EmptyPost } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import { readData, getPosts } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
@@ -34,29 +33,13 @@ export default function FeedPage() {
 
 	async function setUpFeed() {
 		if (auth.currentUser) {
+			let n = Date.now();
 			setRenderIndex(0);
 			let gp = await getPosts(filterTarget);
 			setPostList(gp);
-			let pl = await populateList(gp, 0, 12);
-			setPosts(pl);
 			setInitialLoad('loaded');
+			setRefreshing(false);
 		}
-	}
-	async function populateList(list, start, numOfItems) {
-		let renderedList = [];
-		let endOfList =
-			list.length < start + numOfItems ? list.length - start : numOfItems;
-		for (let i of list.slice(start, endOfList + start)) {
-			let id = i;
-			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			if (data.hidden && data.hidden[`${uid}`]) {
-				continue;
-			}
-			renderedList.push([id, data]);
-		}
-		setRefreshing(false);
-		setRenderIndex(start + endOfList);
-		return renderedList;
 	}
 	useEffect(() => {
 		setRefreshing(true);
@@ -78,7 +61,7 @@ export default function FeedPage() {
 		<StyledView className='w-screen flex-1 bg-offblack'>
 			<StyledView className='w-screen flex-1'>
 				<FlatList
-					data={posts}
+					data={postList}
 					onEndReachedThreshold={0.4}
 					windowSize={10}
 					onScrollBeginDrag={() => {
@@ -89,8 +72,8 @@ export default function FeedPage() {
 					}}
 					onEndReached={() => {
 						if (initialLoad == 'loading' || !scrolling) return;
-						populateList(postList, renderIndex, 10).then((res) => {
-							setPosts([...posts, ...res]);
+						getPosts(filterTarget).then((gp) => {
+							setPostList(gp);
 						});
 					}}
 					style={{ paddingHorizontal: 15 }}
@@ -103,12 +86,14 @@ export default function FeedPage() {
 								setRefreshing(true);
 								setUpFeed();
 							}}
-							refreshing={refreshing}
+							refreshing={
+								initialLoad === 'loading' ? false : refreshing
+							}
 							tintColor='#ebebeb'
 						/>
 					}
 					ListHeaderComponent={
-						posts && posts.length > 0 ? (
+						postList && postList.length > 0 ? (
 							<StyledView
 								className='w-full flex items-center mb-[10px]'
 								style={{
@@ -120,7 +105,7 @@ export default function FeedPage() {
 						)
 					}
 					ListFooterComponent={
-						posts && posts.length > 0 ? (
+						postList && postList.length > 0 ? (
 							<StyledView
 								className='w-full flex items-center mb-[10px]'
 								style={{
@@ -132,14 +117,29 @@ export default function FeedPage() {
 						)
 					}
 					ListEmptyComponent={
-						<StyledView className='w-full h-screen flex items-center justify-center'>
-							<StyledView
-								className={`${
-									initialLoad == 'loaded' ? 'hidden' : 'flex'
-								}`}
-							>
-								<ActivityIndicator size='large' />
-							</StyledView>
+						<StyledView
+							className={`w-full h-screen ${
+								initialLoad === 'loading'
+									? 'justify-start'
+									: 'justify-center'
+							} items-center`}
+							style={{
+								paddingTop:
+									initialLoad === 'loading'
+										? insets.top + 60
+										: 0
+							}}
+						>
+							{initialLoad == 'loading' && (
+								<>
+									<EmptyPost></EmptyPost>
+									<EmptyPost></EmptyPost>
+									<EmptyPost></EmptyPost>
+									<EmptyPost></EmptyPost>
+									<EmptyPost></EmptyPost>
+									<EmptyPost></EmptyPost>
+								</>
+							)}
 							<StyledText
 								className={`${
 									initialLoad == 'loaded' ? 'flex' : 'hidden'
@@ -149,23 +149,10 @@ export default function FeedPage() {
 							</StyledText>
 						</StyledView>
 					}
-					renderItem={({ item }) => (
-						<Post
-							user={item[1].name}
-							img={item[1].profile_img}
-							title={item[1].title}
-							timestamp={`${item[1].timestamp}`}
-							content={item[1].body}
-							icon={item[1].type}
-							id={item[0]}
-							ownedToolBar={item[1].user == uid}
-							edited={item[1].edited}
-							reports={item[1].reports}
-							metadata={item[1].metadata}
-							data={item[1]}
-						/>
-					)}
-					keyExtractor={(item) => item[0]}
+					renderItem={({ item }) => {
+						return <Post id={item} />;
+					}}
+					keyExtractor={(item) => item}
 				/>
 			</StyledView>
 

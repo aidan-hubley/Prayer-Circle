@@ -20,6 +20,7 @@ import { ColorPicker, fromHsv } from 'react-native-color-picker';
 import Slider from '@react-native-community/slider';
 import { router } from 'expo-router';
 import { useStore, notify } from '../global';
+import { Loading } from '../../components/Loading';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -38,6 +39,7 @@ export default function Page() {
 	const iconSelectorRef = useRef();
 	const circleColorRef = useRef();
 	const setFilterReload = useStore((state) => state.setFilterReload);
+	const [uploading, setUploading] = useState(false);
 	let insets = useSafeAreaInsets();
 
 	const handleIconSelected = (icon, iconColor) => {
@@ -147,22 +149,13 @@ export default function Page() {
 			</KeyboardAwareScrollView>
 			{(Platform.OS === 'android' ? !isKeyboardVisible : true) && (
 				<StyledView className='absolute w-screen bottom-10 flex flex-row justify-around px-[15px] mt-auto'>
-					{/* <Button
-						title='Erase'
-						width='w-[125px]'
-						height='h-[60px]'
-						href='/'
-						bgColor={'bg-offblack'}
-						borderColor={'#FFFBFC'}
-						borderWidth={'border-2'}
-						textColor={'text-offwhite'}
-					/> */}
 					<Button
 						title='Draw'
 						height='h-[60px]'
 						width='w-[125px]'
 						press={async () => {
-							if (title.length == 0) {
+							setUploading(true);
+							if (title?.length == 0) {
 								notify(
 									'Error',
 									'Please enter a title',
@@ -199,22 +192,35 @@ export default function Page() {
 							}
 
 							await createCircle(data);
+							setUploading(false);
+        
 							notify(
 								'Circle Successfully Created',
 								'You can access your new circle from the filter.',
 								'#00A55E'
 							);
-							setFilterReload(true);
+        
+							setTimeout(() => {
+								setFilterReload(true);
+							}, 600);
 
 							router.push('/');
 						}}
 					/>
 				</StyledView>
-			)}
-			<IconSelector
-				onIconSelected={handleIconSelected}
-				ref={iconSelectorRef}
+				<IconSelector
+					onIconSelected={handleIconSelected}
+					ref={iconSelectorRef}
+				/>
+			</StyledSafeArea>
+			<Loading
+				loading={uploading}
+				circle
+				text={'Creating Circle...'}
+				width={'w-[80%] max-w-[500px]'}
+				height={'h-[200px] max-h-[500px]'}
+				allowEvents={uploading ? 'auto' : 'none'}
 			/>
-		</StyledSafeArea>
+		</>
 	);
 }

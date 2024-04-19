@@ -20,11 +20,7 @@ import {
 	BottomSheetFlatList,
 	BottomSheetModalProvider
 } from '@gorhom/bottom-sheet';
-import {
-	handle,
-	backdrop,
-	SnapPoints
-} from '../../components/BottomSheetModalHelpers.js';
+import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -240,7 +236,7 @@ export default function Register() {
 									onPress={() => {
 										handleModalPress(
 											'tos',
-											['65%', '85%'],
+											['90%'],
 											'Terms of Service',
 											''
 										);
@@ -381,8 +377,12 @@ export default function Register() {
 						backdrop(backdropProps)
 					}
 					keyboardBehavior='extend'
+					enableOverDrag={false}
 				>
-					<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
+					<StyledView
+						className='flex-1 bg-grey py-3 items-center text-offwhite'
+						bounces={false}
+					>
 						{renderContent()}
 					</StyledView>
 				</BottomSheetModal>
