@@ -888,20 +888,20 @@ export const Post = (post) => {
 		);
 	}
 
-	async function viewOtherUser(uid, name, img) {
-		bottomSheetModalRef.current?.dismiss();
-		if (uid === auth.currentUser.uid) {
-			// router.replace('/profile');
-		}
-		if (uid === 'tNcLtRJICvZ6w7rYIePhqBFGxRF3') {
-			router.replace('/prayerCircleInfo');
-		} else {
-			router.replace('/otherUser');
-			setOtherUserID(uid);
-			setOtherUserName(name);
-			setOtherUserImg(img);
-		}
-	}
+	// async function viewOtherUser(uid, name, img) {
+	// 	bottomSheetModalRef.current?.dismiss();
+	// 	if (uid === auth.currentUser.uid) {
+	// 		// router.replace('/profile');
+	// 	}
+	// 	if (uid === 'tNcLtRJICvZ6w7rYIePhqBFGxRF3') {
+	// 		router.replace('/prayerCircleInfo');
+	// 	} else {
+	// 		router.replace('/otherUser');
+	// 		setOtherUserID(uid);
+	// 		setOtherUserName(name);
+	// 		setOtherUserImg(img);
+	// 	}
+	// }
 
 	// post setup
 	const setUp = async (postId) => {
@@ -1157,7 +1157,12 @@ export const Post = (post) => {
 									className='flex flex-row mb-2'
 									onPress={() => {
 										setOtherUserID(data.user);
-										router.push('/otherUser');
+										if (data.user !== auth.currentUser.uid) {
+											router.push('/otherUser');
+										} else {
+											// router.push('/profile');
+											//NRA cannot simply navigate to profile page, user gets stuck; need to change pos variable in index.js remotely
+										}
 									}}
 								>
 									{data?.profile_img && (
