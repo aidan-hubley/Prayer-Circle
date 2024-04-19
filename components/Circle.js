@@ -12,7 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../app/global';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { debounce } from '../backend/functions';
 
 const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 const AnimatedView = styled(Animated.createAnimatedComponent(View));

@@ -14,19 +14,21 @@ import { Member } from '../../components/Member.js';
 import { MemberQueue } from '../../components/MemberQueue.js';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../global';
-import { readData, deleteData } from '../../backend/firebaseFunctions.js';
+import {
+	readData,
+	deleteData,
+	getReportedPosts
+} from '../../backend/firebaseFunctions.js';
 import {
 	BottomSheetModal,
 	BottomSheetFlatList,
 	BottomSheetModalProvider
 } from '@gorhom/bottom-sheet';
-import {
-	handle,
-	backdrop,
-	SnapPoints
-} from '../../components/BottomSheetModalHelpers.js';
+import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
 import { auth } from '../../backend/config';
 import { router } from 'expo-router';
+import { Post } from '../../components/Post.js';
+import { NotifierWrapper } from 'react-native-notifier';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -40,6 +42,8 @@ export default function Page() {
 	const [memberData, setMemberData] = useState([]);
 	const [userQueueData, setUserQueueData] = useState([]);
 	const [description, setDescription] = useState('');
+	const [reportedPosts, setReportedPosts] = useState([]);
+	const [snapPoints, setSnapPoints] = useState([]);
 	const [
 		filter,
 		currentFilterName,
@@ -75,23 +79,15 @@ export default function Page() {
 	}, []);
 	const [modalContent, setModalContent] = useState(null);
 
-	const handleQueuePress = () => {
-		setHandleText('User Queue');
-		setModalContent('queue');
-		handlePresentModalPress();
-	};
-	const handleLeavePress = () => {
-		setHandleText('');
-		setModalContent('leave');
-		handlePresentModalPress();
-	};
-	const handleDeletePress = () => {
-		setHandleText('');
-		setModalContent('delete');
+	const handleModalPress = (title, content, snapPoints) => {
+		setHandleText(title);
+		setModalContent(content);
+		setSnapPoints(snapPoints);
 		handlePresentModalPress();
 	};
 
-	const renderContent = () => { };
+	const renderContent = () => {};
+
 	const updateUserQueueData = async (uid) => {
 		setUserQueueData(
 			userQueueData.filter((obj) => Object.keys(obj)[0] !== uid)
@@ -218,6 +214,8 @@ export default function Page() {
 		if (hard) setMemberData([]);
 		let data = await makeCircleUserList(filter);
 		sortUsers(data);
+		let rp = await getReportedPosts(filter);
+		setReportedPosts(rp);
 		data = await makeCircleUserQueueList(filter);
 		setUserQueueData(data);
 	}
@@ -272,6 +270,29 @@ export default function Page() {
 									</StyledText>
 								</StyledView>
 							)}
+							{(currentCircleRole === 'admin' ||
+								currentCircleRole === 'owner') &&
+								reportedPosts.length > 0 && (
+									<StyledView className='w-full flex flex-row items-center justify-between bg-red border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
+										<StyledText className='text-white font-bold text-[20px]'>
+											{reportedPosts.length} Reported
+											Posts
+										</StyledText>
+										<Button
+											title='Review'
+											width='w-[100px]'
+											height={'h-[34px]'}
+											textStyles={'text-[18px]'}
+											press={() => {
+												handleModalPress(
+													'Reported Posts',
+													'report',
+													['95%']
+												);
+											}}
+										/>
+									</StyledView>
+								)}
 							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[60px] bg-grey rounded-t-[10px] items-center justify-center'>
 								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 									Members
@@ -329,7 +350,11 @@ export default function Page() {
 							iconSize={30}
 							icon='log-out-outline'
 							iconColor='#F9A826'
-							press={handleLeavePress}
+							press={() => {
+								handleModalPress('Leave Circle', 'leave', [
+									'37%'
+								]);
+							}}
 						/>
 					) : (
 						<View
@@ -355,7 +380,11 @@ export default function Page() {
 							iconSize={30}
 							icon='trash-outline'
 							iconColor='#CC2500'
-							press={handleDeletePress}
+							press={() => {
+								handleModalPress('Delete Circle', 'delete', [
+									'37%'
+								]);
+							}}
 						/>
 					) : (
 						<View
@@ -387,7 +416,12 @@ export default function Page() {
 							title={`Queue: ${userQueueData.length}`}
 							height={'h-[50px]'}
 							width={'w-[200px]'}
-							press={handleQueuePress}
+							press={() =>
+								handleModalPress('Queue', 'queue', [
+									'65%',
+									'85%'
+								])
+							}
 						/>
 					)}
 					<Button // to Share Page
@@ -403,7 +437,7 @@ export default function Page() {
 					enableDismissOnClose={true}
 					ref={bottomSheetModalRef}
 					index={0}
-					snapPoints={modalContent === 'queue' ? SnapPoints(['65%']) : SnapPoints(['37%'])}
+					snapPoints={snapPoints}
 					handleComponent={() => handle(handleText)}
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
@@ -492,6 +526,35 @@ export default function Page() {
 									press={() => {
 										deleteCircle(filter);
 									}}
+								/>
+							</StyledView>
+						)}
+						{modalContent === 'report' && (
+							<StyledView className='flex-1 items-center px-[15px]'>
+								<BottomSheetFlatList
+									data={reportedPosts}
+									renderItem={({ item }) => {
+										return (
+											<Post
+												id={item}
+												reported={true}
+												onClearReport={() => {
+													setReportedPosts([]);
+													let newReportedPosts =
+														reportedPosts.filter(
+															(post) =>
+																post !== item
+														);
+													setReportedPosts(
+														newReportedPosts
+													);
+												}}
+											></Post>
+										);
+									}}
+									ListFooterComponent={
+										<StyledView className='w-full h-[40px]' />
+									}
 								/>
 							</StyledView>
 						)}

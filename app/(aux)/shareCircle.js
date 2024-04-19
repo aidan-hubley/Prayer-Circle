@@ -53,17 +53,17 @@ export default function Page() {
 				title:
 					'Come join my ' +
 					circleName +
-					'Circle on Prayer Circle! Here is the code: ' +
+					' Circle on Prayer Circle! Here is the code: ' +
 					publicCode,
 				message:
 					'Come join my ' +
 					circleName +
-					'Circle on Prayer Circle! Here is the code: ' +
+					' Circle on Prayer Circle! Here is the code: ' +
 					publicCode,
 				url:
 					'Come join my ' +
 					circleName +
-					'Circle on Prayer Circle! Here is the code: ' +
+					' Circle on Prayer Circle! Here is the code: ' +
 					publicCode
 			});
 		} catch (error) {

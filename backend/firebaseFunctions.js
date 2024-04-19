@@ -344,41 +344,17 @@ export async function reportBug(topic, description) {
 	writeData(`prayer_circle/bugs/${generateId()}`, bug, true);
 }
 
-export async function getUserData(theirUID) {
-	let circles = await getCircles();
-	for (const circle of circles) {
-		let circleData = await readData(`prayer_circle/circles/${circle}/`);
-		if (circleData.members[theirUID]) {
-			circlelist.push({
-				color: circleData.color,
-				icon: circleData.icon,
-				iconColor: circleData.iconColor,
-				title: circleData.title
-			});
-			let circlePosts = await readData(
-				`prayer_circle/circles/${circle}/posts`
-			);
-			for (const post of Object.entries(circlePosts)) {
-				let postdata = await readData(`prayer_circle/posts/${post[0]}`);
-				if (postdata.user === theirUID) {
-					// postlist.push(postdata);
-					postlist.push({
-						user: postdata.user,
-						img: postdata.profile_img,
-						title: postdata.title,
-						timestamp: postdata.timestamp,
-						content: postdata.body,
-						icon: postdata.type,
-						id: post,
-						owned: true,
-						edited: postdata.edited,
-						metadata: postdata.metadata,
-						data: postdata.data
-					});
-				}
-			}
+export async function getReportedPosts(circleId) {
+	let allPosts = await getPosts(circleId);
+	let reported = [];
+
+	for (let post of allPosts) {
+		let postReported =
+			(await readData(`prayer_circle/posts/${post}/reports`)) || {};
+
+		if (Object.keys(postReported).length > 0) {
+			reported.push(post);
 		}
 	}
-
-	return { circlelist, postlist };
+	return reported;
 }
