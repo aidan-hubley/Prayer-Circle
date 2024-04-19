@@ -1129,28 +1129,27 @@ export const Post = (post) => {
 								<StyledView className='flex flex-row mb-2'>
 									{data?.profile_img && (
 										<CachedImage
-											cacheKey={shorthash.unique(
-												data?.profile_img
-											)}
-											style={{
-												width: 44,
-												height: 44,
-												borderRadius: 8,
-												display: post.owned
-													? 'none'
-													: 'flex'
-											}}
-											source={{
-												uri: data?.profile_img,
-												expiresIn: 2_628_288
-											}}
-											placeholderContent={
-												<View
-													style={{ borderRadius: 8 }}
-													className=' w-[44px] h-[44px] bg-outline'
-												></View>
-											}
-										/>
+                      cacheKey={shorthash.unique(
+                        data?.profile_img
+                      )}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 8,
+                        marginStart: 3,
+                        display: post.owned ? 'none' : 'flex'
+                      }}
+                      source={{
+                        uri: post.img,
+                        expiresIn: 2_628_288
+                      }}
+                      placeholderContent={
+                        <View
+                          style={{ borderRadius: 8 }}
+                          className=' w-[44px] h-[44px] bg-outline'
+                        ></View>
+                      }
+                    />
 									)}
 									<StyledView
 										className={`flex-1 ${
