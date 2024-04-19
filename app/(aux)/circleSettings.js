@@ -58,11 +58,11 @@ export default function Page() {
 	const circleColorRef = useRef();
 	const [userData, setUserData] = useState(auth.currentUser);
 	const [circleName, setCircleName] = useState('');
+	const [editTitle, setEditTitle] = useState('');
+	const [editDescription, setEditDescription] = useState('');
 	const [memberData, setMemberData] = useState([]);
 	const [userQueueData, setUserQueueData] = useState([]);
 	const [description, setDescription] = useState('');
-	const [editTitle, setEditTitle] = useState('');
-	const [editDescription, setEditDescription] = useState('');
 	const [
 		filter,
 		currentFilterName,
@@ -96,6 +96,9 @@ export default function Page() {
 	]);
 	let insets = useSafeAreaInsets();
 	const [handleText, setHandleText] = useState('');
+
+	// setEditTitle(circleName);
+	// setEditDescription(description);
 
 	// bottom sheet modal
 	const bottomSheetModalRef = useRef(null);
@@ -263,7 +266,7 @@ export default function Page() {
 	}
 
 	async function editCircle() {
-		if (editTitle === '') {
+		if (editTitle === '' && circleName === '') {
 			notify(
 				'Circles Reqire a Title',
 				'Please provide a title for your circle so the members can see it.',
@@ -609,8 +612,9 @@ export default function Page() {
 									<StyledView className='w-full h-auto my-2 px-3'>
 										<StyledInput
 											className='bg-[#ffffff11] text-[18px] h-[42px] w-full text-offwhite rounded-lg px-3 py-[5px]'
-											placeholder={circleName ? circleName : 'Circle Name'}
+											placeholder={editTitle ? editTitle : circleName}
 											placeholderTextColor={'#ffffff66'}
+											value={editTitle ? editTitle : circleName}
 											inputMode='text'
 											maxLength={22}
 											scrollEnabled={false}
@@ -622,8 +626,9 @@ export default function Page() {
 									<StyledView className='w-full h-auto mt-2 mb-4 px-3'>
 										<StyledInput
 											className='min-h-[120px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
-											placeholder={description ? description : 'Description'}
+											placeholder={editDescription ? editDescription : description}
 											placeholderTextColor='#ffffff66'
+											value={editDescription ? editDescription : description}
 											multiline={true}
 											scrollEnabled={false}
 											onChangeText={(text) => {
