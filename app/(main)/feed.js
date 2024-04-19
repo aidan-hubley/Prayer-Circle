@@ -20,13 +20,11 @@ const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
 
 export default function FeedPage() {
-	const [posts, setPosts] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 	const [postList, setPostList] = useState([]);
 	const [renderIndex, setRenderIndex] = useState(0);
 	const [initialLoad, setInitialLoad] = useState('loading');
 	const [scrolling, setScrolling] = useState(false);
-	const [uid, setUid] = useState(auth?.currentUser?.uid);
 	const [filterTarget, globalReload] = useStore((state) => [
 		state.filter,
 		state.globalReload
@@ -51,9 +49,6 @@ export default function FeedPage() {
 			setUpFeed();
 		}
 	}, [globalReload]);
-	useEffect(() => {
-		setUid(auth?.currentUser?.uid);
-	}, [auth]);
 
 	let insets = useSafeAreaInsets();
 

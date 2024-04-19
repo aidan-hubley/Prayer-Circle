@@ -27,7 +27,6 @@ const StyledText = styled(Text);
 const StyledGradient = styled(LinearGradient);
 
 export default function ProfilePage() {
-	const [posts, setPosts] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 	const [postList, setPostList] = useState([]);
 	const [renderIndex, setRenderIndex] = useState(0);
@@ -41,30 +40,17 @@ export default function ProfilePage() {
 			setRenderIndex(0);
 			let gp = await getProfilePosts();
 			setPostList(gp);
-			let pl = await populateList(gp, 0, 7);
-			setPosts(pl);
 			setInitialLoad('loaded');
+			setRefreshing(false);
 		}
 	};
-
-	async function populateList(list, start, numOfItems) {
-		let renderedList = [];
-		let endOfList =
-			list.length < start + numOfItems ? list.length - start : numOfItems;
-		for (let i of list.slice(start, endOfList + start)) {
-			let id = i[0];
-			let data = (await readData(`prayer_circle/posts/${id}`)) || {};
-			if (data.user == userData.uid) renderedList.push([id, data]);
-		}
-		setRefreshing(false);
-		setRenderIndex(start + endOfList);
-		return renderedList;
-	}
 	useEffect(() => {
+		setRefreshing(true);
 		setUpFeed();
 	}, []);
 	useEffect(() => {
 		if (globalReload) {
+			setRefreshing(true);
 			setUpFeed();
 		}
 	}, [globalReload]);
@@ -73,10 +59,11 @@ export default function ProfilePage() {
 	}, [auth]);
 
 	let insets = useSafeAreaInsets();
+
 	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<FlatList
-				data={posts}
+				data={postList}
 				onEndReachedThreshold={0.4}
 				windowSize={10}
 				onScrollBeginDrag={() => {
@@ -85,11 +72,10 @@ export default function ProfilePage() {
 				onMomentumScrollEnd={() => {
 					setScrolling(false);
 				}}
-				onEndReached={() => {
+				onEndReached={async () => {
 					if (initialLoad == 'loading' || !scrolling) return;
-					populateList(postList, renderIndex, 10).then((res) => {
-						setPosts([...posts, ...res]);
-					});
+					let gpp = await getProfilePosts();
+					setPostList(gpp);
 				}}
 				style={{ paddingHorizontal: 15 }}
 				estimatedItemSize={100}
@@ -142,7 +128,7 @@ export default function ProfilePage() {
 					</StyledView>
 				}
 				ListFooterComponent={
-					posts && posts.length > 0 ? (
+					postList && postList.length > 0 ? (
 						<StyledView
 							className='w-full flex items-center mb-[10px]'
 							style={{
@@ -171,21 +157,9 @@ export default function ProfilePage() {
 						</StyledText>
 					</StyledView>
 				}
-				renderItem={({ item }) => (
-					<Post
-						user={item[1].name}
-						img={item[1].profile_img}
-						title={item[1].title}
-						timestamp={`${item[1].timestamp}`}
-						content={item[1].body}
-						icon={item[1].type}
-						id={item[0]}
-						owned={true}
-						edited={item[1].edited}
-						metadata={item[1].metadata}
-						data={item[1]}
-					/>
-				)}
+				renderItem={({ item }) => {
+					return <Post id={item[0]} owned={true} />;
+				}}
 				keyExtractor={(item) => item[0]}
 			/>
 			<StyledView

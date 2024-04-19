@@ -36,6 +36,7 @@ import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pulsating } from './Loading';
+import { router } from 'expo-router';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -76,7 +77,8 @@ export const Post = (post) => {
 		setFilterName,
 		setFilterIcon,
 		setFilterColor,
-		setFilterIconColor
+		setFilterIconColor,
+		setOtherUserID
 	] = useStore((state) => [
 		state.haptics,
 		state.setGlobalReload,
@@ -85,7 +87,8 @@ export const Post = (post) => {
 		state.setFilterName,
 		state.setFilterIcon,
 		state.setFilterColor,
-		state.setFilterIconColor
+		state.setFilterIconColor,
+		state.setOtherUserID
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [reported, setReported] = useState(false);
@@ -903,6 +906,21 @@ export const Post = (post) => {
 		);
 	}
 
+	// async function viewOtherUser(uid, name, img) {
+	// 	bottomSheetModalRef.current?.dismiss();
+	// 	if (uid === auth.currentUser.uid) {
+	// 		// router.replace('/profile');
+	// 	}
+	// 	if (uid === 'tNcLtRJICvZ6w7rYIePhqBFGxRF3') {
+	// 		router.replace('/prayerCircleInfo');
+	// 	} else {
+	// 		router.replace('/otherUser');
+	// 		setOtherUserID(uid);
+	// 		setOtherUserName(name);
+	// 		setOtherUserImg(img);
+	// 	}
+	// }
+
 	// post setup
 	const setUp = async (postId) => {
 		// set up bookmark
@@ -1153,7 +1171,18 @@ export const Post = (post) => {
 					>
 						<StyledView className='w-full flex flex-row justify-between px-[6px]'>
 							<StyledView className='w-[90%]'>
-								<StyledView className='flex flex-row mb-2'>
+								<StyledPressable
+									className='flex flex-row mb-2'
+									onPress={() => {
+										setOtherUserID(data.user);
+										if (data.user !== auth.currentUser.uid) {
+											router.push('/otherUser');
+										} else {
+											// router.push('/profile');
+											//NRA cannot simply navigate to profile page, user gets stuck; need to change pos variable in index.js remotely
+										}
+									}}
+								>
 									{data?.profile_img && (
 										<CachedImage
                       cacheKey={shorthash.unique(
@@ -1218,7 +1247,7 @@ export const Post = (post) => {
 											</StyledText>
 										</StyledView>
 									</StyledView>
-								</StyledView>
+								</StyledPressable>
 								{icon == 'event' && (
 									<StyledView className='flex flex-row items-center mb-2'>
 										<StyledText

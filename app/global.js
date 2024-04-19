@@ -8,6 +8,7 @@ export const useStore = create((set) => ({
 	currentFilterColor: '#FFFFFF',
 	currentCircleRole: 'member',
 	currentFilterIconColor: '#FFFFFF',
+	otherUserID: '',
 	globalReload: false,
 	journalReload: false,
 	filterReload: false,
@@ -23,6 +24,7 @@ export const useStore = create((set) => ({
 		set(() => ({ currentCircleRole: newVal })),
 	setFilterIconColor: (newVal) =>
 		set(() => ({ currentFilterIconColor: newVal })),
+	setOtherUserID: (newVal) => set(() => ({ otherUserID: newVal })),
 	setGlobalReload: (newVal) => set(() => ({ globalReload: newVal })),
 	setJournalReload: (newVal) => set(() => ({ journalReload: newVal })),
 	setFilterReload: (newVal) => set(() => ({ filterReload: newVal })),

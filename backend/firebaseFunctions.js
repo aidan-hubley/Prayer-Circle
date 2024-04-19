@@ -6,7 +6,7 @@ import {
 	uploadBytesResumable
 } from 'firebase/storage';
 
-async function getUID() {
+export async function getUID() {
 	return auth?.currentUser?.uid;
 }
 
@@ -224,7 +224,7 @@ export async function getPosts(circleId) {
 	return filteredPosts;
 }
 
-export async function getProfilePosts() {
+export async function getProfilePosts(userID) {
 	let uid = await getUID();
 	let posts = Object.entries(
 		(await readData(`prayer_circle/users/${uid}/private/posts`)) || {}
@@ -233,7 +233,6 @@ export async function getProfilePosts() {
 	posts.sort((a, b) => {
 		return b[1] - a[1];
 	});
-
 	return posts;
 }
 
