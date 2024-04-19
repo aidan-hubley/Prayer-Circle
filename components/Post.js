@@ -717,7 +717,16 @@ export const Post = (post) => {
 	function getIconSource(iconType, interacted) {
 		if (!iconType) return;
 		const iconKey = iconType.replace('_outline', '');
-		if (!['praise', 'event', 'request', 'prayer', 'annoucement', 'thought'].includes(iconKey)) {
+		if (
+			![
+				'praise',
+				'event',
+				'request',
+				'prayer',
+				'annoucement',
+				'thought'
+			].includes(iconKey)
+		) {
 			console.error(`Invalid icon type: ${iconType}`);
 			return;
 		}
@@ -765,13 +774,18 @@ export const Post = (post) => {
 			);
 		}
 		await writeData(
-			`prayer_circle/users/${userData.uid}/private/posts/${post.id}`,
+			`prayer_circle/users/${data?.user}/private/posts/${post.id}`,
 			null,
 			true
 		);
 		await writeData(`prayer_circle/posts/${post.id}`, null, true);
 		setTimeout(() => {
 			setGlobalReload(true);
+			notify(
+				'Post Deleted',
+				'This action cannot be reverted.',
+				'#F9A826'
+			);
 		}, 100);
 	}
 
@@ -795,6 +809,19 @@ export const Post = (post) => {
 				'#F9A826'
 			);
 		}, 200);
+	}
+
+	async function clearReports() {
+		await writeData(`prayer_circle/posts/${post.id}/reports`, null, true);
+		let users = Object.keys(data.reports);
+		for (let user of users) {
+			await writeData(
+				`prayer_circle/users/${user}/private/reports/${post.id}`,
+				null,
+				true
+			);
+		}
+		notify('Reports Cleared', 'All reports have been cleared.', '#F9A826');
 	}
 
 	const toggleBookmark = async (postId, postData) => {
@@ -1243,6 +1270,7 @@ export const Post = (post) => {
 										}}
 									/>
 								</StyledPressable>
+
 								{(title?.length > titleCharThreshold ||
 									content.length > contentCharThreshold) && (
 									<StyledOpacity
@@ -1262,18 +1290,20 @@ export const Post = (post) => {
 										/>
 									</StyledOpacity>
 								)}
-								<StyledPressable
-									className='flex w-[30px] aspect-square justify-end mb-[2px]'
-									onPress={() => {
-										toggleToolbar();
-									}}
-								>
-									<AnimatedImage
-										className='w-[28px] h-[28px]'
-										style={spiralStyle}
-										source={require('../assets/spiral/spiral.png')}
-									/>
-								</StyledPressable>
+								{!post.reported && (
+									<StyledPressable
+										className='flex w-[30px] aspect-square justify-end mb-[2px]'
+										onPress={() => {
+											toggleToolbar();
+										}}
+									>
+										<AnimatedImage
+											className='w-[28px] h-[28px]'
+											style={spiralStyle}
+											source={require('../assets/spiral/spiral.png')}
+										/>
+									</StyledPressable>
+								)}
 							</StyledView>
 						</StyledView>
 					</StyledPressable>
@@ -1390,6 +1420,62 @@ export const Post = (post) => {
 							</StyledView>
 						</StyledView>
 					</StyledAnimatedView>
+					{post.reported && (
+						<View className='px-[15px] flex items-center w-full'>
+							<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
+								<Text className='text-offwhite text-[16px] text-left w-full'>
+									Reports:
+								</Text>
+								{Object.entries(data?.reports)
+									.reduce((uniqueReports, report) => {
+										if (
+											!uniqueReports.includes(
+												report[1].reason
+											)
+										) {
+											uniqueReports.push(
+												report[1].reason
+											);
+										}
+										return uniqueReports;
+									}, [])
+									.map((reason) => {
+										return (
+											<View
+												key={reason}
+												className='flex flex-row w-full items-center'
+											>
+												<Text className='text-offwhite text-[16px] text-left w-full'>
+													{reason}
+												</Text>
+											</View>
+										);
+									})}
+							</View>
+							<View className='w-full flex flex-row justify-between mb-2 px-[10px]'>
+								<Button
+									title='Delete'
+									width='w-[45%]'
+									height='h-[38px]'
+									textStyles='text-[16px]'
+									press={() => {
+										deletePost();
+										post.onClearReport();
+									}}
+								/>
+								<Button
+									title='Clear Report'
+									width='w-[45%]'
+									height='h-[38px]'
+									textStyles='text-[16px]'
+									press={() => {
+										clearReports();
+										post.onClearReport();
+									}}
+								/>
+							</View>
+						</View>
+					)}
 				</StyledView>
 				<BottomSheetModal
 					enableDismissOnClose={true}

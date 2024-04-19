@@ -10,7 +10,6 @@ import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../app/global';
-import { debounce } from '../backend/functions';
 
 const StyledText = styled(Text);
 const StyledTouchableHighlight = Animated.createAnimatedComponent(
@@ -56,12 +55,12 @@ const Button = forwardRef((props, ref) => {
 			} ${props.width || 'w-11/12'} ${props.height || 'h-[50px]'} ${
 				props.borderColor ? `border` : 'border-none'
 			} ${props.borderWidth || ''} ${props.btnStyles || ''} `}
-			onPress={debounce(() => {
+			onPress={() => {
 				if (haptics)
 					Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 				if (props.press) props.press();
 				if (props.href) router.push(props.href);
-			}, 100)}
+			}}
 		>
 			<>
 				<StyledText
