@@ -90,7 +90,17 @@ const Filter = forwardRef((props, ref) => {
 					{/* <Timer></Timer> */}
 				</StyledView>
 				<FlatList
-					data={props.data}
+					data={
+						props.multiselect
+							? props.data.filter(
+									(item) =>
+										item.role !== 'suspended' &&
+										item.role !== 'banned'
+							  )
+							: props.data.filter(
+									(item) => item.role !== 'banned'
+							  )
+					}
 					onScroll={(e) => {
 						contentOffset.value = e.nativeEvent.contentOffset.x;
 					}}
