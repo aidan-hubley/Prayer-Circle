@@ -10,7 +10,11 @@ import { styled } from 'nativewind';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post, EmptyPost } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
-import { readData, getPosts } from '../../backend/firebaseFunctions';
+import {
+	readData,
+	getPosts,
+	getHiddenPosts
+} from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
 import { NotifierWrapper } from 'react-native-notifier';
@@ -29,12 +33,17 @@ export default function FeedPage() {
 		state.filter,
 		state.globalReload
 	]);
+	const [hiddenPosts, setHiddenPosts] = useState([]);
 
 	async function setUpFeed() {
 		if (auth.currentUser) {
 			setRenderIndex(8);
 			let gp = await getPosts(filterTarget);
 			setPostList(gp);
+			let hp = await readData(
+				`prayer_circle/users/${auth.currentUser.uid}/private/hidden_posts`
+			);
+			setHiddenPosts(Object.keys(hp));
 			setInitialLoad('loaded');
 			setRefreshing(false);
 		}
@@ -148,6 +157,7 @@ export default function FeedPage() {
 						</StyledView>
 					}
 					renderItem={({ item }) => {
+						if (hiddenPosts.includes(item)) return <></>;
 						return <Post id={item} />;
 					}}
 					keyExtractor={(item) => item}
