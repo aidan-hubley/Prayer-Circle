@@ -1175,7 +1175,9 @@ export const Post = (post) => {
 									className='flex flex-row mb-2'
 									onPress={() => {
 										setOtherUserID(data.user);
-										if (data.user !== auth.currentUser.uid) {
+										if (
+											data.user !== auth.currentUser.uid
+										) {
 											router.push('/otherUser');
 										} else {
 											// router.push('/profile');
@@ -1185,27 +1187,29 @@ export const Post = (post) => {
 								>
 									{data?.profile_img && (
 										<CachedImage
-                      cacheKey={shorthash.unique(
-                        data?.profile_img
-                      )}
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 8,
-                        marginStart: 3,
-                        display: post.owned ? 'none' : 'flex'
-                      }}
-                      source={{
-                        uri: post.img,
-                        expiresIn: 2_628_288
-                      }}
-                      placeholderContent={
-                        <View
-                          style={{ borderRadius: 8 }}
-                          className=' w-[44px] h-[44px] bg-outline'
-                        ></View>
-                      }
-                    />
+											cacheKey={shorthash.unique(
+												data?.profile_img
+											)}
+											style={{
+												width: 44,
+												height: 44,
+												borderRadius: 8,
+												marginStart: 3,
+												display: post.owned
+													? 'none'
+													: 'flex'
+											}}
+											source={{
+												uri: post.img,
+												expiresIn: 2_628_288
+											}}
+											placeholderContent={
+												<View
+													style={{ borderRadius: 8 }}
+													className=' w-[44px] h-[44px] bg-outline'
+												></View>
+											}
+										/>
 									)}
 									<StyledView
 										className={`flex-1 ${
@@ -1483,7 +1487,7 @@ export const Post = (post) => {
 							</View>
 							<View className='w-full flex flex-row justify-between mb-2 px-[10px]'>
 								<Button
-									title='Delete'
+									title='Delete Post'
 									width='w-[45%]'
 									height='h-[38px]'
 									textStyles='text-[16px]'
