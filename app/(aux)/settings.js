@@ -1206,7 +1206,7 @@ export default function Page() {
 								</StyledView>
 							</View>
 						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
+						{/* <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
 						<View className='flex-row mt-3 px-5'>
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
 								<StyledView className='flex-row pb-5 w-full'>
@@ -1242,7 +1242,6 @@ export default function Page() {
 												handleToggleDaily
 											}
 										/>
-										{/* toggle={true} if local storage is true */}
 									</StyledView>
 									<StyledView className='flex-row'>
 										<StyledImage
@@ -1254,7 +1253,6 @@ export default function Page() {
 												handleToggleWeekly
 											}
 										/>
-										{/* toggle={true} if local storage is true */}
 									</StyledView>
 									<StyledView className='flex-row'>
 										<StyledIcon
@@ -1268,7 +1266,6 @@ export default function Page() {
 												handleToggleInfinite
 											}
 										/>
-										{/* toggle={true} if local storage is true */}
 									</StyledView>
 								</StyledView>
 							</View>
@@ -1356,7 +1353,7 @@ export default function Page() {
 									</StyledOpacity>
 								</StyledView>
 							</View>
-						</View>
+						</View> */}
 						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
 						<View className='flex-row items-center mt-5 px-5'>
 							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
