@@ -54,7 +54,7 @@ const Terms = forwardRef(() => {
 			<StyledText className='text-offwhite pb-[10px]'>
 				Last updated: {lastUpdated}
 			</StyledText>
-			<ScrollView className='w-full px-[16px] text-offwhite pt-[20px] pb-[10px]'>
+			<ScrollView className='w-full px-[16px] text-offwhite pt-[20px] pb-[10px] flex-1'>
 				<StyledText className='text-offwhite py-2'>{intro}</StyledText>
 
 				{tableOfContents.map((term, index) => {
