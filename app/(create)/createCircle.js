@@ -133,18 +133,21 @@ export default function Page() {
 								hideSliders={true}
 								style={{ flex: 1 }}
 							/>
-							<StyledOpacity
-								className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
-								onPress={() => {
-									iconSelectorRef.current.toggleSelector(true);
-								}}
-							>
-								<StyledIcon
-									name={icon}
-									size={85}
-									color={iconColor}
-								/>
-							</StyledOpacity>
+							{(Platform.OS === 'android' ? !isKeyboardVisible : true) && (
+								<StyledOpacity
+									className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
+									onPress={() => {
+
+										iconSelectorRef.current.toggleSelector(true);
+									}}
+								>
+									<StyledIcon
+										name={icon}
+										size={85}
+										color={iconColor}
+									/>
+								</StyledOpacity>
+							)}
 						</StyledView>
 					</StyledView>
 				</KeyboardAwareScrollView>

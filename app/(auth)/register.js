@@ -231,7 +231,6 @@ export default function Register() {
 								</StyledView>
 							</StyledView>
 							<StyledText className='text-offwhite text-center text-[18px] mb-3'>
-								Read the{' '}
 								<Pressable
 									onPress={() => {
 										handleModalPress(
@@ -242,7 +241,7 @@ export default function Register() {
 										);
 									}}
 								>
-									<StyledText className='text-yellow text-[16px] font-bold'>
+									<StyledText className='text-yellow text-[18px] font-bold underline'>
 										Terms and Conditions
 									</StyledText>
 								</Pressable>
