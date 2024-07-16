@@ -13,12 +13,15 @@ import { Button } from '../../components/Buttons';
 import { Post } from '../../components/Post';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { getCircles, getProfilePosts, readData } from '../../backend/firebaseFunctions';
+import {
+	getCircles,
+	getProfilePosts,
+	readData
+} from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
 import { router } from 'expo-router';
-import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
+import CachedImage from '../../components/CachedImage';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -40,22 +43,21 @@ export default function ProfilePage() {
 		setFilterName,
 		setFilterIcon,
 		setFilterColor,
-		setFilterIconColor,
+		setFilterIconColor
 	] = useStore((state) => [
 		state.setFilter,
 		state.setFilterName,
 		state.setFilterIcon,
 		state.setFilterColor,
-		state.setFilterIconColor,
+		state.setFilterIconColor
 	]);
 
 	const setUpFeed = async () => {
-		
 		setRefreshing(true);
-					
+
 		let u = await await readData(
 			`prayer_circle/users/${otherUserID}/public`
-		);			
+		);
 		setUserData({
 			displayName: u?.fname + ' ' + u?.lname,
 			photoURL: u?.profile_img
@@ -67,7 +69,9 @@ export default function ProfilePage() {
 			let postIDs = [];
 			let cl = [];
 			for (const circle of circles) {
-				let circleData = await readData(`prayer_circle/circles/${circle}/`);
+				let circleData = await readData(
+					`prayer_circle/circles/${circle}/`
+				);
 				if (circleData.members[otherUserID]) {
 					cl.push({
 						color: circleData.color,
@@ -79,7 +83,9 @@ export default function ProfilePage() {
 						`prayer_circle/circles/${circle}/posts`
 					);
 					for (const post of Object.keys(circlePosts)) {
-						let postdata = await readData(`prayer_circle/posts/${post}`);
+						let postdata = await readData(
+							`prayer_circle/posts/${post}`
+						);
 						if (postdata.user === otherUserID) {
 							if (!postIDs.includes(post)) {
 								postIDs.push(post);
@@ -150,9 +156,11 @@ export default function ProfilePage() {
 												? 'flex'
 												: 'none'
 										}}
-										cacheKey={shorthash.unique(
+										cacheKey={
 											userData.photoURL
-										)}
+												?.split('2F')[2]
+												.split('?')[0]
+										}
 										source={{
 											uri: userData.photoURL
 										}}
@@ -165,9 +173,7 @@ export default function ProfilePage() {
 								{userData?.displayName}
 							</StyledText>
 						</StyledView>
-						<StyledView
-							className='flex w-full px-2'
-						>
+						<StyledView className='flex w-full px-2'>
 							<StyledText className='font-bold text-offwhite text-[18px]'>
 								Your Shared Circles
 							</StyledText>
@@ -181,7 +187,7 @@ export default function ProfilePage() {
 									<StyledView
 										key={item.id}
 										className='items-center my-[20px] pr-[10px] h-[100px]'
-									>							
+									>
 										<StyledHighlight
 											style={[
 												{
@@ -204,8 +210,7 @@ export default function ProfilePage() {
 												name={item.icon}
 												size={35}
 												color={
-													item.iconColor ||
-													item.color
+													item.iconColor || item.color
 												}
 											/>
 										</StyledHighlight>
@@ -215,11 +220,9 @@ export default function ProfilePage() {
 									</StyledView>
 								);
 							}}
-							keyExtractor={(item) => item[0]}
+							keyExtractor={(item) => item.id}
 						/>
-						<StyledView 
-							className="flex w-full px-2 pb-2"
-						>
+						<StyledView className='flex w-full px-2 pb-2'>
 							<StyledText className='font-bold text-offwhite text-[18px]'>
 								Their Posts
 							</StyledText>
@@ -275,7 +278,7 @@ export default function ProfilePage() {
 			>
 				<Button
 					icon='arrow-back'
-					href='/'
+					press={() => router.back()}
 					width={'w-[50px]'}
 					height={'h-[50px]'}
 					iconSize={30}

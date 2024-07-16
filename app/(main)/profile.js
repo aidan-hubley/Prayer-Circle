@@ -19,8 +19,7 @@ import {
 } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { auth } from '../../backend/config';
-import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
+import CachedImage from '../../components/CachedImage';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -108,9 +107,11 @@ export default function ProfilePage() {
 											? 'flex'
 											: 'none'
 									}}
-									cacheKey={shorthash.unique(
+									cacheKey={
 										userData.photoURL
-									)}
+											?.split('2F')[2]
+											.split('?')[0]
+									}
 									source={{
 										uri: userData.photoURL
 									}}

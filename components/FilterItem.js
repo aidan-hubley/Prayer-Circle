@@ -146,12 +146,12 @@ const FilterItem = forwardRef((props, ref) => {
 						<StyledText className='absolute text-white text-[20px] font-bold w-[150px] text-center bottom-[84px]'>
 							Sketch a Post
 						</StyledText>
-						<StyledIcon
+						{/* <StyledIcon
 							name={'ios-add'}
 							size={50}
 							color={'#FFFBFC'}
 							style={{ position: 'absolute' }}
-						/>
+						/> */}
 					</StyledPressable>
 				</StyledAnimatedHighlight>
 			);

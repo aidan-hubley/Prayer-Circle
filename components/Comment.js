@@ -2,8 +2,7 @@ import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { styled } from 'nativewind';
 import { timeSince } from '../backend/functions';
-import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
+import CachedImage from './CachedImage';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -16,7 +15,7 @@ export const Comment = (comment) => {
 				className='rounded-[5px]'
 				width={40}
 				height={40}
-				cacheKey={shorthash.unique(comment.img)}
+				cacheKey={comment.img?.split('2F')[2].split('?')[0]}
 				source={{
 					uri: comment.img
 				}}

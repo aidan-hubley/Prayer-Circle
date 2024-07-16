@@ -2,8 +2,7 @@ import React, { useRef } from 'react';
 import { Text, View, Dimensions } from 'react-native';
 import { styled } from 'nativewind';
 import { MemberPermissionSelector } from './MemberPermissionSelector';
-import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
+import CachedImage from './CachedImage';
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -21,7 +20,7 @@ function Member({ img, name, role, last, uid, setUp }) {
 					className='rounded-[6px]'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
-					cacheKey={shorthash.unique(img)}
+					cacheKey={img?.split('2F')[2].split('?')[0]}
 					placeholderContent={
 						<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
 					}

@@ -6,7 +6,8 @@ import {
 	Animated,
 	Image,
 	TextInput,
-	ScrollView
+	ScrollView,
+	Platform
 } from 'react-native';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
@@ -57,7 +58,7 @@ const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
-	const [type, setType] = useState(CameraType.front);
+	const [type, setType] = useState(CameraType?.front);
 	const [advancedSettings, setAdvancedSettings] = useState(true);
 	const [flashMode, setFlashMode] = useState('off');
 	const cameraRef = useRef(null);

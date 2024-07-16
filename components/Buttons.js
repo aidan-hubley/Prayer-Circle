@@ -4,7 +4,13 @@ import React, {
 	forwardRef,
 	useImperativeHandle
 } from 'react';
-import { Text, TouchableHighlight, Animated, Dimensions } from 'react-native';
+import {
+	Text,
+	TouchableHighlight,
+	Animated,
+	Dimensions,
+	Pressable
+} from 'react-native';
 import { styled } from 'nativewind';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -15,10 +21,7 @@ const StyledText = styled(Text);
 const StyledTouchableHighlight = Animated.createAnimatedComponent(
 	styled(TouchableHighlight)
 );
-const StyledIcon = styled(Ionicons);
-const AnimatedHighlight = styled(
-	Animated.createAnimatedComponent(TouchableHighlight)
-);
+const AnimatedPressable = styled(Animated.createAnimatedComponent(Pressable));
 
 const Button = forwardRef((props, ref) => {
 	const opacity = useRef(new Animated.Value(1)).current;
@@ -72,12 +75,14 @@ const Button = forwardRef((props, ref) => {
 				>
 					{props.title}
 				</StyledText>
-				<StyledIcon
-					className={`${props.icon ? '' : 'hidden'}`}
-					name={`${props.icon || 'md-checkmark-circle'}`}
-					size={props.iconSize || 30}
-					color={`${props.iconColor || '#121212'}`}
-				/>
+				{props.icon && (
+					<Ionicons
+						className={`${props.icon ? '' : 'hidden'}`}
+						name={`${props.icon || 'md-checkmark-circle'}`}
+						size={props.iconSize || 30}
+						color={`${props.iconColor || '#121212'}`}
+					/>
+				)}
 			</>
 		</StyledTouchableHighlight>
 	);
@@ -129,10 +134,6 @@ const ExpandableButton = forwardRef(
 			width: wiInter
 		};
 
-		const btnText = {
-			opacity: wi
-		};
-
 		function toggleButton(direction) {
 			if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 			if (direction == 'expand') {
@@ -165,10 +166,8 @@ const ExpandableButton = forwardRef(
 		}));
 
 		return (
-			<AnimatedHighlight
+			<AnimatedPressable
 				style={btnWidth}
-				activeOpacity={0.6}
-				underlayColor={bgColor || '#DDD'}
 				className={`flex items-center justify-center rounded-full ${
 					bgColor || 'bg-offwhite'
 				} ${width || 'w-11/12'} ${height || 'h-[50px]'} ${
@@ -194,14 +193,16 @@ const ExpandableButton = forwardRef(
 					>
 						{title}
 					</StyledText>
-					<StyledIcon
-						name={`${icon || 'md-checkmark-circle'}`}
-						size={iconSize || 30}
-						color={`${iconColor || '#121212'}`}
-						className={`${pressed ? 'hidden' : 'flex'}`}
-					/>
+					{icon && (
+						<Ionicons
+							name={`${icon || 'md-checkmark-circle'}`}
+							size={iconSize || 30}
+							color={`${iconColor || '#121212'}`}
+							style={{ display: pressed ? 'none' : 'flex' }}
+						/>
+					)}
 				</>
-			</AnimatedHighlight>
+			</AnimatedPressable>
 		);
 	}
 );

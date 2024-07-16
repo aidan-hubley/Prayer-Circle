@@ -9,6 +9,7 @@ import * as Config from '../app.config';
 import { auth } from '../backend/config.js';
 import { useStore, notify } from './global.js';
 import { NotifierWrapper } from 'react-native-notifier';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -78,35 +79,42 @@ function RootLayoutNavigation() {
 	if (!authInitialized && !user) return null;
 
 	return (
-		<NotifierWrapper>
-			<BottomSheetModalProvider>
-				<Stack
-					screenOptions={{
-						headerShown: false,
-						gestureEnabled: false
-					}}
-				>
-					<Stack.Screen
-						name='(aux)/circleSettings'
-						options={{ presentation: 'modal' }}
-					/>
-					<Stack.Screen
-						name='(aux)/shareCircle'
-						options={{
-							presentation: 'modal',
-							gestureEnabled: true
+		<GestureHandlerRootView>
+			<NotifierWrapper>
+				<BottomSheetModalProvider>
+					<Stack
+						screenOptions={{
+							headerShown: false,
+							gestureEnabled: false
 						}}
-					/>
-					<Stack.Screen
-						name='(aux)/prayerCircleInfo'
-						options={{ presentation: 'modal' }}
-					/>
-					<Stack.Screen
-						name='(aux)/otherUser'
-						options={{ gestureEnabled: true }}
-					/>
-				</Stack>
-			</BottomSheetModalProvider>
-		</NotifierWrapper>
+					>
+						<Stack.Screen
+							name='(aux)/circleSettings'
+							options={{
+								presentation: 'modal'
+							}}
+						/>
+						<Stack.Screen
+							name='(aux)/shareCircle'
+							options={{
+								presentation: 'modal',
+								gestureEnabled: true
+							}}
+						/>
+						<Stack.Screen
+							name='(aux)/prayerCircleInfo'
+							options={{
+								presentation: 'modal',
+								gestureEnabled: true
+							}}
+						/>
+						<Stack.Screen
+							name='(aux)/otherUser'
+							options={{ gestureEnabled: true }}
+						/>
+					</Stack>
+				</BottomSheetModalProvider>
+			</NotifierWrapper>
+		</GestureHandlerRootView>
 	);
 }

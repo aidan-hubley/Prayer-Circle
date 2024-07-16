@@ -28,8 +28,7 @@ import { Comment } from './Comment';
 import { useStore, notify } from '../app/global';
 import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
-import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
+import CachedImage from './CachedImage';
 import { backdrop, handle } from './BottomSheetModalHelpers';
 import { auth } from '../backend/config';
 import { Interaction } from '../components/Interaction';
@@ -1187,9 +1186,11 @@ export const Post = (post) => {
 								>
 									{data?.profile_img && (
 										<CachedImage
-											cacheKey={shorthash.unique(
+											cacheKey={
 												data?.profile_img
-											)}
+													?.split('2F')[2]
+													.split('?')[0]
+											}
 											style={{
 												width: 44,
 												height: 44,
@@ -1200,15 +1201,9 @@ export const Post = (post) => {
 													: 'flex'
 											}}
 											source={{
-												uri: post.img,
+												uri: data?.profile_img,
 												expiresIn: 2_628_288
 											}}
-											placeholderContent={
-												<View
-													style={{ borderRadius: 8 }}
-													className=' w-[44px] h-[44px] bg-outline'
-												></View>
-											}
 										/>
 									)}
 									<StyledView

@@ -671,7 +671,9 @@ export default function Page() {
 					width={'w-[50px]'}
 					iconSize={30}
 					icon='arrow-back'
-					href='/'
+					press={() => {
+						router.back();
+					}}
 				/>
 				<Button // to Share Page
 					height={'h-[50px]'}

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, Image, Dimensions } from 'react-native';
 import { readData } from '../backend/firebaseFunctions';
-import CachedImage from 'expo-cached-image';
-import shorthash from 'shorthash';
+import CachedImage from './CachedImage';
 
 function Interaction(props) {
 	return (
@@ -14,7 +13,7 @@ function Interaction(props) {
 				className='rounded-[6px]'
 				style={{ width: 40, height: 40 }}
 				source={{ uri: props.image }}
-				cacheKey={shorthash.unique(props.image)}
+				cacheKey={props.image?.split('2F')[2].split('?')[0]}
 				placeholderContent={
 					<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
 				}
