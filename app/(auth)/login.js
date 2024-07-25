@@ -38,6 +38,7 @@ export default function Login() {
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
 	const [resetEmail, setResetEmail] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 	const bottomSheetModalRef = useRef(null);
 	const authContext = useAuth();
 	const auth = getAuth();
@@ -86,16 +87,28 @@ export default function Login() {
 										setEmail(text);
 									}}
 								/>
-								<StyledInput
-									className='bg-offblack text-[18px] w-11/12 text-offwhite border border-outline rounded-lg px-3 py-[10px]'
-									placeholder={'Password'}
-									placeholderTextColor={'#fff'}
-									secureTextEntry={true}
-									maxLength={25}
-									onChangeText={(text) => {
-										setPass(text);
-									}}
-								/>
+								<View className='relative w-11/12'>
+									<StyledInput
+										className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] pr-10'
+										placeholder={'Password'}
+										placeholderTextColor={'#fff'}
+										secureTextEntry={!showPassword}
+										maxLength={25}
+										onChangeText={(text) => {
+											setPass(text);
+										}}
+									/>
+									<TouchableOpacity 
+										style={{ position: 'absolute', right: 10, top: 12 }}
+										onPress={() => setShowPassword(!showPassword)}
+									>
+										<StyledIcon
+											name={showPassword ? 'eye' : 'eye-off'}
+											size={20}
+											color='#fff'
+										/>
+									</TouchableOpacity>
+								</View>
 							</StyledView>
 							<Button
 								title='Login'
