@@ -1,4 +1,5 @@
 export function passwordValidation(password) {
+	console.log('Doing verification');
 	let length = false;
 	let upper = false;
 	let lower = false;
@@ -15,7 +16,7 @@ export function passwordValidation(password) {
 		if (ascii >= 33 && ascii <= 47) special = true;
 		if (ascii >= 48 && ascii <= 57) number = true;
 	});
-	return !!(length && upper && lower && special && number);
+	return !(length && upper && lower && special && number);
 }
 
 export function timeSince(timeStamp) {

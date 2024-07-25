@@ -126,6 +126,7 @@ export default function Page() {
 	};
 
 	const PasswordReset = async () => {
+		console.log('Checkpoint 1');
 		if (userData && userData?.email) {
 			try {
 				await sendPasswordResetEmail(auth, userData?.email);
@@ -326,11 +327,12 @@ export default function Page() {
 	}
 
 	const ChangePassword = async () => {
+		console.log('Checkpoint 2');
 		if (newPassword !== confirmPassword) {
 			notify('Error', 'The new passwords do not match.', '#CC2500');
 			return;
 		}
-
+		console.log('Checkpoint 2.1');
 		if (!passwordValidation(newPassword)) {
 			notify(
 				'Invalid Password',
@@ -339,16 +341,17 @@ export default function Page() {
 			);
 			return;
 		}
-
+		console.log('Checkpoint 2.2');
 		if (userData) {
+			console.log('Checkpoint 2.3');
 			const credential = EmailAuthProvider.credential(
 				userData.email,
 				currentPassword
 			);
-
+			console.log('Checkpoint 2.4');
 			try {
 				await reauthenticateWithCredential(user, credential);
-
+				console.log('Checkpoint 2.5');
 				await updatePassword(user, newPassword);
 				notify(
 					'Success',
@@ -360,6 +363,7 @@ export default function Page() {
 				setNewPassword('');
 				setConfirmPassword('');
 			} catch (error) {
+				console.log('Checkpoint 2.6');
 				notify('Error', error.message, '#CC2500');
 			}
 		} else {
