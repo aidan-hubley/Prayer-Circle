@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, ScrollView, Keyboard } from 'react-native';
+import {
+	Text,
+	View,
+	TextInput,
+	ScrollView,
+	Keyboard,
+	Platform
+} from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {

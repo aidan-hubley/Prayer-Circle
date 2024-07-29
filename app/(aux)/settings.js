@@ -345,11 +345,9 @@ export default function Page() {
 				userData.email,
 				currentPassword
 			);
-
 			try {
-				await reauthenticateWithCredential(user, credential);
-
-				await updatePassword(user, newPassword);
+				await reauthenticateWithCredential(userData, credential);
+				await updatePassword(userData, newPassword);
 				notify(
 					'Success',
 					'Password has been updated successfully.',

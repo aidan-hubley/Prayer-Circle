@@ -4,7 +4,8 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Keyboard
+	Keyboard,
+	Platform
 } from 'react-native';
 import { styled } from 'nativewind';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -133,12 +134,15 @@ export default function Page() {
 								hideSliders={true}
 								style={{ flex: 1 }}
 							/>
-							{(Platform.OS === 'android' ? !isKeyboardVisible : true) && (
+							{(Platform.OS === 'android'
+								? !isKeyboardVisible
+								: true) && (
 								<StyledOpacity
 									className='absolute h-[40%] aspect-square bg-offblack rounded-full items-center justify-center'
 									onPress={() => {
-
-										iconSelectorRef.current.toggleSelector(true);
+										iconSelectorRef.current.toggleSelector(
+											true
+										);
 									}}
 								>
 									<StyledIcon
@@ -198,13 +202,13 @@ export default function Page() {
 
 									await createCircle(data);
 									setUploading(false);
-				
+
 									notify(
 										'Circle Successfully Created',
 										'You can access your new circle from the filter.',
 										'#00A55E'
 									);
-				
+
 									setTimeout(() => {
 										setFilterReload(true);
 									}, 600);
