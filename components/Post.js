@@ -990,12 +990,12 @@ export const Post = (post) => {
 			data?.metadata?.start,
 			data?.metadata?.timezone_offset,
 			currentTimezoneOffset
-		);
+		) || null;
 		const end = formatTimestamp(
 			data?.metadata?.end,
 			data?.metadata?.timezone_offset,
 			currentTimezoneOffset
-		);
+		) || null;
 
 		let date = '';
 
@@ -1117,7 +1117,7 @@ export const Post = (post) => {
 			if (d?.type === 'event') getEventDate(d);
 			await setIcon(d.type);
 			await setEdited(d?.edited || false);
-			await setTS(timeSince(d?.timestamp));
+			await setTS(d.timestamp ? timeSince(d?.timestamp) : null);
 			await setOwnedToolbar(d.user === userData.uid);
 
 			// could be moved
@@ -1237,6 +1237,7 @@ export const Post = (post) => {
 											>
 												{tS}{' '}
 											</StyledText>
+											{/* NRA this should be hidden if tS is null */}
 											<StyledText
 												className={`${
 													edited ? '' : 'hidden'
