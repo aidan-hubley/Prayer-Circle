@@ -15,6 +15,7 @@
 		"@react-native-async-storage/async-storage": "1.23.1",
 		"@react-native-community/datetimepicker": "8.0.1",
 		"@react-native-community/slider": "4.5.2",
+		"@react-native-firebase/firestore": "^20.3.0",
 		"babel-plugin-module-resolver": "^5.0.2",
 		"babel-preset-expo": "^11.0.12",
 		"expo": "^51.0.20",
