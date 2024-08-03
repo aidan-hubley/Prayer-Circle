@@ -30,12 +30,13 @@ import { PostTypeSelector } from './PostTypeSelector';
 import { Button } from './Buttons';
 import CachedImage from './CachedImage';
 import { backdrop, handle } from './BottomSheetModalHelpers';
-import { auth } from '../backend/config';
+import { auth, firestore } from '../backend/config';
 import { Interaction } from '../components/Interaction';
 import { decrypt, encrypt } from 'react-native-simple-encryption';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pulsating } from './Loading';
 import { router } from 'expo-router';
+import { setDoc, collection, doc, updateDoc } from 'firebase/firestore';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -48,6 +49,7 @@ const StyledIcon = styled(Ionicons);
 const StyledInput = styled(TextInput);
 const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
+
 export const Post = (post) => {
 	const [data, setData] = useState(null);
 
@@ -753,6 +755,9 @@ export const Post = (post) => {
 			!interacted ? now : null,
 			true
 		);
+		/* if(!interacted) setDoc(doc(firestore, 'posts', post.id, 'interactions', userData.uid), {
+			interacted: !interacted ? now : null
+		}); */
 		setInteracted(!interacted);
 	}
 
@@ -942,21 +947,19 @@ export const Post = (post) => {
 		}
 
 		// set up comments
-		await populateComments(data?.comments || {});
+		/* await populateComments(data?.comments || {});
 		let viewableComments = await readData(
 			`prayer_circle/posts/${postId}/settings/viewable_comments`
 		);
 		if (viewableComments == undefined) {
 			viewableComments = true;
 		}
-		setViewComments(viewableComments);
+		setViewComments(viewableComments); */
 
 		// set up interactions
 		let interactions =
 			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
-		let viewableInteractions = await readData(
-			`prayer_circle/posts/${postId}/settings/viewable_interactions`
-		);
+		let viewableInteractions = post?.settings?.viewable_interactions;
 		if (viewableInteractions == undefined) {
 			if (data?.type === 'event') viewableInteractions = 'public';
 			else viewableInteractions = 'private';
@@ -1110,23 +1113,21 @@ export const Post = (post) => {
 	// set up
 	useEffect(() => {
 		(async () => {
-			let d = await readData(`prayer_circle/posts/${post.id}`);
-			await setData(d);
-			await setTitle(decrypt(post.id, d.title));
-			await setContent(decrypt(post.id, d.body));
-			if (d?.type === 'event') getEventDate(d);
-			await setIcon(d.type);
-			await setEdited(d?.edited || false);
-			await setTS(timeSince(d?.timestamp));
-			await setOwnedToolbar(d.user === userData.uid);
+			setTitle(decrypt(post.id, post.title));
+			setContent(decrypt(post.id, post.content));
+			if (post.type === 'event') getEventDate(post);
+			await setIcon(post.type);
+			await setEdited(post.edited || false);
+			await setTS(timeSince(post.timestamp));
+			await setOwnedToolbar(post.user === userData.uid);
 
 			// could be moved
-			await setViewComments(d?.settings?.viewable_comments || false);
+			await setViewComments(post?.settings?.viewable_comments || false);
 			await setViewInteractions(
-				d?.settings?.viewable_interactions || false
+				post?.settings?.viewable_interactions || false
 			);
-			await setEditTitle(decrypt(post.id, d.title));
-			await setEditContent(decrypt(post.id, d.body));
+			await setEditTitle(decrypt(post.id, post.title));
+			await setEditContent(decrypt(post.id, post.body));
 
 			await setUp(post.id);
 		})();
@@ -1135,399 +1136,380 @@ export const Post = (post) => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
-	if (data) {
-		return (
-			<StyledPressable className='w-full max-w-[500px]'>
-				<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
-					<StyledPressable
-						onPressIn={() => {
-							const now = Date.now();
-							if (lastTap && now - lastTap < 300) {
-								clearTimeout(timer.current);
-								if (post.owned || ownedToolbar) {
-									setBottomSheetType('Interactions');
-									setSnapPoints(['85%']);
-									handlePresentModalPress();
-								} else {
-									toggleIcon();
-								}
-							} else {
-								setLastTap(now);
-								timer.current = setTimeout(() => {}, 300);
-							}
-						}}
-						onLongPress={() => {
-							if (
-								icon === 'event' &&
-								viewInteractions === 'public'
-							) {
+	return (
+		<StyledPressable className='w-full max-w-[500px]'>
+			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
+				<StyledPressable
+					onPressIn={() => {
+						const now = Date.now();
+						if (lastTap && now - lastTap < 300) {
+							clearTimeout(timer.current);
+							if (post.owned || ownedToolbar) {
 								setBottomSheetType('Interactions');
 								setSnapPoints(['85%']);
 								handlePresentModalPress();
+							} else {
+								toggleIcon();
 							}
-							toggleToolbar();
-						}}
-					>
-						<StyledView className='w-full flex flex-row justify-between px-[6px]'>
-							<StyledView className='w-[90%]'>
-								<StyledPressable
-									className='flex flex-row mb-2'
-									onPress={() => {
-										setOtherUserID(data.user);
-										if (
-											data.user !== auth.currentUser.uid
-										) {
-											router.push('/otherUser');
-										} else {
-											// router.push('/profile');
-											//NRA cannot simply navigate to profile page, user gets stuck; need to change pos variable in index.js remotely
+						} else {
+							setLastTap(now);
+							timer.current = setTimeout(() => {}, 300);
+						}
+					}}
+					onLongPress={() => {
+						if (icon === 'event' && viewInteractions === 'public') {
+							setBottomSheetType('Interactions');
+							setSnapPoints(['85%']);
+							handlePresentModalPress();
+						}
+						toggleToolbar();
+					}}
+				>
+					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
+						<StyledView className='w-[90%]'>
+							<StyledPressable
+								className='flex flex-row mb-2'
+								onPress={() => {
+									setOtherUserID(post.user);
+									if (post.user !== auth.currentUser.uid) {
+										router.push('/otherUser');
+									} else {
+										// router.push('/profile');
+										//NRA cannot simply navigate to profile page, user gets stuck; need to change pos variable in index.js remotely
+									}
+								}}
+							>
+								{post?.profile_img && (
+									<CachedImage
+										cacheKey={
+											post?.profile_img
+												?.split('2F')[2]
+												.split('?')[0]
 										}
-									}}
+										style={{
+											width: 44,
+											height: 44,
+											borderRadius: 8,
+											marginStart: 3,
+											display: post.owned
+												? 'none'
+												: 'flex'
+										}}
+										source={{
+											uri: post?.profile_img,
+											expiresIn: 2_628_288
+										}}
+									/>
+								)}
+								<StyledView
+									className={`flex-1 ${
+										post.owned ? 'ml-[4px]' : 'ml-2'
+									}`}
 								>
-									{data?.profile_img && (
-										<CachedImage
-											cacheKey={
-												data?.profile_img
-													?.split('2F')[2]
-													.split('?')[0]
-											}
-											style={{
-												width: 44,
-												height: 44,
-												borderRadius: 8,
-												marginStart: 3,
-												display: post.owned
-													? 'none'
-													: 'flex'
-											}}
-											source={{
-												uri: data?.profile_img,
-												expiresIn: 2_628_288
-											}}
-										/>
-									)}
-									<StyledView
-										className={`flex-1 ${
-											post.owned ? 'ml-[4px]' : 'ml-2'
-										}`}
-									>
-										<View className={`mr-[20px]`}>
-											<StyledText className='text-offwhite font-bold text-[20px]'>
-												{isExpanded ||
-												title?.length <=
-													titleCharThreshold
-													? title
-													: `${title?.substring(
-															0,
-															titleCharThreshold -
-																4
-													  )}...`}
-											</StyledText>
-										</View>
-										<StyledView className='flex flex-row'>
-											<StyledText
-												className={`${
-													post.owned ? 'hidden' : ''
-												} text-white`}
-											>
-												{data?.name} •{' '}
-											</StyledText>
-											<StyledText
-												className={`text-white`}
-											>
-												{tS}{' '}
-											</StyledText>
-											<StyledText
-												className={`${
-													edited ? '' : 'hidden'
-												} text-white`}
-											>
-												(edited)
-											</StyledText>
-										</StyledView>
-									</StyledView>
-								</StyledPressable>
-								{icon == 'event' && (
-									<StyledView className='flex flex-row items-center mb-2'>
+									<View className={`mr-[20px]`}>
+										<StyledText className='text-offwhite font-bold text-[20px]'>
+											{isExpanded ||
+											title?.length <= titleCharThreshold
+												? title
+												: `${title?.substring(
+														0,
+														titleCharThreshold - 4
+												  )}...`}
+										</StyledText>
+									</View>
+									<StyledView className='flex flex-row'>
 										<StyledText
 											className={`${
-												post.owned
-													? 'ml-[4px] text-white font-bold text-[16px]'
-													: 'text-white font-bold text-[16px]'
-											}`}
+												post.owned ? 'hidden' : ''
+											} text-white`}
 										>
-											{eventDate}
+											{post?.name} •{' '}
+										</StyledText>
+										<StyledText className={`text-white`}>
+											{tS}{' '}
+										</StyledText>
+										<StyledText
+											className={`${
+												edited ? '' : 'hidden'
+											} text-white`}
+										>
+											(edited)
 										</StyledText>
 									</StyledView>
-								)}
-								<StyledView className='flex flex-row items-center w-[95%]'>
+								</StyledView>
+							</StyledPressable>
+							{icon == 'event' && (
+								<StyledView className='flex flex-row items-center mb-2'>
 									<StyledText
 										className={`${
-											post.owned ? 'ml-[4px]' : ''
-										} text-white mt-[2px] pb-[10px]`}
+											post.owned
+												? 'ml-[4px] text-white font-bold text-[16px]'
+												: 'text-white font-bold text-[16px]'
+										}`}
 									>
-										{isExpanded ||
-										content.length <= contentCharThreshold
-											? content
-											: `${content.substring(
-													0,
-													contentCharThreshold
-											  )}...`}
+										{eventDate}
 									</StyledText>
 								</StyledView>
+							)}
+							<StyledView className='flex flex-row items-center w-[95%]'>
+								<StyledText
+									className={`${
+										post.owned ? 'ml-[4px]' : ''
+									} text-white mt-[2px] pb-[10px]`}
+								>
+									{isExpanded ||
+									content.length <= contentCharThreshold
+										? content
+										: `${content.substring(
+												0,
+												contentCharThreshold
+										  )}...`}
+								</StyledText>
 							</StyledView>
-							<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
-								<StyledPressable
-									className='flex aspect-square w-[30px] self-end'
+						</StyledView>
+						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
+							<StyledPressable
+								className='flex aspect-square w-[30px] self-end'
+								onPress={() => {
+									if (!post.owned && !ownedToolbar) {
+										toggleIcon();
+									} else {
+										setBottomSheetType('Interactions');
+										setSnapPoints(['85%']);
+										handlePresentModalPress();
+									}
+								}}
+							>
+								<AnimatedImage
+									source={getIconSource(icon, interacted)}
+									style={{
+										width: 26,
+										height: 26,
+										transform: [{ scale: iconInter }]
+									}}
+								/>
+							</StyledPressable>
+
+							{(title?.length > titleCharThreshold ||
+								content.length > contentCharThreshold) && (
+								<StyledOpacity
 									onPress={() => {
-										if (!post.owned && !ownedToolbar) {
-											toggleIcon();
-										} else {
-											setBottomSheetType('Interactions');
-											setSnapPoints(['85%']);
-											handlePresentModalPress();
+										setIsExpanded(!isExpanded);
+									}}
+									className='self-center pt-2'
+								>
+									<Ionicons
+										name={
+											isExpanded
+												? 'chevron-up'
+												: 'chevron-down'
 										}
+										size={24}
+										color='#3D3D3D'
+									/>
+								</StyledOpacity>
+							)}
+							{!post.reported && (
+								<StyledPressable
+									className='flex w-[30px] aspect-square justify-end mb-[2px]'
+									onPress={() => {
+										toggleToolbar();
 									}}
 								>
 									<AnimatedImage
-										source={getIconSource(icon, interacted)}
-										style={{
-											width: 26,
-											height: 26,
-											transform: [{ scale: iconInter }]
-										}}
+										className='w-[28px] h-[28px]'
+										style={spiralStyle}
+										source={require('../assets/spiral/spiral.png')}
 									/>
 								</StyledPressable>
-
-								{(title?.length > titleCharThreshold ||
-									content.length > contentCharThreshold) && (
-									<StyledOpacity
-										onPress={() => {
-											setIsExpanded(!isExpanded);
-										}}
-										className='self-center pt-2'
-									>
-										<Ionicons
-											name={
-												isExpanded
-													? 'chevron-up'
-													: 'chevron-down'
-											}
-											size={24}
-											color='#3D3D3D'
-										/>
-									</StyledOpacity>
-								)}
-								{!post.reported && (
-									<StyledPressable
-										className='flex w-[30px] aspect-square justify-end mb-[2px]'
-										onPress={() => {
-											toggleToolbar();
-										}}
-									>
-										<AnimatedImage
-											className='w-[28px] h-[28px]'
-											style={spiralStyle}
-											source={require('../assets/spiral/spiral.png')}
-										/>
-									</StyledPressable>
-								)}
-							</StyledView>
+							)}
 						</StyledView>
-					</StyledPressable>
-					<StyledAnimatedView
-						style={toolbarStyle}
-						className='px-[10px] w-full overflow-hidden'
-					>
-						<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
-							<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
-								{post?.owned || ownedToolbar ? (
-									<>
-										<ToolbarButton
-											icon={'trash-outline'}
-											color={'#CC2500'}
-											size={29}
-											onPress={() => {
-												deletePost();
-											}}
-										/>
-										<ToolbarButton
-											icon={'cog-outline'}
-											size={29}
-											color='#F9A826'
-											onPress={() => {
-												setBottomSheetType('Settings');
-												setSnapPoints(['55%']);
-												handlePresentModalPress();
-											}}
-										/>
-										<ToolbarButton
-											icon={'create-outline'}
-											size={29}
-											color='#00A55E'
-											onPress={() => {
-												setBottomSheetType('Edit');
-												setSnapPoints(['85%']);
-												handlePresentModalPress();
-											}}
-										/>
-									</>
-								) : (
-									<>
-										<ToolbarButton
-											icon={
-												reported
-													? 'flag'
-													: 'flag-outline'
-											}
-											size={29}
-											color='#CC2500'
-											onPress={() => {
-												populateReports(post.id);
-												setBottomSheetType('Report');
-												setSnapPoints(['65%', '85%']);
-												handlePresentModalPress();
-											}}
-										/>
-										<ToolbarButton
-											icon={'eye-off-outline'}
-											size={29}
-											color='#F9A826'
-											onPress={() => {
-												hidePost();
-											}}
-										/>
-										<ToolbarButton
-											icon={
-												bookmarked
-													? 'bookmark'
-													: 'bookmark-outline'
-											}
-											size={29}
-											color='#00A55E'
-											onPress={() => {
-												toggleBookmark(post.id, data);
-											}}
-										/>
-									</>
-								)}
-								<ToolbarButton
-									icon={'chatbubble-outline'}
-									size={29}
-									color={viewComments ? '#5946B2' : '#3D3D3D'}
-									onPress={async () => {
-										if (!post?.owned && !ownedToolbar) {
-											if (viewComments) {
-												populateComments();
-												setBottomSheetType('Comments');
-												setSnapPoints(['85%']);
-												handlePresentModalPress();
-											}
-										} else {
+					</StyledView>
+				</StyledPressable>
+				<StyledAnimatedView
+					style={toolbarStyle}
+					className='px-[10px] w-full overflow-hidden'
+				>
+					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
+						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
+							{post?.owned || ownedToolbar ? (
+								<>
+									<ToolbarButton
+										icon={'trash-outline'}
+										color={'#CC2500'}
+										size={29}
+										onPress={() => {
+											deletePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={'cog-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {
+											setBottomSheetType('Settings');
+											setSnapPoints(['55%']);
+											handlePresentModalPress();
+										}}
+									/>
+									<ToolbarButton
+										icon={'create-outline'}
+										size={29}
+										color='#00A55E'
+										onPress={() => {
+											setBottomSheetType('Edit');
+											setSnapPoints(['85%']);
+											handlePresentModalPress();
+										}}
+									/>
+								</>
+							) : (
+								<>
+									<ToolbarButton
+										icon={
+											reported ? 'flag' : 'flag-outline'
+										}
+										size={29}
+										color='#CC2500'
+										onPress={() => {
+											populateReports(post.id);
+											setBottomSheetType('Report');
+											setSnapPoints(['65%', '85%']);
+											handlePresentModalPress();
+										}}
+									/>
+									<ToolbarButton
+										icon={'eye-off-outline'}
+										size={29}
+										color='#F9A826'
+										onPress={() => {
+											hidePost();
+										}}
+									/>
+									<ToolbarButton
+										icon={
+											bookmarked
+												? 'bookmark'
+												: 'bookmark-outline'
+										}
+										size={29}
+										color='#00A55E'
+										onPress={() => {
+											toggleBookmark(post.id, data);
+											/* TODO: rewrite */
+										}}
+									/>
+								</>
+							)}
+							<ToolbarButton
+								icon={'chatbubble-outline'}
+								size={29}
+								color={viewComments ? '#5946B2' : '#3D3D3D'}
+								onPress={async () => {
+									if (!post?.owned && !ownedToolbar) {
+										if (viewComments) {
 											populateComments();
 											setBottomSheetType('Comments');
 											setSnapPoints(['85%']);
 											handlePresentModalPress();
 										}
-									}}
-								/>
-								<StyledOpacity
-									className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
-									activeOpacity={0.4}
-									onPress={() => {
-										if (haptics)
-											Haptics.impactAsync(
-												Haptics.ImpactFeedbackStyle
-													.Light
-											);
-										populateCircles();
-										setBottomSheetType("Post's Circles");
+									} else {
+										populateComments();
+										setBottomSheetType('Comments');
+										setSnapPoints(['85%']);
 										handlePresentModalPress();
-									}}
-								/>
-							</StyledView>
-						</StyledView>
-					</StyledAnimatedView>
-					{post.reported && (
-						<View className='px-[15px] flex items-center w-full'>
-							<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
-								<Text className='text-offwhite text-[16px] text-left w-full'>
-									Reports:
-								</Text>
-								{Object.entries(data?.reports)
-									.reduce((uniqueReports, report) => {
-										if (
-											!uniqueReports.includes(
-												report[1].reason
-											)
-										) {
-											uniqueReports.push(
-												report[1].reason
-											);
-										}
-										return uniqueReports;
-									}, [])
-									.map((reason) => {
-										return (
-											<View
-												key={reason}
-												className='flex flex-row w-full items-center'
-											>
-												<Text className='text-offwhite text-[16px] text-left w-full'>
-													{reason}
-												</Text>
-											</View>
+									}
+								}}
+							/>
+							<StyledOpacity
+								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
+								activeOpacity={0.4}
+								onPress={() => {
+									if (haptics)
+										Haptics.impactAsync(
+											Haptics.ImpactFeedbackStyle.Light
 										);
-									})}
-							</View>
-							<View className='w-full flex flex-row justify-between mb-2 px-[10px]'>
-								<Button
-									title='Delete Post'
-									width='w-[45%]'
-									height='h-[38px]'
-									textStyles='text-[16px]'
-									press={() => {
-										deletePost();
-										post.onClearReport();
-									}}
-								/>
-								<Button
-									title='Clear Report'
-									width='w-[45%]'
-									height='h-[38px]'
-									textStyles='text-[16px]'
-									press={() => {
-										clearReports();
-										post.onClearReport();
-									}}
-								/>
-							</View>
+									populateCircles();
+									setBottomSheetType("Post's Circles");
+									handlePresentModalPress();
+								}}
+							/>
+						</StyledView>
+					</StyledView>
+				</StyledAnimatedView>
+				{post.reported && (
+					<View className='px-[15px] flex items-center w-full'>
+						<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
+							<Text className='text-offwhite text-[16px] text-left w-full'>
+								Reports:
+							</Text>
+							{Object.entries(data?.reports)
+								.reduce((uniqueReports, report) => {
+									if (
+										!uniqueReports.includes(
+											report[1].reason
+										)
+									) {
+										uniqueReports.push(report[1].reason);
+									}
+									return uniqueReports;
+								}, [])
+								.map((reason) => {
+									return (
+										<View
+											key={reason}
+											className='flex flex-row w-full items-center'
+										>
+											<Text className='text-offwhite text-[16px] text-left w-full'>
+												{reason}
+											</Text>
+										</View>
+									);
+								})}
 						</View>
-					)}
-				</StyledView>
-				<BottomSheetModal
-					enableDismissOnClose={true}
-					ref={bottomSheetModalRef}
-					index={0}
-					snapPoints={snapPoints}
-					handleComponent={() => handle(bottomSheetType)}
-					backdropComponent={(backdropProps) =>
-						backdrop(backdropProps)
-					}
-					keyboardBehavior='extend'
-				>
-					{bottomSheetType === 'Comments' && commentsView()}
-					{bottomSheetType === 'Edit' && editView()}
-					{bottomSheetType === "Post's Circles" && circlesView()}
-					{bottomSheetType === 'Interactions' && interactionsView()}
-					{bottomSheetType === 'Report' && reportView()}
-					{bottomSheetType === 'Settings' && settingsView()}
-				</BottomSheetModal>
-			</StyledPressable>
-		);
-	} else {
-		return <EmptyPost />;
-	}
+						<View className='w-full flex flex-row justify-between mb-2 px-[10px]'>
+							<Button
+								title='Delete Post'
+								width='w-[45%]'
+								height='h-[38px]'
+								textStyles='text-[16px]'
+								press={() => {
+									deletePost();
+									post.onClearReport();
+								}}
+							/>
+							<Button
+								title='Clear Report'
+								width='w-[45%]'
+								height='h-[38px]'
+								textStyles='text-[16px]'
+								press={() => {
+									clearReports();
+									post.onClearReport();
+								}}
+							/>
+						</View>
+					</View>
+				)}
+			</StyledView>
+			<BottomSheetModal
+				enableDismissOnClose={true}
+				ref={bottomSheetModalRef}
+				index={0}
+				snapPoints={snapPoints}
+				handleComponent={() => handle(bottomSheetType)}
+				backdropComponent={(backdropProps) => backdrop(backdropProps)}
+				keyboardBehavior='extend'
+			>
+				{bottomSheetType === 'Comments' && commentsView()}
+				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === "Post's Circles" && circlesView()}
+				{bottomSheetType === 'Interactions' && interactionsView()}
+				{bottomSheetType === 'Report' && reportView()}
+				{bottomSheetType === 'Settings' && settingsView()}
+			</BottomSheetModal>
+		</StyledPressable>
+	);
 };
 
 export const EmptyPost = (post) => {

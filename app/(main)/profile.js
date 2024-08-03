@@ -37,8 +37,8 @@ export default function ProfilePage() {
 	const setUpFeed = async () => {
 		if (auth.currentUser) {
 			setRenderIndex(0);
-			let gp = await getProfilePosts();
-			setPostList(gp);
+			/* let gp = await getProfilePosts(); */
+			setPostList([]);
 			setInitialLoad('loaded');
 			setRefreshing(false);
 		}
@@ -62,7 +62,7 @@ export default function ProfilePage() {
 	return (
 		<StyledView className='flex-1 bg-offblack'>
 			<FlatList
-				data={postList}
+				data={[]}
 				onEndReachedThreshold={0.4}
 				windowSize={10}
 				onScrollBeginDrag={() => {

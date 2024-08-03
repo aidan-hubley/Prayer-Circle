@@ -11,7 +11,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function JournalPage() {
-	const [annoucements, setAnnoucements] = useState([]);	
+	const [annoucements, setAnnoucements] = useState([]);
 	const [prayers, setPrayers] = useState([]);
 	const [praises, setPraises] = useState([]);
 	const [events, setEvents] = useState([]);
@@ -82,7 +82,7 @@ export default function JournalPage() {
 			</StyledView>
 			<StyledView className='flex-1'>
 				<FlatList
-					data={annoucements}
+					data={[]}
 					style={{
 						display: page === 'annoucements' ? 'flex' : 'none',
 						paddingHorizontal: 15,
@@ -114,13 +114,14 @@ export default function JournalPage() {
 								No Annoucements Saved!
 							</StyledText>
 							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
-								Save annoucements on your feed to view them here!
+								Save annoucements on your feed to view them
+								here!
 							</StyledText>
 						</StyledView>
 					)}
 				/>
 				<FlatList
-					data={prayers}
+					data={[]}
 					style={{
 						display: page === 'prayers' ? 'flex' : 'none',
 						paddingHorizontal: 15,
@@ -159,7 +160,7 @@ export default function JournalPage() {
 					)}
 				/>
 				<FlatList
-					data={praises}
+					data={[]}
 					style={{
 						display: page === 'praises' ? 'flex' : 'none',
 						paddingHorizontal: 15,
@@ -197,7 +198,7 @@ export default function JournalPage() {
 					)}
 				/>
 				<FlatList
-					data={events}
+					data={[]}
 					style={{
 						display: page === 'events' ? 'flex' : 'none',
 						paddingHorizontal: 15,
@@ -235,7 +236,7 @@ export default function JournalPage() {
 					)}
 				/>
 				<FlatList
-					data={thoughts}
+					data={[]}
 					style={{
 						display: page === 'thoughts' ? 'flex' : 'none',
 						paddingHorizontal: 15,

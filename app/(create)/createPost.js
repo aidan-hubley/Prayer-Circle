@@ -23,11 +23,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore, notify } from '../global';
 import { Filter } from '../../components/Filter';
 import { Ionicons } from '@expo/vector-icons';
-import { auth } from '../../backend/config';
+import { auth, firestore } from '../../backend/config';
 import { encrypt } from 'react-native-simple-encryption';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatTimestamp } from '../../backend/functions';
 import { Loading } from '../../components/Loading';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
 const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
@@ -409,9 +410,8 @@ export default function Page() {
 										body: encrypt(newPostId, body),
 										type: typeSelected,
 										timestamp: now,
-										circles,
+										circles: addCircles,
 										metadata: {
-											flag_count: 0,
 											start:
 												typeSelected === 'event'
 													? startDate.getTime()
@@ -436,41 +436,26 @@ export default function Page() {
 												)) || 'private'
 										}
 									};
-									writeData(
-										`prayer_circle/users/${userData.uid}/private/posts/${newPostId}`,
-										now,
-										true
+
+									// write data to firestore
+									setDoc(
+										doc(firestore, 'posts', newPostId),
+										newPost
 									)
 										.then(() => {
-											return writeData(
-												`prayer_circle/posts/${newPostId}`,
-												newPost,
-												true
+											console.log(
+												'Document successfully written!'
 											);
-										})
-										.then(() => {
-											const writePromises =
-												addCircles.map((circle) => {
-													return writeData(
-														`prayer_circle/circles/${circle}/posts/${newPostId}`,
-														now,
-														true
-													);
-												});
-											return Promise.all(writePromises);
-										})
-										.then(() => {
-											setUploading(true);
-											// Proceed with other operations after data is successfully written
+											setUploading(false);
 										})
 										.catch((error) => {
 											console.error(
-												'Error writing data to the database:',
+												'Error writing document: ',
 												error
 											);
 											setUploading(false);
-											// Handle error, retry, or notify the user
 										});
+
 									setGlobalReload(true);
 									setTimeout(() => {
 										router.back();
