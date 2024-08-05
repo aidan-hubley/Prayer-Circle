@@ -59,7 +59,7 @@ const PostTypeSelector = forwardRef((props, ref) => {
 				onPress={() => handlePress(0)}
 			>
 				<StyledImg
-					source={require('../assets/post/annoucement.png')}
+					source={require('../assets/post/announcement.png')}
 					className='w-[26px] h-[26px]'
 				/>
 			</StyledOpacity>

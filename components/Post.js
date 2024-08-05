@@ -118,9 +118,9 @@ export const Post = (post) => {
 			outline: require('../assets/post/prayer_outline.png'),
 			nonOutline: require('../assets/post/prayer.png')
 		},
-		annoucement: {
-			outline: require('../assets/post/annoucement_outline.png'),
-			nonOutline: require('../assets/post/annoucement.png')
+		announcement: {
+			outline: require('../assets/post/announcement_outline.png'),
+			nonOutline: require('../assets/post/announcement.png')
 		},
 		thought: {
 			outline: require('../assets/post/thought_outline.png'),
@@ -725,7 +725,7 @@ export const Post = (post) => {
 				'event',
 				'request',
 				'prayer',
-				'annoucement',
+				'announcement',
 				'thought'
 			].includes(iconKey)
 		) {

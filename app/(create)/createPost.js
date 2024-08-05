@@ -64,8 +64,8 @@ export default function Page() {
 	const handleSelect = (index) => {
 		if (index == 0) {
 			setShowDatePicker(false);
-			setTitlePlaceholder('Annoucement Title');
-			setBodyPlaceholder('Annoucement Description');
+			setTitlePlaceholder('Announcement Title');
+			setBodyPlaceholder('Announcement Description');
 		}
 		if (index == 1) {
 			setShowDatePicker(false);
@@ -376,7 +376,7 @@ export default function Page() {
 									);
 									let typeSelected = '';
 									if (typeSelectedVal == 0)
-										typeSelected = 'annoucement';
+										typeSelected = 'announcement';
 									else if (typeSelectedVal == 1)
 										typeSelected = 'praise';
 									else if (typeSelectedVal == 2)
