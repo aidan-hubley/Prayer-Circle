@@ -11,7 +11,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function JournalPage() {
-	const [annoucements, setAnnoucements] = useState([]);	
+	const [announcements, setAnnouncements] = useState([]);	
 	const [prayers, setPrayers] = useState([]);
 	const [praises, setPraises] = useState([]);
 	const [events, setEvents] = useState([]);
@@ -35,7 +35,7 @@ export default function JournalPage() {
 
 		existingPosts.forEach((post) => {
 			if (post.data.type === 'announcement') {
-				setAnnoucements((prev) => [...prev, post]);
+				setAnnouncements((prev) => [...prev, post]);
 			}
 			if (post.data.type === 'request') {
 				setPrayers((prev) => [...prev, post]);
@@ -72,7 +72,7 @@ export default function JournalPage() {
 				<PostTypeSelector
 					ref={typeRef}
 					onSelect={(index) => {
-						if (index === 0) setPage('annoucements');
+						if (index === 0) setPage('announcements');
 						if (index === 1) setPage('praises');
 						if (index === 2) setPage('prayers');
 						if (index === 3) setPage('events');
@@ -82,9 +82,9 @@ export default function JournalPage() {
 			</StyledView>
 			<StyledView className='flex-1'>
 				<FlatList
-					data={annoucements}
+					data={announcements}
 					style={{
-						display: page === 'annoucements' ? 'flex' : 'none',
+						display: page === 'announcements' ? 'flex' : 'none',
 						paddingHorizontal: 15,
 						flexGrow: 1
 					}}
@@ -111,10 +111,10 @@ export default function JournalPage() {
 							}}
 						>
 							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
-								No Annoucements Saved!
+								No Announcements Saved!
 							</StyledText>
 							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
-								Save annoucements on your feed to view them here!
+								Save announcements on your feed to view them here!
 							</StyledText>
 						</StyledView>
 					)}
