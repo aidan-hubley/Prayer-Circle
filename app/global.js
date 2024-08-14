@@ -1,5 +1,6 @@
 import { Notifier } from 'react-native-notifier';
 import { create } from 'zustand';
+import { Platform } from 'react-native';
 
 export const useStore = create((set) => ({
 	filter: 'unfiltered',

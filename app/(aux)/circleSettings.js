@@ -424,7 +424,7 @@ export default function Page() {
 							}
 						/>
 					)}
-					<Button // to Share Page
+					<Button // to Share Page (REMOVE FOR TUTORIAL)
 						height={'h-[50px]'}
 						width={'w-[50px]'}
 						iconSize={30}

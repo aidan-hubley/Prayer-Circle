@@ -81,7 +81,10 @@ export async function createCircle(data) {
 		allCodes.push(circleData.public);
 	}
 
-	while (data.codes.admin === 0 || data.codes.public === 0) {
+	while (
+		(data.codes.admin === 0 || data.codes.public === 0) &&
+		data.title != 'Tutorial'
+	) {
 		if (data.codes.admin === 0) {
 			let tempAdminCode = Math.floor(Math.random() * 90000000 + 10000000);
 			if (!allCodes.includes(tempAdminCode)) {
