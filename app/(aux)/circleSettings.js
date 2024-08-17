@@ -424,13 +424,15 @@ export default function Page() {
 							}
 						/>
 					)}
-					<Button // to Share Page
-						height={'h-[50px]'}
-						width={'w-[50px]'}
-						iconSize={30}
-						icon='qr-code'
-						href='shareCircle'
-					/>
+					{currentFilterName != 'Tutorial' && (
+						<Button // to Share Page
+							height={'h-[50px]'}
+							width={'w-[50px]'}
+							iconSize={30}
+							icon='qr-code'
+							href='shareCircle'
+						/>
+					)}
 				</StyledView>
 
 				<BottomSheetModal
