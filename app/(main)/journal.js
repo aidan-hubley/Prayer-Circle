@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Text, View, FlatList, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
-import { PostTypeSelector } from '../../components/PostTypeSelector';
+import { SegmentedControl } from '../../components/SegmentedControl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Post } from '../../components/Post';
 import { useStore } from '../global';
@@ -69,15 +69,45 @@ export default function JournalPage() {
 				style={{ height: insets.top + 60 }}
 			></StyledView>
 			<StyledView className='px-[15px]'>
-				<PostTypeSelector
+				<SegmentedControl
 					ref={typeRef}
-					onSelect={(index) => {
-						if (index === 0) setPage('annoucements');
-						if (index === 1) setPage('praises');
-						if (index === 2) setPage('prayers');
-						if (index === 3) setPage('events');
-						if (index === 4) setPage('thoughts');
-					}}
+					icons={[
+						{
+							type: 'image',
+							value: require('../../assets/post/annoucement.png'),
+							onPress: () => {
+								setPage('annoucements');
+							}
+						},
+						{
+							type: 'image',
+							value: require('../../assets/post/praise.png'),
+							onPress: () => {
+								setPage('praises');
+							}
+						},
+						{
+							type: 'image',
+							value: require('../../assets/post/prayer.png'),
+							onPress: () => {
+								setPage('prayers');
+							}
+						},
+						{
+							type: 'image',
+							value: require('../../assets/post/calendar.png'),
+							onPress: () => {
+								setPage('events');
+							}
+						},
+						{
+							type: 'image',
+							value: require('../../assets/post/thought.png'),
+							onPress: () => {
+								setPage('thoughts');
+							}
+						}
+					]}
 				/>
 			</StyledView>
 			<StyledView className='flex-1'>

@@ -408,7 +408,7 @@ export default function Page() {
 						width={'w-[50px]'}
 						iconSize={30}
 						icon='arrow-back'
-						href='/'
+						press={() => router.back()}
 					/>
 
 					{userQueueData.length > 0 && (

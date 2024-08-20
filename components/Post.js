@@ -20,7 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { Comment } from './Comment';
 import { useStore, notify } from '../app/global';
-import { PostTypeSelector } from './PostTypeSelector';
+import { SegmentedControl } from './SegmentedControl';
 import { Button } from './Buttons';
 import CachedImage from './CachedImage';
 import { backdrop, handle } from './BottomSheetModalHelpers';
@@ -48,7 +48,8 @@ import {
 	withTiming,
 	useAnimatedStyle,
 	FadeIn,
-	FadeOut
+	FadeOut,
+	withSequence
 } from 'react-native-reanimated';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
@@ -146,18 +147,22 @@ export const Post = (post) => {
 	}, []);
 
 	// animations
-	const iconInter = iconAnimation.interpolate({
-		inputRange: [0, 0.5, 1],
-		outputRange: [1, 1.6, 1]
-	}); /* TODO: convert animation to use reanimated */
-
 	const toolbarHeight = useSharedValue(0);
 	const toolbarMargin = useSharedValue(0);
+	const iconScale = useSharedValue(1);
+
 	const toolbarStyle = useAnimatedStyle(() => {
 		return {
 			height: toolbarHeight.value,
 			marginTop: 4,
 			marginBottom: toolbarMargin.value
+		};
+	});
+	const iconStyle = useAnimatedStyle(() => {
+		return {
+			width: 26,
+			height: 26,
+			transform: [{ scale: iconScale.value }]
 		};
 	});
 
@@ -177,61 +182,6 @@ export const Post = (post) => {
 			duration: 500
 		});
 		toolbarHeight.value = withTiming(toolbarShown ? 0 : 51);
-	};
-
-	const selectedComment = useRef(new Animated.Value(0)).current;
-	const selectedInteraction = useRef(new Animated.Value(0)).current;
-	const selectedEventInteraction = useRef(new Animated.Value(0)).current;
-
-	const selectedDualComment = selectedComment.interpolate({
-		inputRange: [0, 1],
-		outputRange: ['18.5%', '69%']
-	});
-
-	const selectedDualInter = selectedInteraction.interpolate({
-		inputRange: [0, 1],
-		outputRange: ['18.5%', '69%']
-	});
-
-	const selectedTripleInter = selectedEventInteraction.interpolate({
-		inputRange: [0, 1, 2],
-		outputRange: ['10.5%', '43.5%', '77%']
-	});
-
-	const handlePressComment = (index) => {
-		Animated.spring(selectedComment, {
-			toValue: index,
-			duration: 200,
-			useNativeDriver: false
-		}).start();
-	};
-
-	const handlePressInteraction = (index) => {
-		Animated.spring(selectedInteraction, {
-			toValue: index,
-			duration: 200,
-			useNativeDriver: false
-		}).start();
-	};
-
-	const handlePressEventInteraction = (index) => {
-		Animated.spring(selectedEventInteraction, {
-			toValue: index,
-			duration: 200,
-			useNativeDriver: false
-		}).start();
-	};
-
-	const highlightDualComment = {
-		left: selectedDualComment
-	};
-
-	const highlightDualInteraction = {
-		left: selectedDualInter
-	};
-
-	const highlightTripleInteraction = {
-		left: selectedTripleInter
 	};
 
 	// bottom sheet contents
@@ -309,7 +259,7 @@ export const Post = (post) => {
 				<View className='flex-1 bg-grey'>
 					<View className='flex flex-col w-screen items-center py-4 px-[20px]'>
 						<View className='bg-offblack rounded-full mx-[10px] mb-3'>
-							<PostTypeSelector
+							<SegmentedControl
 								noYMargin
 								initialValue={
 									post?.data?.type === 'praise'
@@ -319,6 +269,28 @@ export const Post = (post) => {
 										: 2
 								}
 								ref={typeRef}
+								icons={[
+									{
+										type: 'image',
+										value: require('../assets/post/annoucement.png')
+									},
+									{
+										type: 'image',
+										value: require('../assets/post/praise.png')
+									},
+									{
+										type: 'image',
+										value: require('../assets/post/prayer.png')
+									},
+									{
+										type: 'image',
+										value: require('../assets/post/calendar.png')
+									},
+									{
+										type: 'image',
+										value: require('../assets/post/thought.png')
+									}
+								]}
 							/>
 						</View>
 						<TextInput
@@ -347,7 +319,6 @@ export const Post = (post) => {
 								setEditContent(text);
 							}}
 						/>
-						{/* <PostTypeSelector ref={typeRef} /> TODO: add functionality */}
 						<View className='w-full flex flex-row justify-between'>
 							<Button
 								title='Cancel'
@@ -491,17 +462,17 @@ export const Post = (post) => {
 		return (
 			<View className='flex-1 bg-grey px-[20px] pt-[10px]'>
 				{reported && (
-					<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
+					<View className='bg-red w-full rounded-[14px] py-[10px] px-[14px] mb-2 items-center'>
 						<Text className='text-offwhite text-[16px] text-left w-full'>
 							You have already reported this post.
 						</Text>
-						<Text className='text-offwhite text-[16px] text-left w-full'>
+						<Text className='text-offwhite text-[16px] font-bold mt-2 text-left w-full'>
 							Reason: {reported}
 						</Text>
 						<Button
 							title='Cancel Report'
-							btnStyles='mt-2'
-							width='w-[75%]'
+							btnStyles='mt-3'
+							width='w-full rounded-[10px]'
 							height='h-[36px]'
 							textStyles='text-[16px]'
 							press={() => {
@@ -517,12 +488,17 @@ export const Post = (post) => {
 									null,
 									true
 								);
+								writeData(
+									`prayer_circle/reports/${post.id}`,
+									null,
+									true
+								);
 								setReported(false);
 							}}
 						/>
 					</View>
 				)}
-				<View className='w-full bg-[#292929] rounded-[20px]'>
+				<View className='w-full bg-[#292929] rounded-[15px]'>
 					{reportItem("I don't like this post", true)}
 					{reportItem("It's spam")}
 					{reportItem("It's inappropriate")}
@@ -535,7 +511,29 @@ export const Post = (post) => {
 	};
 
 	const settingsView = () => {
-		return <View className='flex-1 bg-grey'></View>;
+		return (
+			<View className='flex-1 bg-grey px-[15px]'>
+				<SegmentedControl
+					onSelect={() => {}}
+					selected={0}
+					indicatorSize={90}
+					icons={[
+						{ type: 'text', value: 'Public' },
+						{ type: 'text', value: 'Private' },
+						{ type: 'text', value: 'Hidden' }
+					]}
+				/>
+				<SegmentedControl
+					onSelect={() => {}}
+					selected={0}
+					indicatorSize={100}
+					icons={[
+						{ type: 'text', value: 'Show' },
+						{ type: 'text', value: 'Hide' }
+					]}
+				/>
+			</View>
+		);
 	};
 
 	// toolbar button abstraction
@@ -586,11 +584,9 @@ export const Post = (post) => {
 
 	function toggleIcon() {
 		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-		Animated.spring(iconAnimation, {
-			toValue: interacted ? 1 : 0,
-			duration: 100,
-			useNativeDriver: false
-		}).start();
+
+		iconScale.value = withSequence(withTiming(0.8), withTiming(1));
+
 		if (!interacted)
 			setDoc(
 				doc(
@@ -755,10 +751,22 @@ export const Post = (post) => {
 			body: content
 		};
 		writeData(
+			// log for admins
+			`prayer_circle/posts/${post.id}/reports/${auth?.currentUser?.uid}`,
+			reportData,
+			true
+		);
+		writeData(
+			// log for user
 			`prayer_circle/users/${auth?.currentUser?.uid}/private/reports/${post.id}`,
 			true,
 			true
 		);
+		writeData(
+			`prayer_circle/reports/${post.id}/${auth?.currentUser?.uid}`,
+			reportData,
+			true
+		); // log for devs
 	}
 
 	// post setup
@@ -1039,13 +1047,9 @@ export const Post = (post) => {
 									}
 								}}
 							>
-								<AnimatedImage
+								<ReAnimated.Image
 									source={getIconSource(icon, interacted)}
-									style={{
-										width: 26,
-										height: 26,
-										transform: [{ scale: iconInter }]
-									}}
+									style={iconStyle}
 								/>
 							</Pressable>
 

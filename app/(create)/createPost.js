@@ -10,7 +10,7 @@ import {
 	Keyboard
 } from 'react-native';
 import { styled } from 'nativewind';
-import { PostTypeSelector } from '../../components/PostTypeSelector';
+import { SegmentedControl } from '../../components/SegmentedControl';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from '../../components/Buttons';
 import {
@@ -62,34 +62,6 @@ export default function Page() {
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const filterRef = useRef();
-
-	const handleSelect = (index) => {
-		if (index == 0) {
-			setShowDatePicker(false);
-			setTitlePlaceholder('Annoucement Title');
-			setContentPlaceholder('Annoucement Description');
-		}
-		if (index == 1) {
-			setShowDatePicker(false);
-			setTitlePlaceholder('Praise Title');
-			setContentPlaceholder('Praise Description');
-		}
-		if (index == 2) {
-			setShowDatePicker(false);
-			setTitlePlaceholder('Request Title');
-			setContentPlaceholder('Request Description');
-		}
-		if (index == 3) {
-			setShowDatePicker(true);
-			setTitlePlaceholder('Event Title');
-			setContentPlaceholder('Event Description');
-		}
-		if (index == 4) {
-			setShowDatePicker(false);
-			setTitlePlaceholder('Thought Title');
-			setContentPlaceholder('Thought Description');
-		}
-	};
 
 	useEffect(() => {
 		setUserData(auth.currentUser);
@@ -143,9 +115,71 @@ export default function Page() {
 							<View className={'w-[40px] h-[40px] '}></View>
 						</StyledView>
 						<StyledView className='flex flex-col w-screen items-center py-3 px-[15px]'>
-							<PostTypeSelector
+							<SegmentedControl
 								ref={typeRef}
-								onSelect={handleSelect}
+								icons={[
+									{
+										type: 'image',
+										value: require('../../assets/post/annoucement.png'),
+										onPress: () => {
+											setShowDatePicker(false);
+											setTitlePlaceholder(
+												'Annoucement Title'
+											);
+											setContentPlaceholder(
+												'Annoucement Description'
+											);
+										}
+									},
+									{
+										type: 'image',
+										value: require('../../assets/post/praise.png'),
+										onPress: () => {
+											setShowDatePicker(false);
+											setTitlePlaceholder('Praise Title');
+											setContentPlaceholder(
+												'Praise Description'
+											);
+										}
+									},
+									{
+										type: 'image',
+										value: require('../../assets/post/prayer.png'),
+										onPress: () => {
+											setShowDatePicker(false);
+											setTitlePlaceholder(
+												'Request Title'
+											);
+											setContentPlaceholder(
+												'Request Description'
+											);
+										}
+									},
+									{
+										type: 'image',
+										value: require('../../assets/post/calendar.png'),
+										onPress: () => {
+											setShowDatePicker(true);
+											setTitlePlaceholder('Event Title');
+											setContentPlaceholder(
+												'Event Description'
+											);
+										}
+									},
+									{
+										type: 'image',
+										value: require('../../assets/post/thought.png'),
+										onPress: () => {
+											setShowDatePicker(false);
+											setTitlePlaceholder(
+												'Thought Title'
+											);
+											setContentPlaceholder(
+												'Thought Description'
+											);
+										}
+									}
+								]}
 							/>
 							<StyledInput
 								className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
