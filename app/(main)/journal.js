@@ -68,7 +68,7 @@ export default function JournalPage() {
 				className='w-screen'
 				style={{ height: insets.top + 60 }}
 			></StyledView>
-			<StyledView className='px-[20px]'>
+			<StyledView className='px-[15px]'>
 				<PostTypeSelector
 					ref={typeRef}
 					onSelect={(index) => {

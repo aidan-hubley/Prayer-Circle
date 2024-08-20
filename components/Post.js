@@ -941,7 +941,7 @@ export const Post = (post) => {
 									<CachedImage
 										cacheKey={
 											post?.profile_img
-												?.split('2F')[2]
+												?.split('%2F')[2]
 												.split('?')[0]
 										}
 										style={{

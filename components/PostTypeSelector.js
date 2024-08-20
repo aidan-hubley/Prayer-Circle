@@ -72,7 +72,7 @@ const PostTypeSelector = forwardRef((props, ref) => {
 			{iconPaths.map((path, index) => option(index, path))}
 			<ReAnimated.View
 				style={highlightPosition}
-				className='absolute flex items-center justify-center rounded-[15px] bg-[#EBEBEB2c] h-[40px]'
+				className='absolute flex items-center justify-center rounded-[10px] bg-[#EBEBEB2c] h-[40px]'
 			></ReAnimated.View>
 		</View>
 	);

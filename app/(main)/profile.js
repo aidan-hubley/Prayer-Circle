@@ -109,7 +109,7 @@ export default function ProfilePage() {
 									}}
 									cacheKey={
 										userData.photoURL
-											?.split('2F')[2]
+											?.split('%2F')[2]
 											.split('?')[0]
 									}
 									source={{

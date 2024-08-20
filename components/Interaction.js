@@ -41,7 +41,7 @@ function Interaction(props) {
 						style={{ width: 40, height: 40 }}
 						source={{ uri: props.image }}
 						cacheKey={
-							data.profile_img?.split('2F')[2].split('?')[0]
+							data.profile_img?.split('%2F')[2].split('?')[0]
 						}
 						placeholderContent={
 							<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>

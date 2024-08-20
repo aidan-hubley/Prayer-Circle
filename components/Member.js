@@ -20,7 +20,7 @@ function Member({ img, name, role, last, uid, setUp }) {
 					className='rounded-[6px]'
 					style={{ width: 40, height: 40 }}
 					source={{ uri: img }}
-					cacheKey={img?.split('2F')[2].split('?')[0]}
+					cacheKey={img?.split('%2F')[2].split('?')[0]}
 					placeholderContent={
 						<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
 					}
