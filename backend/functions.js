@@ -1,3 +1,6 @@
+import React from 'react';
+import Animated from 'react-native-reanimated';
+
 export function passwordValidation(password) {
 	let length = false;
 	let upper = false;
@@ -112,3 +115,17 @@ export function debounce(callback, wait) {
 		timeout = setTimeout(() => callback.apply(context, args), wait);
 	};
 }
+
+const wrapFunctionComponent = (Component) =>
+	class extends React.Component {
+		constructor(props) {
+			super(props);
+		}
+
+		render() {
+			return <Component {...this.props} />;
+		}
+	};
+
+export const createAnimatedFunctionComponent = (Component) =>
+	Animated.createAnimatedComponent(wrapFunctionComponent(Component));
