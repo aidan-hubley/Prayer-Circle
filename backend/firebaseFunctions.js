@@ -7,6 +7,7 @@ import {
 } from 'firebase/storage';
 
 export async function getUID() {
+	/* TODO: replace getUID calls with the auth object call */
 	return auth?.currentUser?.uid;
 }
 

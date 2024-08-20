@@ -27,6 +27,7 @@ import {
 	startAfter,
 	where
 } from 'firebase/firestore';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -39,6 +40,7 @@ export default function FeedPage() {
 		state.filter,
 		state.globalReload
 	]);
+	/* TODO: retrieve hidden posts so feed can be filtered */
 	const [hiddenPosts, setHiddenPosts] = useState([]);
 	const [lastFetch, setLastFetch] = useState(-1);
 	const [lastVisibleDoc, setLastVisibleDoc] = useState(null);
@@ -107,7 +109,6 @@ export default function FeedPage() {
 			setCircles(circles);
 			let p = await fetchPosts(filterTarget, true, circles);
 			setPostList(p);
-			console.log(p.length);
 		}
 	}
 
@@ -133,7 +134,8 @@ export default function FeedPage() {
 	return (
 		<StyledView className='w-screen flex-1 bg-offblack'>
 			<StyledView className='w-screen flex-1'>
-				<FlatList
+				<Animated.FlatList
+					itemLayoutAnimation={LinearTransition}
 					data={postList}
 					onEndReachedThreshold={0.4}
 					windowSize={10}
@@ -176,39 +178,8 @@ export default function FeedPage() {
 						)
 					}
 					ListEmptyComponent={
-						<>
-							{/* <StyledView
-							className={`w-full h-screen ${
-								initialLoad === 'loading'
-									? 'justify-start'
-									: 'justify-center'
-							} items-center`}
-							style={{
-								paddingTop:
-									initialLoad === 'loading'
-										? insets.top + 60
-										: 0
-							}}
-						>
-							{initialLoad == 'loading' && (
-								<>
-									<EmptyPost></EmptyPost>
-									<EmptyPost></EmptyPost>
-									<EmptyPost></EmptyPost>
-									<EmptyPost></EmptyPost>
-									<EmptyPost></EmptyPost>
-									<EmptyPost></EmptyPost>
-								</>
-							)}
-							<StyledText
-								className={`${
-									initialLoad == 'loaded' ? 'flex' : 'hidden'
-								} text-white text-[24px]`}
-							>
-								No Posts Yet!
-							</StyledText>
-						</StyledView> */}
-						</>
+						/* TODO: implement loading indicator */
+						<></>
 					}
 					renderItem={({ item }) => {
 						if (hiddenPosts.includes(item)) return <></>;
@@ -226,8 +197,12 @@ export default function FeedPage() {
 								type={item.type}
 								user={item.user}
 								edited={item.edited}
-                                viewableComments={item.settings.viewable_comments}
-                                viewableInteractions={item.settings.viewable_interactions}
+								viewableComments={
+									item.settings.viewable_comments
+								}
+								viewableInteractions={
+									item.settings.viewable_interactions
+								}
 							/>
 						);
 					}}

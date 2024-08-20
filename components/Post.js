@@ -12,15 +12,9 @@ import {
 	Dimensions,
 	TouchableHighlight
 } from 'react-native';
-import { styled } from 'nativewind';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince, formatTimestamp } from '../backend/functions';
-import {
-	writeData,
-	readData,
-	generateId,
-	getCircles
-} from '../backend/firebaseFunctions';
+import { writeData, readData, getCircles } from '../backend/firebaseFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -37,28 +31,28 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pulsating } from './Loading';
 import { router } from 'expo-router';
 import {
-	setDoc,
 	collection,
 	doc,
-	updateDoc,
 	Timestamp,
 	addDoc,
 	getDocs,
-	orderBy
+	orderBy,
+	deleteDoc
 } from 'firebase/firestore';
 import { query } from 'firebase/database';
+import {
+	default as ReAnimated,
+	useSharedValue,
+	withTiming,
+	useAnimatedStyle,
+	FadeIn
+} from 'react-native-reanimated';
 
-const StyledImage = styled(Image);
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledPressable = styled(Pressable);
-const StyledOpacity = styled(TouchableOpacity);
-const StyledAnimatedView = styled(Animated.createAnimatedComponent(View));
-const AnimatedImage = Animated.createAnimatedComponent(StyledImage);
-const StyledIcon = styled(Ionicons);
-const StyledInput = styled(TextInput);
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 const StyledAnimatedHighlight =
 	Animated.createAnimatedComponent(TouchableHighlight);
+
+const AnimatedPressable = ReAnimated.createAnimatedComponent(Pressable);
 
 export const Post = (post) => {
 	const [data, setData] = useState(null);
@@ -149,36 +143,37 @@ export const Post = (post) => {
 	}, []);
 
 	// animations
-	const toolbarVal = useRef(new Animated.Value(0)).current;
-	const toolbarHeightInter = toolbarVal.interpolate({
-		inputRange: [0, 0.5, 0.75, 1],
-		outputRange: [2, 10, 40, 51]
-	});
-	const toolbarOpactiyInter = toolbarVal.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0, 1]
-	});
-	const toolbarMarginInter = toolbarVal.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0, 8]
-	});
-	const toolbarStyle = {
-		height: toolbarHeightInter,
-		opacity: toolbarOpactiyInter,
-		marginTop: 4,
-		marginBottom: toolbarMarginInter
-	};
-	const spinInter = toolbarVal.interpolate({
-		inputRange: [0, 1],
-		outputRange: ['0deg', '180deg']
-	});
 	const iconInter = iconAnimation.interpolate({
 		inputRange: [0, 0.5, 1],
 		outputRange: [1, 1.6, 1]
+	}); /* TODO: convert animation to use reanimated */
+
+	const toolbarHeight = useSharedValue(0);
+	const toolbarMargin = useSharedValue(0);
+	const toolbarStyle = useAnimatedStyle(() => {
+		return {
+			height: toolbarHeight.value,
+			marginTop: 4,
+			marginBottom: toolbarMargin.value
+		};
 	});
 
-	const spiralStyle = {
-		transform: [{ rotate: spinInter }]
+	const spinVal = useSharedValue(0);
+	const spinStyle = useAnimatedStyle(() => {
+		return {
+			transform: [{ rotate: `${spinVal.value}deg` }]
+		};
+	});
+	const toggleToolbar = () => {
+		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		setToolbar(!toolbarShown);
+		spinVal.value = withTiming(toolbarShown ? 0 : 180, {
+			duration: 300
+		});
+		toolbarMargin.value = withTiming(toolbarShown ? 0 : 8, {
+			duration: 500
+		});
+		toolbarHeight.value = withTiming(toolbarShown ? 0 : 51);
 	};
 
 	const selectedComment = useRef(new Animated.Value(0)).current;
@@ -239,9 +234,9 @@ export const Post = (post) => {
 	// bottom sheet contents
 	const commentsView = () => {
 		return (
-			<StyledView className='flex-1 bg-grey'>
-				<StyledView className='w-full h-auto flex items-center my-3 px-4'>
-					<StyledInput
+			<View className='flex-1 bg-grey'>
+				<View className='w-full h-auto flex items-center my-3 px-4'>
+					<TextInput
 						className='w-full min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
 						placeholder='Write a comment...'
 						placeholderTextColor='#ffffff66'
@@ -252,20 +247,20 @@ export const Post = (post) => {
 							setNewComment(text);
 						}}
 					/>
-					<StyledOpacity
+					<TouchableOpacity
 						className='absolute top-[7px] right-[21px] h-[30px] w-[30px] justify-center items-center bg-green rounded-[8px]'
 						onPress={async () => {
 							Keyboard.dismiss();
 							await postComment();
 						}}
 					>
-						<StyledIcon
+						<Ionicons
 							name='send'
 							size={18}
 							className='text-offwhite -mr-[2px]'
 						/>
-					</StyledOpacity>
-				</StyledView>
+					</TouchableOpacity>
+				</View>
 				<BottomSheetFlatList
 					data={commentData}
 					contentContainerStyle={{
@@ -286,31 +281,31 @@ export const Post = (post) => {
 					}}
 					ListEmptyComponent={() => {
 						return (
-							<StyledView
+							<View
 								className='flex-1 justify-center items-center'
 								style={{
 									height:
 										Dimensions.get('window').height - 350
 								}}
 							>
-								<StyledText className='text-white text-[24px]'>
+								<Text className='text-white text-[24px]'>
 									No Comments
-								</StyledText>
-							</StyledView>
+								</Text>
+							</View>
 						);
 					}}
 					keyExtractor={(item) => item.id}
 				/>
-			</StyledView>
+			</View>
 		);
 	};
 
 	const editView = () => {
 		return (
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-				<StyledView className='flex-1 bg-grey'>
-					<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
-						<StyledView className='bg-offblack rounded-full mx-[10px] mb-3'>
+				<View className='flex-1 bg-grey'>
+					<View className='flex flex-col w-screen items-center py-4 px-[20px]'>
+						<View className='bg-offblack rounded-full mx-[10px] mb-3'>
 							<PostTypeSelector
 								noYMargin
 								initialValue={
@@ -322,8 +317,8 @@ export const Post = (post) => {
 								}
 								ref={typeRef}
 							/>
-						</StyledView>
-						<StyledInput
+						</View>
+						<TextInput
 							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
 							placeholder={'Title'}
 							placeholderTextColor={'#ffffff40'}
@@ -335,7 +330,7 @@ export const Post = (post) => {
 								setEditTitle(text);
 							}}
 						/>
-						<StyledInput
+						<TextInput
 							className='bg-offblack text-[18px] w-full min-h-[100px] h-[200px] max-h-[400px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
 							placeholder={'Write a Post'}
 							multiline
@@ -350,7 +345,7 @@ export const Post = (post) => {
 							}}
 						/>
 						{/* <PostTypeSelector ref={typeRef} /> TODO: add functionality */}
-						<StyledView className='w-full flex flex-row justify-between'>
+						<View className='w-full flex flex-row justify-between'>
 							<Button
 								title='Cancel'
 								btnStyles={'bg-grey border-2 border-offwhite'}
@@ -367,16 +362,16 @@ export const Post = (post) => {
 								width={'w-[48%]'}
 								press={editPost}
 							/>
-						</StyledView>
-					</StyledView>
-				</StyledView>
+						</View>
+					</View>
+				</View>
 			</TouchableWithoutFeedback>
 		);
 	};
 
 	const circlesView = () => {
 		return (
-			<StyledView className='flex-1 bg-grey'>
+			<View className='flex-1 bg-grey'>
 				<BottomSheetFlatList
 					data={circles}
 					keyExtractor={(item) => item.id}
@@ -389,13 +384,13 @@ export const Post = (post) => {
 					renderItem={({ item }) => {
 						const vw = Dimensions.get('window').width;
 						return (
-							<StyledView
+							<View
 								className='items-center justify-around my-[10px]'
 								style={{ width: vw / 3 - 8 }}
 							>
-								<StyledText className=' text-white text-[18px] font-[600] text-center  pb-2'>
+								<Text className=' text-white text-[18px] font-[600] text-center  pb-2'>
 									{item.title}
-								</StyledText>
+								</Text>
 								<StyledAnimatedHighlight
 									style={[
 										{
@@ -412,23 +407,23 @@ export const Post = (post) => {
 										setFilterIconColor(item.iconColor);
 									}}
 								>
-									<StyledIcon
+									<Ionicons
 										name={item.icon}
 										size={45}
 										color={item.iconColor || item.color}
 									/>
 								</StyledAnimatedHighlight>
-							</StyledView>
+							</View>
 						);
 					}}
 				/>
-			</StyledView>
+			</View>
 		);
 	};
 
 	const interactionsView = () => {
 		return (
-			<StyledView className='flex-1 bg-grey'>
+			<View className='flex-1 bg-grey'>
 				<BottomSheetFlatList
 					data={interactions}
 					contentContainerStyle={{
@@ -439,9 +434,7 @@ export const Post = (post) => {
 						width: '100%'
 					}}
 					ItemSeparatorComponent={() => {
-						return (
-							<StyledView className='w-[90%] h-[1px] bg-offwhite' />
-						);
+						return <View className='w-[90%] h-[1px] bg-offwhite' />;
 					}}
 					renderItem={({ item }) => {
 						return (
@@ -453,22 +446,22 @@ export const Post = (post) => {
 					}}
 					ListEmptyComponent={() => {
 						return (
-							<StyledView
+							<View
 								className='flex-1 justify-center items-center'
 								style={{
 									height:
 										Dimensions.get('window').height - 250
 								}}
 							>
-								<StyledText className='text-white text-[24px]'>
+								<Text className='text-white text-[24px]'>
 									No Interactions
-								</StyledText>
-							</StyledView>
+								</Text>
+							</View>
 						);
 					}}
 					keyExtractor={(item) => item.profile_img}
 				/>
-			</StyledView>
+			</View>
 		);
 	};
 
@@ -493,7 +486,7 @@ export const Post = (post) => {
 		};
 
 		return (
-			<StyledView className='flex-1 bg-grey px-[20px] pt-[10px]'>
+			<View className='flex-1 bg-grey px-[20px] pt-[10px]'>
 				{reported && (
 					<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
 						<Text className='text-offwhite text-[16px] text-left w-full'>
@@ -534,18 +527,18 @@ export const Post = (post) => {
 					{reportItem('Bullying or harassment')}
 					{reportItem('Other', false, true)}
 				</View>
-			</StyledView>
+			</View>
 		);
 	};
 
 	const settingsView = () => {
-		return <StyledView className='flex-1 bg-grey'></StyledView>;
+		return <View className='flex-1 bg-grey'></View>;
 	};
 
 	// toolbar button abstraction
 	const ToolbarButton = (props) => {
 		return (
-			<StyledOpacity
+			<TouchableOpacity
 				className='flex items-center justify-center w-[30px] h-[30px]'
 				activeOpacity={0.4}
 				onPress={() => {
@@ -554,12 +547,12 @@ export const Post = (post) => {
 					if (props.onPress) props.onPress();
 				}}
 			>
-				<StyledIcon
+				<Ionicons
 					name={props.icon}
 					size={props.size}
 					color={props.color}
 				/>
-			</StyledOpacity>
+			</TouchableOpacity>
 		);
 	};
 
@@ -607,60 +600,57 @@ export const Post = (post) => {
 		setInteracted(!interacted);
 	}
 
-	function toggleToolbar() {
-		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-		setToolbar(!toolbarShown);
-		Animated.spring(toolbarVal, {
-			toValue: toolbarShown ? 0 : 1,
-			duration: 100,
-			useNativeDriver: false
-		}).start();
-	}
-
 	// db related functions
-	async function deletePost() {
-		for (let circle of Object.keys(data?.circles || {})) {
-			await writeData(
-				`prayer_circle/circles/${circle}/posts/${post.id}`,
-				null,
-				true
-			);
+	const postComment = async () => {
+		if (newComment.length > 0) {
+			let newCommentData = {
+				content: newComment,
+				timestamp: Timestamp.now(),
+				user: auth.currentUser.uid
+			};
+
+			addDoc(
+				collection(firestore, 'posts', post.id, 'comments'),
+				newCommentData
+			).then((d) => {
+				setCommentData([
+					{ id: d.id, ...newCommentData },
+					...commentData
+				]);
+			});
+			//clear input
+			setNewComment('');
+			newCommentRef.current.clear();
 		}
-		await writeData(
-			`prayer_circle/users/${data?.user}/private/posts/${post.id}`,
-			null,
-			true
-		);
-		await writeData(`prayer_circle/posts/${post.id}`, null, true);
-		setTimeout(() => {
+	};
+
+	async function deletePost() {
+		deleteDoc(doc(firestore, 'posts', post.id)).then(() => {
 			setGlobalReload(true);
 			notify(
 				'Post Deleted',
 				'This action cannot be reverted.',
 				'#F9A826'
 			);
-		}, 100);
+		});
 	}
 
 	async function hidePost() {
+		/* TODO: Test this with new post format */
 		await toggleToolbar();
 		setTimeout(async () => {
-			await writeData(
-				`prayer_circle/posts/${post.id}/hidden/${auth?.currentUser?.uid}`,
-				true,
-				true
-			);
 			await writeData(
 				`prayer_circle/users/${auth?.currentUser?.uid}/private/hidden_posts/${post.id}`,
 				true,
 				true
-			);
-			await setGlobalReload(true);
-			notify(
-				'Post Hidden',
-				'This action can be reverted from the settings page.',
-				'#F9A826'
-			);
+			).then(() => {
+				setGlobalReload(true);
+				notify(
+					'Post Hidden',
+					'This action can be reverted from the settings page.',
+					'#F9A826'
+				);
+			});
 		}, 200);
 	}
 
@@ -756,21 +746,6 @@ export const Post = (post) => {
 		);
 	}
 
-	// async function viewOtherUser(uid, name, img) {
-	// 	bottomSheetModalRef.current?.dismiss();
-	// 	if (uid === auth.currentUser.uid) {
-	// 		// router.replace('/profile');
-	// 	}
-	// 	if (uid === 'tNcLtRJICvZ6w7rYIePhqBFGxRF3') {
-	// 		router.replace('/prayerCircleInfo');
-	// 	} else {
-	// 		router.replace('/otherUser');
-	// 		setOtherUserID(uid);
-	// 		setOtherUserName(name);
-	// 		setOtherUserImg(img);
-	// 	}
-	// }
-
 	// post setup
 	const setUp = async (postId) => {
 		// set up bookmark
@@ -790,45 +765,6 @@ export const Post = (post) => {
 			}
 		} catch (error) {
 			console.error('Error toggling bookmark:', error.message);
-		}
-
-		// set up comments
-		/* await populateComments(data?.comments || {});
-		let viewableComments = await readData(
-			`prayer_circle/posts/${postId}/settings/viewable_comments`
-		);
-		if (viewableComments == undefined) {
-			viewableComments = true;
-		}
-		setViewComments(viewableComments); */
-
-		// set up interactions
-		let interactions =
-			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
-		let viewableInteractions = post?.settings?.viewable_interactions;
-		if (viewableInteractions == undefined) {
-			if (data?.type === 'event') viewableInteractions = 'public';
-			else viewableInteractions = 'private';
-		}
-		setViewInteractions(viewableInteractions);
-
-		if (!post.owned && !ownedToolbar) {
-			if (interactions[auth?.currentUser?.uid]) {
-				setInteracted(true);
-			}
-		} else {
-			interactions = Object.keys(interactions);
-			interactions.sort((a, b) => {
-				return b[1] - a[1];
-			});
-			let interactionsData = [];
-			for (let interaction of interactions) {
-				let data = await readData(
-					`prayer_circle/users/${interaction}/public`
-				);
-				interactionsData.push(data);
-			}
-			setInteractions(interactionsData);
 		}
 	};
 
@@ -906,26 +842,34 @@ export const Post = (post) => {
 		setCircles(circlesData);
 	};
 
-	const postComment = async () => {
-		if (newComment.length > 0) {
-			let newCommentData = {
-				content: newComment,
-				timestamp: Timestamp.now(),
-				user: auth.currentUser.uid
-			};
+	const populateInteraction = async () => {
+		// set up interactions
+		let interactions =
+			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
+		let viewableInteractions = post?.settings?.viewable_interactions;
+		if (viewableInteractions == undefined) {
+			if (data?.type === 'event') viewableInteractions = 'public';
+			else viewableInteractions = 'private';
+		}
+		setViewInteractions(viewableInteractions);
 
-			addDoc(
-				collection(firestore, 'posts', post.id, 'comments'),
-				newCommentData
-			).then((d) => {
-				setCommentData([
-					{ id: d.id, ...newCommentData },
-					...commentData
-				]);
+		if (!post.owned && !ownedToolbar) {
+			if (interactions[auth?.currentUser?.uid]) {
+				setInteracted(true);
+			}
+		} else {
+			interactions = Object.keys(interactions);
+			interactions.sort((a, b) => {
+				return b[1] - a[1];
 			});
-			//clear input
-			setNewComment('');
-			newCommentRef.current.clear();
+			let interactionsData = [];
+			for (let interaction of interactions) {
+				let data = await readData(
+					`prayer_circle/users/${interaction}/public`
+				);
+				interactionsData.push(data);
+			}
+			setInteractions(interactionsData);
 		}
 	};
 
@@ -950,9 +894,12 @@ export const Post = (post) => {
 	}, []);
 
 	return (
-		<StyledPressable className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
-				<StyledPressable
+		<AnimatedPressable
+			entering={FadeIn.duration(500)}
+			className='w-full max-w-[500px]'
+		>
+			<View className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
+				<Pressable
 					onPressIn={() => {
 						const now = Date.now();
 						if (lastTap && now - lastTap < 300) {
@@ -978,9 +925,9 @@ export const Post = (post) => {
 						toggleToolbar();
 					}}
 				>
-					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
-						<StyledView className='w-[90%]'>
-							<StyledPressable
+					<View className='w-full flex flex-row justify-between px-[6px]'>
+						<View className='w-[90%]'>
+							<Pressable
 								className='flex flex-row mb-2'
 								onPress={() => {
 									setOtherUserID(post.user);
@@ -1014,13 +961,13 @@ export const Post = (post) => {
 										}}
 									/>
 								)}
-								<StyledView
+								<View
 									className={`flex-1 ${
 										post.owned ? 'ml-[4px]' : 'ml-2'
 									}`}
 								>
 									<View className={`mr-[20px]`}>
-										<StyledText className='text-offwhite font-bold text-[20px]'>
+										<Text className='text-offwhite font-bold text-[20px]'>
 											{isExpanded ||
 											title?.length <= titleCharThreshold
 												? title
@@ -1028,32 +975,32 @@ export const Post = (post) => {
 														0,
 														titleCharThreshold - 4
 												  )}...`}
-										</StyledText>
+										</Text>
 									</View>
-									<StyledView className='flex flex-row'>
-										<StyledText
+									<View className='flex flex-row'>
+										<Text
 											className={`${
 												post.owned ? 'hidden' : ''
 											} text-white`}
 										>
 											{post?.name} •{' '}
-										</StyledText>
-										<StyledText className={`text-white`}>
+										</Text>
+										<Text className={`text-white`}>
 											{timeSince(post.timestamp)}{' '}
-										</StyledText>
-										<StyledText
+										</Text>
+										<Text
 											className={`${
 												edited ? '' : 'hidden'
 											} text-white`}
 										>
 											(edited)
-										</StyledText>
-									</StyledView>
-								</StyledView>
-							</StyledPressable>
+										</Text>
+									</View>
+								</View>
+							</Pressable>
 							{icon == 'event' && (
-								<StyledView className='flex flex-row items-center mb-2'>
-									<StyledText
+								<View className='flex flex-row items-center mb-2'>
+									<Text
 										className={`${
 											post.owned
 												? 'ml-[4px] text-white font-bold text-[16px]'
@@ -1061,11 +1008,11 @@ export const Post = (post) => {
 										}`}
 									>
 										{eventDate}
-									</StyledText>
-								</StyledView>
+									</Text>
+								</View>
 							)}
-							<StyledView className='flex flex-row items-center w-[95%]'>
-								<StyledText
+							<View className='flex flex-row items-center w-[95%]'>
+								<Text
 									className={`${
 										post.owned ? 'ml-[4px]' : ''
 									} text-white mt-[2px] pb-[10px]`}
@@ -1077,11 +1024,11 @@ export const Post = (post) => {
 												0,
 												contentCharThreshold
 										  )}...`}
-								</StyledText>
-							</StyledView>
-						</StyledView>
-						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
-							<StyledPressable
+								</Text>
+							</View>
+						</View>
+						<View className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
+							<Pressable
 								className='flex aspect-square w-[30px] self-end'
 								onPress={() => {
 									if (!post.owned && !ownedToolbar) {
@@ -1101,11 +1048,11 @@ export const Post = (post) => {
 										transform: [{ scale: iconInter }]
 									}}
 								/>
-							</StyledPressable>
+							</Pressable>
 
 							{(title?.length > titleCharThreshold ||
 								content.length > contentCharThreshold) && (
-								<StyledOpacity
+								<TouchableOpacity
 									onPress={() => {
 										setIsExpanded(!isExpanded);
 									}}
@@ -1120,31 +1067,31 @@ export const Post = (post) => {
 										size={24}
 										color='#3D3D3D'
 									/>
-								</StyledOpacity>
+								</TouchableOpacity>
 							)}
 							{!post.reported && (
-								<StyledPressable
+								<Pressable
 									className='flex w-[30px] aspect-square justify-end mb-[2px]'
 									onPress={() => {
 										toggleToolbar();
 									}}
 								>
-									<AnimatedImage
+									<ReAnimated.Image
 										className='w-[28px] h-[28px]'
-										style={spiralStyle}
+										style={spinStyle}
 										source={require('../assets/spiral/spiral.png')}
 									/>
-								</StyledPressable>
+								</Pressable>
 							)}
-						</StyledView>
-					</StyledView>
-				</StyledPressable>
-				<StyledAnimatedView
+						</View>
+					</View>
+				</Pressable>
+				<ReAnimated.View
 					style={toolbarStyle}
 					className='px-[10px] w-full overflow-hidden'
 				>
-					<StyledView className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
-						<StyledView className='flex flex-row justify-around items-center w-full h-[49px]'>
+					<View className='w-full overflow-hidden rounded-full bg-offblack border border-outline'>
+						<View className='flex flex-row justify-around items-center w-full h-[49px]'>
 							{post?.owned || ownedToolbar ? (
 								<>
 									<ToolbarButton
@@ -1234,7 +1181,7 @@ export const Post = (post) => {
 									}
 								}}
 							/>
-							<StyledOpacity
+							<TouchableOpacity
 								className='flex w-[29px] h-[29px] border-2 border-offwhite rounded-full justify-center'
 								activeOpacity={0.4}
 								onPress={() => {
@@ -1247,9 +1194,9 @@ export const Post = (post) => {
 									handlePresentModalPress();
 								}}
 							/>
-						</StyledView>
-					</StyledView>
-				</StyledAnimatedView>
+						</View>
+					</View>
+				</ReAnimated.View>
 				{post.reported && (
 					<View className='px-[15px] flex items-center w-full'>
 						<View className='bg-red w-full rounded-[20px] py-[10px] px-[14px] mb-2 items-center'>
@@ -1304,7 +1251,7 @@ export const Post = (post) => {
 						</View>
 					</View>
 				)}
-			</StyledView>
+			</View>
 			<BottomSheetModal
 				enableDismissOnClose={true}
 				ref={bottomSheetModalRef}
@@ -1321,20 +1268,20 @@ export const Post = (post) => {
 				{bottomSheetType === 'Report' && reportView()}
 				{bottomSheetType === 'Settings' && settingsView()}
 			</BottomSheetModal>
-		</StyledPressable>
+		</AnimatedPressable>
 	);
 };
 
 export const EmptyPost = (post) => {
 	return (
-		<StyledPressable className='w-full max-w-[500px]'>
-			<StyledView className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
-				<StyledPressable>
-					<StyledView className='w-full flex flex-row justify-between px-[6px]'>
-						<StyledView className='w-[90%]'>
-							<StyledView className='flex flex-row mb-2'>
+		<Pressable className='w-full max-w-[500px]'>
+			<View className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
+				<Pressable>
+					<View className='w-full flex flex-row justify-between px-[6px]'>
+						<View className='w-[90%]'>
+							<View className='flex flex-row mb-2'>
 								<Pulsating width={44} height={44}></Pulsating>
-								<StyledView className={`flex-1 ml-2`}>
+								<View className={`flex-1 ml-2`}>
 									<View className={`mr-[20px]`}>
 										<Pulsating
 											width={44}
@@ -1343,17 +1290,17 @@ export const EmptyPost = (post) => {
 											borderRadius={4}
 										/>
 									</View>
-									<StyledView className='flex flex-row'>
+									<View className='flex flex-row'>
 										<Pulsating
 											width={80}
 											height={18}
 											styles={' my-[1px]'}
 											borderRadius={4}
 										/>
-									</StyledView>
-								</StyledView>
-							</StyledView>
-							<StyledView className='flex flex-column items-start w-[95%]'>
+									</View>
+								</View>
+							</View>
+							<View className='flex flex-column items-start w-[95%]'>
 								<Pulsating
 									width={'70%'}
 									height={20}
@@ -1372,9 +1319,9 @@ export const EmptyPost = (post) => {
 									borderRadius={4}
 									styles={'mb-4'}
 								/>
-							</StyledView>
-						</StyledView>
-						<StyledView className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
+							</View>
+						</View>
+						<View className='flex flex-col w-[10%] items-end justify-between pr-[6px]'>
 							<View className={'w-[20px]'}></View>
 							<View className='flex w-[30px] aspect-square justify-end mb-[10px]'>
 								<Image
@@ -1382,10 +1329,10 @@ export const EmptyPost = (post) => {
 									source={require('../assets/spiral/spiral.png')}
 								/>
 							</View>
-						</StyledView>
-					</StyledView>
-				</StyledPressable>
-			</StyledView>
-		</StyledPressable>
+						</View>
+					</View>
+				</Pressable>
+			</View>
+		</Pressable>
 	);
 };
