@@ -38,7 +38,8 @@ import {
 	getDocs,
 	orderBy,
 	deleteDoc,
-	updateDoc
+	updateDoc,
+	setDoc
 } from 'firebase/firestore';
 import { query } from 'firebase/database';
 import {
@@ -440,8 +441,8 @@ export const Post = (post) => {
 					renderItem={({ item }) => {
 						return (
 							<Interaction
-								name={item.fname + ' ' + item.lname}
-								image={item.profile_img}
+								user={item.user}
+								interacted={item.interacted}
 							/>
 						);
 					}}
@@ -583,21 +584,35 @@ export const Post = (post) => {
 	}
 
 	function toggleIcon() {
-		let now = Date.now();
 		if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 		Animated.spring(iconAnimation, {
 			toValue: interacted ? 1 : 0,
 			duration: 100,
 			useNativeDriver: false
 		}).start();
-		writeData(
-			`prayer_circle/posts/${post.id}/interacted/${auth?.currentUser?.uid}`,
-			!interacted ? now : null,
-			true
-		);
-		/* if(!interacted) setDoc(doc(firestore, 'posts', post.id, 'interactions', auth?.currentUser?.uid), {
-			interacted: !interacted ? now : null
-		}); */
+		if (!interacted)
+			setDoc(
+				doc(
+					firestore,
+					'posts',
+					post.id,
+					'interactions',
+					auth?.currentUser?.uid
+				),
+				{
+					interacted: !interacted ? Timestamp.now() : null
+				}
+			);
+		else
+			deleteDoc(
+				doc(
+					firestore,
+					'posts',
+					post.id,
+					'interactions',
+					auth?.currentUser?.uid
+				)
+			);
 		setInteracted(!interacted);
 	}
 
@@ -728,6 +743,7 @@ export const Post = (post) => {
 	}
 
 	async function reportPost(reason) {
+		/* TODO: test with more posts */
 		bottomSheetModalRef.current?.dismiss();
 		alert(reported ? 'Report reason updated' : 'Post has been reported.');
 		let reportData = {
@@ -737,11 +753,6 @@ export const Post = (post) => {
 			title: title,
 			body: content
 		};
-		writeData(
-			`prayer_circle/posts/${post.id}/reports/${auth?.currentUser?.uid}`,
-			reportData,
-			true
-		);
 		writeData(
 			`prayer_circle/users/${auth?.currentUser?.uid}/private/reports/${post.id}`,
 			true,
@@ -845,35 +856,14 @@ export const Post = (post) => {
 		setCircles(circlesData);
 	};
 
-	const populateInteraction = async () => {
-		// set up interactions
-		let interactions =
-			(await readData(`prayer_circle/posts/${postId}/interacted`)) || {};
-		let viewableInteractions = post?.settings?.viewable_interactions;
-		if (viewableInteractions == undefined) {
-			if (data?.type === 'event') viewableInteractions = 'public';
-			else viewableInteractions = 'private';
-		}
-		setViewInteractions(viewableInteractions);
-
-		if (!post.owned && !ownedToolbar) {
-			if (interactions[auth?.currentUser?.uid]) {
-				setInteracted(true);
-			}
-		} else {
-			interactions = Object.keys(interactions);
-			interactions.sort((a, b) => {
-				return b[1] - a[1];
-			});
-			let interactionsData = [];
-			for (let interaction of interactions) {
-				let data = await readData(
-					`prayer_circle/users/${interaction}/public`
-				);
-				interactionsData.push(data);
-			}
-			setInteractions(interactionsData);
-		}
+	const populateInteractions = async () => {
+		let interactionData = await getDocs(
+			collection(firestore, 'posts', post.id, 'interactions')
+		);
+		interactionData = interactionData.docs.map((interaction) => {
+			return { user: interaction.id, ...interaction.data() };
+		});
+		setInteractions(interactionData);
 	};
 
 	// set up
@@ -897,7 +887,7 @@ export const Post = (post) => {
 	}, []);
 
 	return (
-		<AnimatedPressable
+		<ReAnimated.View
 			entering={FadeIn.duration(500)}
 			className='w-full max-w-[500px]'
 		>
@@ -908,6 +898,7 @@ export const Post = (post) => {
 						if (lastTap && now - lastTap < 300) {
 							clearTimeout(timer.current);
 							if (post.owned || ownedToolbar) {
+								populateInteractions();
 								setBottomSheetType('Interactions');
 								setSnapPoints(['85%']);
 								handlePresentModalPress();
@@ -921,6 +912,7 @@ export const Post = (post) => {
 					}}
 					onLongPress={() => {
 						if (icon === 'event' && viewInteractions === 'public') {
+							populateInteractions();
 							setBottomSheetType('Interactions');
 							setSnapPoints(['85%']);
 							handlePresentModalPress();
@@ -1037,6 +1029,7 @@ export const Post = (post) => {
 									if (!post.owned && !ownedToolbar) {
 										toggleIcon();
 									} else {
+										populateInteractions();
 										setBottomSheetType('Interactions');
 										setSnapPoints(['85%']);
 										handlePresentModalPress();
@@ -1271,7 +1264,7 @@ export const Post = (post) => {
 				{bottomSheetType === 'Report' && reportView()}
 				{bottomSheetType === 'Settings' && settingsView()}
 			</BottomSheetModal>
-		</AnimatedPressable>
+		</ReAnimated.View>
 	);
 };
 

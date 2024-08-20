@@ -12,6 +12,7 @@ export async function getUID() {
 }
 
 export async function readData(path) {
+	if (!auth?.currentUser) return;
 	return await get(child(ref(database), path))
 		.then((snapshot) => {
 			if (snapshot.exists()) {
