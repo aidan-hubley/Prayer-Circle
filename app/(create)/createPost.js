@@ -38,9 +38,9 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
-	const [body, setBody] = useState('');
+	const [content, setContent] = useState('');
 	const [titlepplaceholder, setTitlePlaceholder] = useState('Title');
-	const [bodypplaceholder, setBodyPlaceholder] = useState('Write a Post');
+	const [contentPlaceholder, setContentPlaceholder] = useState('Write a Post');
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
@@ -66,27 +66,27 @@ export default function Page() {
 		if (index == 0) {
 			setShowDatePicker(false);
 			setTitlePlaceholder('Annoucement Title');
-			setBodyPlaceholder('Annoucement Description');
+			setContentPlaceholder('Annoucement Description');
 		}
 		if (index == 1) {
 			setShowDatePicker(false);
 			setTitlePlaceholder('Praise Title');
-			setBodyPlaceholder('Praise Description');
+			setContentPlaceholder('Praise Description');
 		}
 		if (index == 2) {
 			setShowDatePicker(false);
 			setTitlePlaceholder('Request Title');
-			setBodyPlaceholder('Request Description');
+			setContentPlaceholder('Request Description');
 		}
 		if (index == 3) {
 			setShowDatePicker(true);
 			setTitlePlaceholder('Event Title');
-			setBodyPlaceholder('Event Description');
+			setContentPlaceholder('Event Description');
 		}
 		if (index == 4) {
 			setShowDatePicker(false);
 			setTitlePlaceholder('Thought Title');
-			setBodyPlaceholder('Thought Description');
+			setContentPlaceholder('Thought Description');
 		}
 	};
 
@@ -325,7 +325,7 @@ export default function Page() {
 							)}
 							<StyledInput
 								className='bg-offblack text-[18px] w-full min-h-[100px] max-h-[150px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
-								placeholder={bodypplaceholder}
+								placeholder={contentPlaceholder}
 								multiline
 								autoCorrect
 								autoCapitalize='sentences'
@@ -333,7 +333,7 @@ export default function Page() {
 								inputMode='text'
 								maxLength={500}
 								onChangeText={(text) => {
-									setBody(text);
+									setContent(text);
 								}}
 							/>
 						</StyledView>
@@ -355,7 +355,7 @@ export default function Page() {
 								height='h-[60px]'
 								width='w-[125px]'
 								press={async () => {
-									if (title.length == 0 || body.length == 0)
+									if (title.length == 0 || content.length == 0)
 										return notify(
 											'Error Posting',
 											'Please enter a title and body for your post.',
@@ -407,7 +407,7 @@ export default function Page() {
 										profile_img: userData.photoURL,
 										name: userData.displayName,
 										title: encrypt(newPostId, title),
-										body: encrypt(newPostId, body),
+										content: encrypt(newPostId, content),
 										type: typeSelected,
 										timestamp: now,
 										circles: addCircles,

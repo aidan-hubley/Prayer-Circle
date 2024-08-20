@@ -214,18 +214,20 @@ export default function FeedPage() {
 						if (hiddenPosts.includes(item)) return <></>;
 						return (
 							<Post
-								content={item.body}
+								content={item.content}
 								circles={item.circles}
 								id={item.id}
 								metadata={item.metadata}
 								name={item.name}
-								profile-img={item.profile_img}
+								profile_img={item.profile_img}
 								settings={item.settings}
 								timestamp={item.timestamp}
 								title={item.title}
 								type={item.type}
 								user={item.user}
 								edited={item.edited}
+                                viewableComments={item.settings.viewable_comments}
+                                viewableInteractions={item.settings.viewable_interactions}
 							/>
 						);
 					}}

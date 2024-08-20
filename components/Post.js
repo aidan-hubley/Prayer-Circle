@@ -36,7 +36,17 @@ import { decrypt, encrypt } from 'react-native-simple-encryption';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pulsating } from './Loading';
 import { router } from 'expo-router';
-import { setDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import {
+	setDoc,
+	collection,
+	doc,
+	updateDoc,
+	Timestamp,
+	addDoc,
+	getDocs,
+	orderBy
+} from 'firebase/firestore';
+import { query } from 'firebase/database';
 
 const StyledImage = styled(Image);
 const StyledView = styled(View);
@@ -56,12 +66,12 @@ export const Post = (post) => {
 	// variables
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
-	const [icon, setIcon] = useState('');
+	const [icon, setIcon] = useState(post.icon);
 	const [interacted, setInteracted] = useState(false);
 	const [interactions, setInteractions] = useState([]);
 	const iconAnimation = useRef(new Animated.Value(1)).current;
 	const [toolbarShown, setToolbar] = useState(false);
-	const [ownedToolbar, setOwnedToolbar] = useState(false);
+	const ownedToolbar = post.user === auth?.currentUser?.uid;
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
@@ -69,7 +79,7 @@ export const Post = (post) => {
 	const [viewComments, setViewComments] = useState(false);
 	const [editTitle, setEditTitle] = useState('');
 	const [editContent, setEditContent] = useState('');
-	const [edited, setEdited] = useState(false);
+	const [edited, setEdited] = useState(post.edited || false);
 	const [
 		haptics,
 		setGlobalReload,
@@ -93,11 +103,9 @@ export const Post = (post) => {
 	]);
 	const [bottomSheetType, setBottomSheetType] = useState('');
 	const [reported, setReported] = useState(false);
-	const [userData, setUserData] = useState(auth?.currentUser);
 	const [bookmarked, setBookmarked] = useState(false);
 	const [eventDate, setEventDate] = useState('');
 	const [circles, setCircles] = useState([]);
-	const newCommentRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [snapPoints, setSnapPoints] = useState(['85%']);
 	const timer = useRef(null);
@@ -129,7 +137,6 @@ export const Post = (post) => {
 			nonOutline: require('../assets/post/thought.png')
 		}
 	};
-	const [tS, setTS] = useState('0s');
 	let insets = useSafeAreaInsets();
 
 	const titleCharThreshold = Dimensions.get('window').width / 16;
@@ -232,20 +239,20 @@ export const Post = (post) => {
 	const commentsView = () => {
 		return (
 			<StyledView className='flex-1 bg-grey'>
-				<StyledView className='w-full h-auto flex items-center my-3'>
+				<StyledView className='w-full h-auto flex items-center my-3 px-4'>
 					<StyledInput
-						className='w-[90%] min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+						className='w-full h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
 						placeholder='Write a comment...'
 						placeholderTextColor='#ffffff66'
 						multiline={true}
 						scrollEnabled={false}
-						ref={newCommentRef}
+						value={newComment}
 						onChangeText={(text) => {
 							setNewComment(text);
 						}}
 					/>
 					<StyledOpacity
-						className='absolute top-[10px] right-[8%]'
+						className='absolute top-[5px] right-[21px] h-[30px] w-[30px] justify-center items-center bg-green rounded-[8px]'
 						onPress={async () => {
 							Keyboard.dismiss();
 							await postComment();
@@ -253,8 +260,8 @@ export const Post = (post) => {
 					>
 						<StyledIcon
 							name='send'
-							size={30}
-							className='text-green'
+							size={18}
+							className='text-offwhite -mr-[2px]'
 						/>
 					</StyledOpacity>
 				</StyledView>
@@ -269,13 +276,10 @@ export const Post = (post) => {
 					renderItem={({ item }) => {
 						return (
 							<Comment
-								id={item[0]}
-								user={item[1].user}
-								name={item[1].name}
-								content={item[1].content}
-								edited={item[1].edited}
-								timestamp={item[1].timestamp}
-								img={item[1].profile_img}
+								id={item.id}
+								user={item.user}
+								content={item.content}
+								timestamp={item.timestamp}
 							/>
 						);
 					}}
@@ -294,7 +298,7 @@ export const Post = (post) => {
 							</StyledView>
 						);
 					}}
-					keyExtractor={(item) => item[0]}
+					keyExtractor={(item) => item.id}
 				/>
 			</StyledView>
 		);
@@ -507,12 +511,12 @@ export const Post = (post) => {
 								bottomSheetModalRef.current?.dismiss();
 								alert('Report has been cancelled.');
 								writeData(
-									`prayer_circle/posts/${post.id}/reports/${userData.uid}`,
+									`prayer_circle/posts/${post.id}/reports/${auth?.currentUser?.uid}`,
 									null,
 									true
 								);
 								writeData(
-									`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+									`prayer_circle/users/${auth?.currentUser?.uid}/private/reports/${post.id}`,
 									null,
 									true
 								);
@@ -534,166 +538,7 @@ export const Post = (post) => {
 	};
 
 	const settingsView = () => {
-		return (
-			<StyledView className='flex-1 bg-grey'>
-				<StyledView className='flex flex-col w-screen items-center py-4 px-[20px]'>
-					<StyledText className='text-offwhite text-[18px]'>
-						Public Comments
-					</StyledText>
-					<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
-						<StyledAnimatedView
-							style={highlightDualComment}
-							className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
-						></StyledAnimatedView>
-						<StyledOpacity
-							className='flex items-center justify-center w-[70px] h-[50px]'
-							onPress={() => handlePressComment(0)}
-						>
-							<StyledText className='text-offwhite text-[16px]'>
-								Display
-							</StyledText>
-						</StyledOpacity>
-						<StyledOpacity
-							className='flex items-center justify-center w-[70px] h-[50px]'
-							onPress={() => handlePressComment(1)}
-						>
-							<StyledText className='text-offwhite text-[16px]'>
-								Hide
-							</StyledText>
-						</StyledOpacity>
-					</StyledView>
-				</StyledView>
-				<StyledView className='flex flex-col w-screen items-center px-[20px]'>
-					<StyledText className='text-offwhite text-[18px]'>
-						Interaction Count
-					</StyledText>
-					{data?.type === 'event' ? (
-						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
-							<StyledAnimatedView
-								style={highlightTripleInteraction}
-								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
-							></StyledAnimatedView>
-							<StyledOpacity
-								className='flex items-center justify-center w-[70px] h-[50px]'
-								onPress={() => handlePressEventInteraction(0)}
-							>
-								<StyledText className='text-offwhite text-[16px]'>
-									Public
-								</StyledText>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[70px] h-[50px]'
-								onPress={() => handlePressEventInteraction(1)}
-							>
-								<StyledText className='text-offwhite text-[16px]'>
-									Private
-								</StyledText>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[70px] h-[50px]'
-								onPress={() => handlePressEventInteraction(2)}
-							>
-								<StyledText className='text-offwhite text-[16px]'>
-									Hidden
-								</StyledText>
-							</StyledOpacity>
-						</StyledView>
-					) : (
-						<StyledView className='flex flex-row items-center justify-around h-[50px] w-full border border-outline rounded-full px-[15px] my-3'>
-							<StyledAnimatedView
-								style={highlightDualInteraction}
-								className='absolute flex items-center justify-center rounded-full bg-[#EBEBEB2c] w-[70px] h-[36px]'
-							></StyledAnimatedView>
-							<StyledOpacity
-								className='flex items-center justify-center w-[70px] h-[50px]'
-								onPress={() => handlePressInteraction(0)}
-							>
-								<StyledText className='text-offwhite text-[16px]'>
-									Display
-								</StyledText>
-							</StyledOpacity>
-							<StyledOpacity
-								className='flex items-center justify-center w-[70px] h-[50px]'
-								onPress={() => handlePressInteraction(1)}
-							>
-								<StyledText className='text-offwhite text-[16px]'>
-									Hide
-								</StyledText>
-							</StyledOpacity>
-						</StyledView>
-					)}
-				</StyledView>
-				<StyledView
-					className='absolute flex flex-row w-screen px-[15px] justify-center bg-grey pb-5'
-					style={{ bottom: insets.bottom }}
-				>
-					<Button
-						title='Save'
-						width={'w-[48%]'}
-						press={() => {
-							if (selectedComment._value < 0.5) {
-								writeData(
-									`prayer_circle/posts/${post.id}/settings/viewable_comments`,
-									true,
-									true
-								);
-								setViewComments(true);
-							} else {
-								writeData(
-									`prayer_circle/posts/${post.id}/settings/viewable_comments`,
-									false,
-									true
-								);
-								setViewComments(false);
-							}
-							if (data?.type === 'event') {
-								if (selectedEventInteraction._value < 0.33) {
-									writeData(
-										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
-										'public',
-										true
-									);
-									setViewInteractions('public');
-								} else if (
-									selectedEventInteraction._value < 0.66
-								) {
-									writeData(
-										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
-										'private',
-										true
-									);
-									setViewInteractions('private');
-								} else {
-									writeData(
-										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
-										'hidden',
-										true
-									);
-									setViewInteractions('hidden');
-								}
-							} else {
-								if (selectedInteraction._value < 0.5) {
-									writeData(
-										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
-										'private',
-										true
-									);
-									setViewInteractions('private');
-								} else {
-									writeData(
-										`prayer_circle/posts/${post.id}/settings/viewable_interactions`,
-										'hidden',
-										true
-									);
-									setViewInteractions('hidden');
-								}
-							}
-							bottomSheetModalRef.current?.dismiss();
-						}}
-					/>
-				</StyledView>
-			</StyledView>
-		);
+		return <StyledView className='flex-1 bg-grey'></StyledView>;
 	};
 
 	// toolbar button abstraction
@@ -751,11 +596,11 @@ export const Post = (post) => {
 			useNativeDriver: false
 		}).start();
 		writeData(
-			`prayer_circle/posts/${post.id}/interacted/${userData.uid}`,
+			`prayer_circle/posts/${post.id}/interacted/${auth?.currentUser?.uid}`,
 			!interacted ? now : null,
 			true
 		);
-		/* if(!interacted) setDoc(doc(firestore, 'posts', post.id, 'interactions', userData.uid), {
+		/* if(!interacted) setDoc(doc(firestore, 'posts', post.id, 'interactions', auth?.currentUser?.uid), {
 			interacted: !interacted ? now : null
 		}); */
 		setInteracted(!interacted);
@@ -800,12 +645,12 @@ export const Post = (post) => {
 		await toggleToolbar();
 		setTimeout(async () => {
 			await writeData(
-				`prayer_circle/posts/${post.id}/hidden/${userData.uid}`,
+				`prayer_circle/posts/${post.id}/hidden/${auth?.currentUser?.uid}`,
 				true,
 				true
 			);
 			await writeData(
-				`prayer_circle/users/${userData.uid}/private/hidden_posts/${post.id}`,
+				`prayer_circle/users/${auth?.currentUser?.uid}/private/hidden_posts/${post.id}`,
 				true,
 				true
 			);
@@ -892,19 +737,19 @@ export const Post = (post) => {
 		bottomSheetModalRef.current?.dismiss();
 		alert(reported ? 'Report reason updated' : 'Post has been reported.');
 		let reportData = {
-			reporter: userData.uid,
+			reporter: auth?.currentUser?.uid,
 			reason: reason,
 			timestamp: Date.now(),
 			title: title,
 			body: content
 		};
 		writeData(
-			`prayer_circle/posts/${post.id}/reports/${userData.uid}`,
+			`prayer_circle/posts/${post.id}/reports/${auth?.currentUser?.uid}`,
 			reportData,
 			true
 		);
 		writeData(
-			`prayer_circle/users/${userData.uid}/private/reports/${post.id}`,
+			`prayer_circle/users/${auth?.currentUser?.uid}/private/reports/${post.id}`,
 			true,
 			true
 		);
@@ -967,7 +812,7 @@ export const Post = (post) => {
 		setViewInteractions(viewableInteractions);
 
 		if (!post.owned && !ownedToolbar) {
-			if (interactions[userData.uid]) {
+			if (interactions[auth?.currentUser?.uid]) {
 				setInteracted(true);
 			}
 		} else {
@@ -1016,27 +861,23 @@ export const Post = (post) => {
 	};
 
 	const populateComments = async () => {
-		let comments = await readData(
-			`prayer_circle/posts/${post.id}/comments`
+		let commentCollection = collection(
+			firestore,
+			'posts',
+			post.id,
+			'comments'
 		);
-		if (!comments) return;
 
-		if (typeof comments == 'undefined' || comments == false) return;
-		comments = Object.entries(comments);
+		/* TODO: implement pagination */
+		let comments = await getDocs(
+			query(commentCollection, orderBy('timestamp', 'desc'))
+		);
 
-		if (comments.length > 1) {
-			comments.sort((a, b) => {
-				return b[1] - a[1];
-			});
-		}
+		comments = comments.docs.map((comment) => {
+			return { id: comment.id, ...comment.data() };
+		});
 
-		let commentList = [];
-		for (let comment of comments) {
-			let data =
-				(await readData(`prayer_circle/comments/${comment[0]}`)) || {};
-			commentList.push([comment[0], data]);
-		}
-		await setCommentData(commentList);
+		await setCommentData(comments);
 	};
 
 	const populateReports = async (postId) => {
@@ -1044,7 +885,7 @@ export const Post = (post) => {
 		let reports =
 			(await readData(`prayer_circle/posts/${postId}/reports`)) || {};
 		for (let report of Object.keys(reports)) {
-			if (report === userData.uid) {
+			if (report === auth?.currentUser?.uid) {
 				setReported(reports[report].reason);
 			}
 		}
@@ -1066,75 +907,46 @@ export const Post = (post) => {
 
 	const postComment = async () => {
 		if (newComment.length > 0) {
-			//get current comments
-			let currentComments =
-				(await readData(`prayer_circle/posts/${post.id}/comments`)) ||
-				{};
-
-			//prep data
-			let commentId = generateId();
-			let timestamp = Date.now();
-			let comment = {
+			console.log(newComment);
+			let commentData = {
 				content: newComment,
-				edited: false,
-				timestamp: timestamp,
-				user: userData.uid,
-				name: userData.displayName,
-				profile_img: userData.photoURL,
-				post: post.id
+				timestamp: Timestamp.now(),
+				user: auth.currentUser.uid
 			};
 
-			//write data
-			await writeData(
-				`prayer_circle/posts/${post.id}/comments/${commentId}`,
-				timestamp,
-				true
+			addDoc(
+				collection(firestore, 'posts', post.id, 'comments'),
+				commentData
 			);
-			await writeData(
-				`prayer_circle/users/${userData.uid}/private/comments/${commentId}`,
-				true,
-				true
-			);
-			await writeData(
-				`prayer_circle/comments/${commentId}`,
-				comment,
-				true
-			);
+
 			//clear input
 			setNewComment('');
-			newCommentRef.current.clear();
 
-			currentComments[commentId] = timestamp;
+			/*			currentComments[commentId] = timestamp; */
 			//render new comment
-			await populateComments(currentComments);
+			/* await populateComments(currentComments); */
 		}
 	};
 
 	// set up
 	useEffect(() => {
 		(async () => {
-			setTitle(decrypt(post.id, post.title));
-			setContent(decrypt(post.id, post.content));
-			if (post.type === 'event') getEventDate(post);
-			await setIcon(post.type);
-			await setEdited(post.edited || false);
-			await setTS(timeSince(post.timestamp));
-			await setOwnedToolbar(post.user === userData.uid);
+			let title = decrypt(post.id, post.title);
+			let content = decrypt(post.id, post.content);
 
-			// could be moved
-			await setViewComments(post?.settings?.viewable_comments || false);
-			await setViewInteractions(
-				post?.settings?.viewable_interactions || false
-			);
-			await setEditTitle(decrypt(post.id, post.title));
-			await setEditContent(decrypt(post.id, post.body));
+			setTitle(title);
+			setContent(content);
+			setEditTitle(title);
+			setEditContent(content);
+			setIcon(post.type);
+			if (post.type === 'event') getEventDate(post);
+
+			setViewInteractions(post.viewableInteractions || false);
+			setViewComments(post.viewableComments || false);
 
 			await setUp(post.id);
 		})();
 	}, []);
-	useEffect(() => {
-		setUserData(auth?.currentUser);
-	}, [auth]);
 
 	return (
 		<StyledPressable className='w-full max-w-[500px]'>
@@ -1226,7 +1038,7 @@ export const Post = (post) => {
 											{post?.name} •{' '}
 										</StyledText>
 										<StyledText className={`text-white`}>
-											{tS}{' '}
+											{timeSince(post.timestamp)}{' '}
 										</StyledText>
 										<StyledText
 											className={`${
