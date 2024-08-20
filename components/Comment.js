@@ -15,6 +15,7 @@ const StyledImage = styled(Image);
 TODO: implement faster storage solution
 const cachedUserData = new MMKVLoader().withInstanceID('users').initialize();
  */
+/* TODO: add swipe gesture for delete or edit comment */
 export const Comment = (comment) => {
 	const [data, setData] = useState(null);
 
@@ -45,7 +46,7 @@ export const Comment = (comment) => {
 			{data && (
 				<StyledView className='flex flex-row w-[90%] items-center px-1 my-2'>
 					<CachedImage
-						className='rounded-[5px] w-[40px] h-[40px]'
+						className='rounded-[5px] w-[40px] h-[40px] self-start'
 						cacheKey={
 							data.profile_img?.split('%2F')[2].split('?')[0]
 						}

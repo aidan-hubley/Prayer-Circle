@@ -110,6 +110,7 @@ export const Post = (post) => {
 	const [snapPoints, setSnapPoints] = useState(['85%']);
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
+	const newCommentRef = useRef(null);
 	const typeRef = useRef(null);
 	const images = {
 		praise: {
@@ -241,18 +242,18 @@ export const Post = (post) => {
 			<StyledView className='flex-1 bg-grey'>
 				<StyledView className='w-full h-auto flex items-center my-3 px-4'>
 					<StyledInput
-						className='w-full h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
+						className='w-full min-h-[40px] bg-[#ffffff11] rounded-[10px] pl-3 pr-[50px] py-3 text-white text-[16px]'
 						placeholder='Write a comment...'
 						placeholderTextColor='#ffffff66'
 						multiline={true}
 						scrollEnabled={false}
-						value={newComment}
+						ref={newCommentRef}
 						onChangeText={(text) => {
 							setNewComment(text);
 						}}
 					/>
 					<StyledOpacity
-						className='absolute top-[5px] right-[21px] h-[30px] w-[30px] justify-center items-center bg-green rounded-[8px]'
+						className='absolute top-[7px] right-[21px] h-[30px] w-[30px] justify-center items-center bg-green rounded-[8px]'
 						onPress={async () => {
 							Keyboard.dismiss();
 							await postComment();
@@ -907,8 +908,7 @@ export const Post = (post) => {
 
 	const postComment = async () => {
 		if (newComment.length > 0) {
-			console.log(newComment);
-			let commentData = {
+			let newCommentData = {
 				content: newComment,
 				timestamp: Timestamp.now(),
 				user: auth.currentUser.uid
@@ -916,15 +916,16 @@ export const Post = (post) => {
 
 			addDoc(
 				collection(firestore, 'posts', post.id, 'comments'),
-				commentData
-			);
-
+				newCommentData
+			).then((d) => {
+				setCommentData([
+					{ id: d.id, ...newCommentData },
+					...commentData
+				]);
+			});
 			//clear input
 			setNewComment('');
-
-			/*			currentComments[commentId] = timestamp; */
-			//render new comment
-			/* await populateComments(currentComments); */
+			newCommentRef.current.clear();
 		}
 	};
 
