@@ -37,7 +37,8 @@ import {
 	addDoc,
 	getDocs,
 	orderBy,
-	deleteDoc
+	deleteDoc,
+	updateDoc
 } from 'firebase/firestore';
 import { query } from 'firebase/database';
 import {
@@ -702,7 +703,7 @@ export const Post = (post) => {
 	};
 
 	async function editPost() {
-		let updatedData = data;
+		let updatedData = {};
 
 		updatedData.title = encrypt(post.id, editTitle);
 		setTitle(editTitle);
@@ -714,14 +715,16 @@ export const Post = (post) => {
 		setEdited(true);
 
 		let typeVal = Math.round(Math.abs(typeRef.current.selected._value));
-		if (typeVal == 0) updatedData.type = 'praise';
-		else if (typeVal == 1) updatedData.type = 'request';
+		if (typeVal == 0) updatedData.type = 'announcement';
+		else if (typeVal == 1) updatedData.type = 'praise';
+		else if (typeVal == 2) updatedData.type = 'request';
 		else if (typeVal == 2) updatedData.type = 'event';
+		else if (typeVal == 2) updatedData.type = 'thought';
 		setIcon(updatedData.type);
 
-		writeData(`prayer_circle/posts/${post.id}`, updatedData, true);
-
-		bottomSheetModalRef.current?.dismiss();
+		updateDoc(doc(firestore, 'posts', post.id), updatedData).then(() => {
+			bottomSheetModalRef.current?.dismiss();
+		});
 	}
 
 	async function reportPost(reason) {
