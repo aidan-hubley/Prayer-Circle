@@ -40,7 +40,8 @@ export default function Page() {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [titlepplaceholder, setTitlePlaceholder] = useState('Title');
-	const [contentPlaceholder, setContentPlaceholder] = useState('Write a Post');
+	const [contentPlaceholder, setContentPlaceholder] =
+		useState('Write a Post');
 	const [userData, setUserData] = useState(auth.currentUser);
 	const typeRef = useRef();
 	const [showDatePicker, setShowDatePicker] = useState(false);
@@ -141,7 +142,7 @@ export default function Page() {
 							</StyledText>
 							<View className={'w-[40px] h-[40px] '}></View>
 						</StyledView>
-						<StyledView className='flex flex-col w-screen items-center py-3 px-[20px]'>
+						<StyledView className='flex flex-col w-screen items-center py-3 px-[15px]'>
 							<PostTypeSelector
 								ref={typeRef}
 								onSelect={handleSelect}
@@ -355,7 +356,10 @@ export default function Page() {
 								height='h-[60px]'
 								width='w-[125px]'
 								press={async () => {
-									if (title.length == 0 || content.length == 0)
+									if (
+										title.length == 0 ||
+										content.length == 0
+									)
 										return notify(
 											'Error Posting',
 											'Please enter a title and body for your post.',
@@ -443,9 +447,6 @@ export default function Page() {
 										newPost
 									)
 										.then(() => {
-											console.log(
-												'Document successfully written!'
-											);
 											setUploading(false);
 										})
 										.catch((error) => {

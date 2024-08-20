@@ -47,7 +47,8 @@ import {
 	useSharedValue,
 	withTiming,
 	useAnimatedStyle,
-	FadeIn
+	FadeIn,
+	FadeOut
 } from 'react-native-reanimated';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
@@ -889,7 +890,8 @@ export const Post = (post) => {
 
 	return (
 		<ReAnimated.View
-			entering={FadeIn.duration(500)}
+			entering={FadeIn.duration(300).delay(300)}
+			exiting={FadeOut.duration(300)}
 			className='w-full max-w-[500px]'
 		>
 			<View className='flex flex-col justify-start items-center w-full bg-[#EBEBEB0D] border border-[#6666660D] rounded-[20px] h-auto pt-[8px] my-[5px]'>
