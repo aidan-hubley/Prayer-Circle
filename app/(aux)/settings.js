@@ -1823,6 +1823,10 @@ export default function Page() {
 				handleComponent={() => handles}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
+				backgroundStyle={{
+					backgroundColor: '#1d1d1d',
+					borderRadius: 25
+				}}
 			>
 				<StyledView className='flex-1 bg-grey py-3 items-center text-offwhite'>
 					{renderContent()}

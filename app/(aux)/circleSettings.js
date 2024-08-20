@@ -443,6 +443,10 @@ export default function Page() {
 						backdrop(backdropProps)
 					}
 					keyboardBehavior='extend'
+					backgroundStyle={{
+						backgroundColor: '#1d1d1d',
+						borderRadius: 25
+					}}
 				>
 					<StyledView className='flex-1 bg-grey'>
 						{modalContent === 'queue' && (

@@ -846,13 +846,14 @@ export const Post = (post) => {
 		// set up view circles
 		let circlesData = [];
 		let userCircles = await getCircles();
-		for (let circle of Object.keys(data?.circles || {})) {
+		for (let circle of post.circles || []) {
 			if (!userCircles.includes(circle)) continue;
 			let circleData =
 				(await readData(`prayer_circle/circles/${circle}`)) || {};
 			circleData.id = circle;
 			circlesData.push(circleData);
 		}
+
 		setCircles(circlesData);
 	};
 
@@ -1256,6 +1257,10 @@ export const Post = (post) => {
 				handleComponent={() => handle(bottomSheetType)}
 				backdropComponent={(backdropProps) => backdrop(backdropProps)}
 				keyboardBehavior='extend'
+				backgroundStyle={{
+					backgroundColor: '#1d1d1d',
+					borderRadius: 25
+				}}
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
 				{bottomSheetType === 'Edit' && editView()}

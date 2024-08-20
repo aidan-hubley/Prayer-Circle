@@ -155,6 +155,10 @@ export default function Login() {
 					if (index === 0) Keyboard.dismiss();
 					else this.resetEmail.focus();
 				}}
+				backgroundStyle={{
+					backgroundColor: '#1d1d1d',
+					borderRadius: 25
+				}}
 			>
 				<Pressable
 					className='flex-1 bg-grey p-4 items-center'

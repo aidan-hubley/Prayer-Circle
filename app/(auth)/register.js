@@ -377,6 +377,10 @@ export default function Register() {
 					}
 					keyboardBehavior='extend'
 					enableOverDrag={false}
+					backgroundStyle={{
+						backgroundColor: '#1d1d1d',
+						borderRadius: 25
+					}}
 				>
 					<StyledView
 						className='flex-1 bg-grey py-3 items-center text-offwhite'

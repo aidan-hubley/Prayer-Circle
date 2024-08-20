@@ -25,7 +25,7 @@ const backdrop = (backdropProps) => {
 
 const handle = (title, color) => {
 	return (
-		<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[10px] pt-3'>
+		<StyledView className='flex items-center justify-center w-screen bg-grey rounded-t-[25px] pt-3'>
 			<StyledView
 				className={`w-[30px] h-[4px] rounded-full ${
 					color || 'bg-[#dddddd11]'

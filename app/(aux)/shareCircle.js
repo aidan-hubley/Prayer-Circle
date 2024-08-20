@@ -200,6 +200,10 @@ export default function Page() {
 					backdropComponent={(backdropProps) =>
 						backdrop(backdropProps)
 					}
+					backgroundStyle={{
+						backgroundColor: '#1d1d1d',
+						borderRadius: 25
+					}}
 				>
 					<StyledView className='flex-1 bg-grey'>
 						<StyledView className='flex-1 mx-7 gap-y-8'>
