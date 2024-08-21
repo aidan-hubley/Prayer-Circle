@@ -190,7 +190,7 @@ export default function FeedPage() {
 										insets.top + (lastFetch === 0 ? 60 : 90)
 								}}
 							>
-								{lastFetch !== 0 && (
+								{lastFetch > 0 && postList.length >= 8 && (
 									<Flow size={40} color='#ebebeb' />
 								)}
 							</Animated.View>
