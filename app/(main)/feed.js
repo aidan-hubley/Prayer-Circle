@@ -27,7 +27,12 @@ import {
 	startAfter,
 	where
 } from 'firebase/firestore';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated, {
+	FadeIn,
+	FadeOut,
+	LinearTransition
+} from 'react-native-reanimated';
+import { Flow } from 'react-native-animated-spinkit';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -137,9 +142,18 @@ export default function FeedPage() {
 				<Animated.FlatList
 					itemLayoutAnimation={LinearTransition}
 					data={postList}
-					onEndReachedThreshold={0.4}
+					onEndReachedThreshold={0.3}
 					windowSize={10}
-					onEndReached={() => {}}
+					onEndReached={async () => {
+						if (postList.length < 8 || !auth?.currentUser) return;
+						let newPosts = await fetchPosts(
+							filterTarget,
+							false,
+							circles,
+							lastVisibleDoc
+						);
+						setPostList([...postList, ...newPosts]);
+					}}
 					style={{ paddingHorizontal: 15 }}
 					estimatedItemSize={100}
 					showsHorizontalScrollIndicator={false}
@@ -167,12 +181,19 @@ export default function FeedPage() {
 					}
 					ListFooterComponent={
 						postList && postList.length > 0 ? (
-							<StyledView
-								className='w-full flex items-center mb-[10px]'
+							<Animated.View
+								entering={FadeIn}
+								exiting={FadeOut}
+								className='w-full flex items-center mb-[10px] pt-3'
 								style={{
-									height: insets.top + 60
+									height:
+										insets.top + (lastFetch === 0 ? 60 : 90)
 								}}
-							/>
+							>
+								{lastFetch !== 0 && (
+									<Flow size={40} color='#ebebeb' />
+								)}
+							</Animated.View>
 						) : (
 							<></>
 						)

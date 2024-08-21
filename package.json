@@ -36,6 +36,7 @@
 		"nativewind": "^2.0.11",
 		"react": "18.2.0",
 		"react-native": "0.74.3",
+		"react-native-animated-spinkit": "^1.5.2",
 		"react-native-animated-splash-screen": "^2.0.5",
 		"react-native-color-picker": "^0.6.0",
 		"react-native-gesture-handler": "~2.16.1",
