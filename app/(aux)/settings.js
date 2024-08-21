@@ -7,7 +7,9 @@ import {
 	Image,
 	TextInput,
 	ScrollView,
-	Platform
+	Platform,
+	Switch,
+	Dimensions
 } from 'react-native';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
@@ -41,20 +43,17 @@ import {
 	readData,
 	uploadImage,
 	createTutorial,
-	getCircles,
 	checkIfTutorialExists
 } from '../../backend/firebaseFunctions';
 import { useStore, notify } from '../global';
+import { router } from 'expo-router';
+import { SegmentedControl } from '../../components/SegmentedControl';
 
 const StyledView = styled(View);
 const StyledIcon = styled(Ionicons);
 const StyledText = styled(Text);
-const StyledImage = styled(Image);
 const StyledCamera = styled(Camera);
-const StyledSafeArea = styled(SafeAreaView);
-const StyledOpacity = styled(TouchableOpacity);
 const StyledInput = styled(TextInput);
-const StyledAnimatedView = styled(Animated.View);
 const StyledGradient = styled(LinearGradient);
 
 export default function Page() {
@@ -546,27 +545,6 @@ export default function Page() {
 		bottomSheetModalRef.current?.present();
 	};
 
-	const selectedReminderInter = selectedReminder.interpolate({
-		inputRange: [0, 1, 2, 3, 4, 5],
-		outputRange: ['-3.5%', '15%', '35.5%', '54%', '72%', '90%']
-	});
-
-	const handleReminderPress = (index) => {
-		Animated.spring(selectedReminder, {
-			toValue: index,
-			duration: 150,
-			useNativeDriver: false
-		}).start();
-	};
-
-	const highlightPosition = {
-		left: selectedReminderInter
-	};
-
-	const toggleAdvancedSettings = () => {
-		setAdvancedSettings(!advancedSettings);
-	};
-
 	const renderContent = () => {
 		switch (modalContent) {
 			case 'updProfileInfo':
@@ -1050,749 +1028,485 @@ export default function Page() {
 		}
 	};
 
-	const handleToggleDaily = (newState) => {
-		console.log('Daily toggle state is now: ', newState);
-	};
-
-	const handleToggleWeekly = (newState) => {
-		console.log('Weekly toggle state is now: ', newState);
-	};
-
-	const handleToggleInfinite = (newState) => {
-		console.log('Infinite toggle state is now: ', newState);
-	};
-
 	useEffect(() => {
 		setUserData(auth?.currentUser);
 	}, [auth]);
 
 	return (
-		<StyledSafeArea className='bg-offblack border' style={{ flex: 1 }}>
-			<StyledView className='flex-1 items-center mt-45 pt-10 py-5'>
-				<ScrollView>
-					<StyledView className='w-full flex items-center'>
-						<View className='relative pt-[100px]'></View>
-						<View className='flex-row mt-5 px-5'>
-							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row pb-5 w-full'>
-									<Text className='text-lg text-offwhite'>
-										Update Profile
-									</Text>
-									<Button
-										icon='information-circle-outline'
-										width={'w-[30px]'}
-										height={'h-[30px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}
-										btnStyles='absolute right-0'
-										press={() =>
-											handleModalPress(
-												'updProfileInfo',
-												['20%'],
-												'Ways to Update Your Profile',
-												''
-											)
-										}
-									></Button>
-								</StyledView>
-								<StyledView className='flex-row justify-between'>
-									<StyledView className='w-full justify-between flex-row'>
-										<Button
-											title={`Edit Name: ${userData.displayName}`}
-											textColor={'text-offwhite'}
-											textStyles='font-normal'
-											width={'flex-1'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'#FFFBFC'}
-											btnStyles='border-2'
-											press={() =>
-												handleModalPress(
-													'changeName',
-													['65%'],
-													'Change Name',
-													''
-												)
-											}
-										/>
-										<View className='w-[10px]' />
-										<Button
-											icon='camera'
-											iconColor={'#FFFBFC'}
-											width={'w-[65px]'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'#FFFBFC'}
-											btnStyles='border-2'
-											press={() =>
-												handleModalPress(
-													'previewProfilePic',
-													['65%'],
-													'Your Profile Picture',
-													''
-												)
-											}
-										/>
-									</StyledView>
-								</StyledView>
-							</View>
-						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<Text className='mr-3 text-lg text-offwhite'>
-									All Notifications
-								</Text>
-								<StyledView className='flex-row'>
-									<StyledIcon
-										name='notifications-outline'
-										size={30}
-										color='#FFFBFC'
-										className='w-[30px] h-[30px] mr-2'
-									/>
-									<Toggle
-										toggle={notifications}
-										onFunc={() => {
-											setNotifications(true);
+		<SafeAreaView
+			className='bg-offblack border max-w-full'
+			style={{ flex: 1 }}
+		>
+			<ScrollView>
+				<StyledView className='w-full flex items-center px-[15px]'>
+					<View
+						className='relative'
+						style={{
+							paddingTop:
+								Platform.OS === 'android'
+									? insets.top + 50
+									: insets.top + 20
+						}}
+					></View>
+					{/* Account */}
+					<Text className='text-lg font-bold w-full px-[8px] mb-1 text-offwhite'>
+						Account
+					</Text>
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full rounded-t-[15px] border-b-[1px] border-b-[#FFFBFC20]`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							Edit Name
+						</Text>
+						<Button
+							icon={'pencil'}
+							width={'w-[60px]'}
+							height={'h-[30px]'}
+							bgColor={'bg-transparent'}
+							iconSize={20}
+							iconColor={'#FFFBFC'}
+							btnStyles='border-[1px] rounded-[8px]'
+							borderColor={'#FFFBFC'}
+							press={() => {
+								handleModalPress(
+									'changeName',
+									['65%'],
+									'Change Name',
+									''
+								);
+							}}
+						/>
+					</View>
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full  border-b-[1px] border-b-[#FFFBFC20]`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							Update Profile Picture
+						</Text>
+						<Button
+							icon={'camera'}
+							width={'w-[60px]'}
+							height={'h-[30px]'}
+							bgColor={'bg-transparent'}
+							iconSize={24}
+							iconColor={'#FFFBFC'}
+							btnStyles='border-[1px] rounded-[8px]'
+							borderColor={'#FFFBFC'}
+							press={() => {
+								handleModalPress(
+									'previewProfilePic',
+									['65%'],
+									'Your Profile Picture',
+									''
+								);
+							}}
+						/>
+					</View>
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full  border-b-[1px] border-b-[#FFFBFC20]`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							View Hidden Posts
+						</Text>
+						<Button
+							icon={'eye'}
+							width={'w-[60px]'}
+							height={'h-[30px]'}
+							bgColor={'bg-transparent'}
+							iconSize={20}
+							iconColor={'#FFFBFC'}
+							btnStyles='border-[1px] rounded-[8px]'
+							borderColor={'#FFFBFC'}
+							press={() => {
+								handleModalPress(
+									'hiddenPosts',
+									['65%', '85%'],
+									'Hidden Posts',
+									'',
+									setUpHiddenPosts
+								);
+							}}
+						/>
+					</View>
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full rounded-b-[15px]`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							Recreate Tutorial Circle
+						</Text>
+						<Button
+							icon={'home'}
+							width={'w-[60px]'}
+							height={'h-[30px]'}
+							bgColor={'bg-transparent'}
+							iconSize={20}
+							iconColor={'#FFFBFC'}
+							btnStyles='border-[1px] rounded-[8px]'
+							borderColor={'#FFFBFC'}
+							press={() => {
+								handleModalPress(
+									'Tutorial',
+									['23%'],
+									'Recreate Tutorial',
+									''
+								);
+							}}
+						/>
+					</View>
+					{/* SYSTEM */}
+					<Text className='text-lg font-bold w-full px-[8px] mt-5 mb-1 text-offwhite'>
+						System Settings
+					</Text>
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full rounded-t-[15px] border-b-[1px] border-b-[#FFFBFC20]`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							Notifications
+						</Text>
+						<Switch
+							trackColor={{
+								false: '#3d3d3d',
+								true: '#00A55E'
+							}}
+							thumbColor={
+								Platform.OS === 'android'
+									? '#444444'
+									: '#FFFBFC'
+							}
+							className={`scale-90 ${
+								Platform.OS === 'android' ? 'h-[24px]' : ''
+							} `}
+							value={false}
+							onChange={(e) => {
+								/* TODO: implement Notification settings */
+								notify(
+									'Error',
+									'Notification settings are not available yet.',
+									'#CC2500'
+								);
+							}}
+						/>
+					</View>
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full	rounded-b-[15px]`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							Haptics
+						</Text>
+						<Switch
+							trackColor={{
+								false: '#3d3d3d',
+								true: '#00A55E'
+							}}
+							thumbColor={'#FFFBFC'}
+							className={`scale-90 ${
+								Platform.OS === 'android' ? 'h-[24px]' : ''
+							} `}
+							value={haptics}
+							onChange={(e) => {
+								setHaptics(e.nativeEvent.value);
+								writeData(
+									`prayer_circle/users/${userData.uid}/private/settings/haptics`,
+									e.nativeEvent.value,
+									true
+								);
+							}}
+						/>
+					</View>
+					{/* POST PREFERENCES */}
+					<Text className='text-lg font-bold w-full px-[8px] mt-5 mb-1 text-offwhite'>
+						Post Preferences
+					</Text>
+					<View className='bg-grey rounded-[12px] w-full py-[12px]'>
+						<StyledView className='flex-row justify-between items-center px-[15px] pb-2 border-b-[#EBEBEB20]  border-b-[1px]'>
+							<Text className='text-lg text-offwhite'>
+								Comments Enabled
+							</Text>
+							<Switch
+								trackColor={{
+									false: '#3d3d3d',
+									true: '#00A55E'
+								}}
+								thumbColor={'#FFFBFC'}
+								className={`scale-90 ${
+									Platform.OS === 'android' ? 'h-[24px]' : ''
+								} `}
+								value={commentPref}
+								onChange={(e) => {
+									setCommentPref(e.nativeEvent.value);
+									writeData(
+										`prayer_circle/users/${userData.uid}/private/post_preferences/comments`,
+										e.nativeEvent.value,
+										true
+									);
+								}}
+							/>
+						</StyledView>
+						<StyledView className='flex-col px-[10px] justify-between pt-2'>
+							<Text className='text-lg  px-[5px] text-offwhite mb-2'>
+								Interaction Visibility
+							</Text>
+							<SegmentedControl
+								noYMargin
+								/* selected={
+											interactionVisibility === 'public'
+												? 0
+												: 1
+										} */
+								width={Dimensions.get('window').width - 55}
+								fireEventOnLoad={false}
+								icons={[
+									{
+										type: 'text',
+										value: 'Public',
+										onPress: () => {
+											setInteractionPref('public');
 											writeData(
-												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
-												true,
+												`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
+												'public',
 												true
 											);
-										}}
-										offFunc={() => {
-											setNotifications(false);
+										}
+									},
+									{
+										type: 'text',
+										value: 'Private',
+										onPress: () => {
+											setInteractionPref('private');
 											writeData(
-												`prayer_circle/users/${userData.uid}/private/settings/notifications`,
-												false,
+												`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
+												'private',
 												true
 											);
-										}}
-									/>
-								</StyledView>
-							</View>
-						</View>
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<Text className='mr-3 text-lg text-offwhite'>
-									Haptics
-								</Text>
-								<StyledView className='flex-row'>
-									<StyledIcon
-										name='radio-outline'
-										size={30}
-										color='#FFFBFC'
-										className='w-[30px] h-[30px] mr-2'
-									/>
-									<Toggle
-										toggle={haptics}
-										onFunc={debounce(() => {
-											setHaptics(true);
+										}
+									},
+									{
+										type: 'text',
+										value: 'Hidden',
+										onPress: () => {
+											setInteractionPref('hidden');
 											writeData(
-												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
-												true,
+												`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
+												'hidden',
 												true
 											);
-										})}
-										offFunc={() => {
-											/* setHaptics(false);
-											writeData(
-												`prayer_circle/users/${userData.uid}/private/settings/haptics`,
-												false,
-												true
-											); */
-										}}
-									/>
-								</StyledView>
-							</View>
-						</View>
-						{/* <StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className='flex-row mt-3 px-5'>
-							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row pb-5 w-full'>
-									<Text className='text-lg text-offwhite pr-1'>
-										Presence Timers
-									</Text>
-									<Button
-										icon='menu'
-										width={'w-[30px]'}
-										height={'h-[30px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}
-										btnStyles='absolute right-0'
-										press={() =>
-											handleModalPress(
-												'timer',
-												['45%'],
-												'Presence Timers',
-												''
-											)
 										}
-									></Button>
-								</StyledView>
-								<StyledView className='w-full flex-row justify-between'>
-									<StyledView className='flex-row'>
-										<StyledImage
-											source={require('../../assets/timers/calendar-day.png')}
-											className='w-[30px] h-[30px] mr-2'
-										/>
-										<Toggle
-											onToggleStateChange={
-												handleToggleDaily
-											}
-										/>
-									</StyledView>
-									<StyledView className='flex-row'>
-										<StyledImage
-											source={require('../../assets/timers/calendar-week.png')}
-											className='w-[30px] h-[30px] mr-2'
-										/>
-										<Toggle
-											onToggleStateChange={
-												handleToggleWeekly
-											}
-										/>
-									</StyledView>
-									<StyledView className='flex-row'>
-										<StyledIcon
-											name='infinite'
-											size={30}
-											color='#FFFBFC'
-											className='w-[30px] h-[30px] mr-2'
-										/>
-										<Toggle
-											onToggleStateChange={
-												handleToggleInfinite
-											}
-										/>
-									</StyledView>
-								</StyledView>
-							</View>
-						</View>
-						<View className='flex-row mt-3 px-5'>
-							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row pb-5 w-full'>
-									<Text className='text-lg text-offwhite pr-1'>
-										Presence Reminder
-									</Text>
-									<Button
-										icon='information-circle-outline'
-										width={'w-[30px]'}
-										height={'h-[30px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}
-										btnStyles='absolute right-0'
-										press={() =>
-											handleModalPress(
-												'reminder',
-												['20%'],
-												'Presence Reminder',
-												''
-											)
-										}
-									></Button>
-								</StyledView>
-								<StyledView className='w-[98%] flex-row justify-between'>
-									<StyledAnimatedView
-										style={highlightPosition}
-										className='absolute flex items-center justify-center rounded-full border border-offwhite w-[45px] h-[30px]'
-									></StyledAnimatedView>
-									<StyledOpacity
-										className=''
-										onPress={() => handleReminderPress(0)}
-									>
-										<StyledText className='text-lg text-offwhite top-[1px]'>
-											<StyledIcon
-												name='notifications-off-outline'
-												size={22}
-												color='#FFFBFC'
-											/>
-										</StyledText>
-									</StyledOpacity>
-									<StyledOpacity
-										className=''
-										onPress={() => handleReminderPress(1)}
-									>
-										<StyledText className='text-lg text-offwhite'>
-											15m
-										</StyledText>
-									</StyledOpacity>
-									<StyledOpacity
-										className=''
-										onPress={() => handleReminderPress(2)}
-									>
-										<StyledText className='text-lg text-offwhite'>
-											30m
-										</StyledText>
-									</StyledOpacity>
-									<StyledOpacity
-										className=''
-										onPress={() => handleReminderPress(3)}
-									>
-										<StyledText className='text-lg text-offwhite'>
-											1h
-										</StyledText>
-									</StyledOpacity>
-									<StyledOpacity
-										className=''
-										onPress={() => handleReminderPress(4)}
-									>
-										<StyledText className='text-lg text-offwhite'>
-											1.5h
-										</StyledText>
-									</StyledOpacity>
-									<StyledOpacity
-										className=''
-										onPress={() => handleReminderPress(5)}
-									>
-										<StyledText className='text-lg text-offwhite'>
-											2h
-										</StyledText>
-									</StyledOpacity>
-								</StyledView>
-							</View>
-						</View> */}
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='justify-between bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row justify-between w-full'>
-									<Text className='text-lg text-offwhite'>
-										Post Preferences
-									</Text>
-									<Button
-										icon={
-											viewPref
-												? 'chevron-up-outline'
-												: 'chevron-down-outline'
-										}
-										width={'w-[65px]'}
-										height={'h-[35px]'}
-										bgColor={'bg-transparent'}
-										iconSize={30}
-										iconColor={'#FFFBFC'}
-										btnStyles='border-2'
-										borderColor={'#FFFBFC'}
-										press={() => {
-											if (!viewPref) {
-												getPostPreferences();
-											}
-											setViewPref(!viewPref);
-										}}
-									></Button>
-								</StyledView>
-								{viewPref && (
-									<View>
-										<StyledView className='flex-row justify-between py-3'>
-											<Text className='text-lg text-offwhite'>
-												Comments:
-											</Text>
-											{commentPref && (
-												<Button
-													icon='eye'
-													iconColor={'#FFFBFC'}
-													iconSize={26}
-													width={'w-[65px]'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													btnStyles='border-2'
-													press={() => {
-														setCommentPref(false);
-														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferences/comments`,
-															false,
-															true
-														);
-													}}
-												></Button>
-											)}
-											{!commentPref && (
-												<Button
-													icon='eye-off-outline'
-													iconColor={'#FFFBFC'}
-													iconSize={26}
-													width={'w-[65px]'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													btnStyles='border-2'
-													press={() => {
-														setCommentPref(true);
-														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferences/comments`,
-															true,
-															true
-														);
-													}}
-												></Button>
-											)}
-										</StyledView>
-										<StyledView className='flex-row justify-between'>
-											<Text className='text-lg text-offwhite'>
-												Interactions:
-											</Text>
-											{interactionPref === 'public' && (
-												<Button
-													icon='people'
-													iconColor={'#FFFBFC'}
-													iconSize={26}
-													width={'w-[65px]'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													btnStyles='border-2'
-													press={() => {
-														setInteractionPref(
-															'private'
-														);
-														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
-															'private',
-															true
-														);
-													}}
-												></Button>
-											)}
-											{interactionPref === 'private' && (
-												<Button
-													icon='person'
-													iconColor={'#FFFBFC'}
-													iconSize={26}
-													width={'w-[65px]'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													btnStyles='border-2'
-													press={() => {
-														setInteractionPref(
-															'hidden'
-														);
-														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
-															'hidden',
-															true
-														);
-													}}
-												></Button>
-											)}
-											{interactionPref === 'hidden' && (
-												<Button
-													icon='eye-off-outline'
-													iconColor={'#FFFBFC'}
-													iconSize={26}
-													width={'w-[65px]'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													btnStyles='border-2'
-													press={() => {
-														setInteractionPref(
-															'public'
-														);
-														writeData(
-															`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`,
-															'public',
-															true
-														);
-													}}
-												></Button>
-											)}
-										</StyledView>
-									</View>
-								)}
-							</View>
-						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row'>
-									<Text className='mr-3 text-lg text-offwhite'>
-										View Hidden Posts
-									</Text>
-								</StyledView>
-								<Button
-									icon='eye'
-									iconColor={'#FFFBFC'}
-									iconSize={26}
-									width={'w-[65px]'}
-									height={'h-[35px]'}
-									bgColor={'bg-transparent'}
-									borderColor={'#FFFBFC'}
-									btnStyles='border-2'
-									press={() => {
-										handleModalPress(
-											'hiddenPosts',
-											['65%', '85%'],
-											'Hidden Posts',
-											'',
-											setUpHiddenPosts
-										);
-									}}
-								></Button>
-							</View>
-						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row'>
-									<Text className='mr-3 text-lg text-offwhite'>
-										Recreate Tutorial Circle
-									</Text>
-								</StyledView>
-								<Button
-									icon='home'
-									iconColor={'#FFFBFC'}
-									iconSize={26}
-									width={'w-[65px]'}
-									height={'h-[35px]'}
-									bgColor={'bg-transparent'}
-									borderColor={'#FFFBFC'}
-									btnStyles='border-2'
-									press={() => {
-										handleModalPress(
-											'Tutorial',
-											['23%'],
-											'Recreate Tutorial',
-											''
-										);
-									}}
-								></Button>
-							</View>
-						</View>
-						<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-
-						<View className='flex-row items-center mt-5 px-5'>
-							<View className='flex-row justify-between items-center bg-grey py-3 px-5 w-full rounded-xl'>
-								<StyledView className='flex-row'>
-									{/* <StyledIcon name='warning-outline' size={30} color="#F9A826" className="w-[30px] h-[30px] mr-2"/> */}
-									<Text className='mr-3 text-lg text-offwhite'>
-										Advanced Settings:
-									</Text>
-								</StyledView>
-								<Button
-									icon={
-										advancedSettings
-											? 'chevron-down-outline'
-											: 'chevron-up-outline'
 									}
-									width={'w-[65px]'}
-									height={'h-[35px]'}
-									bgColor={'bg-transparent'}
-									iconSize={30}
-									iconColor={'#F9A826'}
-									btnStyles='border-2'
-									borderColor={'#F9A826'}
-									press={() => toggleAdvancedSettings()}
-								></Button>
-							</View>
-						</View>
-
-						{advancedSettings ? (
-							<></>
-						) : (
-							<>
-								<View className='flex-row mt-5 px-5'>
-									<View className='justify-between bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row pb-5 w-full'>
+								]}
+							/>
+						</StyledView>
+					</View>
+					{/* ADVANCED SETTINGS */}
+					<View
+						className={`flex-row justify-between items-center bg-grey py-3 px-[15px] w-full ${
+							advancedSettings
+								? 'rounded-[15px]'
+								: 'rounded-t-[15px] border-b-[1px] border-b-[#EBEBEB20]'
+						}  mt-5`}
+					>
+						<Text className='mr-3 text-lg text-offwhite'>
+							Advanced Settings
+						</Text>
+						<Button
+							icon={
+								advancedSettings
+									? 'chevron-down-outline'
+									: 'chevron-up-outline'
+							}
+							width={'w-[60px]'}
+							height={'h-[30px]'}
+							bgColor={'bg-transparent'}
+							iconSize={24}
+							iconColor={'#F9A826'}
+							btnStyles='border-[1px] rounded-[8px]'
+							borderColor={'#F9A826'}
+							press={() => {
+								setAdvancedSettings(!advancedSettings);
+							}}
+						></Button>
+					</View>
+					{advancedSettings ? (
+						<></>
+					) : (
+						<View className=''>
+							<View className='flex-col bg-grey rounded-b-[15px] px-[15px] py-[12px]'>
+								<View className='w-full border-b-[1px] pb-3 border-b-[#EBEBEB20]'>
+									<View className='flex-row pb-2 w-full justify-between'>
+										<View className='flex flex-row'>
 											<StyledIcon
 												name='warning-outline'
-												size={30}
+												size={24}
 												color='#F9A826'
-												className='w-[30px] h-[30px] mr-2'
+												className='w-[30px] h-[30px] mt-[2px]'
 											/>
 											<Text className='text-lg text-offwhite'>
 												Change Password
 											</Text>
-											<Button
-												icon='information-circle-outline'
-												width={'w-[30px]'}
-												height={'h-[30px]'}
-												bgColor={'bg-transparent'}
-												iconSize={30}
-												iconColor={'#FFFBFC'}
-												btnStyles='absolute right-0'
-												press={() => {
-													handleModalPress(
-														'passwordInfo',
-														['50%'],
-														'Password Info',
-														'bg-[#F9A826]'
-													);
-												}}
-											></Button>
-										</StyledView>
-										<StyledView className='flex-row justify-between'>
-											<StyledView className='w-full justify-between flex-row'>
-												<Button
-													title='Change Password'
-													textColor={'text-offwhite'}
-													textStyles='font-normal'
-													width={'flex-1'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													btnStyles='mr-3 border-2'
-													press={() => {
-														handleModalPress(
-															'password',
-															['65%', '85%'],
-															'Change Password',
-															'bg-[#F9A826]'
-														);
-													}}
-												/>
-												<View className='w-[10px]' />
-												<Button
-													icon='mail'
-													width={'w-[65px]'}
-													height={'h-[35px]'}
-													bgColor={'bg-transparent'}
-													borderColor={'#FFFBFC'}
-													iconSize={26}
-													iconColor={'#FFFBFC'}
-													btnStyles='border-2'
-													press={PasswordReset}
-												/>
-											</StyledView>
-										</StyledView>
-									</View>
-								</View>
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='warning-outline'
-												size={30}
-												color='#F9A826'
-												className='w-[30px] h-[30px] mr-2'
-											/>
-											<Text className='mr-3 text-lg text-offwhite'>
-												Empty Cache
-											</Text>
-										</StyledView>
+										</View>
 										<Button
-											icon='sync'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
-											height={'h-[35px]'}
+											icon='pencil-outline'
+											width={'w-[60px]'}
+											height={'h-[30px]'}
+											iconSize={20}
 											bgColor={'bg-transparent'}
-											borderColor={'#FFFBFC'}
-											btnStyles='border-2'
+											iconColor={'#F9A826'}
+											borderColor={'#F9A826'}
+											btnStyles='rounded-[8px]'
 											press={() => {
 												handleModalPress(
-													'emptyCache',
-													['35%'],
-													'Empty Cache',
+													'password',
+													['65%', '85%'],
+													'Change Password',
 													'bg-[#F9A826]'
 												);
 											}}
-										></Button>
+										/>
 									</View>
-								</View>
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey border-2 border-yellow py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='warning-outline'
-												size={30}
-												color='#F9A826'
-												className='w-[30px] h-[30px] mr-2'
-											/>
-											<Text className='mr-3 text-lg text-offwhite'>
-												Change Email
-											</Text>
-										</StyledView>
+									<View className='flex-row w-full'>
 										<Button
-											icon='create-outline'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
+											title='Email Password Reset'
+											textColor={'text-yellow'}
+											textStyles='text-[16px] font-normal'
 											height={'h-[35px]'}
 											bgColor={'bg-transparent'}
-											borderColor={'#FFFBFC'}
-											btnStyles='border-2'
+											borderColor={'#F9A826'}
+											btnStyles='rounded-[8px]'
+											width={'flex-1'}
 											press={() => {
-												handleModalPress(
-													'changeEmail',
-													['65%'],
-													'Change Email',
-													'bg-[#F9A826]'
-												);
+												PasswordReset;
 											}}
-										></Button>
+										/>
 									</View>
 								</View>
-								<StyledView className='mt-5 px-5 w-[80%] border border-outline rounded-full' />
-								<View className='flex-row items-center mt-5 px-5'>
-									<View className='flex-row justify-between items-center bg-grey border-2 border-red py-3 px-5 w-full rounded-xl'>
-										<StyledView className='flex-row'>
-											<StyledIcon
-												name='skull-outline'
-												size={30}
-												color='#CC2500'
-												className='w-[30px] h-[30px] mr-2'
-											/>
-											<Text className='mr-3 text-lg text-offwhite'>
-												Delete Profile
-											</Text>
-										</StyledView>
-										<Button
-											icon='trash-outline'
-											iconColor={'#FFFBFC'}
-											iconSize={26}
-											width={'w-[65px]'}
-											height={'h-[35px]'}
-											bgColor={'bg-transparent'}
-											borderColor={'#FFFBFC'}
-											btnStyles='border-2'
-											press={() => {
-												handleModalPress(
-													'deleteProfile',
-													['65%'],
-													'Delete Profile',
-													'bg-[#CC2500]'
-												);
-											}}
-										></Button>
+								<View className='flex flex-row justify-between w-full border-b-[1px] py-3 border-b-[#EBEBEB20]'>
+									<View className='flex flex-row'>
+										<StyledIcon
+											name='warning-outline'
+											size={24}
+											color='#F9A826'
+											className='w-[30px] h-[30px] mt-[2px]'
+										/>
+										<Text className='text-lg text-offwhite'>
+											Empty Cache
+										</Text>
 									</View>
+									<Button
+										icon='sync'
+										width={'w-[60px]'}
+										height={'h-[30px]'}
+										iconSize={20}
+										bgColor={'bg-transparent'}
+										iconColor={'#F9A826'}
+										borderColor={'#F9A826'}
+										btnStyles='rounded-[8px]'
+										press={() => {
+											handleModalPress(
+												'emptyCache',
+												['35%'],
+												'Empty Cache',
+												'bg-[#F9A826]'
+											);
+										}}
+									/>
 								</View>
-							</>
-						)}
-						<View className='relative pb-[75px]'></View>
-					</StyledView>
-				</ScrollView>
+								<View className='flex flex-row justify-between w-full pt-3 '>
+									<View className='flex flex-row'>
+										<StyledIcon
+											name='warning-outline'
+											size={24}
+											color='#F9A826'
+											className='w-[30px] h-[30px] mt-[2px]'
+										/>
+										<Text className='text-lg text-offwhite'>
+											Empty Cache
+										</Text>
+									</View>
+									<Button
+										icon='create-outline'
+										width={'w-[60px]'}
+										height={'h-[30px]'}
+										iconSize={20}
+										bgColor={'bg-transparent'}
+										iconColor={'#F9A826'}
+										borderColor={'#F9A826'}
+										btnStyles='rounded-[8px]'
+										press={() => {
+											handleModalPress(
+												'changeEmail',
+												['65%'],
+												'Change Email',
+												'bg-[#F9A826]'
+											);
+										}}
+									/>
+								</View>
+							</View>
 
-				<StyledGradient
-					pointerEvents='none'
-					start={{ x: 0, y: 0.1 }}
-					end={{ x: 0, y: 1 }}
-					style={{ height: 120 }}
-					className='absolute w-screen'
-					colors={['#121212ee', 'transparent']}
-				/>
-				<StyledView
-					style={{
-						top: Platform.OS == 'android' ? insets.top + 15 : 15
-					}}
-					className='absolute w-screen flex items-center justify-between px-[15px]'
-				>
-					<StyledText className='text-4xl font-bold text-offwhite'>
-						Settings
-					</StyledText>
+							<View className='flex-col mt-5 bg-red rounded-[15px] px-[15px] py-[12px]'>
+								<View className='flex flex-row justify-between w-full'>
+									<View className='flex flex-row'>
+										<StyledIcon
+											name='skull-outline'
+											size={24}
+											color='#EBEBEB'
+											className='w-[30px] h-[30px] mt-[2px]'
+										/>
+										<Text className='text-lg text-offwhite'>
+											Delete Profile
+										</Text>
+									</View>
+									<Button
+										icon='trash-outline'
+										width={'w-[60px]'}
+										height={'h-[30px]'}
+										iconSize={20}
+										bgColor={'bg-transparent'}
+										iconColor={'#EBEBEB'}
+										borderColor={'#EBEBEB'}
+										btnStyles='rounded-[8px]'
+										press={() => {
+											handleModalPress(
+												'deleteProfile',
+												['65%'],
+												'Delete Profile',
+												'bg-[#CC2500]'
+											);
+										}}
+									/>
+								</View>
+							</View>
+						</View>
+					)}
+					<View className='w-full h-[75px]'></View>
 				</StyledView>
-				<StyledGradient
-					pointerEvents='none'
-					start={{ x: 0, y: 0.1 }}
-					end={{ x: 0, y: 1 }}
-					style={{ height: 100, bottom: 0 }}
-					className='absolute w-screen rotate-180'
-					colors={['#121212ee', 'transparent']}
-				/>
+			</ScrollView>
+
+			<StyledGradient
+				pointerEvents='none'
+				start={{ x: 0, y: 0.1 }}
+				end={{ x: 0, y: 1 }}
+				style={{ height: 120 }}
+				className='absolute w-screen'
+				colors={['#121212ee', 'transparent']}
+			/>
+			<StyledView
+				style={{
+					top: insets.top + 15
+				}}
+				className='absolute w-screen flex items-center justify-between px-[15px]'
+			>
+				<StyledText className='text-4xl font-bold text-offwhite'>
+					Settings
+				</StyledText>
 			</StyledView>
+			<StyledGradient
+				pointerEvents='none'
+				start={{ x: 0, y: 0.1 }}
+				end={{ x: 0, y: 1 }}
+				style={{ height: 100, bottom: 0 }}
+				className='absolute w-screen rotate-180'
+				colors={['#121212ee', 'transparent']}
+			/>
 
 			<StyledView
 				style={{ bottom: insets.bottom }}
@@ -1800,7 +1514,9 @@ export default function Page() {
 			>
 				<Button
 					icon='person-circle-outline'
-					href='/'
+					press={() => {
+						router.back();
+					}}
 					width={'w-[50px]'}
 					height={'h-[50px]'}
 					iconSize={30}
@@ -1832,6 +1548,6 @@ export default function Page() {
 					{renderContent()}
 				</StyledView>
 			</BottomSheetModal>
-		</StyledSafeArea>
+		</SafeAreaView>
 	);
 }

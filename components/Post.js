@@ -11,7 +11,8 @@ import {
 	TouchableWithoutFeedback,
 	Dimensions,
 	TouchableHighlight,
-	Switch
+	Switch,
+	Platform
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince, formatTimestamp } from '../backend/functions';
@@ -534,7 +535,14 @@ export const Post = (post) => {
 						Comments Enabled
 					</Text>
 					<Switch
-						className={'scale-75'}
+						trackColor={{
+							false: '#3d3d3d',
+							true: '#00A55E'
+						}}
+						thumbColor={'#FFFBFC'}
+						className={`scale-90 ${
+							Platform.OS === 'android' ? 'h-[24px]' : ''
+						} `}
 						value={commentsEnabled}
 						onChange={(e) => {
 							setCommentsEnabled(e.nativeEvent.value);
@@ -629,14 +637,6 @@ export const Post = (post) => {
 													}
 												);
 											}
-										},
-										{
-											type: 'text',
-											value: 'valeria'
-										},
-										{
-											type: 'text',
-											value: 'alex'
 										}
 								  ]
 						}

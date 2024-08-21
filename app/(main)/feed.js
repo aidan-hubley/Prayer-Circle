@@ -140,7 +140,7 @@ export default function FeedPage() {
 		<StyledView className='w-screen flex-1 bg-offblack'>
 			<StyledView className='w-screen flex-1'>
 				<Animated.FlatList
-					itemLayoutAnimation={LinearTransition}
+					/* itemLayoutAnimation={LinearTransition} */
 					data={postList}
 					onEndReachedThreshold={0.3}
 					windowSize={10}
