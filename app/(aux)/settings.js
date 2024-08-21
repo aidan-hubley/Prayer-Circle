@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
 	Text,
 	View,
-	TouchableOpacity,
-	Animated,
 	Image,
 	TextInput,
 	ScrollView,
@@ -13,7 +11,6 @@ import {
 } from 'react-native';
 import { BottomSheetModal, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
-import { Toggle } from '../../components/Toggle';
 import { Timer } from '../../components/Timer';
 import { Button } from '../../components/Buttons';
 import { Terms } from '../../components/Terms';
@@ -71,7 +68,6 @@ export default function Page() {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [newEmail, setNewEmail] = useState('');
 	const [confirmEmail, setConfirmEmail] = useState('');
-	const selectedReminder = useRef(new Animated.Value(0)).current;
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [deletionName, setDeletionName] = useState('');
 	const [modalContent, setModalContent] = useState(null);

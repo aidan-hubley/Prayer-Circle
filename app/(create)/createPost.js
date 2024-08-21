@@ -5,7 +5,6 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Pressable,
-	Animated,
 	Platform,
 	Keyboard
 } from 'react-native';
