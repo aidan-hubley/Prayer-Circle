@@ -34,12 +34,11 @@ const StyledSafeArea = styled(SafeAreaView);
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledInput = styled(TextInput);
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function Page() {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
-	const [titlepplaceholder, setTitlePlaceholder] = useState('Title');
+	const [titlePlaceholder, setTitlePlaceholder] = useState('Title');
 	const [contentPlaceholder, setContentPlaceholder] =
 		useState('Write a Post');
 	const [userData, setUserData] = useState(auth.currentUser);
@@ -61,6 +60,7 @@ export default function Page() {
 	const [endTimeShow, setEndTimeShow] = useState(false);
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const [uploading, setUploading] = useState(false);
+	const [typeSelected, setTypeSelected] = useState('request');
 	const filterRef = useRef();
 
 	useEffect(() => {
@@ -130,6 +130,7 @@ export default function Page() {
 											setContentPlaceholder(
 												'Announcement Description'
 											);
+											setTypeSelected('announcement');
 										}
 									},
 									{
@@ -141,6 +142,7 @@ export default function Page() {
 											setContentPlaceholder(
 												'Praise Description'
 											);
+											setTypeSelected('praise');
 										}
 									},
 									{
@@ -154,6 +156,7 @@ export default function Page() {
 											setContentPlaceholder(
 												'Request Description'
 											);
+											setTypeSelected('request');
 										}
 									},
 									{
@@ -165,6 +168,7 @@ export default function Page() {
 											setContentPlaceholder(
 												'Event Description'
 											);
+											setTypeSelected('event');
 										}
 									},
 									{
@@ -178,13 +182,14 @@ export default function Page() {
 											setContentPlaceholder(
 												'Thought Description'
 											);
+											setTypeSelected('thought');
 										}
 									}
 								]}
 							/>
 							<StyledInput
 								className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
-								placeholder={titlepplaceholder}
+								placeholder={titlePlaceholder}
 								placeholderTextColor={'#fefefe80'}
 								inputMode='text'
 								autoCorrect
@@ -409,22 +414,6 @@ export default function Page() {
 
 									let newPostId = generateId();
 									let now = Date.now();
-									let typeSelectedVal = Math.round(
-										Math.abs(
-											typeRef.current.selected._value
-										)
-									);
-									let typeSelected = '';
-									if (typeSelectedVal == 0)
-										typeSelected = 'announcement';
-									else if (typeSelectedVal == 1)
-										typeSelected = 'praise';
-									else if (typeSelectedVal == 2)
-										typeSelected = 'request';
-									else if (typeSelectedVal == 3)
-										typeSelected = 'event';
-									else if (typeSelectedVal == 4)
-										typeSelected = 'thought';
 
 									let circles = {};
 									addCircles.forEach((circle) => {
