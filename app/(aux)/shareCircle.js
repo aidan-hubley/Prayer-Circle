@@ -19,6 +19,7 @@ import QRCode from 'react-qr-code';
 import { readData } from '../../backend/firebaseFunctions';
 import { useStore } from '../global';
 import { handle, backdrop } from '../../components/BottomSheetModalHelpers.js';
+import { router } from 'expo-router';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -173,7 +174,7 @@ export default function Page() {
 						width={'w-[50px]'}
 						iconSize={30}
 						icon='cog'
-						href='circleSettings'
+						press={() => router.back()}
 					/>
 					<Button
 						title='How to share?'

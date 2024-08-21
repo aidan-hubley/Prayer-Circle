@@ -145,7 +145,12 @@ export default function FeedPage() {
 					onEndReachedThreshold={0.3}
 					windowSize={10}
 					onEndReached={async () => {
-						if (postList.length < 8 || !auth?.currentUser) return;
+						if (
+							lastFetch === 0 ||
+							postList.length < 8 ||
+							!auth?.currentUser
+						)
+							return;
 						let newPosts = await fetchPosts(
 							filterTarget,
 							false,

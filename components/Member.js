@@ -13,7 +13,7 @@ function Member({ img, name, role, last, uid, setUp }) {
 		<StyledView
 			style={{ width: Dimensions.get('window').width - 30 }}
 			className={`h-[50px] flex flex-row justify-between items-center bg-grey pl-[10px] py-[10px] border-x border-[#6666660d]
-			${last ? 'rounded-b-[10px] h-[60px]' : ''}`}
+			${last ? 'rounded-b-[15px] h-[60px]' : ''}`}
 		>
 			<StyledView className={`flex flex-row self`}>
 				<CachedImage
@@ -22,7 +22,7 @@ function Member({ img, name, role, last, uid, setUp }) {
 					source={{ uri: img }}
 					cacheKey={img?.split('%2F')[2].split('?')[0]}
 					placeholderContent={
-						<View className='roudned-[5px] w-[40px] h-[40px] bg-grey'></View>
+						<View className='rounded-[5px] w-[40px] h-[40px] bg-grey'></View>
 					}
 				/>
 				<StyledView className='pl-2 bottom-[3px]'>

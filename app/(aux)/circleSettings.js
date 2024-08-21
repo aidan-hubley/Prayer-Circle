@@ -264,7 +264,7 @@ export default function Page() {
 								{currentFilterName}
 							</StyledText>
 							{description && (
-								<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
+								<StyledView className='w-full bg-grey border border-[#6666660D] rounded-[15px] p-[10px] my-2'>
 									<StyledText className='text-white text-[14px]'>
 										{description}
 									</StyledText>
@@ -273,7 +273,7 @@ export default function Page() {
 							{(currentCircleRole === 'admin' ||
 								currentCircleRole === 'owner') &&
 								reportedPosts.length > 0 && (
-									<StyledView className='w-full flex flex-row items-center justify-between bg-red border border-[#6666660D] rounded-[10px] p-[10px] my-2'>
+									<StyledView className='w-full flex flex-row items-center justify-between bg-red border border-[#6666660D] rounded-[15px] p-[10px] my-2'>
 										<StyledText className='text-white font-bold text-[20px]'>
 											{reportedPosts.length} Reported
 											Posts
@@ -293,7 +293,7 @@ export default function Page() {
 										/>
 									</StyledView>
 								)}
-							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[60px] bg-grey rounded-t-[10px] items-center justify-center'>
+							<StyledView className='border-x border-t border-[#6666660d] mt-2 w-full h-[60px] bg-grey rounded-t-[15px] items-center justify-center'>
 								<StyledText className='w-full text-center text-[28px] text-white font-[600]'>
 									Members
 								</StyledText>
