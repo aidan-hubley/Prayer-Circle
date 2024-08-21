@@ -197,11 +197,9 @@ export default function FeedPage() {
 								type={item.type}
 								user={item.user}
 								edited={item.edited}
-								viewableComments={
-									item.settings.viewable_comments
-								}
-								viewableInteractions={
-									item.settings.viewable_interactions
+								commentsEnabled={item.settings.comments_enabled}
+								interactionVisibility={
+									item.settings.interactions_visibility
 								}
 							/>
 						);

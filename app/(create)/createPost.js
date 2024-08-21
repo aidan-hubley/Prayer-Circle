@@ -117,17 +117,18 @@ export default function Page() {
 						<StyledView className='flex flex-col w-screen items-center py-3 px-[15px]'>
 							<SegmentedControl
 								ref={typeRef}
+								fireEventOnLoad
 								icons={[
 									{
 										type: 'image',
-										value: require('../../assets/post/annoucement.png'),
+										value: require('../../assets/post/announcement.png'),
 										onPress: () => {
 											setShowDatePicker(false);
 											setTitlePlaceholder(
-												'Annoucement Title'
+												'Announcement Title'
 											);
 											setContentPlaceholder(
-												'Annoucement Description'
+												'Announcement Description'
 											);
 										}
 									},
@@ -415,7 +416,7 @@ export default function Page() {
 									);
 									let typeSelected = '';
 									if (typeSelectedVal == 0)
-										typeSelected = 'annoucement';
+										typeSelected = 'announcement';
 									else if (typeSelectedVal == 1)
 										typeSelected = 'praise';
 									else if (typeSelectedVal == 2)
@@ -464,11 +465,11 @@ export default function Page() {
 													: null
 										},
 										settings: {
-											viewable_comments:
+											comments_enabled:
 												(await readData(
 													`prayer_circle/users/${userData.uid}/private/post_preferences/comments`
 												)) || false,
-											viewable_interactions:
+											interaction_visibility:
 												(await readData(
 													`prayer_circle/users/${userData.uid}/private/post_preferences/interactions`
 												)) || 'private'

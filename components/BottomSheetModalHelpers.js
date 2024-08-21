@@ -32,7 +32,7 @@ const handle = (title, color) => {
 				} mb-3`}
 			/>
 			{title ? (
-				<StyledText className='text-white font-[600] text-[24px] pb-2'>
+				<StyledText className='text-white font-[600] text-[20px] pb-2'>
 					{title}
 				</StyledText>
 			) : (

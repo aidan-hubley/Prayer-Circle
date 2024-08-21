@@ -25,8 +25,9 @@ const SegmentedControl = forwardRef((props, ref) => {
 	};
 
 	useEffect(() => {
-		handlePress(props.selected || 2);
-		props.icons[props.selected || 2]?.onPress();
+		let i = props.selected !== undefined ? props.selected : 2;
+		handlePress(i);
+		if (props.fireEventOnLoad) props.icons[i]?.onPress();
 	}, []);
 
 	const highlightPosition = useAnimatedStyle(() => {
@@ -37,10 +38,10 @@ const SegmentedControl = forwardRef((props, ref) => {
 				{
 					translateX: props.indicatorSize
 						? props.indicatorSize / -2
-						: -25
+						: -((increment - 10) / 2)
 				}
 			],
-			width: props.indicatorSize || 50
+			width: props.indicatorSize || increment - 10
 		};
 	});
 
@@ -48,8 +49,8 @@ const SegmentedControl = forwardRef((props, ref) => {
 		return (
 			<TouchableOpacity
 				key={index}
-				style={{ width: increment }}
-				className='flex items-center justify-center w-[50px] h-[50px]'
+				style={{ width: increment, height: props.height || 50 }}
+				className='flex items-center justify-center'
 				onPress={() => {
 					if (onPress) onPress();
 					handlePress(index);
@@ -73,7 +74,8 @@ const SegmentedControl = forwardRef((props, ref) => {
 
 	return (
 		<View
-			className={`flex flex-row items-center h-[50px] w-full border border-outline rounded-[15px] ${
+			style={{ height: props.height || 50 }}
+			className={`flex flex-row items-center w-full border border-outline rounded-[15px] ${
 				props.noYMargin ? '' : 'my-3'
 			}`}
 		>
@@ -81,8 +83,11 @@ const SegmentedControl = forwardRef((props, ref) => {
 				option(index, item.value, item.type, item?.onPress)
 			)}
 			<ReAnimated.View
-				style={highlightPosition}
-				className='absolute flex items-center justify-center rounded-[10px] bg-[#EBEBEB2c] h-[40px]'
+				style={[
+					highlightPosition,
+					{ height: props.height ? props.height - 10 : 40 }
+				]}
+				className='absolute flex items-center justify-center rounded-[10px] bg-[#EBEBEB2c] '
 			/>
 		</View>
 	);

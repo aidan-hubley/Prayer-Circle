@@ -163,6 +163,7 @@ export async function getCircles() {
 }
 
 export async function getFilterCircles() {
+	if (!auth?.currentUser) return;
 	let uid = await getUID();
 	let circles = await getCircles();
 	let circlesData = [

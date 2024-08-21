@@ -11,7 +11,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function JournalPage() {
-	const [annoucements, setAnnoucements] = useState([]);
+	const [announcements, setAnnouncements] = useState([]);
 	const [prayers, setPrayers] = useState([]);
 	const [praises, setPraises] = useState([]);
 	const [events, setEvents] = useState([]);
@@ -35,7 +35,7 @@ export default function JournalPage() {
 
 		existingPosts.forEach((post) => {
 			if (post.data.type === 'announcement') {
-				setAnnoucements((prev) => [...prev, post]);
+				setAnnouncements((prev) => [...prev, post]);
 			}
 			if (post.data.type === 'request') {
 				setPrayers((prev) => [...prev, post]);
@@ -71,12 +71,13 @@ export default function JournalPage() {
 			<StyledView className='px-[15px]'>
 				<SegmentedControl
 					ref={typeRef}
+					fireEventOnLoad
 					icons={[
 						{
 							type: 'image',
-							value: require('../../assets/post/annoucement.png'),
+							value: require('../../assets/post/announcement.png'),
 							onPress: () => {
-								setPage('annoucements');
+								setPage('announcements');
 							}
 						},
 						{
@@ -114,7 +115,7 @@ export default function JournalPage() {
 				<FlatList
 					data={[]}
 					style={{
-						display: page === 'annoucements' ? 'flex' : 'none',
+						display: page === 'announcements' ? 'flex' : 'none',
 						paddingHorizontal: 15,
 						flexGrow: 1
 					}}
@@ -141,10 +142,10 @@ export default function JournalPage() {
 							}}
 						>
 							<StyledText className='font-bold text-[20px] text-offwhite text-center'>
-								No Annoucements Saved!
+								No Announcements Saved!
 							</StyledText>
 							<StyledText className='text-offwhite text-center mt-2 w-[60%]'>
-								Save annoucements on your feed to view them
+								Save announcements on your feed to view them
 								here!
 							</StyledText>
 						</StyledView>

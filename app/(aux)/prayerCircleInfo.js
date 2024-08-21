@@ -399,7 +399,9 @@ export default function Page() {
 								<StyledImage
 									className='rounded-[6px]'
 									style={{ width: 40, height: 40 }}
-									source={require('../../assets/devs/alex.jpg')}
+									source={{
+										uri: 'https://media.licdn.com/dms/image/v2/D4E03AQFS4qwhNYQtvw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1713838083049?e=1729728000&v=beta&t=JcYHE7L5cBOfqr-2SaYHgrYTtgclTVmVFg-gPuHXELw'
+									}}
 								/>
 								<StyledView className='pl-2'>
 									<StyledText

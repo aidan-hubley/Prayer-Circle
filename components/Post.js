@@ -10,7 +10,8 @@ import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	Dimensions,
-	TouchableHighlight
+	TouchableHighlight,
+	Switch
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { timeSince, formatTimestamp } from '../backend/functions';
@@ -73,10 +74,11 @@ export const Post = (post) => {
 	const [lastTap, setLastTap] = useState(null);
 	const [commentData, setCommentData] = useState([]);
 	const [newComment, setNewComment] = useState('');
-	const [viewInteractions, setViewInteractions] = useState(false);
-	const [viewComments, setViewComments] = useState(false);
+	const [interactionVisibility, setInteractionVisibility] = useState(false);
+	const [commentsEnabled, setCommentsEnabled] = useState(false);
 	const [editTitle, setEditTitle] = useState('');
 	const [editContent, setEditContent] = useState('');
+	const [editIcon, setEditIcon] = useState(post.icon);
 	const [edited, setEdited] = useState(post.edited || false);
 	const [
 		haptics,
@@ -109,7 +111,6 @@ export const Post = (post) => {
 	const timer = useRef(null);
 	const bottomSheetModalRef = useRef(null);
 	const newCommentRef = useRef(null);
-	const typeRef = useRef(null);
 	const images = {
 		praise: {
 			outline: require('../assets/post/praise_outline.png'),
@@ -127,9 +128,9 @@ export const Post = (post) => {
 			outline: require('../assets/post/prayer_outline.png'),
 			nonOutline: require('../assets/post/prayer.png')
 		},
-		annoucement: {
-			outline: require('../assets/post/annoucement_outline.png'),
-			nonOutline: require('../assets/post/annoucement.png')
+		announcement: {
+			outline: require('../assets/post/announcement_outline.png'),
+			nonOutline: require('../assets/post/announcement.png')
 		},
 		thought: {
 			outline: require('../assets/post/thought_outline.png'),
@@ -210,7 +211,7 @@ export const Post = (post) => {
 						<Ionicons
 							name='send'
 							size={18}
-							className='text-offwhite -mr-[2px]'
+							color={'rgb(255 251 252)'}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -257,44 +258,57 @@ export const Post = (post) => {
 		return (
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 				<View className='flex-1 bg-grey'>
-					<View className='flex flex-col w-screen items-center py-4 px-[20px]'>
-						<View className='bg-offblack rounded-full mx-[10px] mb-3'>
-							<SegmentedControl
-								noYMargin
-								initialValue={
-									post?.data?.type === 'praise'
-										? 0
-										: post?.data?.type === 'request'
-										? 1
-										: 2
-								}
-								ref={typeRef}
-								icons={[
-									{
-										type: 'image',
-										value: require('../assets/post/annoucement.png')
-									},
-									{
-										type: 'image',
-										value: require('../assets/post/praise.png')
-									},
-									{
-										type: 'image',
-										value: require('../assets/post/prayer.png')
-									},
-									{
-										type: 'image',
-										value: require('../assets/post/calendar.png')
-									},
-									{
-										type: 'image',
-										value: require('../assets/post/thought.png')
+					<View className='flex flex-col w-screen items-center py-4 px-[15px] '>
+						<SegmentedControl
+							noYMargin
+							selected={[
+								'announcement',
+								'praise',
+								'request',
+								'event',
+								'thought'
+							].indexOf(icon)}
+							icons={[
+								{
+									type: 'image',
+									value: require('../assets/post/announcement.png'),
+									onPress: () => {
+										setEditIcon('announcement');
 									}
-								]}
-							/>
-						</View>
+								},
+								{
+									type: 'image',
+									value: require('../assets/post/praise.png'),
+									onPress: () => {
+										setEditIcon('praise');
+									}
+								},
+								{
+									type: 'image',
+									value: require('../assets/post/prayer.png'),
+									onPress: () => {
+										setEditIcon('request');
+									}
+								},
+								{
+									type: 'image',
+									value: require('../assets/post/calendar.png'),
+									onPress: () => {
+										setEditIcon('event');
+									}
+								},
+								{
+									type: 'image',
+									value: require('../assets/post/thought.png'),
+									onPress: () => {
+										setEditIcon('thought');
+									}
+								}
+							]}
+						/>
+
 						<TextInput
-							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-lg px-3 py-[10px]'
+							className='bg-offblack text-[18px] w-full text-offwhite border border-outline rounded-[12px] px-3 py-[10px] mt-2'
 							placeholder={'Title'}
 							placeholderTextColor={'#ffffff40'}
 							inputMode='text'
@@ -306,7 +320,7 @@ export const Post = (post) => {
 							}}
 						/>
 						<TextInput
-							className='bg-offblack text-[18px] w-full min-h-[100px] h-[200px] max-h-[400px] text-offwhite border border-outline rounded-lg px-3 py-[10px] my-2'
+							className='bg-offblack text-[18px] w-full min-h-[100px] h-[200px] max-h-[400px] text-offwhite border border-outline rounded-[12px] px-3 py-[10px] my-2'
 							placeholder={'Write a Post'}
 							multiline
 							autoCorrect
@@ -327,8 +341,8 @@ export const Post = (post) => {
 								width={'w-[48%]'}
 								press={() => {
 									bottomSheetModalRef.current?.dismiss();
-									setEditTitle(data.title);
-									setEditContent(data.content);
+									setEditTitle(title);
+									setEditContent(content);
 								}}
 							/>
 							<Button
@@ -512,26 +526,126 @@ export const Post = (post) => {
 
 	const settingsView = () => {
 		return (
-			<View className='flex-1 bg-grey px-[15px]'>
-				<SegmentedControl
-					onSelect={() => {}}
-					selected={0}
-					indicatorSize={90}
-					icons={[
-						{ type: 'text', value: 'Public' },
-						{ type: 'text', value: 'Private' },
-						{ type: 'text', value: 'Hidden' }
-					]}
-				/>
-				<SegmentedControl
-					onSelect={() => {}}
-					selected={0}
-					indicatorSize={100}
-					icons={[
-						{ type: 'text', value: 'Show' },
-						{ type: 'text', value: 'Hide' }
-					]}
-				/>
+			<View className='flex-1 bg-grey px-[15px] mt-4'>
+				<View className='flex flex-row  justify-between items-center bg-[#2d2d2d] rounded-[15px] p-[10px]'>
+					<Text
+						className={`text-offwhite text-[16px] font-bold px-[4px]`}
+					>
+						Comments Enabled
+					</Text>
+					<Switch
+						className={'scale-75'}
+						value={commentsEnabled}
+						onChange={(e) => {
+							setCommentsEnabled(e.nativeEvent.value);
+							updateDoc(doc(firestore, 'posts', post.id), {
+								settings: {
+									comments_enabled: e.nativeEvent.value,
+									interaction_visibility:
+										interactionVisibility
+								}
+							});
+						}}
+					/>
+				</View>
+				<Text className='text-offwhite px-[10px] mt-2 mb-4 text-[12px]'>
+					Choose whether or not people can comment on your post.
+				</Text>
+				<View className=''>
+					<Text
+						className={`text-offwhite text-[16px] font-bold mb-2 px-[4px]`}
+					>
+						Interaction Visibility
+					</Text>
+					<SegmentedControl
+						noYMargin
+						selected={interactionVisibility === 'public' ? 0 : 1}
+						fireEventOnLoad={false}
+						height={44}
+						icons={
+							post.type === 'event'
+								? [
+										{
+											type: 'text',
+											value: 'Public',
+											onPress: () => {}
+										},
+										{
+											type: 'text',
+											value: 'Private',
+											onPress: () => {}
+										},
+										{
+											type: 'text',
+											value: 'Hidden',
+											onPress: () => {}
+										}
+								  ]
+								: [
+										{
+											type: 'text',
+											value: 'Public',
+											onPress: () => {
+												setInteractionVisibility(
+													'public'
+												);
+												updateDoc(
+													doc(
+														firestore,
+														'posts',
+														post.id
+													),
+													{
+														settings: {
+															comments_enabled:
+																commentsEnabled,
+															interaction_visibility:
+																'public'
+														}
+													}
+												);
+											}
+										},
+										{
+											type: 'text',
+											value: 'Private',
+											onPress: () => {
+												setInteractionVisibility(
+													'private'
+												);
+												updateDoc(
+													doc(
+														firestore,
+														'posts',
+														post.id
+													),
+													{
+														settings: {
+															comments_enabled:
+																commentsEnabled,
+															interaction_visibility:
+																'private'
+														}
+													}
+												);
+											}
+										},
+										{
+											type: 'text',
+											value: 'valeria'
+										},
+										{
+											type: 'text',
+											value: 'alex'
+										}
+								  ]
+						}
+					/>
+					<Text className='text-offwhite px-[10px] mt-2 text-[12px]'>
+						Choose whether or not other people can see who has
+						interacted with your post.
+					</Text>
+				</View>
 			</View>
 		);
 	};
@@ -567,7 +681,7 @@ export const Post = (post) => {
 				'event',
 				'request',
 				'prayer',
-				'annoucement',
+				'announcement',
 				'thought'
 			].includes(iconKey)
 		) {
@@ -726,13 +840,8 @@ export const Post = (post) => {
 		updatedData.edited = true;
 		setEdited(true);
 
-		let typeVal = Math.round(Math.abs(typeRef.current.selected._value));
-		if (typeVal == 0) updatedData.type = 'announcement';
-		else if (typeVal == 1) updatedData.type = 'praise';
-		else if (typeVal == 2) updatedData.type = 'request';
-		else if (typeVal == 2) updatedData.type = 'event';
-		else if (typeVal == 2) updatedData.type = 'thought';
-		setIcon(updatedData.type);
+		updatedData.type = editIcon;
+		setIcon(editIcon);
 
 		updateDoc(doc(firestore, 'posts', post.id), updatedData).then(() => {
 			bottomSheetModalRef.current?.dismiss();
@@ -889,8 +998,8 @@ export const Post = (post) => {
 			setIcon(post.type);
 			if (post.type === 'event') getEventDate(post);
 
-			setViewInteractions(post.viewableInteractions || false);
-			setViewComments(post.viewableComments || false);
+			setInteractionVisibility(post.interactionVisibility || 'private');
+			setCommentsEnabled(post.commentsEnabled || false);
 
 			await setUp(post.id);
 		})();
@@ -910,7 +1019,7 @@ export const Post = (post) => {
 							clearTimeout(timer.current);
 							if (post.owned || ownedToolbar) {
 								populateInteractions();
-								setBottomSheetType('Interactions');
+								setBottomSheetType('Post Interactions');
 								setSnapPoints(['85%']);
 								handlePresentModalPress();
 							} else {
@@ -922,9 +1031,12 @@ export const Post = (post) => {
 						}
 					}}
 					onLongPress={() => {
-						if (icon === 'event' && viewInteractions === 'public') {
+						if (
+							icon === 'event' &&
+							interactionVisibility === 'public'
+						) {
 							populateInteractions();
-							setBottomSheetType('Interactions');
+							setBottomSheetType('Post Interactions');
 							setSnapPoints(['85%']);
 							handlePresentModalPress();
 						}
@@ -1041,7 +1153,7 @@ export const Post = (post) => {
 										toggleIcon();
 									} else {
 										populateInteractions();
-										setBottomSheetType('Interactions');
+										setBottomSheetType('Post Interactions');
 										setSnapPoints(['85%']);
 										handlePresentModalPress();
 									}
@@ -1110,8 +1222,8 @@ export const Post = (post) => {
 										size={29}
 										color='#F9A826'
 										onPress={() => {
-											setBottomSheetType('Settings');
-											setSnapPoints(['55%']);
+											setBottomSheetType('Post Settings');
+											setSnapPoints([340]);
 											handlePresentModalPress();
 										}}
 									/>
@@ -1120,7 +1232,7 @@ export const Post = (post) => {
 										size={29}
 										color='#00A55E'
 										onPress={() => {
-											setBottomSheetType('Edit');
+											setBottomSheetType('Edit Post');
 											setSnapPoints(['85%']);
 											handlePresentModalPress();
 										}}
@@ -1136,7 +1248,7 @@ export const Post = (post) => {
 										color='#CC2500'
 										onPress={() => {
 											populateReports(post.id);
-											setBottomSheetType('Report');
+											setBottomSheetType('Report Post');
 											setSnapPoints(['65%', '85%']);
 											handlePresentModalPress();
 										}}
@@ -1167,10 +1279,10 @@ export const Post = (post) => {
 							<ToolbarButton
 								icon={'chatbubble-outline'}
 								size={29}
-								color={viewComments ? '#5946B2' : '#3D3D3D'}
+								color={commentsEnabled ? '#5946B2' : '#3D3D3D'}
 								onPress={async () => {
 									if (!post?.owned && !ownedToolbar) {
-										if (viewComments) {
+										if (commentsEnabled) {
 											populateComments();
 											setBottomSheetType('Comments');
 											setSnapPoints(['85%']);
@@ -1269,11 +1381,11 @@ export const Post = (post) => {
 				}}
 			>
 				{bottomSheetType === 'Comments' && commentsView()}
-				{bottomSheetType === 'Edit' && editView()}
+				{bottomSheetType === 'Edit Post' && editView()}
 				{bottomSheetType === "Post's Circles" && circlesView()}
-				{bottomSheetType === 'Interactions' && interactionsView()}
-				{bottomSheetType === 'Report' && reportView()}
-				{bottomSheetType === 'Settings' && settingsView()}
+				{bottomSheetType === 'Post Interactions' && interactionsView()}
+				{bottomSheetType === 'Report Post' && reportView()}
+				{bottomSheetType === 'Post Settings' && settingsView()}
 			</BottomSheetModal>
 		</ReAnimated.View>
 	);
