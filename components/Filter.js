@@ -1,26 +1,24 @@
-import React, {
-	useRef,
-	forwardRef,
-	useImperativeHandle,
-	useState
-} from 'react';
-import { View, Animated, Dimensions, FlatList, Pressable } from 'react-native';
-import { styled } from 'nativewind';
-import { useSharedValue } from 'react-native-reanimated';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { View, Dimensions, FlatList, Pressable } from 'react-native';
+import {
+	default as ReAnimated,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming
+} from 'react-native-reanimated';
 import { FilterItem } from './FilterItem';
 /* import { Timer } from './Timer'; */
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../app/global';
 
-const StyledView = styled(View);
-const AnimatedView = Animated.createAnimatedComponent(StyledView);
-const StyledPressable = styled(Pressable);
-const AnimatedPressable = Animated.createAnimatedComponent(StyledPressable);
+const AnimatedPressable = ReAnimated.createAnimatedComponent(Pressable);
 
 const Filter = forwardRef((props, ref) => {
 	const [open, setOpen] = useState(false);
-	const opacity = useRef(new Animated.Value(props.open ? 1 : 0)).current;
+	const opacity = useSharedValue(props.open ? 1 : 0);
+	const scale = useSharedValue(props.open ? 1 : 0.8);
+	const backdropOpacity = useSharedValue(props.open ? 1 : 0);
 	const width = Dimensions.get('window').width;
 	const itemSize = 80;
 	const itemMargin = 10;
@@ -30,36 +28,39 @@ const Filter = forwardRef((props, ref) => {
 	const contentOffset = useSharedValue(0);
 	const haptics = useStore((state) => state.haptics);
 
-	const opacityInter = opacity.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0, 1]
+	const opacityStyle = useAnimatedStyle(() => {
+		return {
+			opacity: opacity.value,
+			transform: [{ scale: scale.value }],
+			bottom: insets.bottom
+		};
 	});
-	const scaleInter = opacity.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0.8, 1]
+	const backdropOpacityStyle = useAnimatedStyle(() => {
+		return {
+			opacity: backdropOpacity.value
+		};
 	});
-	const backdropOpacityInter = opacity.interpolate({
-		inputRange: [0, 1],
-		outputRange: [0, 0.6]
-	});
-	const opacityStyle = {
-		opacity: opacityInter,
-		transform: [{ scale: scaleInter }],
-		bottom: insets.bottom
-	};
-	const backdropOpacityStyle = {
-		opacity: backdropOpacityInter
-	};
 
 	function toggleShown(toggle) {
-		Animated.timing(opacity, {
-			toValue: toggle ? 1 : 0,
-			duration: 100,
-			useNativeDriver: true
-		}).start();
+		opacity.value = withTiming(toggle ? 1 : 0, { duration: 100 });
+		scale.value = withTiming(toggle ? 1 : 0.7, { duration: 100 });
+		backdropOpacity.value = withTiming(toggle ? 0.6 : 0, { duration: 100 });
 		setOpen(toggle);
 		if (props.toggleSwiping) props.toggleSwiping(!toggle);
 	}
+
+	let lastTriggeredMultiple = -1;
+	const onScroll = (e) => {
+		contentOffset.value = e.nativeEvent.contentOffset.x;
+		const currentOffset = e.nativeEvent.contentOffset.x;
+
+		// Calculate the current multiple of 90
+		const currentMultiple = Math.round(currentOffset / 90);
+		if (currentMultiple !== lastTriggeredMultiple) {
+			lastTriggeredMultiple = currentMultiple;
+			if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+		}
+	};
 
 	useImperativeHandle(ref, () => ({
 		toggleShown
@@ -73,22 +74,26 @@ const Filter = forwardRef((props, ref) => {
 					pointerEvents={props.touchEvents ? 'none' : 'auto'}
 					className={`absolute bottom-[-40px] h-screen w-screen bg-[#121212]`}
 					onPress={() => {
+						if (haptics)
+							Haptics.impactAsync(
+								Haptics.ImpactFeedbackStyle.Light
+							);
 						toggleShown();
 						props.setPressed('none');
 					}}
 				/>
 			)}
-			<AnimatedView
+			<ReAnimated.View
 				style={opacityStyle}
 				pointerEvents={props.multiselect || open ? 'auto' : 'none'}
 				className='absolute w-screen h-[250px] max-w-[500px] flex items-start justify-center'
 			>
-				<StyledView
+				<View
 					style={{ top: topButtonInset - 500 }}
 					className='absolute border border-outline rounded-3xl self-center'
 				>
 					{/* <Timer></Timer> */}
-				</StyledView>
+				</View>
 				<FlatList
 					data={
 						props.multiselect
@@ -101,9 +106,7 @@ const Filter = forwardRef((props, ref) => {
 									(item) => item.role !== 'banned'
 							  )
 					}
-					onScroll={(e) => {
-						contentOffset.value = e.nativeEvent.contentOffset.x;
-					}}
+					onScroll={onScroll}
 					horizontal
 					showsHorizontalScrollIndicator={false}
 					scrollEventThrottle={16}
@@ -136,7 +139,7 @@ const Filter = forwardRef((props, ref) => {
 					}}
 					keyExtractor={(item) => item.id}
 				/>
-			</AnimatedView>
+			</ReAnimated.View>
 		</>
 	);
 });
